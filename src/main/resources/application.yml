@@ -1,0 +1,21 @@
+server:
+  port: 9999
+spring:
+  profiles:
+    active: dev
+mybatis-plus:
+  configuration:
+    cache-enabled: true
+    map-underscore-to-camel-case: true
+  mapper-locations: classpath*:/mapper/*Mapper.xml
+  type-aliases-package: dev.cheerfun.pixivic.web
+logging:
+  config: classpath:logback-${spring.profiles.active}.xml
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
