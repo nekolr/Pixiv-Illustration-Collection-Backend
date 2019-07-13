@@ -28,6 +28,7 @@
         <druid.version>1.1.17</druid.version>
         <guava.version>27.0.1-jre</guava.version>
         <hibernate.validate.version>6.0.16.Final</hibernate.validate.version>
+        <kaptcha.version>2.3.2</kaptcha.version>
     </properties>
     <dependencies>
         <dependency>
@@ -46,6 +47,12 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
+        </dependency>
+        <!-- 验证码 -->
+        <dependency>
+            <groupId>com.github.penggle</groupId>
+            <artifactId>kaptcha</artifactId>
+            <version>${kaptcha.version}</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
