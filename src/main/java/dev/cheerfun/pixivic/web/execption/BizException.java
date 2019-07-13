@@ -3,7 +3,6 @@ package dev.cheerfun.pixivic.web.execption;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
 
 /**
  * @author echo huang
@@ -14,8 +13,8 @@ import lombok.NoArgsConstructor;
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
-public class BizException extends RuntimeException {
-    private String code;
-    private String msg;
+public class BizException extends BaseException {
+    public BizException(String code, String msg) {
+        super(code, msg);
+    }
 }

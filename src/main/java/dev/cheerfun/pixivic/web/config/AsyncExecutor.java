@@ -34,7 +34,7 @@ public class AsyncExecutor {
      */
     private static final String THREAD_NAME_PREFIX = "asyncPixPool-";
 
-    @Bean(value = "asyncExecutor")
+    @Bean(value = "asyncPixExecutor")
     public void asyncPixExecutor() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
         executor.setCorePoolSize(CORE_POOL_SIZE);

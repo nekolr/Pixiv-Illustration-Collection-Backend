@@ -53,18 +53,19 @@ public class FlowLimitListener {
             rateLimiter = map.get(functionName);
         }
 
-        try {
             if (rateLimiter.tryAcquire()) {
                 //执行方法
-                obj = joinPoint.proceed();
+                try {
+                    obj = joinPoint.proceed();
+                } catch (Throwable throwable) {
+                    throwable.printStackTrace();
+                }
             } else {
                 //拒绝了请求（服务降级）
                 //TODO 拒绝后提示
                 throw new VisitOftenException(CodeEnum.VISIT_OFTEN.getCode(),CodeEnum.VISIT_OFTEN.getMsg());
             }
-        } catch (Throwable throwable) {
-            throwable.printStackTrace();
-        }
+
         return obj;
     }
 }

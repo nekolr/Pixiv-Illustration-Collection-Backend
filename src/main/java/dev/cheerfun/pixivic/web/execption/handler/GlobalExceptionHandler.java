@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.web.execption.handler;
 
 import dev.cheerfun.pixivic.common.context.enums.CodeEnum;
 import dev.cheerfun.pixivic.common.utils.CommonResponse;
-import dev.cheerfun.pixivic.web.execption.BizException;
+import dev.cheerfun.pixivic.web.execption.BaseException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -40,8 +40,8 @@ public class GlobalExceptionHandler {
      * @param e
      * @return
      */
-    @ExceptionHandler(BizException.class)
-    public CommonResponse<Void> handleBizException(BizException e) {
+    @ExceptionHandler(value = BaseException.class)
+    public CommonResponse<Void> handleBizException(BaseException e) {
         log.error("biz.exception.error:{}", e.getMsg());
         return new CommonResponse<>(e.getCode(), e.getMsg());
     }
