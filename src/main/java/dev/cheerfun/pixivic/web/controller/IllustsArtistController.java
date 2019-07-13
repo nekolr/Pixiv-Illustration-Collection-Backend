@@ -1,9 +1,10 @@
 package dev.cheerfun.pixivic.web.controller;
 
 
+import dev.cheerfun.pixivic.common.annotation.AuthRequired;
+import dev.cheerfun.pixivic.common.constant.RoleConstant;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -16,9 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/web/artist")
+
 public class IllustsArtistController {
+
     @GetMapping("/hello")
-    public String hello(){
+    @AuthRequired(roleName = RoleConstant.GENERAL_USER_ROLE_NAME)
+    public String hello() {
         return "hello";
     }
 
