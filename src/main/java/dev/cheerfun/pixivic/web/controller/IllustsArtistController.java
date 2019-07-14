@@ -1,9 +1,9 @@
 package dev.cheerfun.pixivic.web.controller;
 
 
-import dev.cheerfun.pixivic.common.annotation.AuthRequired;
-import dev.cheerfun.pixivic.common.annotation.FlowLimit;
-import dev.cheerfun.pixivic.common.constant.RoleConstant;
+import dev.cheerfun.pixivic.infrastructure.annotation.AuthRequired;
+import dev.cheerfun.pixivic.infrastructure.annotation.FlowLimit;
+import dev.cheerfun.pixivic.infrastructure.constant.RoleConstant;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

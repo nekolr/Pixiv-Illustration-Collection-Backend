@@ -1,8 +1,8 @@
 package dev.cheerfun.pixivic.web.controller;
 
 import com.google.code.kaptcha.impl.DefaultKaptcha;
-import dev.cheerfun.pixivic.common.constant.PixConstant;
-import dev.cheerfun.pixivic.common.utils.cache.CacheUtils;
+import dev.cheerfun.pixivic.infrastructure.cache.CacheUtils;
+import dev.cheerfun.pixivic.infrastructure.constant.PixConstant;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
