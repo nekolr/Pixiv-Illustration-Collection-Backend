@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.auth.aop;
 
-import com.google.common.base.Preconditions;
 import dev.cheerfun.pixivic.auth.annotation.AuthRequired;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.model.User;
@@ -38,7 +37,7 @@ public class AuthProcessor {
 
     @Before(value = "pointCut()")
     public void handleAuthority(JoinPoint joinPoint) throws Exception {
-         String token = null;
+        String token = null;
         MethodSignature signature = ((MethodSignature) joinPoint.getSignature());
         Method method = signature.getMethod();
         //取出token
@@ -63,7 +62,6 @@ public class AuthProcessor {
         //获取具体权限级别
         AuthRequired methodAuthRequired = AnnotationUtils.findAnnotation(method, AuthRequired.class);
         AuthRequired classAuthRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), AuthRequired.class);
-        Preconditions.checkArgument(classAuthRequired != null,"classAuthRequired注解为空");
         int authLevel = methodAuthRequired != null ? methodAuthRequired.value() : classAuthRequired.value();
     }
 }
