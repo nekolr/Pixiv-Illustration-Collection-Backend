@@ -1,9 +1,7 @@
 package dev.cheerfun.pixivic.web.controller;
 
 
-import dev.cheerfun.pixivic.infrastructure.annotation.AuthRequired;
-import dev.cheerfun.pixivic.infrastructure.annotation.FlowLimit;
-import dev.cheerfun.pixivic.infrastructure.constant.RoleConstant;
+import dev.cheerfun.pixivic.ratelimit.annotation.RateLimit;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -22,8 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class IllustsArtistController {
 
     @GetMapping("/hello")
-    @AuthRequired(roleName = RoleConstant.GENERAL_USER_ROLE_NAME)
-    @FlowLimit(limitNum = 10)
+    @RateLimit(limitNum = 10)
     public String hello() {
         return "hello";
     }
