@@ -1,6 +1,8 @@
 package dev.cheerfun.pixivic.common.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author OysterQAQ
@@ -9,6 +11,8 @@ import lombok.Data;
  * @description 用户实体
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
     private int uid;
     private String username;
@@ -16,5 +20,4 @@ public class User {
     private String password;
     private String avatar;
     private int level;
-
 }

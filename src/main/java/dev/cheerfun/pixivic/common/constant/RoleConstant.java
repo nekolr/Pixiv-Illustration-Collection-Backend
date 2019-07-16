@@ -15,5 +15,5 @@ public class RoleConstant {
     /**
      * 会员用户
      */
-    public final static String VIP_USER_ROLENAME="vip";
+    public final static String VIP_USER_ROLE_NAME="vip";
 }

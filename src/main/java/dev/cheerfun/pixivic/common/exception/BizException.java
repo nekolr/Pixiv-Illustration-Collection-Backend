@@ -14,7 +14,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 public class BizException extends BaseException {
-    public BizException(String code, String msg) {
+    public BizException(int code, String msg) {
         super(code, msg);
     }
 }

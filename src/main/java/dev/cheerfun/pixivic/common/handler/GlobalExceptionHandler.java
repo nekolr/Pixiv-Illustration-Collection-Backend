@@ -1,9 +1,9 @@
 package dev.cheerfun.pixivic.common.handler;
 
-import dev.cheerfun.pixivic.infrastructure.enums.CodeEnum;
 import dev.cheerfun.pixivic.common.exception.BaseException;
 import dev.cheerfun.pixivic.web.model.CommonResponse;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -31,7 +31,7 @@ public class GlobalExceptionHandler {
         String defaultMessage = fieldError.getDefaultMessage();
         //使用@NotNull注解异常信息
         log.error("global.exception.handler.error:{}", defaultMessage);
-        return new CommonResponse<>(CodeEnum.INTERNAL_SERVER_ERROR.getCode(), defaultMessage);
+        return new CommonResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), defaultMessage);
     }
 
     /**

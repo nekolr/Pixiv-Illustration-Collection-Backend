@@ -25,4 +25,4 @@
 hs_err_pid*
 pixiv-Illustration-collection-web.iml
 target/**
-.idea/**
+.idea

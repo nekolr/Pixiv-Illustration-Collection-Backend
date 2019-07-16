@@ -1,12 +1,13 @@
 package dev.cheerfun.pixivic.auth.util;
 
 
+import dev.cheerfun.pixivic.auth.config.AuthProperties;
 import dev.cheerfun.pixivic.common.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -17,17 +18,11 @@ import java.util.Map;
 @Component
 public class JWTUtil implements Serializable {
 
-    @Value("${jjwt.secret}")
-    private String secret;
-
-    @Value("${jjwt.expirationTime}")
-    private String expirationTime;
-
-    @Value("${jjwt.refreshInterval}")
-    private long refreshInterval;
+    @Autowired
+    private AuthProperties authProperties;
 
     private Claims getAllClaimsFromToken(String token) {
-        JwtParser jwtParser = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(secret.getBytes()));
+        JwtParser jwtParser = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(authProperties.getSecret().getBytes()));
         return jwtParser.parseClaimsJws(token).getBody();
     }
 
@@ -44,7 +39,7 @@ public class JWTUtil implements Serializable {
         claims.put("level", user.getLevel());
         claims.put("uid", user.getUid());
         claims.put("refreshCount", refreshCount);
-        long expirationTimeLong = Long.parseLong(expirationTime);
+        long expirationTimeLong = Long.parseLong(authProperties.getExpirationTime());
         final Date createdDate = new Date();
         final Date expirationDate = new Date(createdDate.getTime() + (refreshCount + 1) * expirationTimeLong * 1000);
         return Jwts.builder()
@@ -53,7 +48,7 @@ public class JWTUtil implements Serializable {
                 .setSubject(user.getUsername())
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
-                .signWith(Keys.hmacShaKeyFor(secret.getBytes()))
+                .signWith(Keys.hmacShaKeyFor(authProperties.getSecret().getBytes()))
                 .compact();
     }
 
@@ -68,7 +63,7 @@ public class JWTUtil implements Serializable {
             throw new Exception();
         }
         User user = getUser(claims);
-        if (difference < refreshInterval) {
+        if (difference < authProperties.getRefreshInterval()) {
             //小于一定区间，刷新
             refreshToken(user, claims.get("refreshCount", Integer.class));
         }

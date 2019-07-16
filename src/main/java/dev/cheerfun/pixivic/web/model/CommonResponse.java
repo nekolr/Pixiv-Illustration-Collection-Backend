@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CommonResponse<T> {
 
-    private String code;
+    private int code;
     private String msg;
     private T data;
 
-    public CommonResponse(String code, String msg) {
+    public CommonResponse(int code, String msg) {
         this.code = code;
         this.msg = msg;
     }
