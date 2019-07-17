@@ -13,4 +13,14 @@ public class EmailBindingVerificationCode extends AbstractVerificationCode {
         super(value);
         this.email=email;
     }
+
+    @Override
+    public String toString() {
+        return value+email;
+    }
+
+    @Override
+    public String getValue() {
+        return value+email;
+    }
 }

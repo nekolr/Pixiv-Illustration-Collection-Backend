@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.verification.model;
 
+import lombok.Getter;
+
 import java.util.UUID;
 
 /**
@@ -9,11 +11,14 @@ import java.util.UUID;
  * @description 验证码抽象类
  */
 public abstract class AbstractVerificationCode {
+    @Getter
     protected String vid;
+    @Getter
     protected String value;
 
     public AbstractVerificationCode(String value) {
         this.vid = UUID.randomUUID().toString();
         this.value = value;
     }
+
 }

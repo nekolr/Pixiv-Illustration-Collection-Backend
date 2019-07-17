@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.auth.aop;
 import dev.cheerfun.pixivic.auth.annotation.AuthRequired;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.model.User;
+import dev.cheerfun.pixivic.common.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -15,7 +16,6 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
 /**
@@ -30,6 +30,7 @@ import java.lang.reflect.Method;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AuthProcessor {
     private final JWTUtil jwtUtil;
+    private final CommonUtil commonUtil;
 
     @Pointcut(value = "@annotation(dev.cheerfun.pixivic.auth.annotation.AuthRequired)||@within(dev.cheerfun.pixivic.auth.annotation.AuthRequired)")
     public void pointCut() {
@@ -41,21 +42,8 @@ public class AuthProcessor {
         MethodSignature signature = ((MethodSignature) joinPoint.getSignature());
         Method method = signature.getMethod();
         //取出token
-        Object[] args = joinPoint.getArgs();
-        Annotation[][] parameterAnnotations = method.getParameterAnnotations();
-        assert args.length == parameterAnnotations.length;
-        for (int argIndex = 0; argIndex < args.length; argIndex++) {
-            for (Annotation annotation : parameterAnnotations[argIndex]) {
-                if (!(annotation instanceof RequestHeader)) {
-                    continue;
-                }
-                RequestHeader requestHeader = (RequestHeader) annotation;
-                if (!"Authorization".equals(requestHeader.value())) {
-                    continue;
-                }
-                token = (String) args[argIndex];
-            }
-        }
+        token= (String) commonUtil.getControllerArg(joinPoint, String.class, RequestHeader.class, "Authorization");
+        System.out.println(token);
         /*进行jwt校验，成功则将User放进ThreadLocal（token即将过期则将刷新后的token放入ThreadLocal）
         过期则抛出自定义未授权过期异常*/
         User user = jwtUtil.validateToken(token);
@@ -64,4 +52,5 @@ public class AuthProcessor {
         AuthRequired classAuthRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), AuthRequired.class);
         int authLevel = methodAuthRequired != null ? methodAuthRequired.value() : classAuthRequired.value();
     }
+
 }

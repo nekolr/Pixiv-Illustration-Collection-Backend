@@ -4,11 +4,13 @@ import dev.cheerfun.pixivic.auth.constant.AuthLevel;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.auth.annotation.AuthRequired;
 import dev.cheerfun.pixivic.common.model.User;
+import dev.cheerfun.pixivic.verification.constant.VerificationType;
+import dev.cheerfun.pixivic.verification.model.AbstractVerificationCode;
+import dev.cheerfun.pixivic.verification.util.VerificationCodeBuildUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * @author OysterQAQ
@@ -18,21 +20,35 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@AuthRequired(AuthLevel.ANONYMOUS)
 public class TestController {
     private final JWTUtil jwtUtil;
-
+    private final StringRedisTemplate stringRedisTemplate;
     @AuthRequired(AuthLevel.VIP)
     @GetMapping("/auth")
     public String test(@RequestHeader("Authorization") String token) {
         return "233";
     }
+
     @GetMapping("/token")
     public String login() {
         User user = new User();
         user.setAvatar("233");
         user.setUsername("233");
         user.setLevel(1);
+        AbstractVerificationCode code = VerificationCodeBuildUtil.create(VerificationType.IMG).build();
+        AbstractVerificationCode code2 = VerificationCodeBuildUtil.create(VerificationType.EMAIL_CHECK).email("392822872").build();
+        //   stringRedisTemplate.opsForValue().set(code.getVid(), code.getValue());
+
+        stringRedisTemplate.opsForValue().set(code2.getVid(), code2.getValue());
+        System.out.println(code2.getValue().equals(stringRedisTemplate.opsForValue().get(code2.getVid())));
+
         return jwtUtil.getToken(user);
     }
+    @AuthRequired(AuthLevel.VIP)
+    @PostMapping("/auth")
+    public String testAOP(@RequestBody() User user,@RequestHeader("Authorization") String token)
+    {
+        return "233";
+    }
+
 }
