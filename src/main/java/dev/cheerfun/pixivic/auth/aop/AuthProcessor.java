@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.auth.aop;
 
 import dev.cheerfun.pixivic.auth.annotation.AuthRequired;
+import dev.cheerfun.pixivic.auth.exception.AuthLevelException;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.model.User;
 import dev.cheerfun.pixivic.common.util.CommonUtil;
@@ -38,12 +39,10 @@ public class AuthProcessor {
 
     @Before(value = "pointCut()")
     public void handleAuthority(JoinPoint joinPoint) throws Exception {
-        String token = null;
         MethodSignature signature = ((MethodSignature) joinPoint.getSignature());
         Method method = signature.getMethod();
         //取出token
-        token= (String) commonUtil.getControllerArg(joinPoint, String.class, RequestHeader.class, "Authorization");
-        System.out.println(token);
+        String token = commonUtil.getControllerArg(joinPoint, RequestHeader.class, "Authorization");
         /*进行jwt校验，成功则将User放进ThreadLocal（token即将过期则将刷新后的token放入ThreadLocal）
         过期则抛出自定义未授权过期异常*/
         User user = jwtUtil.validateToken(token);
@@ -51,6 +50,9 @@ public class AuthProcessor {
         AuthRequired methodAuthRequired = AnnotationUtils.findAnnotation(method, AuthRequired.class);
         AuthRequired classAuthRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), AuthRequired.class);
         int authLevel = methodAuthRequired != null ? methodAuthRequired.value() : classAuthRequired.value();
+        if (user.getLevel() < authLevel) {
+            throw new AuthLevelException();
+        }
     }
 
 }

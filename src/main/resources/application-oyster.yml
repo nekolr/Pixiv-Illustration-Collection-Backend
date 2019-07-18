@@ -2,9 +2,9 @@ spring:
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driverClassName: com.mysql.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/pixiv?characterEncoding=utf8&useUnicode=true&useSSL=false&allowMultiQueries=true&zeroDateTimeBehavior=convertToNull&autoReconnect=true
+    url: jdbc:mysql://armbian:3306/pixivic
     username: root
-    password: mysql
+    password: linhao199741
     initialSize: 5
     minIdle: 5
     maxActive: 10

@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.verification.model;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.UUID;
 
@@ -10,6 +11,7 @@ import java.util.UUID;
  * @date 2019/07/14 13:01
  * @description 验证码抽象类
  */
+@NoArgsConstructor
 public abstract class AbstractVerificationCode {
     @Getter
     protected String vid;

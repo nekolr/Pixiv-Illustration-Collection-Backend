@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.auth.util;
 
-
 import dev.cheerfun.pixivic.auth.config.AuthProperties;
+import dev.cheerfun.pixivic.auth.exception.AuthExpirationException;
 import dev.cheerfun.pixivic.common.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -15,6 +15,12 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * @author OysterQAQ
+ * @version 1.0
+ * @date 2019/07/18 14:08
+ * @description JWT工具类
+ */
 @Component
 public class JWTUtil implements Serializable {
 
@@ -52,15 +58,15 @@ public class JWTUtil implements Serializable {
                 .compact();
     }
 
-    public User validateToken(String token) throws Exception {
-        //成功则返回user 失败抛出未授权异常，但是如果要刷新token，我想也在这里完成，因为如果后面判断token是否过期
-        // ，就还需要再解析一次token，解token是比较消耗性能的，因此这里需要一个东西存token
-        //超时时间可以随着刷新自增长 最大为7天
+    public User validateToken(String token) {
+       /* 成功则返回user 失败抛出未授权异常，但是如果要刷新token，我想也在这里完成，因为如果后面判断token是否过期
+        就还需要再解析一次token，解token是比较消耗性能的，因此这里需要一个东西存token
+        超时时间可以随着刷新自增长 最大为7天*/
         Claims claims = getAllClaimsFromToken(token);
         long difference = claims.getExpiration().getTime() - System.currentTimeMillis();
         if (difference < 0) {
             //无效 抛token过期异常
-            throw new Exception();
+            throw new AuthExpirationException();
         }
         User user = getUser(claims);
         if (difference < authProperties.getRefreshInterval()) {

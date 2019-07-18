@@ -18,6 +18,10 @@ import java.lang.reflect.Method;
  */
 @Component
 public class CommonUtil {
+    public String getControllerArg(JoinPoint joinPoint, Class argAnnotationType, String argAnnotationValue) {
+        return (String) getControllerArg(joinPoint, String.class, argAnnotationType, argAnnotationValue);
+    }
+
     public Object getControllerArg(JoinPoint joinPoint, Class argClass, Class argAnnotationType, String argAnnotationValue) {
         Object[] args = joinPoint.getArgs();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();

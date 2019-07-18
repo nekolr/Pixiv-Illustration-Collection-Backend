@@ -2,15 +2,19 @@ server:
   port: 9999
 spring:
   profiles:
-    active: dev
+    active: oyster
+  redis:
+    database: 0
+    host: armbian
+    port: 6379
 mybatis-plus:
   configuration:
     cache-enabled: true
     map-underscore-to-camel-case: true
   mapper-locations: classpath*:/mapper/*Mapper.xml
   type-aliases-package: dev.cheerfun.pixivic.web
-logging:
-  config: classpath:logback-${spring.profiles.active}.xml
+# logging:
+  # config: classpath:logback-${spring.profiles.active}.xml
 management:
   endpoints:
     web:
