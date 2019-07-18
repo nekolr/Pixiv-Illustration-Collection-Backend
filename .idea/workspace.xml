@@ -1,47 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="96b3ba85-2d74-49cd-96f7-fc837e8cb287" name="Default Changelist" comment="feat: 修改限流策略">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/auth/exception/AuthExpirationException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/auth/exception/AuthLevelException.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/exception/VerificationCheckException.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/auth/aop/AuthProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/auth/aop/AuthProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/auth/config/AuthProperties.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/auth/config/AuthProperties.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/auth/util/JWTUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/auth/util/JWTUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/common/util/CommonUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/common/util/CommonUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/aop/CheckVerificationProcessor.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/aop/CheckVerificationProcessor.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/model/AbstractVerificationCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/model/AbstractVerificationCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/model/EmailBindingVerificationCode.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/model/EmailBindingVerificationCode.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/util/VerificationCodeCheckUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application-oyster.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application-oyster.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/META-INF/pixiv-Illustration-collection-web.kotlin_module" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/controller/IllustsArtistController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/controller/IllustsArtistController.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/entity/Illusts.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/entity/IllustsArtist.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/entity/IllustsArtistProfile.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/entity/IllustsImageUrls.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/entity/IllustsTags.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsArtistMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsArtistMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsArtistProfileMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsArtistProfileMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsImageUrlsMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsImageUrlsMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsTagsMapper.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/mapper/IllustsTagsMapper.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsArtistProfileService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsArtistProfileService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsArtistService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsArtistService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsImageUrlsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsImageUrlsService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsTagsService.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/IIllustsTagsService.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsArtistProfileServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsArtistProfileServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsArtistServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsArtistServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsImageUrlsServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsImageUrlsServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsServiceImpl.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsTagsServiceImpl.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/dev/cheerfun/pixivic/web/service/impl/IllustsTagsServiceImpl.class" afterDir="false" />
-    </list>
+    <list default="true" id="96b3ba85-2d74-49cd-96f7-fc837e8cb287" name="Default Changelist" comment="feat: 修改限流策略" />
     <ignored path="$PROJECT_DIR$/out/" />
     <ignored path="$PROJECT_DIR$/target/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -55,19 +15,6 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/util/VerificationCodeBuildUtil.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="68" column="35" selection-start-line="68" selection-start-column="11" selection-end-line="68" selection-end-column="35" />
-              <folding>
-                <element signature="e#629#630#0" expanded="true" />
-                <element signature="e#661#662#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/aop/CheckVerificationProcessor.java">
           <provider selected="true" editor-type-id="text-editor">
@@ -133,7 +80,23 @@
       </file>
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/.gitignore">
-          <provider selected="true" editor-type-id="text-editor" />
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-125">
+              <caret line="1" column="17" lean-forward="true" selection-start-line="1" selection-start-column="17" selection-end-line="1" selection-end-column="17" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/model/AbstractVerificationCode.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="128">
+              <caret line="8" column="20" lean-forward="true" selection-start-line="8" selection-start-column="20" selection-end-line="8" selection-end-column="20" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -244,9 +207,9 @@
       </MavenImportingSettings>
     </option>
   </component>
-  <component name="ProjectFrameBounds" extendedState="6">
-    <option name="x" value="435" />
-    <option name="y" value="475" />
+  <component name="ProjectFrameBounds">
+    <option name="x" value="137" />
+    <option name="y" value="115" />
     <option name="width" value="3265" />
     <option name="height" value="1915" />
   </component>
@@ -297,6 +260,25 @@
               <item name="pixivic-backend" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="pixivic" type="462c0819:PsiDirectoryNode" />
+              <item name="verification" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pixivic-backend" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pixivic-backend" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
+              <item name="java" type="462c0819:PsiDirectoryNode" />
+              <item name="pixivic" type="462c0819:PsiDirectoryNode" />
+              <item name="verification" type="462c0819:PsiDirectoryNode" />
+              <item name="model" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="pixivic-backend" type="b2602c69:ProjectViewProjectNode" />
+              <item name="pixivic-backend" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="main" type="462c0819:PsiDirectoryNode" />
               <item name="resources" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
@@ -326,7 +308,10 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="nodejs_package_manager_path" value="npm" />
-    <property name="settings.editor.selected.configurable" value="reference.settingsdialog.IDE.editor.colors.Java" />
+    <property name="project.structure.last.edited" value="Problems" />
+    <property name="project.structure.proportion" value="0.0" />
+    <property name="project.structure.side.proportion" value="0.2" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
@@ -784,16 +769,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/model/AbstractVerificationCode.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="228">
-          <caret line="12" column="3" lean-forward="true" selection-start-line="12" selection-start-column="3" selection-end-line="12" selection-end-column="3" />
-          <folding>
-            <element signature="imports" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/model/EmailBindingVerificationCode.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="428">
@@ -923,15 +898,97 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/main/java/dev/cheerfun/pixivic/verification/model/AbstractVerificationCode.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="128">
+          <caret line="8" column="20" lean-forward="true" selection-start-line="8" selection-start-column="20" selection-end-line="8" selection-end-column="20" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/.gitignore">
-      <provider selected="true" editor-type-id="text-editor" />
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-125">
+          <caret line="1" column="17" lean-forward="true" selection-start-line="1" selection-start-column="17" selection-end-line="1" selection-end-column="17" />
+        </state>
+      </provider>
     </entry>
   </component>
   <component name="masterDetails">
     <states>
+      <state key="ArtifactsStructureConfigurable.UI">
+        <settings>
+          <artifact-editor />
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="FacetStructureConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="GlobalLibrariesConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="JdkListConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ModuleStructureConfigurable.UI">
+        <settings>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
       <state key="ProjectJDKs.UI">
         <settings>
           <last-edited>1.8</last-edited>
+          <splitter-proportions>
+            <option name="proportions">
+              <list>
+                <option value="0.2" />
+              </list>
+            </option>
+          </splitter-proportions>
+        </settings>
+      </state>
+      <state key="ProjectLibrariesConfigurable.UI">
+        <settings>
+          <last-edited>Maven: ch.qos.logback:logback-classic:1.2.3</last-edited>
           <splitter-proportions>
             <option name="proportions">
               <list>
