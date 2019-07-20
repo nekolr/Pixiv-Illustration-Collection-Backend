@@ -33,7 +33,6 @@ public class CommonUtil {
                 if (!annotation.annotationType().equals(argAnnotationType)) {
                     continue;
                 }
-                System.out.println(argAnnotationType.getSimpleName());
                 switch (argAnnotationType.getSimpleName()) {
                     case "RequestHeader": {
                         RequestHeader requestHeader = (RequestHeader) annotation;

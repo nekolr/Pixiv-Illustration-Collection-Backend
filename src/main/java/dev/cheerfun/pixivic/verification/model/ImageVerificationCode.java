@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.verification.model;
 
+import lombok.Getter;
+
 import javax.imageio.ImageIO;
 import java.awt.*;
 import java.awt.image.BufferedImage;
@@ -27,6 +29,7 @@ public class ImageVerificationCode extends AbstractVerificationCode {
         random = new Random();
     }
 
+    @Getter
     private String imageBase64;
 
     public ImageVerificationCode(String value) {
@@ -90,7 +93,7 @@ public class ImageVerificationCode extends AbstractVerificationCode {
         int r = fc + random.nextInt(bc - fc);
         int g = fc + random.nextInt(bc - fc);
         int b = fc + random.nextInt(bc - fc);
-        return new Color(r, g, b);
+        return new Color(r, g, b,188);
     }
 
 }

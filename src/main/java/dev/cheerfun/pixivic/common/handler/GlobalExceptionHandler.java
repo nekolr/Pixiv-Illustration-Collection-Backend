@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.common.handler;
 
 import dev.cheerfun.pixivic.common.exception.BaseException;
-import dev.cheerfun.pixivic.web.model.CommonResponse;
+import dev.cheerfun.pixivic.web.model.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.FieldError;
@@ -25,13 +25,14 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public CommonResponse<Void> handlerValidMessage(MethodArgumentNotValidException e) {
+    public Result<Void> handlerValidMessage(MethodArgumentNotValidException e) {
         FieldError fieldError = e.getBindingResult().getFieldError();
         assert fieldError != null;
         String defaultMessage = fieldError.getDefaultMessage();
         //使用@NotNull注解异常信息
         log.error("global.exception.handler.error:{}", defaultMessage);
-        return new CommonResponse<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), defaultMessage);
+       // return new Result<>(HttpStatus.INTERNAL_SERVER_ERROR.value(), defaultMessage);
+        return null;
     }
 
     /**
@@ -41,8 +42,9 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = BaseException.class)
-    public CommonResponse<Void> handleBizException(BaseException e) {
+    public Result<Void> handleBizException(BaseException e) {
         log.error("biz.exception.error:{}", e.getMsg());
-        return new CommonResponse<>(e.getCode(), e.getMsg());
+       // return new Result<>(e.getCode(), e.getMsg());
+        return null;
     }
 }

@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.web.model;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.cheerfun.pixivic.web.constant.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,14 +15,12 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class CommonResponse<T> {
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+public class Result<T> {
 
-    private int code;
-    private String msg;
+    private StatusCode statusCode;
     private T data;
 
-    public CommonResponse(int code, String msg) {
-        this.code = code;
-        this.msg = msg;
-    }
 }
+
+

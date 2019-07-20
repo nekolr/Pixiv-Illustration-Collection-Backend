@@ -15,6 +15,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.concurrent.TimeUnit;
+
 /**
  * @author OysterQAQ
  * @version 1.0
@@ -33,9 +35,6 @@ public class CheckVerificationProcessor {
     public void check() {
     }
 
-    @Pointcut("execution(* dev.cheerfun.pixivic.verification.util.VerificationCodeBuildUtil.build(..))")
-    public void generate() {
-    }
 
     @Before("check()")
     public void checkVerification(JoinPoint joinPoint) {
@@ -46,14 +45,11 @@ public class CheckVerificationProcessor {
        /* if(value==null||vid==null)
             throw new RuntimeException();*/
         //进数据库查询
-        if (!value.equals(stringRedisTemplate.opsForValue().get(vid))) {
+        if (!value.equalsIgnoreCase(stringRedisTemplate.opsForValue().get(vid))) {
             throw new VerificationCheckException();
         }
+        stringRedisTemplate.delete(vid);
         //放行
     }
 
-    @AfterReturning(value = "generate()", returning = "code")
-    public void putVerificationCodeInRedis(AbstractVerificationCode code) {
-        stringRedisTemplate.opsForValue().set(code.getVid(), code.getValue());
-    }
 }
