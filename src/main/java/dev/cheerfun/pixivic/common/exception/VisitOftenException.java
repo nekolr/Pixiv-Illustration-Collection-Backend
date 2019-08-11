@@ -14,7 +14,5 @@ import lombok.EqualsAndHashCode;
 @Data
 @AllArgsConstructor
 public class VisitOftenException extends BaseException {
-    public VisitOftenException(int code, String msg) {
-        super(code, msg);
-    }
+
 }

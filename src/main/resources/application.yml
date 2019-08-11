@@ -11,7 +11,7 @@ mybatis-plus:
   configuration:
     cache-enabled: true
     map-underscore-to-camel-case: true
-  mapper-locations: classpath*:/mapper/*Mapper.xml
+  mapper-locations: classpath*:/ArtistMapper/*Mapper.xml
   type-aliases-package: dev.cheerfun.pixivic.web
 # logging:
   # config: classpath:logback-${spring.profiles.active}.xml
@@ -31,3 +31,11 @@ jjwt:
   secret: 生蚝QAQ只是一位兴趣使然的面向ACG编程人员(●'◡'●)ﾉ♥♥♥♥♥♥
   expirationTime: 864000
   refreshInterval: 1800000
+pixiv:
+  oauth:
+    client_id: KzEZED7aC0vird8jWyHM38mXjNTY
+    client_secret: W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP
+    refresh_token: 07FHA5xA6NkOIxIayqm3tZbJqxbypDJHrXguT7cazLI
+    device_token: fb12e7c1945000850deb5f7001c02745
+    config: D:\user2.json
+

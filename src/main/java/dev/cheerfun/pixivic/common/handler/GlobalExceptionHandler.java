@@ -3,7 +3,7 @@ package dev.cheerfun.pixivic.common.handler;
 import dev.cheerfun.pixivic.common.exception.BaseException;
 import dev.cheerfun.pixivic.web.model.Result;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -42,8 +42,8 @@ public class GlobalExceptionHandler {
      * @return
      */
     @ExceptionHandler(value = BaseException.class)
-    public Result<Void> handleBizException(BaseException e) {
-        log.error("biz.exception.error:{}", e.getMsg());
+    public ResponseEntity<Result> handleBizException(BaseException e) {
+        log.error("biz.exception.error:{}", e.getStatusCode().getMsg());
        // return new Result<>(e.getCode(), e.getMsg());
         return null;
     }

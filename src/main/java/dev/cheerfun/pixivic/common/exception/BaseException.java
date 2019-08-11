@@ -1,9 +1,11 @@
 package dev.cheerfun.pixivic.common.exception;
 
+import dev.cheerfun.pixivic.common.constant.StatusCode;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 /**
  * @author echo huang
@@ -15,7 +17,8 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class BaseException extends RuntimeException{
-    private int code;
-    private String msg;
+public class BaseException extends RuntimeException {
+    protected StatusCode statusCode;
+    protected HttpStatus httpStatus;
+
 }

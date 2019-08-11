@@ -11,7 +11,7 @@ import lombok.Data;
  */
 @Data
 public class QQOAuth2 {
-    private String uid;
+    private int uid;
     @JsonProperty("access_token")
     private String accessToken;
     private String openid;

@@ -1,8 +1,9 @@
 package dev.cheerfun.pixivic.auth.aop;
 
-import dev.cheerfun.pixivic.auth.annotation.AuthRequired;
+import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.auth.exception.AuthLevelException;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
+import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.common.model.User;
 import dev.cheerfun.pixivic.common.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +15,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -33,12 +35,12 @@ public class AuthProcessor {
     private final JWTUtil jwtUtil;
     private final CommonUtil commonUtil;
 
-    @Pointcut(value = "@annotation(dev.cheerfun.pixivic.auth.annotation.AuthRequired)||@within(dev.cheerfun.pixivic.auth.annotation.AuthRequired)")
+    @Pointcut(value = "@annotation(dev.cheerfun.pixivic.auth.annotation.PermissionRequired)||@within(dev.cheerfun.pixivic.auth.annotation.PermissionRequired)")
     public void pointCut() {
     }
 
     @Before(value = "pointCut()")
-    public void handleAuthority(JoinPoint joinPoint) throws Exception {
+    public void handleAuthority(JoinPoint joinPoint) {
         MethodSignature signature = ((MethodSignature) joinPoint.getSignature());
         Method method = signature.getMethod();
         //取出token
@@ -47,11 +49,11 @@ public class AuthProcessor {
         过期则抛出自定义未授权过期异常*/
         User user = jwtUtil.validateToken(token);
         //获取具体权限级别
-        AuthRequired methodAuthRequired = AnnotationUtils.findAnnotation(method, AuthRequired.class);
-        AuthRequired classAuthRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), AuthRequired.class);
-        int authLevel = methodAuthRequired != null ? methodAuthRequired.value() : classAuthRequired.value();
+        PermissionRequired methodPermissionRequired = AnnotationUtils.findAnnotation(method, PermissionRequired.class);
+        PermissionRequired classPermissionRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), PermissionRequired.class);
+        int authLevel = methodPermissionRequired != null ? methodPermissionRequired.value() : classPermissionRequired.value();
         if (user.getLevel() < authLevel) {
-            throw new AuthLevelException();
+            throw new AuthLevelException(StatusCode.PERMISSION_DENIED, HttpStatus.FORBIDDEN);
         }
     }
 

@@ -12,6 +12,9 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class Application {
     public static void main(String[] args) {
+        System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Referer");
+        System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Content-Length");
+        System.setProperty("jdk.internal.httpclient.disableHostnameVerification", "true");//取消主机名验证
         SpringApplication.run(Application.class,args);
     }
 }

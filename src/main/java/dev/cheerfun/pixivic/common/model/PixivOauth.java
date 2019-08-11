@@ -10,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class PixivOauth {
+    private int uid;
     private String username;
     private String password;
 }

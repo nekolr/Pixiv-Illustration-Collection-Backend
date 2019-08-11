@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Profile;
  * @description mybatis-plus配置类
  */
 @Configuration
-@MapperScan("dev.cheerfun.pixivic.web.mapper")
+@MapperScan("dev.cheerfun.pixivic.web.ArtistMapper")
 public class MybatisPlusConfig {
     /**
      * 分页插件

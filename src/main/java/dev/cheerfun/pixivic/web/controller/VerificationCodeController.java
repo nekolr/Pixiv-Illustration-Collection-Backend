@@ -1,10 +1,7 @@
 package dev.cheerfun.pixivic.web.controller;
 
-import dev.cheerfun.pixivic.verification.constant.VerificationType;
-import dev.cheerfun.pixivic.verification.model.AbstractVerificationCode;
+import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.verification.model.ImageVerificationCode;
-import dev.cheerfun.pixivic.verification.util.VerificationCodeBuildUtil;
-import dev.cheerfun.pixivic.web.constant.StatusCode;
 import dev.cheerfun.pixivic.web.model.Result;
 import dev.cheerfun.pixivic.web.service.VerificationCodeService;
 import lombok.RequiredArgsConstructor;

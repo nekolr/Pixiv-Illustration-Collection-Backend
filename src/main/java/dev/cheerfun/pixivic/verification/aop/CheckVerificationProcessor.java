@@ -1,21 +1,19 @@
 package dev.cheerfun.pixivic.verification.aop;
 
+import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.common.util.CommonUtil;
 import dev.cheerfun.pixivic.verification.exception.VerificationCheckException;
-import dev.cheerfun.pixivic.verification.model.AbstractVerificationCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author OysterQAQ
@@ -46,7 +44,7 @@ public class CheckVerificationProcessor {
             throw new RuntimeException();*/
         //进数据库查询
         if (!value.equalsIgnoreCase(stringRedisTemplate.opsForValue().get(vid))) {
-            throw new VerificationCheckException();
+            throw new VerificationCheckException(StatusCode.VERIFICATION_CODE_NOT_MATCH, HttpStatus.BAD_REQUEST);
         }
         stringRedisTemplate.delete(vid);
         //放行

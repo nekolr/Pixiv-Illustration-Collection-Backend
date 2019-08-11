@@ -2,12 +2,14 @@ package dev.cheerfun.pixivic.auth.util;
 
 import dev.cheerfun.pixivic.auth.config.AuthProperties;
 import dev.cheerfun.pixivic.auth.exception.AuthExpirationException;
+import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.common.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -66,7 +68,7 @@ public class JWTUtil implements Serializable {
         long difference = claims.getExpiration().getTime() - System.currentTimeMillis();
         if (difference < 0) {
             //无效 抛token过期异常
-            throw new AuthExpirationException();
+            throw new AuthExpirationException(StatusCode.TOKEN_EXPIRATION_OUT_OF_TIME, HttpStatus.UNAUTHORIZED);
         }
         User user = getUser(claims);
         if (difference < authProperties.getRefreshInterval()) {

@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.ratelimit.aop;
 
 import com.google.common.collect.Maps;
 import com.google.common.util.concurrent.RateLimiter;
-import dev.cheerfun.pixivic.common.exception.VisitOftenException;
 import dev.cheerfun.pixivic.ratelimit.annotation.RateLimit;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -11,7 +10,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
@@ -64,7 +62,7 @@ public class RateLimitProcessor {
         } else {
             //拒绝了请求（服务降级）
             //TODO 拒绝后提示
-            throw new VisitOftenException(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase());
+            //throw new VisitOftenException(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase());
         }
 
         return obj;

@@ -6,7 +6,7 @@ package dev.cheerfun.pixivic.auth.constant;
  * @date 2019/07/16 9:41
  * @description 权限级别常量类
  */
-public final class AuthLevel {
+public final class PermissionLevel {
     public static final int ANONYMOUS = 0;
     public static final int LOGGED = 1;
     public static final int VIP = 2;
