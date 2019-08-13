@@ -36,11 +36,11 @@ public class ArtistService {
 
     public void pullArtistsInfo(List<Integer> artistIds) throws InterruptedException {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
-        int taskSum = artistIds.size();
+        int taskSum = artistIdsToDownload.size();
         ArrayList<Artist> artists = new ArrayList<>(taskSum);
         final CountDownLatch cd = new CountDownLatch(taskSum);
-        artistIds.stream().parallel().forEach(i -> {
-            httpUtil.getJson("https://app-api.pixiv.net/v1/user/detail?user_id=" + artistIdsToDownload.get(i) + "&filter=for_ios")
+        artistIdsToDownload.stream().parallel().forEach(i -> {
+            httpUtil.getJson("https://app-api.pixiv.net/v1/user/detail?user_id=" + i + "&filter=for_ios")
                     .orTimeout(1000 * 10L, TimeUnit.MILLISECONDS).whenComplete((result, throwable) -> {
                 if ("false".equals(result)) {
                     this.addToWaitingList(i);
@@ -56,6 +56,7 @@ public class ArtistService {
         });
         cd.await(taskSum, TimeUnit.SECONDS);
         artists.removeIf(Objects::isNull);
+        System.out.println(artists.size());
         // this.dealReDownload();
         if (artists.size() != 0)
             artistMapper.insert(artists);

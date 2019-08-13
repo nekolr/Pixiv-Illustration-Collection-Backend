@@ -5,6 +5,8 @@ import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.common.model.User;
+import dev.cheerfun.pixivic.crawler.service.IllustrationPersistentService;
+import dev.cheerfun.pixivic.crawler.util.OauthUtil;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.verification.constant.VerificationType;
 import dev.cheerfun.pixivic.verification.model.AbstractVerificationCode;
@@ -26,7 +28,9 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TestController {
     private final JWTUtil jwtUtil;
+    private final OauthUtil oauthUtil;
     private final StringRedisTemplate stringRedisTemplate;
+    private final IllustrationPersistentService illustrationPersistentService;
 
     @PermissionRequired(PermissionLevel.VIP)
     @GetMapping("/auth")
@@ -35,7 +39,9 @@ public class TestController {
     }
 
     @GetMapping("/32")
-    public String login() {
+    public String login() throws InterruptedException {
+        oauthUtil.getOauths().forEach(o -> System.out.println(o.getAccess_token()));
+        illustrationPersistentService.dailyPersistentTask();
         User user = new User();
         user.setAvatar("233");
         user.setUsername("233");

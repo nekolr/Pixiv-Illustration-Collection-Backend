@@ -1,18 +1,26 @@
 server:
-  port: 9999
+  port: 8080
 spring:
-  profiles:
-    active: oyster
+#  profiles:
+#    active: oyster
   redis:
     database: 0
     host: armbian
     port: 6379
-mybatis-plus:
-  configuration:
-    cache-enabled: true
-    map-underscore-to-camel-case: true
-  mapper-locations: classpath*:/ArtistMapper/*Mapper.xml
-  type-aliases-package: dev.cheerfun.pixivic.web
+  datasource:
+    url: jdbc:mysql://deepin:3306/pixivic-test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: linhao199741
+    type: com.alibaba.druid.pool.DruidDataSource
+    batch:
+      job:
+        enabled: false
+#mybatis-plus:
+#  configuration:
+#    cache-enabled: true
+#    map-underscore-to-camel-case: true
+#  mapper-locations: classpath*:/ArtistMapper/*Mapper.xml
+#  type-aliases-package: dev.cheerfun.pixivic.web
 # logging:
   # config: classpath:logback-${spring.profiles.active}.xml
 management:
@@ -38,4 +46,12 @@ pixiv:
     refresh_token: 07FHA5xA6NkOIxIayqm3tZbJqxbypDJHrXguT7cazLI
     device_token: fb12e7c1945000850deb5f7001c02745
     config: D:\user2.json
-
+logging:
+  level:
+    com:
+      looedu:
+        mapper: debug
+mybatis:
+  configuration:
+    mapUnderscoreToCamelCase: true
+  type-handlers-package: dev.cheerfun.pixivic.common.handler

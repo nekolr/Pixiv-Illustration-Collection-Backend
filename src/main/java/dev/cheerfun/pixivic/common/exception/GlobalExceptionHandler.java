@@ -1,6 +1,5 @@
-package dev.cheerfun.pixivic.common.handler;
+package dev.cheerfun.pixivic.common.exception;
 
-import dev.cheerfun.pixivic.common.exception.BaseException;
 import dev.cheerfun.pixivic.web.model.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;

@@ -35,5 +35,5 @@ public interface ArtistMapper {
             ") as temp WHERE temp.artist_id  NOT IN (SELECT artists.artist_id FROM artists)",
             "</script>"
     })
-    List<Integer> queryArtistsNotInDb(@Param("artists") List<Integer> artists);
+    List<Integer> queryArtistsNotInDb(@Param("artistIds") List<Integer> artists);
 }

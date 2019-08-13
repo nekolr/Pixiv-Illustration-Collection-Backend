@@ -10,6 +10,7 @@ import dev.cheerfun.pixivic.crawler.mapper.RankMapper;
 import dev.cheerfun.pixivic.crawler.model.ModeMeta;
 import dev.cheerfun.pixivic.crawler.util.HttpUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.Synchronized;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,10 +41,14 @@ public class RankService {
     private static final ArrayList<ModeMeta> modes;
     private static final HashMap<String, Integer> modeIndex;
     private static final Integer taskSum;
+    private static volatile List<List<Illustration>> illustrationLists;
+    private static volatile List<String> waitForReDownload;
 
     static {
         taskSum = 133;
-        modeIndex = new HashMap<>() {{
+        illustrationLists = new ArrayList<>(Collections.nCopies(taskSum, null));
+        waitForReDownload = new ArrayList<>(Collections.nCopies(taskSum, null));
+        modeIndex = new HashMap<>(11) {{
             put("day", 0);
             put("week", 17);
             put("month", 34);
@@ -73,59 +78,79 @@ public class RankService {
 
     public List<Integer> pullAllRankInfo(LocalDate date) throws InterruptedException {
         final CountDownLatch cd = new CountDownLatch(taskSum);
-        List<List<Illustration>> illustrationLists = new ArrayList<>();
-        List<String> waitForReDownload = new ArrayList<>(taskSum);
+        List<List<Illustration>> illustrationLists = new ArrayList<>(Collections.nCopies(taskSum, null));
+        List<String> waitForReDownload = new ArrayList<>(Collections.nCopies(taskSum, null));
         modes.stream().parallel().forEach(modeMeta -> {
             IntStream.range(0, modeMeta.getTaskSum()).forEach(i -> {
-                getDayRankInfo(modeMeta, date.toString(), i, illustrationLists, waitForReDownload, cd);
+                getDayRankInfo(modeMeta, date.toString(), i, waitForReDownload)
+                        .whenComplete((illustrations, throwable) -> {
+                            if (illustrations == null)
+                                waitForReDownload.set(i + modeIndex.get(modeMeta.getMode()), modeMeta.getMode() + "-" + i);
+                            else{
+                                illustrationLists.set(i + modeIndex.get(modeMeta.getMode()), illustrations);
+                                // saveToDb(illustrations,modeMeta.getMode()+i);
+                            }
+
+                            cd.countDown();
+                        });
             });
         });
         cd.await(10 * taskSum, TimeUnit.SECONDS);
-        //重试
-        waitForReDownload.removeIf(Objects::isNull);
-        dealReDownload(date.toString(),waitForReDownload,illustrationLists);
-        List<Integer> artistIds = illustrationLists.stream().flatMap(Collection::stream).map(Illustration::getArtistId).distinct().collect(Collectors.toList());
-        return artistIds;
+        while (waitForReDownload.removeIf(Objects::isNull)) {
+            dealReDownload(date.toString(), waitForReDownload, illustrationLists);
+        }
+        System.err.println("失败队列：");
+        waitForReDownload.forEach(System.out::println);
+        illustrationLists.removeIf(Objects::isNull);
+        saveToDb(illustrationLists.stream().flatMap(Collection::stream).filter(Objects::nonNull).collect(Collectors.toList()));
+        return illustrationLists.stream().flatMap(Collection::stream).filter(Objects::nonNull).map(Illustration::getArtistId).distinct().collect(Collectors.toList());
     }
 
-    private CompletableFuture<String> getDayRankInfo(ModeMeta modeMeta, String date, Integer index, List<List<Illustration>> illustrationLists, List<String> waitForReDownload, CountDownLatch cd) {
+    private CompletableFuture<List<Illustration>> getDayRankInfo(ModeMeta modeMeta, String date, Integer index, List<String> waitForReDownload) {
         return getDayRankInfo(modeMeta.getMode(), date, index)
                 .orTimeout(10, TimeUnit.SECONDS)
-                .whenComplete((result, throwable) -> {
+                .thenApply(result -> {
                     if ("false".equals(result)) {
-                        waitForReDownload.add(index + modeIndex.get(modeMeta.getMode()), modeMeta.getMode() + "-" + index);
+                        System.err.println("获取信息失败");
+                        waitForReDownload.set(index + modeIndex.get(modeMeta.getMode()), modeMeta.getMode() + "-" + index);
+                        return null;
                     }
                     try {
+                        System.out.println("开始进行JSON到实体类转换");
                         RankDTO rankDTO = objectMapper.readValue(result, new TypeReference<RankDTO>() {
                         });
-                        List<Illustration> illustrations = rankDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
-                        illustrationLists.add(index + modeIndex.get(modeMeta.getMode()), illustrations);
-                        saveToDb(illustrations);
+                        System.out.println("开始进行实体类压平与转换");
+                        List<Illustration> illustrations = rankDTO.getIllusts().stream().filter(Objects::nonNull).map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
+                        if (illustrations.size() > 0) {
+                            System.out.println("开始入库");
+                         //   saveToDb(illustrations,modeMeta.getMode()+index);
+                            return illustrations;
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    cd.countDown();
+                    return null;
                 });
     }
 
     private CompletableFuture<String> getDayRankInfo(String mode, String date, Integer index) {
-        return httpUtil.getJson("https://search.api.pixivic.com/v1/illust/ranking?mode=" + mode + "&offset=" + index * 30 + "&date=" + date);
+        return httpUtil.getJson("https://app-api.pixiv.net/v1/illust/ranking?mode=" + mode + "&offset=" + index * 30 + "&date=" + date);
     }
 
-    // @Scheduled(initialDelay = 1000 * 60 * 8, fixedRate = 1000 * 30)
     public void dealReDownload(String date, List<String> waitForReDownload, List<List<Illustration>> illustrationLists) throws InterruptedException {
-        //   Object[] waitForReDownload = this.getWaitForReDownload();
-        System.out.println("开始处理待重试队列");
         final CountDownLatch cd = new CountDownLatch(waitForReDownload.size());
         waitForReDownload.stream().parallel().forEach(i -> {
             String[] split = i.split("-");
-            getDayRankInfo(split[0], date, Integer.valueOf(split[1])).thenAccept(result -> {
+            getDayRankInfo(split[0], date, Integer.valueOf(split[1])).whenComplete((result, throwable) -> {
                         try {
+                            System.out.println("-------------------------------------------");
                             RankDTO rankDTO = objectMapper.readValue(result, new TypeReference<RankDTO>() {
                             });
                             List<Illustration> illustrations = rankDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
-                            illustrationLists.add(Integer.valueOf(split[1]) + modeIndex.get(split[0]), illustrations);
-                            saveToDb(illustrations);
+                       //     System.out.println(waitForReDownload.get(Integer.valueOf(split[1]) + modeIndex.get(split[0])) == null);
+                            illustrationLists.set(Integer.valueOf(split[1]) + modeIndex.get(split[0]), illustrations);
+                            waitForReDownload.set(Integer.valueOf(split[1]) + modeIndex.get(split[0]), null);
+                            //System.out.println(waitForReDownload.get(Integer.valueOf(split[1]) + modeIndex.get(split[0])) == null);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -133,13 +158,16 @@ public class RankService {
                     }
             );
         });
-        cd.await(waitForReDownload.size(), TimeUnit.SECONDS);
+        cd.await(waitForReDownload.size() * 2, TimeUnit.SECONDS);
     }
 
     @Transactional
+    @Synchronized
     public void saveToDb(List<Illustration> illustrations) {
         rankMapper.insert(illustrations);
-        List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
+        List<Tag> tags=new ArrayList<>();
+        illustrations.forEach(illustration -> tags.addAll(illustration.getTags()));
+        System.out.println(tags);
         rankMapper.insertTag(tags);
         rankMapper.insertTagIllustRelation(illustrations);
     }

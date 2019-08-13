@@ -17,7 +17,7 @@
 
     <properties>
         <boot.version>2.1.5.RELEASE</boot.version>
-        <java.version>1.8</java.version>
+        <java.version>12</java.version>
         <lombok.version>1.18.8</lombok.version>
         <jjwt.version>0.10.7</jjwt.version>
         <fastjson.version>1.2.56</fastjson.version>
@@ -137,8 +137,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>${maven.complie.version}</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>12</source>
+                    <target>12</target>
                     <encoding>project.build.sourceEncoding</encoding>
                 </configuration>
             </plugin>

@@ -49,8 +49,8 @@ public class HttpClientConfig {
                 .version(HttpClient.Version.HTTP_2)
                 .sslParameters(sslParams)
                 .sslContext(sc)
-                // .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 9999)))
-                .executor(Executors.newFixedThreadPool(4))
+              //  .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 9999)))
+                .executor(Executors.newFixedThreadPool(6))
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .build();
     }
