@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.config;
+package dev.cheerfun.pixivic.web_common.config;
 
 import com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor;
@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Profile;
  * @description mybatis-plus配置类
  */
 @Configuration
-@MapperScan("dev.cheerfun.pixivic.web.ArtistMapper")
+@MapperScan("dev.cheerfun.pixivic.web_common.ArtistMapper")
 public class MybatisPlusConfig {
     /**
      * 分页插件

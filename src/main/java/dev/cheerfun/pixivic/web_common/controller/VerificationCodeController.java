@@ -1,9 +1,9 @@
-package dev.cheerfun.pixivic.web.controller;
+package dev.cheerfun.pixivic.web_common.controller;
 
 import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.verification.model.ImageVerificationCode;
-import dev.cheerfun.pixivic.web.model.Result;
-import dev.cheerfun.pixivic.web.service.VerificationCodeService;
+import dev.cheerfun.pixivic.web_common.model.Result;
+import dev.cheerfun.pixivic.web_common.service.VerificationCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

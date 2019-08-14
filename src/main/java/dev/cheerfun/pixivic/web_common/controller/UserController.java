@@ -1,10 +1,10 @@
-package dev.cheerfun.pixivic.web.controller;
+package dev.cheerfun.pixivic.web_common.controller;
 
 import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.common.model.QQOAuth2;
 import dev.cheerfun.pixivic.common.model.User;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
-import dev.cheerfun.pixivic.web.model.Result;
+import dev.cheerfun.pixivic.web_common.model.Result;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

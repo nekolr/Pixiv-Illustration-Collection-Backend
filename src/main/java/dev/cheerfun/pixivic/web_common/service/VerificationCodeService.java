@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.service;
+package dev.cheerfun.pixivic.web_common.service;
 
 import dev.cheerfun.pixivic.verification.constant.VerificationType;
 import dev.cheerfun.pixivic.verification.model.ImageVerificationCode;

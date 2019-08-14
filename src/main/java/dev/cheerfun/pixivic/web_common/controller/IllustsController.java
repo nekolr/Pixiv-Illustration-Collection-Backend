@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.controller;
+package dev.cheerfun.pixivic.web_common.controller;
 
 
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2019-06-28
  */
 @RestController
-@RequestMapping("/web/illusts")
+@RequestMapping("/web_common/illusts")
 public class IllustsController {
 }
 

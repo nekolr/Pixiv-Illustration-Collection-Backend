@@ -18,10 +18,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Component
@@ -44,7 +41,7 @@ final public class OauthUtil {
     private int length;
 
     @Getter
-    private volatile ArrayList<Oauth> oauths;
+    private volatile List<Oauth> oauths;
 
     @PostConstruct
     private void init() throws IOException {

@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.controller;
+package dev.cheerfun.pixivic.web_common.controller;
 
 
 import dev.cheerfun.pixivic.ratelimit.annotation.RateLimit;
@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @since 2019-06-28
  */
 @RestController
-@RequestMapping("/web/artist")
+@RequestMapping("/web_common/artist")
 
 public class IllustsArtistController {
 

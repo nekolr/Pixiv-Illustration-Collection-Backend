@@ -5,8 +5,8 @@ import dev.cheerfun.pixivic.common.model.illust.Tag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -22,9 +22,9 @@ public class Illustration {
     private String type;
     private String caption;
     private ArtistPreView artistPreView;
-    private ArrayList<Tag> tags;
-    private ArrayList<ImageUrl> imageUrls;
-    private ArrayList<String> tools;
+    private List<Tag> tags;
+    private List<ImageUrl> imageUrls;
+    private List<String> tools;
     private Date createDate;
     private Integer pageCount;
     private Integer width;

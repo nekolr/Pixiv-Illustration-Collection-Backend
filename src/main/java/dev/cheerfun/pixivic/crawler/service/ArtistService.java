@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
@@ -32,22 +33,23 @@ public class ArtistService {
     private final ArtistMapper artistMapper;
     private ReentrantLock lock = new ReentrantLock();
 
-    private ArrayList<Integer> waitForReDownload = new ArrayList<>();
+    private List<Integer> waitForReDownload = new ArrayList<>();
 
     public void pullArtistsInfo(List<Integer> artistIds) throws InterruptedException {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
         int taskSum = artistIdsToDownload.size();
-        ArrayList<Artist> artists = new ArrayList<>(taskSum);
+        List<Artist> artists = new ArrayList<>(Collections.nCopies(taskSum, null));
         final CountDownLatch cd = new CountDownLatch(taskSum);
         artistIdsToDownload.stream().parallel().forEach(i -> {
             httpUtil.getJson("https://app-api.pixiv.net/v1/user/detail?user_id=" + i + "&filter=for_ios")
-                    .orTimeout(1000 * 10L, TimeUnit.MILLISECONDS).whenComplete((result, throwable) -> {
+                    .orTimeout(10, TimeUnit.SECONDS).whenComplete((result, throwable) -> {
                 if ("false".equals(result)) {
                     this.addToWaitingList(i);
                 }
                 try {
-                    artists.add(i, ArtistDTO.castToArtist(objectMapper.readValue(result, new TypeReference<ArtistDTO>() {
-                    })));
+                    Artist artist = ArtistDTO.castToArtist(objectMapper.readValue(result, new TypeReference<ArtistDTO>() {
+                    }));
+                    artists.set(i, artist);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -56,8 +58,7 @@ public class ArtistService {
         });
         cd.await(taskSum, TimeUnit.SECONDS);
         artists.removeIf(Objects::isNull);
-        System.out.println(artists.size());
-        // this.dealReDownload();
+        System.out.println(artists);
         if (artists.size() != 0)
             artistMapper.insert(artists);
     }

@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -16,5 +16,5 @@ import java.util.ArrayList;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RankDTO {
-    private ArrayList<IllustrationDTO> illusts;
+    private List<IllustrationDTO> illusts;
 }

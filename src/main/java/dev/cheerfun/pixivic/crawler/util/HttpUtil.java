@@ -22,8 +22,11 @@ import java.util.concurrent.TimeUnit;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class HttpUtil {
-    private final HttpClient httpClient;
+    //@Resource(name = "httpClientWithProxy")
+    private final   HttpClient httpClient;
     private final OauthUtil oauthUtil;
+
+
 
     static String getPostEntity(Map<String, String> param) {
         StringBuilder stringBuilder = new StringBuilder();

@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.model;
+package dev.cheerfun.pixivic.web_common.model;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import dev.cheerfun.pixivic.common.constant.StatusCode;

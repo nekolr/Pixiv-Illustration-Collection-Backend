@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -25,15 +26,15 @@ public class IllustrationDTO {
     private String type;
     private String caption;
     private User user;
-    private ArrayList<Tag> tags;
-    private ArrayList<String> tools;
+    private List<Tag> tags;
+    private List<String> tools;
     private Date create_date;
     private Integer page_count;
     private Integer width;
     private Integer height;
     private Integer sanity_level;//色情指数(大于5上传其他图床)
     private MetaSinglePage meta_single_page;
-    private ArrayList<MetaPage> meta_pages;
+    private List<MetaPage> meta_pages;
     private ImageUrls image_urls;
     private Integer restrict;
     private Integer x_restrict;
@@ -50,7 +51,7 @@ public class IllustrationDTO {
         illustration.setArtistPreView(user.getId(), user.getName(), user.getAccount(), user.getProfile_image_urls().getMedium());
         illustration.setArtistId(user.getId());
         illustration.setTags(new ArrayList<>());
-        ArrayList<dev.cheerfun.pixivic.common.model.illust.Tag> tags = illustration.getTags();
+        List<dev.cheerfun.pixivic.common.model.illust.Tag> tags = illustration.getTags();
         illustrationDTO.getTags().forEach(t -> {
             dev.cheerfun.pixivic.common.model.illust.Tag tag = new dev.cheerfun.pixivic.common.model.illust.Tag();
             tag.setName(t.getName());
@@ -61,7 +62,7 @@ public class IllustrationDTO {
         illustration.setCreateDate(illustrationDTO.getCreate_date());
         illustration.setPageCount(illustrationDTO.getPage_count());
         illustration.setImageUrls(new ArrayList<>());
-        ArrayList<ImageUrl> imageUrls = illustration.getImageUrls();
+        List<ImageUrl> imageUrls = illustration.getImageUrls();
         if (illustrationDTO.getPage_count() > 1) {
             illustrationDTO.getMeta_pages().forEach(metaPage -> {
                 ImageUrl imageUrl = new ImageUrl();

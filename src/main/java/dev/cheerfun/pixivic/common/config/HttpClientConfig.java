@@ -1,17 +1,22 @@
 package dev.cheerfun.pixivic.common.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLParameters;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
+import java.net.InetSocketAddress;
+import java.net.ProxySelector;
 import java.net.http.HttpClient;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 /**
@@ -22,10 +27,9 @@ import java.util.concurrent.Executors;
  */
 @Configuration
 public class HttpClientConfig {
-
     @Bean
-    public HttpClient httpClient() throws NoSuchAlgorithmException, KeyManagementException {
-        TrustManager[] trustAllCertificates = new TrustManager[]{new X509TrustManager() {
+    public TrustManager[] trustAllCertificates() {
+        return new TrustManager[]{new X509TrustManager() {
             @Override
             public X509Certificate[] getAcceptedIssuers() {
                 return null; // Not relevant.
@@ -41,6 +45,17 @@ public class HttpClientConfig {
                 // TODO Auto-generated method stub
             }
         }};
+    }
+
+    @Bean
+    public ExecutorService executorService() {
+        return Executors.newFixedThreadPool(12);
+    }
+
+    @Bean
+    @Primary
+    @Autowired
+    public HttpClient httpClientWithOutProxy(TrustManager[] trustAllCertificates, ExecutorService executorService) throws NoSuchAlgorithmException, KeyManagementException {
         SSLParameters sslParams = new SSLParameters();
         sslParams.setEndpointIdentificationAlgorithm("");
         SSLContext sc = SSLContext.getInstance("SSL");
@@ -49,9 +64,27 @@ public class HttpClientConfig {
                 .version(HttpClient.Version.HTTP_2)
                 .sslParameters(sslParams)
                 .sslContext(sc)
-              //  .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 9999)))
-                .executor(Executors.newFixedThreadPool(6))
+                //       .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 9999)))
+                .executor(executorService)
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .build();
     }
+
+    @Autowired
+    @Bean(name = "httpClientWithProxy")
+    public HttpClient httpClient(TrustManager[] trustAllCertificates, ExecutorService executorService) throws NoSuchAlgorithmException, KeyManagementException {
+        SSLParameters sslParams = new SSLParameters();
+        sslParams.setEndpointIdentificationAlgorithm("");
+        SSLContext sc = SSLContext.getInstance("SSL");
+        sc.init(null, trustAllCertificates, new SecureRandom());
+        return HttpClient.newBuilder()
+                .version(HttpClient.Version.HTTP_2)
+                .sslParameters(sslParams)
+                .sslContext(sc)
+                .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 9999)))
+                .executor(executorService)
+                .followRedirects(HttpClient.Redirect.NEVER)
+                .build();
+    }
+
 }

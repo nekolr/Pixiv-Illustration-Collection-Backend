@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.controller;
+package dev.cheerfun.pixivic.web_common.controller;
 
 import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
@@ -11,7 +11,7 @@ import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.verification.constant.VerificationType;
 import dev.cheerfun.pixivic.verification.model.AbstractVerificationCode;
 import dev.cheerfun.pixivic.verification.util.VerificationCodeBuildUtil;
-import dev.cheerfun.pixivic.web.model.Result;
+import dev.cheerfun.pixivic.web_common.model.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;

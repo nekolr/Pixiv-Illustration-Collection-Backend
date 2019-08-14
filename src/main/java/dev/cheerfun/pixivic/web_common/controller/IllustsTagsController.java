@@ -1,21 +1,19 @@
-package dev.cheerfun.pixivic.web.controller;
-
+package dev.cheerfun.pixivic.web_common.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * <p>
- * 画师简介表 前端控制器
+ * 画师简单信息 前端控制器
  * </p>
  *
  * @author huangsm
  * @since 2019-06-28
  */
 @RestController
-@RequestMapping("/web/artistProfile")
-public class IllustsArtistProfileController {
+@RequestMapping("/web_common/tags")
+public class IllustsTagsController {
 
 }
 
