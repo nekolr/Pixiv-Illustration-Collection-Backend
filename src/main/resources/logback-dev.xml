@@ -72,7 +72,7 @@
         <appender-ref ref="FILE_ERROR"/>
     </root>
     <logger name="org.springframework" level="${level}"/>
-    <logger name="dev.cheerfun.pixivic.web.mapper" level="${level}"/>
+    <logger name="dev.cheerfun.pixivic.web.common.mapper" level="${level}"/>
 
 
 </configuration>

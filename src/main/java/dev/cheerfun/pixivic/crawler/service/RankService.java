@@ -4,11 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import dev.cheerfun.pixivic.crawler.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.crawler.dto.RankDTO;
 import dev.cheerfun.pixivic.crawler.mapper.RankMapper;
 import dev.cheerfun.pixivic.crawler.model.ModeMeta;
-import dev.cheerfun.pixivic.crawler.util.HttpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,7 +33,7 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RankService {
-    private final HttpUtil httpUtil;
+    private final RequestUtil requestUtil;
     private final RankMapper rankMapper;
     private final ObjectMapper objectMapper;
     private static ReentrantLock lock = new ReentrantLock();
@@ -124,7 +124,7 @@ public class RankService {
     }
 
     private CompletableFuture<String> getDayRankInfo(String mode, String date, Integer index) {
-        return httpUtil.getJson("https://app-api.pixiv.net/v1/illust/ranking?mode=" + mode + "&offset=" + index * 30 + "&date=" + date);
+        return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/illust/ranking?mode=" + mode + "&offset=" + index * 30 + "&date=" + date);
     }
 
     private void dealReDownload(String date, List<String> waitForReDownload, List<List<Illustration>> illustrationLists) throws InterruptedException {

@@ -22,7 +22,7 @@ public class IllustrationPersistentService {
 
     @Scheduled(cron = "0 0 0 */1 * ?")
     public void dailyPersistentTask() throws InterruptedException {
-        LocalDate today = LocalDate.parse("2019-08-10");
+        LocalDate today = LocalDate.parse("2019-08-12");
         System.out.println(today);
         List<Integer> artistIds = rankService.pullAllRankInfo(today);
         System.out.println("画作信息入库完毕");

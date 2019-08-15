@@ -16,8 +16,7 @@ public enum StatusCode {
     SUCCESS(100, "请求完成"),
     TOKEN_EXPIRATION_OUT_OF_TIME(201,"token过期"),
     PERMISSION_DENIED(202,"用户权限不足"),
-    VERIFICATION_CODE_NOT_MATCH(301,"验证码错误")
-    ;
+    VERIFICATION_CODE_NOT_MATCH(301,"验证码错误");
 
     @Getter
     private int code;

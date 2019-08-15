@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.common.exception;
 
-import dev.cheerfun.pixivic.web_common.model.Result;
+import dev.cheerfun.pixivic.web.common.model.Result;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;

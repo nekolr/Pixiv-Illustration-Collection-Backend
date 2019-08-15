@@ -3,9 +3,9 @@ package dev.cheerfun.pixivic.crawler.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.model.Artist;
+import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import dev.cheerfun.pixivic.crawler.dto.ArtistDTO;
 import dev.cheerfun.pixivic.crawler.mapper.ArtistMapper;
-import dev.cheerfun.pixivic.crawler.util.HttpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ArtistService {
-    private final HttpUtil httpUtil;
+    private final RequestUtil requestUtil;
     private final ObjectMapper objectMapper;
     private final ArtistMapper artistMapper;
     private ReentrantLock lock = new ReentrantLock();
@@ -37,11 +37,12 @@ public class ArtistService {
 
     public void pullArtistsInfo(List<Integer> artistIds) throws InterruptedException {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
+        System.out.println(artistIdsToDownload);
         int taskSum = artistIdsToDownload.size();
         List<Artist> artists = new ArrayList<>(Collections.nCopies(taskSum, null));
         final CountDownLatch cd = new CountDownLatch(taskSum);
         artistIdsToDownload.stream().parallel().forEach(i -> {
-            httpUtil.getJson("https://app-api.pixiv.net/v1/user/detail?user_id=" + i + "&filter=for_ios")
+            requestUtil.getJson("https://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios")
                     .orTimeout(10, TimeUnit.SECONDS).whenComplete((result, throwable) -> {
                 if ("false".equals(result)) {
                     this.addToWaitingList(i);
@@ -65,7 +66,7 @@ public class ArtistService {
 
     private void dealReDownload() throws InterruptedException {
         final CountDownLatch cd = new CountDownLatch(waitForReDownload.size());
-        waitForReDownload.forEach(i -> httpUtil.getJson("https://app-api.pixiv.net/v1/user/detail?user_id=" + i + "&filter=for_ios").thenAccept(s -> cd.countDown()));
+        waitForReDownload.forEach(i -> requestUtil.getJson("https://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios").thenAccept(s -> cd.countDown()));
         cd.await(waitForReDownload.size() * 11, TimeUnit.SECONDS);
     }
 
