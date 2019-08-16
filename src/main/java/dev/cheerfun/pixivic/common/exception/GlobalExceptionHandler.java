@@ -42,7 +42,7 @@ public class GlobalExceptionHandler {
      */
     @ExceptionHandler(value = BaseException.class)
     public ResponseEntity<Result> handleBizException(BaseException e) {
-        log.error("biz.exception.error:{}", e.getStatusCode().getMsg());
+    //    log.error("biz.exception.error:{}", e.getStatusCode().getMsg());
        // return new Result<>(e.getCode(), e.getMsg());
         return null;
     }

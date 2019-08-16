@@ -2,7 +2,9 @@ package dev.cheerfun.pixivic.common.util;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.web.search.exception.JsonCastException;
 import lombok.AllArgsConstructor;
+import org.springframework.http.HttpStatus;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -39,7 +41,7 @@ public class JsonBodyHandler<T> implements HttpResponse.BodyHandler<T> {
                         e.printStackTrace();
                     }
                     //json转换异常
-                    throw new RuntimeException();
+                    throw new JsonCastException(HttpStatus.INTERNAL_SERVER_ERROR,"Json转换出错");
                 });
     }
 }

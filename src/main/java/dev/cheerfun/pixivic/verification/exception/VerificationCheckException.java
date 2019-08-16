@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.verification.exception;
 
-import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.common.exception.BaseException;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -10,8 +10,8 @@ import org.springframework.http.HttpStatus;
  * @date 2019/07/18 14:03
  * @description 验证码校验异常
  */
+@AllArgsConstructor
 public class VerificationCheckException extends BaseException {
-    public VerificationCheckException(StatusCode statusCode, HttpStatus httpStatus) {
-        super(statusCode, httpStatus);
-    }
+    private HttpStatus httpStatus;
+    private String message;
 }

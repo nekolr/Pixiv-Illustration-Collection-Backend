@@ -8,7 +8,7 @@ spring:
     host: armbian
     port: 6379
   datasource:
-    url: jdbc:mysql://deepin:3306/pixivic-test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://47.93.4.88:3306/pixivic-test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     username: root
     password: linhao199741
     type: com.alibaba.druid.pool.DruidDataSource

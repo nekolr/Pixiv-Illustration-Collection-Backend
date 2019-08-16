@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.verification.aop;
 
-import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.common.util.CommonUtil;
 import dev.cheerfun.pixivic.verification.exception.VerificationCheckException;
 import lombok.RequiredArgsConstructor;
@@ -33,7 +32,6 @@ public class CheckVerificationProcessor {
     public void check() {
     }
 
-
     @Before("check()")
     public void checkVerification(JoinPoint joinPoint) {
         //获取共有value属性，没有就抛异常
@@ -44,7 +42,7 @@ public class CheckVerificationProcessor {
             throw new RuntimeException();*/
         //进数据库查询
         if (!value.equalsIgnoreCase(stringRedisTemplate.opsForValue().get(vid))) {
-            throw new VerificationCheckException(StatusCode.VERIFICATION_CODE_NOT_MATCH, HttpStatus.BAD_REQUEST);
+            throw new VerificationCheckException(HttpStatus.BAD_REQUEST, "验证码错误");
         }
         stringRedisTemplate.delete(vid);
         //放行

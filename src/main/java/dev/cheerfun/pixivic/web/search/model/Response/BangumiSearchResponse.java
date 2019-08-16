@@ -24,7 +24,7 @@ public class BangumiSearchResponse {
                 .collect(Collectors.toList());
     }
     public static double getAvgSum(BangumiSearchResponse bangumiSearchResponse){
-        return bangumiSearchResponse.getResult().stream().mapToInt(resultItem -> resultItem.getRating().getScore()).average().getAsDouble();
+        return bangumiSearchResponse.getResult().stream().filter(b->b.getRating()!=null&&b.getRating().getScore()!=0).mapToInt(resultItem -> resultItem.getRating().getScore()).average().getAsDouble();
     }
 }
 

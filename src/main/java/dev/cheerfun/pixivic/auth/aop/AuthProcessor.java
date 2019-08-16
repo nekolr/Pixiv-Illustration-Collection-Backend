@@ -3,7 +3,6 @@ package dev.cheerfun.pixivic.auth.aop;
 import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.auth.exception.AuthLevelException;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
-import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.common.model.User;
 import dev.cheerfun.pixivic.common.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
@@ -53,7 +52,7 @@ public class AuthProcessor {
         PermissionRequired classPermissionRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), PermissionRequired.class);
         int authLevel = methodPermissionRequired != null ? methodPermissionRequired.value() : classPermissionRequired.value();
         if (user.getLevel() < authLevel) {
-            throw new AuthLevelException(StatusCode.PERMISSION_DENIED, HttpStatus.FORBIDDEN);
+            throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
         }
     }
 

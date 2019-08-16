@@ -27,12 +27,24 @@ import java.util.List;
 @Validated
 public class SearchController {
     private final SearchService searchService;
+
     @GetMapping("/keywords/{keyword}/candidates")
     public ResponseEntity<Result<PixivSearchCandidatesResponse>> getCandidateWords(@NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
-        return ResponseEntity.ok().body(new Result<>("搜索候选词获取成功",searchService.getCandidateWords(keyword)));
+        return ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", searchService.getCandidateWords(keyword)));
     }
+
     @GetMapping("/keywords/{keyword}/suggestions")
     public ResponseEntity<Result<List<SearchSuggestion>>> getSearchSuggestion(@NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
-        return ResponseEntity.ok().body(new Result<>("搜索候选词获取成功",searchService.getSearchSuggestion(keyword)));
+        return ResponseEntity.ok().body(new Result<>("搜索建议获取成功", searchService.getSearchSuggestion(keyword)));
+    }
+
+    @GetMapping("/keywords/{keyword}/pixivSuggestions")
+    public ResponseEntity<Result<List<SearchSuggestion>>> getPixivSearchSuggestion(@NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", searchService.getPixivSearchSuggestion(keyword)));
+    }
+
+    @GetMapping("/keywords/{keyword}/translations")
+    public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(@NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(keyword)));
     }
 }

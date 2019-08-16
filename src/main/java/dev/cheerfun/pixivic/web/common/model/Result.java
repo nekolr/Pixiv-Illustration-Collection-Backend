@@ -8,9 +8,9 @@ import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
 /**
- * @author echo huang
- * @version 1.0
- * @date 2019-07-13 14:18
+ * @author OysterQAQ
+ * @version 2.0
+ * @date 2019-08-16 14:18
  * @description 公共响应类
  */
 @Data

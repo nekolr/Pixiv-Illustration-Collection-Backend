@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.auth.util;
 
 import dev.cheerfun.pixivic.auth.config.AuthProperties;
 import dev.cheerfun.pixivic.auth.exception.AuthExpirationException;
-import dev.cheerfun.pixivic.common.constant.StatusCode;
 import dev.cheerfun.pixivic.common.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
@@ -68,7 +67,7 @@ public class JWTUtil implements Serializable {
         long difference = claims.getExpiration().getTime() - System.currentTimeMillis();
         if (difference < 0) {
             //无效 抛token过期异常
-            throw new AuthExpirationException(StatusCode.TOKEN_EXPIRATION_OUT_OF_TIME, HttpStatus.UNAUTHORIZED);
+            throw new AuthExpirationException( HttpStatus.UNAUTHORIZED,"登录身份信息过期");
         }
         User user = getUser(claims);
         if (difference < authProperties.getRefreshInterval()) {
