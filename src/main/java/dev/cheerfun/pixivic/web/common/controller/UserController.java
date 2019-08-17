@@ -16,8 +16,7 @@ import java.util.Map;
  */
 @RestController
 public class UserController {
-/*
-    @PostMapping("/user")
+/*    @PostMapping("/user")
     @CheckVerification
     public ResponseEntity<Result> userRegister(@RequestParam("vid") String vid, @RequestParam("value") String value, @RequestBody User user) {
         System.out.println(user);
@@ -33,8 +32,7 @@ public class UserController {
     @DeleteMapping("/user/{uid}/QQAuth")
     public ResponseEntity<Result> userUnBindQQ(@PathVariable String uid, @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok(new Result<>(StatusCode.SUCCESS, null));
-    }
-*/
+    }*/
 
     @GetMapping("/token")
     public ResponseEntity<Result> userLogin(@RequestBody Map<String, String> loginInfo) {

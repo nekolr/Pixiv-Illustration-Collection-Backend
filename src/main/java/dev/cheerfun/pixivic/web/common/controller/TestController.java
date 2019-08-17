@@ -52,7 +52,7 @@ public class TestController {
         stringRedisTemplate.opsForValue().set(code2.getVid(), code2.getValue());
         System.out.println(code2.getValue().equals(stringRedisTemplate.opsForValue().get(code2.getVid())));
 
-        return jwtUtil.getToken(user);
+        return null;
     }
 
     @PermissionRequired(PermissionLevel.VIP)
