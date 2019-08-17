@@ -3,14 +3,11 @@ package dev.cheerfun.pixivic.web.common.controller;
 import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
+import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.common.model.User;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
 import dev.cheerfun.pixivic.crawler.service.IllustrationPersistentService;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
-import dev.cheerfun.pixivic.verification.constant.VerificationType;
-import dev.cheerfun.pixivic.verification.model.AbstractVerificationCode;
-import dev.cheerfun.pixivic.verification.util.VerificationCodeBuildUtil;
-import dev.cheerfun.pixivic.web.common.model.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -37,7 +34,7 @@ public class TestController {
         return "233";
     }
 
-    @GetMapping("/32")
+    /*@GetMapping("/32")
     public String login() throws InterruptedException {
         oauthUtil.getOauths().forEach(o -> System.out.println(o.getAccess_token()));
         illustrationPersistentService.dailyPersistentTask();
@@ -53,7 +50,7 @@ public class TestController {
         System.out.println(code2.getValue().equals(stringRedisTemplate.opsForValue().get(code2.getVid())));
 
         return null;
-    }
+    }*/
 
     @PermissionRequired(PermissionLevel.VIP)
     @PostMapping("/auth")

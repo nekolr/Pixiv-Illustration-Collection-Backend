@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.web.search.controller;
 
 import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.web.common.model.Result;
+import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.web.search.service.SearchService;

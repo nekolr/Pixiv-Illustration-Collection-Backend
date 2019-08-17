@@ -52,4 +52,5 @@ public class WebConfig extends WebMvcConfigurationSupport {
         source.registerCorsConfiguration("/**", config);
         return new CorsWebFilter(source);
     }
+
 }

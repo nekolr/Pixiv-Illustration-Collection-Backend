@@ -38,10 +38,12 @@ public class CheckVerificationProcessor {
         //其实这两个都不会为空，若为空在controller之前就会被拦截
         String value = commonUtil.getControllerArg(joinPoint, RequestParam.class, "value");
         String vid = commonUtil.getControllerArg(joinPoint, RequestParam.class, "vid");
-       /* if(value==null||vid==null)
-            throw new RuntimeException();*/
+        String v = stringRedisTemplate.opsForValue().get(vid);
+        if (v == null) {
+            throw new VerificationCheckException(HttpStatus.NOT_FOUND, "验证码不存在");
+        }
         //进数据库查询
-        if (!value.equalsIgnoreCase(stringRedisTemplate.opsForValue().get(vid))) {
+        if (!value.equalsIgnoreCase(v)) {
             throw new VerificationCheckException(HttpStatus.BAD_REQUEST, "验证码错误");
         }
         stringRedisTemplate.delete(vid);

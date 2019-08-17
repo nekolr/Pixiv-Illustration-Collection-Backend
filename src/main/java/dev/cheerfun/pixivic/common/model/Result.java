@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.common.model;
+package dev.cheerfun.pixivic.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;

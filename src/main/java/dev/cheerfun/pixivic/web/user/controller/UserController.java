@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.web.user.controller;
 
+import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
-import dev.cheerfun.pixivic.web.common.model.Result;
 import dev.cheerfun.pixivic.web.user.dto.UserSignInDTO;
 import dev.cheerfun.pixivic.web.user.dto.UserSignUpDTO;
 import dev.cheerfun.pixivic.web.user.model.User;
@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -36,7 +37,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result<>("用户名不存在"));
     }
 
-    @GetMapping("/emails/{email}")
+    @GetMapping("/emails/{email:.+}")
     public ResponseEntity<Result<Boolean>> checkEmail(@NotBlank @PathVariable("email") String email) {
         if (userService.checkEmail(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("邮箱已存在"));
@@ -46,7 +47,7 @@ public class UserController {
 
     @PostMapping
     @CheckVerification
-    public ResponseEntity<Result<String>> signUp(@RequestBody UserSignUpDTO userSignUpDTO, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result<String>> signUp(@RequestBody UserSignUpDTO userSignUpDTO, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
         User user = userSignUpDTO.castToUser();
         return ResponseEntity.ok().body(new Result<>("注册成功", userService.signUp(user)));
     }
@@ -86,6 +87,10 @@ public class UserController {
         userService.setPassword(password,userId);
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }
-
+    @GetMapping("/emails/{email:.+}/resetPasswordEmail")
+    public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email") String email) throws MessagingException {
+        userService.getResetPasswordEmail(email);
+        return ResponseEntity.ok().body(new Result<>("发送密码重置邮件成功"));
+    }
 
 }

@@ -24,4 +24,5 @@ public abstract class AbstractVerificationCode {
         this.value = value;
     }
 
+
 }

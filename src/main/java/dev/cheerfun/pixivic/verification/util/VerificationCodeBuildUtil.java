@@ -68,7 +68,7 @@ public class VerificationCodeBuildUtil {
 
     public AbstractVerificationCode build() throws RuntimeException {
         if (type == null) {
-            throw new RuntimeException("指定类型");
+            throw new RuntimeException("未指定类型");
         }
         if (value == null) {
             value = generateRandomStr(4);

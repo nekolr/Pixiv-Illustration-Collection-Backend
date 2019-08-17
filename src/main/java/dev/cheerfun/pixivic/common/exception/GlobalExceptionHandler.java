@@ -1,10 +1,13 @@
 package dev.cheerfun.pixivic.common.exception;
 
-import dev.cheerfun.pixivic.web.common.model.Result;
+import dev.cheerfun.pixivic.common.model.Result;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+
+import javax.validation.ConstraintViolationException;
 
 /**
  * @author OysterQAQ
@@ -17,7 +20,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = BaseException.class)
-    public ResponseEntity<Result> handleBizException(BaseException e) {
+    public ResponseEntity<Result> handleBaseException(BaseException e) {
         return ResponseEntity.status(e.getHttpStatus()).body(new Result(e.getMessage()));
+    }
+    @ExceptionHandler(value = ConstraintViolationException.class)
+    public ResponseEntity<Result> handleConstraintViolationException(ConstraintViolationException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result(e.getMessage()));
     }
 }

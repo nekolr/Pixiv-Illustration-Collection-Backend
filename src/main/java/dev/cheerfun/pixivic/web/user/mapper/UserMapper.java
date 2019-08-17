@@ -8,7 +8,7 @@ public interface UserMapper {
     @Select({
             "SELECT IFNULL((\n" +
                     "SELECT 1\n" +
-                    "FROM USER\n" +
+                    "FROM users\n" +
                     "WHERE email=#{email} OR username=#{username}\n" +
                     "LIMIT 1),0)",
     })
@@ -20,17 +20,17 @@ public interface UserMapper {
 
     @Select({
             "SELECT *\n" +
-                    "FROM USER\n" +
+                    "FROM users\n" +
                     "WHERE username=#{username} AND PASSWORD=#{password}",
     })
     User getUser(String username, String password);
 
     @Select({
             "SELECT *\n" +
-                    "FROM USER\n" +
+                    "FROM users\n" +
                     "WHERE qq_access_token=#{qqAccessToken} ",
     })
-    User getUser(String qqAccessToken);
+    User getUserByQQAccessToken(String qqAccessToken);
 
     @Update("update users set name=#{qqAccessToken} where user_id=#{userId}")
     int setQqAccessToken(String qqAccessToken, String userId);

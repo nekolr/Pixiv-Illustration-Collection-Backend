@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.web.user.service;
 
 import dev.cheerfun.pixivic.verification.constant.VerificationType;
+import dev.cheerfun.pixivic.verification.model.EmailBindingVerificationCode;
 import dev.cheerfun.pixivic.verification.model.ImageVerificationCode;
 import dev.cheerfun.pixivic.verification.util.VerificationCodeBuildUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +28,8 @@ public class VerificationCodeService {
         return verificationCode;
     }
 
-    public ImageVerificationCode getEmailVerificationCode(String email) {
-        ImageVerificationCode verificationCode = (ImageVerificationCode) VerificationCodeBuildUtil
+    public EmailBindingVerificationCode getEmailVerificationCode(String email) {
+        EmailBindingVerificationCode verificationCode = (EmailBindingVerificationCode) VerificationCodeBuildUtil
                 .create(VerificationType.EMAIL_CHECK)
                 .email(email).build();
         stringRedisTemplate.opsForValue().set(verificationCode.getVid(), verificationCode.getValue(), 10, TimeUnit.MINUTES);

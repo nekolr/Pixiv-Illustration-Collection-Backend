@@ -1,17 +1,20 @@
 package dev.cheerfun.pixivic.web.user.service;
 
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
+import dev.cheerfun.pixivic.verification.model.EmailBindingVerificationCode;
 import dev.cheerfun.pixivic.web.user.exception.RegistrationException;
 import dev.cheerfun.pixivic.web.user.exception.SignInException;
 import dev.cheerfun.pixivic.web.user.exception.UserAuthException;
 import dev.cheerfun.pixivic.web.user.mapper.UserMapper;
 import dev.cheerfun.pixivic.web.user.model.User;
+import dev.cheerfun.pixivic.web.user.util.EmailUtil;
 import dev.cheerfun.pixivic.web.user.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.mail.MessagingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -26,10 +29,15 @@ import java.util.Map;
 public class UserService {
     private final UserMapper userMapper;
     private final JWTUtil jwtUtil;
+    private final EmailUtil emailUtil;
+    private final VerificationCodeService verificationCodeService;
+    private final static String PIXIVIC = "Pixivic酱";
+    private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
+    private final static String CONTENT_2 = "点击以下按钮以重置密码";
 
-    public String signUp(User user) {
+    public String signUp(User user) throws MessagingException {
         //检测用户名或邮箱是否重复
-        if (userMapper.checkUserNameAndEmail(user.getUsername(), user.getEmail()) == 0) {
+        if (userMapper.checkUserNameAndEmail(user.getUsername(), user.getEmail()) == 1) {
             throw new RegistrationException(HttpStatus.CONFLICT, "用户名或邮箱已存在");
         }
         user.init();
@@ -40,6 +48,9 @@ public class UserService {
         claims.put("isBan", user.getIsBan());
         claims.put("refreshCount", 0);
         claims.put("userId", user.getUserId());
+        //发送验证邮件
+        EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
+        emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
         return jwtUtil.getToken(claims);
     }
 
@@ -60,7 +71,7 @@ public class UserService {
     }
 
     public User signIn(String qqAccessToken) {
-        return userMapper.getUser(qqAccessToken);
+        return userMapper.getUserByQQAccessToken(qqAccessToken);
     }
 
     public int bindQQ(String qqAccessToken, String userId, String token) {
@@ -85,5 +96,13 @@ public class UserService {
 
     public int setPassword(String password, String userId) {
         return userMapper.setPassword(password, userId);
+    }
+
+    public void getResetPasswordEmail(String email) throws MessagingException {
+        if (checkEmail(email)) {
+            EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
+            emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
+        }
+        throw new UserAuthException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
     }
 }

@@ -34,7 +34,6 @@ public class ImageVerificationCode extends AbstractVerificationCode {
 
     public ImageVerificationCode(String value) {
         super(value);
-        this.value = value;
         char[] chars = value.toCharArray();
         int length = chars.length;
         int fontWidth = WIDTH / length;

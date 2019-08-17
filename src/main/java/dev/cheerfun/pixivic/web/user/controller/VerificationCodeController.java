@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.web.user.controller;
 
+import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.verification.model.ImageVerificationCode;
-import dev.cheerfun.pixivic.web.common.model.Result;
 import dev.cheerfun.pixivic.web.user.service.VerificationCodeService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
