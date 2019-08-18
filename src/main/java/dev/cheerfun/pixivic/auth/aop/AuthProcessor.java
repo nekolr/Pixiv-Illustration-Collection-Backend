@@ -7,14 +7,15 @@ import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestHeader;
 
@@ -43,13 +44,13 @@ public class AuthProcessor {
     public void pointCut() {
     }
 
-    @Before(value = "pointCut()")
-    public void handleAuthority(JoinPoint joinPoint) {
+    @Around(value = "pointCut()")
+    public ResponseEntity handleAuthorityBefore(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = ((MethodSignature) joinPoint.getSignature());
         Method method = signature.getMethod();
         //取出token
         String token = commonUtil.getControllerArg(joinPoint, RequestHeader.class, AUTHORIZATION);
-        /*进行jwt校验，成功则将User放进ThreadLocal（token即将过期则将刷新后的token放入ThreadLocal）
+        /*进行jwt校验，成功则将User放进ThreadLocal（token即将过期则将刷新后的token放入Map）
         过期则抛出自定义未授权过期异常*/
         Map<String, Object> claims = jwtUtil.validateToken(token);
         if ((Integer) claims.get(IS_BAN) == 0) {
@@ -62,11 +63,13 @@ public class AuthProcessor {
         if ((Integer) claims.get(PERMISSION_LEVEL) < authLevel) {
             throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
         }
-        //直接修改入参的token为更新后的token
+        ResponseEntity response = (ResponseEntity) joinPoint.proceed();
+        //直接修改返回值的token为更新后的token
         if (claims.get(NEW_TOKEN) != null) {
-            commonUtil.setControllerArg(joinPoint, String.valueOf(claims.get(NEW_TOKEN)), RequestHeader.class, AUTHORIZATION);
-            claims.remove(NEW_TOKEN);
+            response = ResponseEntity.status(response.getStatusCode())
+                    .header("Authorization", String.valueOf(claims.get(NEW_TOKEN)))
+                    .body(response.getBody());
         }
+        return response;
     }
-
 }
