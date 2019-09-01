@@ -41,6 +41,6 @@ public interface UserMapper {
     @Update("update users set email=#{email} where user_id=#{userId}")
     int setEmail(String email, String userId);
 
-    @Update("update users set password=#{password} where user_id=#{userId}")
-    int setPassword(String password, String userId);
+    @Update("update users set password=#{password} where user_id=#{userId} and email=#{email}")
+    int setPassword(String password, String userId,String email);
 }

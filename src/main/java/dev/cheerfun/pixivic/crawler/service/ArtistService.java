@@ -37,7 +37,6 @@ public class ArtistService {
 
     public void pullArtistsInfo(List<Integer> artistIds) throws InterruptedException {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
-        System.out.println(artistIdsToDownload);
         int taskSum = artistIdsToDownload.size();
         List<Artist> artists = new ArrayList<>(Collections.nCopies(taskSum, null));
         final CountDownLatch cd = new CountDownLatch(taskSum);

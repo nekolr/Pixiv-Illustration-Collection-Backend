@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class Tag {
     @JsonIgnore
-    private String id;
+    private long id;
     private String name;
     private String translatedName;
 }

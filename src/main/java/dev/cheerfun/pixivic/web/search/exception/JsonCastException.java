@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.web.search.exception;
 
 import dev.cheerfun.pixivic.common.exception.BaseException;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -11,6 +12,7 @@ import org.springframework.http.HttpStatus;
  * @description JsonCastException
  */
 @AllArgsConstructor
+@Data
 public class JsonCastException extends BaseException {
     private HttpStatus httpStatus;
     private String message;

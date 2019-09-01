@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.web.search.controller;
 
-import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchCandidatesResponse;
@@ -30,7 +29,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Validated
-@PermissionRequired
+//@PermissionRequired
 public class SearchController {
     private final SearchService searchService;
 
@@ -59,6 +58,7 @@ public class SearchController {
         if (autoTranslate) {
             //自动翻译
             keyword = searchService.translatedByYouDao(keyword);
+            //进入es获取
         }
         return null;
     }

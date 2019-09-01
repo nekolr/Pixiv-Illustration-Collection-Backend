@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.util.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
+import dev.cheerfun.pixivic.web.search.exception.SearchException;
 import dev.cheerfun.pixivic.web.search.model.Response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchSuggestion;
@@ -12,6 +13,7 @@ import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.web.search.util.YouDaoTranslatedUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.HtmlUtils;
 
@@ -65,11 +67,11 @@ public class SearchService {
         String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
         List<PixivSearchSuggestion> pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
         });
-        return pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag_translation(), pixivSearchSuggestion.getTag())).collect(Collectors.toList());
+        return pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(),pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList());
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
-        return new SearchSuggestion(keyword, translatedByYouDao(keyword));
+        return new SearchSuggestion(translatedByYouDao(keyword),keyword);
     }
 
     private BangumiSearchResponse getSearchSuggestionFromBangumi(String keyword) throws IOException, InterruptedException {
@@ -96,7 +98,6 @@ public class SearchService {
 
     public String translatedByYouDao(String keyword) {
         Map<String, String> params = new HashMap<>();
-        System.out.println(new String(keyword.getBytes(), StandardCharsets.UTF_8));
         String salt = String.valueOf(System.currentTimeMillis());
         params.put("from", "auto");
         params.put("to", "ja");
@@ -120,7 +121,11 @@ public class SearchService {
             e.printStackTrace();
         }
         assert youdaoTranslatedResponse != null;
-        return youdaoTranslatedResponse.getResult().get(0);
+        List<String> keywordTranslated = youdaoTranslatedResponse.getResult();
+        if(keywordTranslated==null) {
+            throw new SearchException(HttpStatus.BAD_REQUEST,"关键词非中文，自动翻译失败");
+        }
+        return keywordTranslated.get(0);
     }
 
 }

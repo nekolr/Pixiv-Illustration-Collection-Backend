@@ -30,9 +30,9 @@ public class BangumiSearchResponse {
 
 @Data
 class ResultItem {
-    @JsonSetter("name_cn")
-    private String keyword;
     @JsonSetter("name")
+    private String keyword;
+    @JsonSetter("name_cn")
     private String keywordTranslated;
     @JsonSetter("rating")
     private Rating rating;

@@ -5,11 +5,12 @@ import dev.cheerfun.pixivic.common.model.illust.Tag;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
 @Mapper
-public interface RankMapper {
+public interface IllustrationMapper {
     @Insert("<script>" +
             "REPLACE  INTO illusts VALUES" +
             "<foreach collection='illustrations' item='illustration' index='index'  separator=','>" +
@@ -58,4 +59,9 @@ public interface RankMapper {
             "</script>"
     })
     int insertTagIllustRelation(@Param("illustrations") List<Illustration> illustrations);
+
+    @Select({
+            "SELECT tag_id FROM tags WHERE NAME = #{name} AND translated_name = #{translatedName})"
+    })
+    long getTagId(String name, String translatedName);
 }

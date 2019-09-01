@@ -7,7 +7,7 @@ import dev.cheerfun.pixivic.common.model.illust.Tag;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import dev.cheerfun.pixivic.crawler.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.crawler.dto.RankDTO;
-import dev.cheerfun.pixivic.crawler.mapper.RankMapper;
+import dev.cheerfun.pixivic.crawler.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.crawler.model.ModeMeta;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,9 +32,9 @@ import java.util.stream.IntStream;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RankService {
+public class IllustrationService {
     private final RequestUtil requestUtil;
-    private final RankMapper rankMapper;
+    private final IllustrationMapper illustrationMapper;
     private final ObjectMapper objectMapper;
     private static ReentrantLock lock = new ReentrantLock();
     private static final List<ModeMeta> modes;
@@ -131,13 +131,13 @@ public class RankService {
         final CountDownLatch cd = new CountDownLatch(waitForReDownload.size());
         waitForReDownload.stream().parallel().forEach(i -> {
             String[] split = i.split("-");
-            getDayRankInfo(split[0], date, Integer.valueOf(split[1])).whenComplete((result, throwable) -> {
+            getDayRankInfo(split[0], date, Integer.parseInt(split[1])).whenComplete((result, throwable) -> {
                         try {
                             RankDTO rankDTO = objectMapper.readValue(result, new TypeReference<RankDTO>() {
                             });
                             List<Illustration> illustrations = rankDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
-                            illustrationLists.set(Integer.valueOf(split[1]) + modeIndex.get(split[0]), illustrations);
-                            waitForReDownload.set(Integer.valueOf(split[1]) + modeIndex.get(split[0]), null);
+                            illustrationLists.set(Integer.parseInt(split[1]) + modeIndex.get(split[0]), illustrations);
+                            waitForReDownload.set(Integer.parseInt(split[1]) + modeIndex.get(split[0]), null);
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -150,11 +150,15 @@ public class RankService {
 
     @Transactional
     public void saveToDb(List<Illustration> illustrations) {
-        rankMapper.insert(illustrations);
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
-        rankMapper.insertTag(tags);
+        illustrationMapper.insertTag(tags);
         System.out.println("标签入库完毕");
-        rankMapper.insertTagIllustRelation(illustrations);
+        //获取标签id
+        illustrations.stream().parallel().forEach(illustration -> illustration.getTags().forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(),tag.getTranslatedName()))));
+        System.out.println("标签id取回完毕");
+        illustrationMapper.insert(illustrations);
+        System.out.println("画作入库完毕");
+        illustrationMapper.insertTagIllustRelation(illustrations);
         System.out.println("标签与画作的联系入库完毕");
     }
 }

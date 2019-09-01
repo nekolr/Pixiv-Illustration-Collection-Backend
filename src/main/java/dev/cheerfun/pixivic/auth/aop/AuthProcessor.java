@@ -14,6 +14,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -32,6 +33,7 @@ import java.util.Map;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Order(0)
 public class AuthProcessor {
     private final JWTUtil jwtUtil;
     private final CommonUtil commonUtil;
@@ -50,7 +52,7 @@ public class AuthProcessor {
         Method method = signature.getMethod();
         //取出token
         String token = commonUtil.getControllerArg(joinPoint, RequestHeader.class, AUTHORIZATION);
-        /*进行jwt校验，成功则将User放进ThreadLocal（token即将过期则将刷新后的token放入Map）
+        /*进行jwt校验，成功则将返回包含Claim信息的Map（token即将过期则将刷新后的token放入返回值Map）
         过期则抛出自定义未授权过期异常*/
         Map<String, Object> claims = jwtUtil.validateToken(token);
         if ((Integer) claims.get(IS_BAN) == 0) {
@@ -67,7 +69,7 @@ public class AuthProcessor {
         //直接修改返回值的token为更新后的token
         if (claims.get(NEW_TOKEN) != null) {
             response = ResponseEntity.status(response.getStatusCode())
-                    .header("Authorization", String.valueOf(claims.get(NEW_TOKEN)))
+                    .header(AUTHORIZATION, String.valueOf(claims.get(NEW_TOKEN)))
                     .body(response.getBody());
         }
         return response;

@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.web.user.controller;
 
+import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.web.user.dto.UserSignInDTO;
@@ -63,12 +64,14 @@ public class UserController {
     }
 
     @PutMapping("/{userId}/qqAccessToken")
+    @PermissionRequired
     public ResponseEntity<Result> bindQQ(@RequestBody String qqAccessToken, @PathVariable("userId") String userId, @RequestHeader("Authorization") String token) {
         userService.bindQQ(qqAccessToken, userId, token);
         return ResponseEntity.ok().body(new Result<>("绑定QQ成功"));
     }
 
     @PutMapping("/{userId}/avatar")
+    @PermissionRequired
     public ResponseEntity<Result> setAvatar(@RequestBody String avatar, @PathVariable("userId") String userId, @RequestHeader("Authorization") String token) {
         userService.setAvatar(avatar, userId, token);
         return ResponseEntity.ok().body(new Result<>("绑定QQ成功"));
@@ -76,17 +79,18 @@ public class UserController {
 
     @PutMapping("/{userId}/email")
     @CheckVerification
-    public ResponseEntity<Result> checkEmail(@RequestBody String email, @PathVariable("userId") String userId,  @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        userService.setEmail(email,userId);
+    public ResponseEntity<Result> checkEmail(@RequestBody String email, @PathVariable("userId") String userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+        userService.setEmail(email, userId);
         return ResponseEntity.ok().body(new Result<>("完成验证邮箱"));
     }
 
     @PutMapping("/{userId}/password")
     @CheckVerification
-    public ResponseEntity<Result> setPassword(@RequestBody String password, @PathVariable("userId") String userId, @RequestHeader("Authorization") String token, @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        userService.setPassword(password,userId);
+    public ResponseEntity<Result> setPassword(@RequestBody String password, @PathVariable("userId") String userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+        userService.setPassword(password, userId,value.substring(4));
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }
+
     @GetMapping("/emails/{email:.+}/resetPasswordEmail")
     public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email") String email) throws MessagingException {
         userService.getResetPasswordEmail(email);

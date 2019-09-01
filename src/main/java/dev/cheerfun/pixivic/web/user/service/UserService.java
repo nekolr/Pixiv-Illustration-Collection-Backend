@@ -94,8 +94,8 @@ public class UserService {
         return userMapper.setEmail(email, userId);
     }
 
-    public int setPassword(String password, String userId) {
-        return userMapper.setPassword(password, userId);
+    public int setPassword(String password, String userId,String email) {
+        return userMapper.setPassword(password, userId,email);
     }
 
     public void getResetPasswordEmail(String email) throws MessagingException {

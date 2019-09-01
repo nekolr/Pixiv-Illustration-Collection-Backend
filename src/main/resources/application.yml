@@ -57,12 +57,9 @@ pixiv:
     refresh_token: 07FHA5xA6NkOIxIayqm3tZbJqxbypDJHrXguT7cazLI
     device_token: fb12e7c1945000850deb5f7001c02745
     config: D:\user2.json
-logging:
-  level:
-    com:
-      looedu:
-        mapper: debug
 mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
   type-handlers-package: dev.cheerfun.pixivic.common.handler
+elasticsearch:
+  ip:
