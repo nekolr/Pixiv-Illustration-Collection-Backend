@@ -38,6 +38,9 @@ spring:
 #  type-aliases-package: dev.cheerfun.pixivic.web
 # logging:
   # config: classpath:logback-${spring.profiles.active}.xml
+  elasticsearch:
+    rest:
+      uris: http://es:9200
 management:
   endpoints:
     web:
@@ -61,5 +64,3 @@ mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
   type-handlers-package: dev.cheerfun.pixivic.common.handler
-elasticsearch:
-  ip:

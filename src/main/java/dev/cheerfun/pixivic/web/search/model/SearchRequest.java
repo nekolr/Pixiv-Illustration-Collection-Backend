@@ -1,0 +1,36 @@
+package dev.cheerfun.pixivic.web.search.model;
+
+import lombok.Data;
+import lombok.NonNull;
+
+import javax.validation.constraints.Max;
+import javax.validation.constraints.NotBlank;
+
+/**
+ * @author OysterQAQ
+ * @version 1.0
+ * @date 2019/09/05 14:27
+ * @description SearchRequest
+ */
+@Data
+public class SearchRequest {
+    @NotBlank
+    private String keyword;
+    @NonNull@Max(60)
+    private int pageSize;
+    @NonNull@Max(1600)
+    private int page;
+    @NotBlank
+    private String searchType;//搜索类型（原生、自动翻译、自动匹配词条）
+    @NotBlank
+    private String illustType;
+    private int minWidth;
+    private int minHeight;
+    private String beginDate;
+    private String endDate;
+    @NotBlank
+    private boolean isR18;
+    private int popWeight;
+    private int minTotalBookmarks;
+    private int minTotalView;
+}

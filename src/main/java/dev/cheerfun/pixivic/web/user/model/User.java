@@ -23,6 +23,7 @@ public class User {
     private int permissionLevel;
     @JsonIgnore
     private int isBan;
+    private int star;
     @JsonIgnore
     private String pixivAccount;
     @JsonIgnore
