@@ -15,8 +15,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.mail.MessagingException;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * @author OysterQAQ
@@ -43,15 +41,10 @@ public class UserService {
         user.init();
         userMapper.insertUser(user);
         //签发token
-        Map<String, Object> claims = new HashMap<>();
-        claims.put("permissionLevel", user.getPermissionLevel());
-        claims.put("isBan", user.getIsBan());
-        claims.put("refreshCount", 0);
-        claims.put("userId", user.getUserId());
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
         emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
-        return jwtUtil.getToken(claims);
+        return jwtUtil.getToken(user);
     }
 
     public User signIn(String username, String password) {

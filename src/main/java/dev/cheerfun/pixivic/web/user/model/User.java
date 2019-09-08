@@ -2,8 +2,13 @@ package dev.cheerfun.pixivic.web.user.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.auth.model.Authable;
 import dev.cheerfun.pixivic.web.user.util.PasswordUtil;
+import io.jsonwebtoken.Claims;
 import lombok.Data;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author OysterQAQ
@@ -12,7 +17,7 @@ import lombok.Data;
  * @description User
  */
 @Data
-public class User {
+public class User implements Authable {
     @JsonIgnore
     private int userId;
     private String username;
@@ -45,5 +50,30 @@ public class User {
         pixivAccount=null;
         pixivPassword=null;
         qqAccessToken=null;
+    }
+
+    @Override
+    public String getIssuer() {
+        return username;
+    }
+
+    @Override
+    public Map<String, Object> getClaims() {
+        Map<String, Object> claims = new HashMap<>();
+        claims.put("permissionLevel", permissionLevel);
+        claims.put("isBan", isBan);
+        claims.put("refreshCount", 0);
+        claims.put("userId", userId);
+        return claims;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return isBan==0;
+    }
+
+    @Override
+    public Authable castToAuthable(Claims claims) {
+        return null;
     }
 }
