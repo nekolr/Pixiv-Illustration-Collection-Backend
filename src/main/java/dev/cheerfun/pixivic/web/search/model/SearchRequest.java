@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.web.search.model;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.validation.constraints.Max;
@@ -13,6 +14,7 @@ import javax.validation.constraints.NotBlank;
  * @description SearchRequest
  */
 @Data
+@NoArgsConstructor
 public class SearchRequest {
     @NotBlank
     private String keyword;
@@ -29,8 +31,9 @@ public class SearchRequest {
     private String beginDate;
     private String endDate;
     @NotBlank
-    private boolean isR18;
+    private int xRestrict;
     private int popWeight;
     private int minTotalBookmarks;
     private int minTotalView;
 }
+

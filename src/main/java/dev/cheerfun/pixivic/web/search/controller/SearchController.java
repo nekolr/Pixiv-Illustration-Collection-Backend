@@ -3,36 +3,23 @@ package dev.cheerfun.pixivic.web.search.controller;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchCandidatesResponse;
+import dev.cheerfun.pixivic.web.search.model.SearchRequest;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.web.search.service.SearchService;
 import lombok.RequiredArgsConstructor;
-import org.apache.lucene.search.join.ScoreMode;
-import org.elasticsearch.action.search.SearchRequest;
-import org.elasticsearch.client.RequestOptions;
-import org.elasticsearch.client.RestHighLevelClient;
-import org.elasticsearch.common.unit.Fuzziness;
-import org.elasticsearch.index.query.*;
-import org.elasticsearch.index.query.functionscore.FunctionScoreQueryBuilder;
-import org.elasticsearch.index.query.functionscore.ScoreFunctionBuilders;
-import org.elasticsearch.index.query.functionscore.ScriptScoreFunctionBuilder;
-import org.elasticsearch.script.Script;
-import org.elasticsearch.script.ScriptType;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.SearchHits;
-import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author OysterQAQ
@@ -46,66 +33,6 @@ import java.util.*;
 //@PermissionRequired
 public class SearchController {
     private final SearchService searchService;
-    private final RestHighLevelClient elasticsearch;
-
-    @GetMapping("/test1")
-    public String test(String keyword) throws IOException, InterruptedException {
-        System.out.println(keyword);
-        return keyword;
-    }
-
-    @GetMapping("/test")
-    public String test() throws IOException {
-        //从内到外构建
-
-        BoostingQueryBuilder boost1 = QueryBuilders.boostingQuery(QueryBuilders.matchQuery("tags.name", "星空"), QueryBuilders.matchQuery("tags.translated_name.keyword", "")).negativeBoost(0.865f);
-        BoostingQueryBuilder boost2 = QueryBuilders.boostingQuery(QueryBuilders.matchQuery("tags.name", "少女"), QueryBuilders.matchQuery("tags.translated_name.keyword", "")).negativeBoost(0.865f);
-        NestedQueryBuilder nested1 = QueryBuilders.nestedQuery("tags", boost1, ScoreMode.Max);
-        NestedQueryBuilder nested2 = QueryBuilders.nestedQuery("tags", boost2, ScoreMode.Max);
-        List<NestedQueryBuilder> nestedQueryBuilders = new ArrayList<>();
-        nestedQueryBuilders.add(nested1);
-        nestedQueryBuilders.add(nested2);
-        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        boolQueryBuilder.should().addAll(nestedQueryBuilders);
-        TermQueryBuilder term1 = QueryBuilders.termQuery("type", "illust");
-        TermQueryBuilder term2 = QueryBuilders.termQuery("x_restrict", 0);
-        RangeQueryBuilder term3 = QueryBuilders.rangeQuery("create_date" ).gte("2010-01-24");
-        List<QueryBuilder> filter = new ArrayList<>();
-        filter.add(term1);
-        filter.add(term2);
-        filter.add(term3);
-        boolQueryBuilder.filter().addAll(filter);
-        Map<String, Object> params = new HashMap<>();
-        params.put("a", 10);
-        // 脚本
-        String scriptStr = "return params.a;";
-        Script script = new Script(ScriptType.INLINE, "painless", scriptStr, params);
-
-        ScriptScoreFunctionBuilder scriptScoreFunctionBuilder = ScoreFunctionBuilders.scriptFunction(script);
-        FunctionScoreQueryBuilder functionScoreQueryBuilder = QueryBuilders.functionScoreQuery(boolQueryBuilder, scriptScoreFunctionBuilder);
-
-        SearchRequest searchRequest = new SearchRequest("illust");
-        SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.query( functionScoreQueryBuilder);
-        searchRequest.source(searchSourceBuilder);
-        System.out.println(searchSourceBuilder.toString());
-        SearchHits hits = elasticsearch.search(searchRequest, RequestOptions.DEFAULT).getHits();
-        SearchHit[] hits1 = hits.getHits();
-        Arrays.stream(hits1).forEach(h->System.out.println(h.getSourceAsMap()));
-        return hits.toString();
-
-      /*  BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery();
-        boolQueryBuilder.should(QueryBuilders.nestedQuery(""))
-        QueryBuilders.scriptScoreQuery(QueryBuilders.boolQuery(),)
-        IndexRequest indexRequest = new IndexRequest("posts")
-                .id("1")
-                .source("user", "kimchy",
-                        "postDate", new Date(),
-                        "message", "trying out Elasticsearch");
-        IndexResponse indexResponse = elasticsearch.index(indexRequest, RequestOptions.DEFAULT);*/
-
-    //    return null;
-    }
 
 
     @GetMapping("/keywords/{keyword}/candidates")
@@ -129,17 +56,14 @@ public class SearchController {
     }
 
     @GetMapping("/illustrations")
-    public ResponseEntity<Result<List<Illustration>>> search(@NotBlank @RequestParam("keyword") String keyword, @NotBlank @RequestParam("autoTranslate") boolean autoTranslate, @NotEmpty int page, @NotEmpty @Max(30) int pageSize) {
-        if (autoTranslate) {
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> search(@RequestBody SearchRequest searchRequest) {
+        if ("autoTranslate".equals(searchRequest.getSearchType())) {
             //自动翻译
-            keyword = searchService.translatedByYouDao(keyword);
-            QueryBuilders.matchQuery("user", "kimchy")
-                    .fuzziness(Fuzziness.AUTO)
-                    .prefixLength(3)
-                    .maxExpansions(10);
-            //进入es获取
+            String[] keywords = searchRequest.getKeyword().split(" ");
+            searchRequest.setKeyword(Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get());
         }
-        return null;
+        return  searchService.search(searchRequest).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
+
     }
 
 }

@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.web.search.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.util.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import dev.cheerfun.pixivic.web.search.exception.SearchException;
@@ -9,7 +10,9 @@ import dev.cheerfun.pixivic.web.search.model.Response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchSuggestion;
 import dev.cheerfun.pixivic.web.search.model.Response.YoudaoTranslatedResponse;
+import dev.cheerfun.pixivic.web.search.model.SearchRequest;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
+import dev.cheerfun.pixivic.web.search.util.SearchUtil;
 import dev.cheerfun.pixivic.web.search.util.YouDaoTranslatedUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +30,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -42,6 +46,7 @@ public class SearchService {
     private final RequestUtil requestUtil;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private final SearchUtil searchUtil;
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
     public PixivSearchCandidatesResponse getCandidateWords(String keyword) throws IOException, InterruptedException {
@@ -128,4 +133,7 @@ public class SearchService {
         return keywordTranslated.get(0);
     }
 
+    public CompletableFuture<List<Illustration>> search(SearchRequest searchRequest) {
+        return searchUtil.request(searchUtil.build(searchRequest));
+    }
 }
