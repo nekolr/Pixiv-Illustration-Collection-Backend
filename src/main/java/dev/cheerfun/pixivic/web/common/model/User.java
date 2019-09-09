@@ -1,10 +1,10 @@
-package dev.cheerfun.pixivic.web.user.model;
+package dev.cheerfun.pixivic.web.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.auth.model.Authable;
 import dev.cheerfun.pixivic.web.user.util.PasswordUtil;
-import io.jsonwebtoken.Claims;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.HashMap;
@@ -17,6 +17,7 @@ import java.util.Map;
  * @description User
  */
 @Data
+@AllArgsConstructor
 public class User implements Authable {
     @JsonIgnore
     private int userId;
@@ -72,8 +73,4 @@ public class User implements Authable {
         return isBan==0;
     }
 
-    @Override
-    public Authable castToAuthable(Claims claims) {
-        return null;
-    }
 }

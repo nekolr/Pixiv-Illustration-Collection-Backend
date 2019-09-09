@@ -48,6 +48,12 @@ public class SearchController {
     private final SearchService searchService;
     private final RestHighLevelClient elasticsearch;
 
+    @GetMapping("/test1")
+    public String test(String keyword) throws IOException, InterruptedException {
+        System.out.println(keyword);
+        return keyword;
+    }
+
     @GetMapping("/test")
     public String test() throws IOException {
         //从内到外构建

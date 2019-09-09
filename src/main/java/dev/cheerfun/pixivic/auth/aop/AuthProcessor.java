@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.auth.exception.AuthBanException;
 import dev.cheerfun.pixivic.auth.exception.AuthLevelException;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.util.CommonUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,9 +66,11 @@ public class AuthProcessor {
         if ((Integer) claims.get(PERMISSION_LEVEL) < authLevel) {
             throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
         }
+        //放入threadlocal
+        AppContext.set(claims);
         ResponseEntity response = (ResponseEntity) joinPoint.proceed();
-        //直接修改返回值的token为更新后的token
-        if (claims.get(NEW_TOKEN) != null) {
+        //直接修改返回值的token为更新后的token，若之后在业务逻辑中有更改，则在threadlocal中放入NEW_TOKEN就行
+        if (AppContext.get().get(NEW_TOKEN) != null) {
             response = ResponseEntity.status(response.getStatusCode())
                     .header(AUTHORIZATION, String.valueOf(claims.get(NEW_TOKEN)))
                     .body(response.getBody());

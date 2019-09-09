@@ -2,11 +2,11 @@ package dev.cheerfun.pixivic.web.user.service;
 
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.verification.model.EmailBindingVerificationCode;
+import dev.cheerfun.pixivic.web.common.model.User;
 import dev.cheerfun.pixivic.web.user.exception.RegistrationException;
 import dev.cheerfun.pixivic.web.user.exception.SignInException;
 import dev.cheerfun.pixivic.web.user.exception.UserAuthException;
 import dev.cheerfun.pixivic.web.user.mapper.UserMapper;
-import dev.cheerfun.pixivic.web.user.model.User;
 import dev.cheerfun.pixivic.web.user.util.EmailUtil;
 import dev.cheerfun.pixivic.web.user.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;

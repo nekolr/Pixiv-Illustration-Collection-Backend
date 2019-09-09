@@ -23,9 +23,9 @@ spring:
     host: armbian
     port: 6379
   datasource:
-    url: jdbc:mysql://deepin:3306/pixivic-test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://master:3306/pixivic?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     username: root
-    password: linhao199741
+    password: cheerfun.dev
     type: com.alibaba.druid.pool.DruidDataSource
     batch:
       job:

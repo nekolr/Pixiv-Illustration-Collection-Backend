@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.web.user.mapper;
 
-import dev.cheerfun.pixivic.web.user.model.User;
+import dev.cheerfun.pixivic.web.common.model.User;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
