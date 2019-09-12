@@ -26,12 +26,11 @@ import javax.validation.constraints.NotBlank;
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/users")
-@Validated
 public class UserController {
     private final UserService userService;
 
     @GetMapping("/usernames/{username}")
-    public ResponseEntity<Result> checkUsername(@NotBlank @PathVariable("username") String username) {
+    public ResponseEntity<Result> checkUsername(@Validated @NotBlank @PathVariable("username") String username) {
         if (userService.checkUsername(username)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("用户名已存在"));
         }
@@ -39,7 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/emails/{email:.+}")
-    public ResponseEntity<Result<Boolean>> checkEmail(@NotBlank @PathVariable("email") String email) {
+    public ResponseEntity<Result<Boolean>> checkEmail(@Validated @NotBlank @PathVariable("email") String email) {
         if (userService.checkEmail(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("邮箱已存在"));
         }
@@ -48,13 +47,13 @@ public class UserController {
 
     @PostMapping
     @CheckVerification
-    public ResponseEntity<Result<String>> signUp(@RequestBody UserSignUpDTO userSignUpDTO, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
+    public ResponseEntity<Result<String>> signUp(@Validated @RequestBody UserSignUpDTO userSignUpDTO, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
         User user = userSignUpDTO.castToUser();
         return ResponseEntity.ok().body(new Result<>("注册成功", userService.signUp(user)));
     }
 
     @PostMapping("/token")
-    public ResponseEntity<Result<User>> signIn(@RequestBody UserSignInDTO userSignInDTO) {
+    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody UserSignInDTO userSignInDTO) {
         return ResponseEntity.ok().body(new Result<>("登录成功", userService.signIn(userSignInDTO.getUsername(), userSignInDTO.getPassword())));
     }
 
@@ -87,7 +86,7 @@ public class UserController {
     @PutMapping("/{userId}/password")
     @CheckVerification
     public ResponseEntity<Result> setPassword(@RequestBody String password, @PathVariable("userId") String userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        userService.setPassword(password, userId,value.substring(4));
+        userService.setPassword(password, userId, value.substring(4));
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }
 

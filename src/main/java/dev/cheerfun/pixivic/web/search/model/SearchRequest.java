@@ -5,6 +5,7 @@ import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -18,9 +19,9 @@ import javax.validation.constraints.NotBlank;
 public class SearchRequest {
     @NotBlank
     private String keyword;
-    @NonNull@Max(60)
+    @NonNull@Max(60)@Min(1)
     private int pageSize;
-    @NonNull@Max(1600)
+    @NonNull@Max(1600)@Min(1)
     private int page;
     @NotBlank
     private String searchType;//搜索类型（原生、自动翻译、自动匹配词条）
@@ -30,7 +31,7 @@ public class SearchRequest {
     private int minHeight;
     private String beginDate;
     private String endDate;
-    @NotBlank
+    @NonNull
     private int xRestrict;
     private int popWeight;
     private int minTotalBookmarks;

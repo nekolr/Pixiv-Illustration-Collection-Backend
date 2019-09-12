@@ -26,33 +26,32 @@ import java.util.concurrent.CompletableFuture;
  */
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Validated
 //@PermissionRequired
 public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/keywords/{keyword}/candidates")
-    public ResponseEntity<Result<PixivSearchCandidatesResponse>> getCandidateWords(@NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
+    public ResponseEntity<Result<PixivSearchCandidatesResponse>> getCandidateWords(@Validated @NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
         return ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", searchService.getCandidateWords(keyword)));
     }
 
     @GetMapping("/keywords/{keyword}/suggestions")
-    public ResponseEntity<Result<List<SearchSuggestion>>> getSearchSuggestion(@NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
+    public ResponseEntity<Result<List<SearchSuggestion>>> getSearchSuggestion(@Validated @NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
         return ResponseEntity.ok().body(new Result<>("搜索建议获取成功", searchService.getSearchSuggestion(keyword)));
     }
 
     @GetMapping("/keywords/{keyword}/pixivSuggestions")
-    public ResponseEntity<Result<List<SearchSuggestion>>> getPixivSearchSuggestion(@NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
+    public ResponseEntity<Result<List<SearchSuggestion>>> getPixivSearchSuggestion(@Validated @NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
         return ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", searchService.getPixivSearchSuggestion(keyword)));
     }
 
     @GetMapping("/keywords/{keyword}/translations")
-    public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(@NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
+    public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(@Validated @NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
         return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(keyword)));
     }
 
     @GetMapping("/illustrations")
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(@RequestBody SearchRequest searchRequest) {
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(@Validated @RequestBody SearchRequest searchRequest) {
         if ("autoTranslate".equals(searchRequest.getSearchType())) {
             //自动翻译
             String[] keywords = searchRequest.getKeyword().split(" ");
@@ -63,7 +62,7 @@ public class SearchController {
 
     @GetMapping("/images")
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByImage(@RequestParam String imageUrl) {
-searchService.searchByImage(imageUrl);
+        searchService.searchByImage(imageUrl);
         return null;
     }
 }
