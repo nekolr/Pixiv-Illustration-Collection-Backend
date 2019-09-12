@@ -41,7 +41,6 @@ public class YouDaoTranslatedUtil {
             return null;
         }
         int len = q.length();
-        System.out.println(q.length());
         String result;
         return len <= 20 ? q : (q.substring(0, 10) + len + q.substring(len - 10, len));
     }

@@ -62,7 +62,7 @@ public class SearchUtil {
     private final static String DATE_RANGE_2 = "\",\"lte\":\"";
     private final static String DATE_RANGE_3 = "\"}}}";
 
-    private final static String SCRIPT_SCORE = "\"script_score\":{\"script\":{\"params\":{\"total_bookmarks_max\":2545340,\"total_view_max\":27640400},\"source\":\"((doc['total_bookmarks'].value/params.total_bookmarks_max+doc['total_view'].value/params.total_view_max)+1)\"}}";
+    private final static String SCRIPT_SCORE = "\"script_score\":{\"script\":{\"params\":{\"total_bookmarks_max\":25000,\"total_view_max\":1500000},\"source\":\"(1.00+doc['total_bookmarks'].value/params.total_bookmarks_max+doc['total_view'].value/params.total_view_max)\"}}";
 
     public String build(SearchRequest searchRequest) {
         StringBuilder stringBuilder = new StringBuilder(PRE);
@@ -128,7 +128,7 @@ public class SearchUtil {
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body).thenApply(
                 b -> {
-                    System.out.println(b);
+                    //System.out.println(b);
                     ElasticsearchResponse elasticsearchResponse = null;
                     try {
                         elasticsearchResponse = objectMapper.readValue(b, new TypeReference<ElasticsearchResponse>() {
@@ -142,4 +142,7 @@ public class SearchUtil {
         );
     }
 
+    public void searchByImage(String imageUrl) {
+
+    }
 }

@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.common.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +29,12 @@ import java.util.concurrent.Executors;
  */
 @Configuration
 public class HttpClientConfig {
+    @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        return objectMapper;
+    }
     @Bean
     public TrustManager[] trustAllCertificates() {
         return new TrustManager[]{new X509TrustManager() {

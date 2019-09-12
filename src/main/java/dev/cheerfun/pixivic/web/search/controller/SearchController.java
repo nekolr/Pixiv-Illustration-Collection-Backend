@@ -10,10 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
@@ -33,7 +30,6 @@ import java.util.concurrent.CompletableFuture;
 //@PermissionRequired
 public class SearchController {
     private final SearchService searchService;
-
 
     @GetMapping("/keywords/{keyword}/candidates")
     public ResponseEntity<Result<PixivSearchCandidatesResponse>> getCandidateWords(@NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
@@ -56,14 +52,18 @@ public class SearchController {
     }
 
     @GetMapping("/illustrations")
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> search(@RequestBody SearchRequest searchRequest) {
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(@RequestBody SearchRequest searchRequest) {
         if ("autoTranslate".equals(searchRequest.getSearchType())) {
             //自动翻译
             String[] keywords = searchRequest.getKeyword().split(" ");
             searchRequest.setKeyword(Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get());
         }
-        return  searchService.search(searchRequest).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
-
+        return searchService.searchByKeyword(searchRequest).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 
+    @GetMapping("/images")
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByImage(@RequestParam String imageUrl) {
+searchService.searchByImage(imageUrl);
+        return null;
+    }
 }

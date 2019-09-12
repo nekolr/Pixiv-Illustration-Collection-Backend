@@ -1,7 +1,6 @@
 package dev.cheerfun.pixivic.common.util.pixiv;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.crawler.model.Oauth;
 import lombok.Getter;
@@ -25,6 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class OauthUtil {
     private final HttpClient httpClient;
+    private final ObjectMapper objectMapper ;
     @Value("${pixiv.oauth.client_id}")
     private String client_id;
     @Value("${pixiv.oauth.client_secret}")
@@ -47,8 +47,6 @@ final public class OauthUtil {
     private void init() throws IOException {
         //读取账号信息
         File json = new File(path);
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         oauths = objectMapper.readValue(json, new TypeReference<ArrayList<Oauth>>() {
         });
         //账号初始化
@@ -94,7 +92,6 @@ final public class OauthUtil {
         while (true) {
             int i = random.nextInt(length);
             if (oauths.get(i).getIsBan()) {
-                System.err.println("当前获取随机token失效，重新获取");
                 if (oauths.stream().noneMatch(Oauth::getIsBan)) {
                     try {
                         Thread.sleep(1000 * 60);
@@ -121,7 +118,6 @@ final public class OauthUtil {
 
     @Scheduled(initialDelay = 1000 * 60 * 10, fixedRate = 5000)
     public void scanAndResetIsban() {
-        System.out.println("刷新token");
         oauths.stream().parallel().filter(Oauth::getIsBan).forEach(oauth -> {
             if (System.currentTimeMillis() - oauth.getBanAt() > 1000 * 60 * 10)
                 try {

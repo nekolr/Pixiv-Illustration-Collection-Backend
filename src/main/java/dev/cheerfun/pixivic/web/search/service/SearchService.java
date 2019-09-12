@@ -133,7 +133,11 @@ public class SearchService {
         return keywordTranslated.get(0);
     }
 
-    public CompletableFuture<List<Illustration>> search(SearchRequest searchRequest) {
+    public CompletableFuture<List<Illustration>> searchByKeyword(SearchRequest searchRequest) {
         return searchUtil.request(searchUtil.build(searchRequest));
+    }
+
+    public void searchByImage(String imageUrl) {
+        searchUtil.searchByImage(imageUrl);
     }
 }
