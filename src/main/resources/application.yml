@@ -23,9 +23,9 @@ spring:
     host: armbian
     port: 6379
   datasource:
-    url: jdbc:mysql://master:3306/pixivic?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://deepin:3306/pixivic-test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     username: root
-    password: cheerfun.dev
+    password: linhao199741
     type: com.alibaba.druid.pool.DruidDataSource
     batch:
       job:
@@ -40,7 +40,7 @@ spring:
   # config: classpath:logback-${spring.profiles.active}.xml
   elasticsearch:
     rest:
-      uris: http://es:9200
+      uris: http://worker:9200
 management:
   endpoints:
     web:
@@ -64,3 +64,4 @@ mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
   type-handlers-package: dev.cheerfun.pixivic.common.handler
+

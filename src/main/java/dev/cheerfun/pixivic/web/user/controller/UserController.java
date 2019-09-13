@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.web.user.controller;
 
 import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.web.common.model.User;
@@ -28,6 +29,7 @@ import javax.validation.constraints.NotBlank;
 @RequestMapping("/users")
 public class UserController {
     private final UserService userService;
+    private final JWTUtil jwtUtil;
 
     @GetMapping("/usernames/{username}")
     public ResponseEntity<Result> checkUsername(@Validated @NotBlank @PathVariable("username") String username) {
@@ -47,14 +49,15 @@ public class UserController {
 
     @PostMapping
     @CheckVerification
-    public ResponseEntity<Result<String>> signUp(@Validated @RequestBody UserSignUpDTO userSignUpDTO, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
-        User user = userSignUpDTO.castToUser();
+    public ResponseEntity<Result<String>> signUp(@Validated @RequestBody UserSignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
+        User user = userInfo.castToUser();
         return ResponseEntity.ok().body(new Result<>("注册成功", userService.signUp(user)));
     }
 
-    @PostMapping("/token")
-    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody UserSignInDTO userSignInDTO) {
-        return ResponseEntity.ok().body(new Result<>("登录成功", userService.signIn(userSignInDTO.getUsername(), userSignInDTO.getPassword())));
+    @GetMapping("/token")
+    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody UserSignInDTO userInfo) {
+        User user = userService.signIn(userInfo.getUsername(), userInfo.getPassword());
+        return ResponseEntity.ok().header("Authorization",jwtUtil.getToken(user)).body(new Result<>("登录成功",user));
     }
 
     @PostMapping("/tokenWithQQ")
@@ -64,28 +67,28 @@ public class UserController {
 
     @PutMapping("/{userId}/qqAccessToken")
     @PermissionRequired
-    public ResponseEntity<Result> bindQQ(@RequestBody String qqAccessToken, @PathVariable("userId") String userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result> bindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
         userService.bindQQ(qqAccessToken, userId, token);
         return ResponseEntity.ok().body(new Result<>("绑定QQ成功"));
     }
 
     @PutMapping("/{userId}/avatar")
     @PermissionRequired
-    public ResponseEntity<Result> setAvatar(@RequestBody String avatar, @PathVariable("userId") String userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> setAvatar(@RequestParam String avatar, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
         userService.setAvatar(avatar, userId, token);
-        return ResponseEntity.ok().body(new Result<>("绑定QQ成功"));
+        return ResponseEntity.ok().body(new Result<>("修改头像成功",avatar));
     }
 
     @PutMapping("/{userId}/email")
     @CheckVerification
-    public ResponseEntity<Result> checkEmail(@RequestBody String email, @PathVariable("userId") String userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result> checkEmail(@RequestBody String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         userService.setEmail(email, userId);
         return ResponseEntity.ok().body(new Result<>("完成验证邮箱"));
     }
 
     @PutMapping("/{userId}/password")
     @CheckVerification
-    public ResponseEntity<Result> setPassword(@RequestBody String password, @PathVariable("userId") String userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result> setPassword(@RequestBody String password, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         userService.setPassword(password, userId, value.substring(4));
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }

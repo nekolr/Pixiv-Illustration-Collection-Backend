@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.mail.SendFailedException;
 import javax.validation.ConstraintViolationException;
 
 /**
@@ -33,6 +34,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<Result> handleConstraintViolationException(ConstraintViolationException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result(e.getMessage()));
+    }
+
+    @ExceptionHandler(value = SendFailedException.class)
+    public ResponseEntity<Result> handleConstraintViolationException(SendFailedException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("邮箱地址错误"));
     }
 /*    @ExceptionHandler(Exception.class)//可以用来找异常类
     public ResponseEntity handleException(Exception ae) {

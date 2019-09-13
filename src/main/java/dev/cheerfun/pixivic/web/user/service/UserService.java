@@ -27,6 +27,7 @@ import javax.mail.MessagingException;
 public class UserService {
     private final UserMapper userMapper;
     private final JWTUtil jwtUtil;
+    private final PasswordUtil passwordUtil;
     private final EmailUtil emailUtil;
     private final VerificationCodeService verificationCodeService;
     private final static String PIXIVIC = "Pixivic酱";
@@ -38,6 +39,7 @@ public class UserService {
         if (userMapper.checkUserNameAndEmail(user.getUsername(), user.getEmail()) == 1) {
             throw new RegistrationException(HttpStatus.CONFLICT, "用户名或邮箱已存在");
         }
+        user.setPassword(passwordUtil.encrypt(user.getPassword()));
         user.init();
         userMapper.insertUser(user);
         //签发token
@@ -48,7 +50,8 @@ public class UserService {
     }
 
     public User signIn(String username, String password) {
-        User user = userMapper.getUser(username, PasswordUtil.generateSecurePassword(password));
+        System.out.println(passwordUtil.encrypt(password));
+        User user = userMapper.getUser(username, passwordUtil.encrypt(password));
         if (user == null) {
             throw new SignInException(HttpStatus.BAD_REQUEST, "用户名或密码不正确");
         }
@@ -67,27 +70,27 @@ public class UserService {
         return userMapper.getUserByQQAccessToken(qqAccessToken);
     }
 
-    public int bindQQ(String qqAccessToken, String userId, String token) {
+    public int bindQQ(String qqAccessToken, int userId, String token) {
         checkUser(userId, token);
         return userMapper.setQqAccessToken(qqAccessToken, userId);
     }
 
-    public int setAvatar(String avatar, String userId, String token) {
+    public int setAvatar(String avatar, int userId, String token) {
         checkUser(userId, token);
         return userMapper.setAvatar(avatar, userId);
     }
 
-    private void checkUser(String userId, String token) {
-        if (!userId.equals(jwtUtil.getAllClaimsFromToken(token).get("userId"))) {
+    private void checkUser(int userId, String token) {
+        if (userId!=(int)jwtUtil.getAllClaimsFromToken(token).get("userId")) {
             throw new UserAuthException(HttpStatus.UNAUTHORIZED, "token与操作对象不匹配");
         }
     }
 
-    public int setEmail(String email, String userId) {
+    public int setEmail(String email, int userId) {
         return userMapper.setEmail(email, userId);
     }
 
-    public int setPassword(String password, String userId,String email) {
+    public int setPassword(String password, int userId,String email) {
         return userMapper.setPassword(password, userId,email);
     }
 
@@ -96,6 +99,8 @@ public class UserService {
             EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
             emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
         }
-        throw new UserAuthException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
+        else {
+            throw new UserAuthException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
+        }
     }
 }

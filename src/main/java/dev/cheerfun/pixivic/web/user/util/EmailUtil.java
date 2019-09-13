@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.web.user.util;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
@@ -505,7 +506,7 @@ public class EmailUtil {
                 "  </body>\n" +
                 "</html>";
     }
-
+@Async
     public void sendEmail(String emailAddr, String to, String from, String content, String link) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);

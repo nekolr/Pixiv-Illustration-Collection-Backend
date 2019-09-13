@@ -8,6 +8,13 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
+/**
+ * @author OysterQAQ
+ * @version 1.0
+ * @date 2019/09/12 14:27
+ * @description ArtistMapper
+ */
+
 @Mapper
 public interface ArtistMapper {
     @Insert({

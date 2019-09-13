@@ -3,9 +3,9 @@ package dev.cheerfun.pixivic.web.common.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.auth.model.Authable;
-import dev.cheerfun.pixivic.web.user.util.PasswordUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -18,11 +18,12 @@ import java.util.Map;
  */
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class User implements Authable {
-    @JsonIgnore
     private int userId;
     private String username;
     private String email;
+    @JsonIgnore
     private String password;
     private String avatar;
     @JsonIgnore
@@ -44,8 +45,8 @@ public class User implements Authable {
     }
 
     public void init() {
+        star=0;
         isBan=1;
-        password=PasswordUtil.generateSecurePassword(password);
         permissionLevel= PermissionLevel.LOGGED;
         avatar=null;
         pixivAccount=null;
@@ -54,11 +55,13 @@ public class User implements Authable {
     }
 
     @Override
+    @JsonIgnore
     public String getIssuer() {
         return username;
     }
 
     @Override
+    @JsonIgnore
     public Map<String, Object> getClaims() {
         Map<String, Object> claims = new HashMap<>();
         claims.put("permissionLevel", permissionLevel);
@@ -69,6 +72,7 @@ public class User implements Authable {
     }
 
     @Override
+    @JsonIgnore
     public boolean isEnabled() {
         return isBan==0;
     }

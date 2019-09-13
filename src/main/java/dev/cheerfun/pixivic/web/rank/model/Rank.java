@@ -8,12 +8,12 @@ import java.util.List;
 /**
  * @author OysterQAQ
  * @version 1.0
- * @date 2019/09/12 14:27
+ * @date 2019/08/17 17:41
  * @description Rank
  */
 @Data
 public class Rank {
-    private String date;
+    private List<Illustration> illustrations;
     private String mode;
-    private List<Illustration> data;
+    private String date;
 }

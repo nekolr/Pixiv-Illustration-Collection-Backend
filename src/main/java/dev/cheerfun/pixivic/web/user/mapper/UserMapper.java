@@ -19,9 +19,7 @@ public interface UserMapper {
     void insertUser(User user);
 
     @Select({
-            "SELECT *\n" +
-                    "FROM users\n" +
-                    "WHERE username=#{username} AND PASSWORD=#{password}",
+            " SELECT * FROM (SELECT * FROM users WHERE username= #{username} OR email=#{username})  temp where temp.PASSWORD=#{password}",
     })
     User getUser(String username, String password);
 
@@ -32,15 +30,15 @@ public interface UserMapper {
     })
     User getUserByQQAccessToken(String qqAccessToken);
 
-    @Update("update users set name=#{qqAccessToken} where user_id=#{userId}")
-    int setQqAccessToken(String qqAccessToken, String userId);
+    @Update("update users set qq_access_token=#{qqAccessToken} where user_id=#{userId}")
+    int setQqAccessToken(String qqAccessToken, int userId);
 
     @Update("update users set avatar=#{avatar} where user_id=#{userId}")
-    int setAvatar(String avatar, String userId);
+    int setAvatar(String avatar, int userId);
 
     @Update("update users set email=#{email} where user_id=#{userId}")
-    int setEmail(String email, String userId);
+    int setEmail(String email, int userId);
 
     @Update("update users set password=#{password} where user_id=#{userId} and email=#{email}")
-    int setPassword(String password, String userId,String email);
+    int setPassword(String password, int userId,String email);
 }
