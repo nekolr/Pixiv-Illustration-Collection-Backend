@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
  * @description UserSignInDTO
  */
 @Data
-public class UserSignInDTO {
+public class SignInDTO {
     @NotBlank
     private String username;
     @NotBlank

@@ -3,10 +3,10 @@ package dev.cheerfun.pixivic.web.user.service;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.verification.model.EmailBindingVerificationCode;
 import dev.cheerfun.pixivic.web.common.model.User;
+import dev.cheerfun.pixivic.web.user.exception.AuthException;
 import dev.cheerfun.pixivic.web.user.exception.RegistrationException;
 import dev.cheerfun.pixivic.web.user.exception.SignInException;
-import dev.cheerfun.pixivic.web.user.exception.UserAuthException;
-import dev.cheerfun.pixivic.web.user.mapper.UserMapper;
+import dev.cheerfun.pixivic.web.user.mapper.CommonMapper;
 import dev.cheerfun.pixivic.web.user.util.EmailUtil;
 import dev.cheerfun.pixivic.web.user.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +24,8 @@ import javax.mail.MessagingException;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class UserService {
-    private final UserMapper userMapper;
+public class CommonService {
+    private final CommonMapper userMapper;
     private final JWTUtil jwtUtil;
     private final PasswordUtil passwordUtil;
     private final EmailUtil emailUtil;
@@ -82,7 +82,7 @@ public class UserService {
 
     private void checkUser(int userId, String token) {
         if (userId!=(int)jwtUtil.getAllClaimsFromToken(token).get("userId")) {
-            throw new UserAuthException(HttpStatus.UNAUTHORIZED, "token与操作对象不匹配");
+            throw new AuthException(HttpStatus.UNAUTHORIZED, "token与操作对象不匹配");
         }
     }
 
@@ -100,7 +100,7 @@ public class UserService {
             emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
         }
         else {
-            throw new UserAuthException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
+            throw new AuthException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
         }
     }
 }

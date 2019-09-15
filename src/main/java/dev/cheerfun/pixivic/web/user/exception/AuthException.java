@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
  */
 @AllArgsConstructor
 @Data
-public class UserAuthException extends BaseException {
+public class AuthException extends BaseException {
     private HttpStatus httpStatus;
     private String message;
 }

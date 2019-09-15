@@ -3,11 +3,11 @@ package dev.cheerfun.pixivic.web.search.util;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.web.search.model.SearchRequest;
 import dev.cheerfun.pixivic.web.search.model.elasticsearch.ElasticsearchResponse;
 import dev.cheerfun.pixivic.web.search.model.elasticsearch.Hit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -30,7 +30,8 @@ import java.util.stream.Collectors;
 public class SearchUtil {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-
+    @Value("${elasticsearch.ip}")
+    private String elasticsearch;
 
     private final static String FROM = "\"from\":";
     private final static String SIZE = "\"size\": ";
@@ -64,48 +65,61 @@ public class SearchUtil {
 
     private final static String SCRIPT_SCORE = "\"script_score\":{\"script\":{\"params\":{\"total_bookmarks_max\":25000,\"total_view_max\":1500000},\"source\":\"(1.00+doc['total_bookmarks'].value/params.total_bookmarks_max+doc['total_view'].value/params.total_view_max)\"}}";
 
-    public String build(SearchRequest searchRequest) {
+    public String build(
+            String keyword,
+            int pageSize,
+            int page,
+            String searchType,
+            String illustType,
+            int minWidth,
+            int minHeight,
+            String beginDate,
+            String endDate,
+            int xRestrict,
+            int popWeight,
+            int minTotalBookmarks,
+            int minTotalView) {
         StringBuilder stringBuilder = new StringBuilder(PRE);
         stringBuilder.append(FROM)
-                .append((searchRequest.getPage() - 1) * searchRequest.getPageSize())
+                .append((page- 1) * pageSize)
                 .append(DOT)
                 .append(SIZE)
-                .append(searchRequest.getPageSize())
+                .append(pageSize)
                 .append(DOT)
                 .append(QUERY_PRE);
-        String[] keywords = searchRequest.getKeyword().split(" ");
+        String[] keywords = keyword.split(" ");
 
-        for (String keyword : keywords) {
-            stringBuilder.append(NESTED_PRE).append(keyword).append(NESTED_POS).append(DOT);
+        for (String k : keywords) {
+            stringBuilder.append(NESTED_PRE).append(k).append(NESTED_POS).append(DOT);
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         //过滤器
         stringBuilder.append(FILTER_PRE)
                 .append(TYPE_PRE)
-                .append(searchRequest.getIllustType())
+                .append(illustType)
                 .append(TYPE_POS)
                 .append(DOT)
                 .append(X_RESTRICT_PRE)
-                .append(searchRequest.getXRestrict())
+                .append(xRestrict)
                 .append(X_RESTRICT_POS)
                 .append(DOT);
-        if (searchRequest.getBeginDate() != null && searchRequest.getEndDate() != null) {
+        if (beginDate != null && endDate != null) {
             stringBuilder.append(DATE_RANGE_1)
-                    .append(searchRequest.getBeginDate())
+                    .append(beginDate)
                     .append(DATE_RANGE_2)
-                    .append(searchRequest.getEndDate())
+                    .append(endDate)
                     .append(DATE_RANGE_3)
                     .append(DOT);
         }
-        if (searchRequest.getMinWidth() != 0) {
+        if (minWidth != 0) {
             stringBuilder.append(MIN_WIDTH_PRE)
-                    .append(searchRequest.getMinWidth())
+                    .append(minWidth)
                     .append(MIN_WIDTH_POS)
                     .append(DOT);
         }
-        if (searchRequest.getMinHeight() != 0) {
+        if (minHeight != 0) {
             stringBuilder.append(MIN_HEIGHT_PRE)
-                    .append(searchRequest.getMinHeight())
+                    .append(minHeight)
                     .append(MIN_HEIGHT_POS)
                     .append(DOT);
         }
@@ -123,7 +137,7 @@ public class SearchUtil {
     public CompletableFuture<List<Illustration>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type","application/json")
-                .uri(URI.create("http://worker:9200/illust/_search"))
+                .uri(URI.create("http://"+elasticsearch+":9200/illust/_search"))
                 .method("GET", HttpRequest.BodyPublishers.ofString(body))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body).thenApply(

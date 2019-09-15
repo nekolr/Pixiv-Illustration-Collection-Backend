@@ -10,7 +10,6 @@ import dev.cheerfun.pixivic.web.search.model.Response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchSuggestion;
 import dev.cheerfun.pixivic.web.search.model.Response.YoudaoTranslatedResponse;
-import dev.cheerfun.pixivic.web.search.model.SearchRequest;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.web.search.util.SearchUtil;
 import dev.cheerfun.pixivic.web.search.util.YouDaoTranslatedUtil;
@@ -133,8 +132,21 @@ public class SearchService {
         return keywordTranslated.get(0);
     }
 
-    public CompletableFuture<List<Illustration>> searchByKeyword(SearchRequest searchRequest) {
-        return searchUtil.request(searchUtil.build(searchRequest));
+    public CompletableFuture<List<Illustration>> searchByKeyword(
+            String keyword,
+            int pageSize,
+            int page,
+            String searchType,
+            String illustType,
+            int minWidth,
+            int minHeight,
+            String beginDate,
+            String endDate,
+            int xRestrict,
+            int popWeight,
+            int minTotalBookmarks,
+            int minTotalView) {
+        return searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView));
     }
 
     public void searchByImage(String imageUrl) {

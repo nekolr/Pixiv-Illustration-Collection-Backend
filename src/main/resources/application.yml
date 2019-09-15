@@ -20,12 +20,12 @@ spring:
             class: javax.net.ssl.SSLSocketFactory
   redis:
     database: 0
-    host: armbian
+    host: redis
     port: 6379
   datasource:
-    url: jdbc:mysql://deepin:3306/pixivic-test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://mysql:3306/pixivic-test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     username: root
-    password: linhao199741
+    password:
     type: com.alibaba.druid.pool.DruidDataSource
     batch:
       job:
@@ -38,9 +38,6 @@ spring:
 #  type-aliases-package: dev.cheerfun.pixivic.web
 # logging:
   # config: classpath:logback-${spring.profiles.active}.xml
-  elasticsearch:
-    rest:
-      uris: http://worker:9200
 management:
   endpoints:
     web:
@@ -59,9 +56,11 @@ pixiv:
     client_secret: W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP
     refresh_token: 07FHA5xA6NkOIxIayqm3tZbJqxbypDJHrXguT7cazLI
     device_token: fb12e7c1945000850deb5f7001c02745
-    config: D:\user2.json
+    config: /home/PIC/user2.json
 mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
   type-handlers-package: dev.cheerfun.pixivic.common.handler
+elasticsearch:
+  ip: elasticsearch
 

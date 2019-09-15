@@ -4,7 +4,7 @@ import dev.cheerfun.pixivic.web.common.model.User;
 import org.apache.ibatis.annotations.*;
 
 @Mapper
-public interface UserMapper {
+public interface CommonMapper {
     @Select({
             "SELECT IFNULL((\n" +
                     "SELECT 1\n" +

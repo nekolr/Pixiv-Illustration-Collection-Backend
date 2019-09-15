@@ -1,11 +1,7 @@
 package dev.cheerfun.pixivic.web.common.config;
 
 import com.google.common.collect.Lists;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.reactive.CorsWebFilter;
-import org.springframework.web.cors.reactive.UrlBasedCorsConfigurationSource;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.util.List;
@@ -39,7 +35,7 @@ public class WebConfig extends WebMvcConfigurationSupport {
         List<String> interceptPath = Lists.newArrayList();
         return interceptPath;
     }
-    @Bean
+/*    @Bean
     CorsWebFilter corsFilter() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
@@ -51,6 +47,6 @@ public class WebConfig extends WebMvcConfigurationSupport {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
         return new CorsWebFilter(source);
-    }
+    }*/
 
 }

@@ -3,15 +3,21 @@ package dev.cheerfun.pixivic.web.search.controller;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchCandidatesResponse;
-import dev.cheerfun.pixivic.web.search.model.SearchRequest;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.web.search.service.SearchService;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.HandlerMapping;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.Arrays;
@@ -30,39 +36,84 @@ import java.util.concurrent.CompletableFuture;
 public class SearchController {
     private final SearchService searchService;
 
-    @GetMapping("/keywords/{keyword}/candidates")
-    public ResponseEntity<Result<PixivSearchCandidatesResponse>> getCandidateWords(@Validated @NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
-        return ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", searchService.getCandidateWords(keyword)));
+    @GetMapping("/keywords/**/candidates")
+    public ResponseEntity<Result<PixivSearchCandidatesResponse>> getCandidateWords( HttpServletRequest request) throws IOException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", searchService.getCandidateWords(getKeyword(request))));
     }
 
-    @GetMapping("/keywords/{keyword}/suggestions")
-    public ResponseEntity<Result<List<SearchSuggestion>>> getSearchSuggestion(@Validated @NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
-        return ResponseEntity.ok().body(new Result<>("搜索建议获取成功", searchService.getSearchSuggestion(keyword)));
+    @GetMapping("/keywords/**/suggestions")
+    public ResponseEntity<Result<List<SearchSuggestion>>> getSearchSuggestion(HttpServletRequest request) throws IOException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("搜索建议获取成功", searchService.getSearchSuggestion(getKeyword(request))));
     }
 
-    @GetMapping("/keywords/{keyword}/pixivSuggestions")
-    public ResponseEntity<Result<List<SearchSuggestion>>> getPixivSearchSuggestion(@Validated @NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
-        return ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", searchService.getPixivSearchSuggestion(keyword)));
+    @GetMapping("/keywords/**/pixivSuggestions")
+    public ResponseEntity<Result<List<SearchSuggestion>>> getPixivSearchSuggestion(HttpServletRequest request) throws IOException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", searchService.getPixivSearchSuggestion(getKeyword(request))));
     }
 
-    @GetMapping("/keywords/{keyword}/translations")
-    public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(@Validated @NotBlank @PathVariable("keyword") String keyword) throws IOException, InterruptedException {
-        return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(keyword)));
+    @GetMapping("/keywords/**/translations")
+    public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request) throws IOException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(getKeyword(request))));
     }
 
     @GetMapping("/illustrations")
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(@Validated @RequestBody SearchRequest searchRequest) {
-        if ("autoTranslate".equals(searchRequest.getSearchType())) {
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
+            @RequestParam
+            @NotBlank
+                    String keyword,
+            @RequestParam(defaultValue = "30")
+            @NonNull @Max(60) @Min(1)
+                    int pageSize,
+            @RequestParam
+            @NonNull @Max(1600) @Min(1)
+                    int page,
+            @RequestParam(defaultValue = "original")
+                    String searchType,//搜索类型（原生、自动翻译、自动匹配词条）
+            @RequestParam(defaultValue = "illust")
+                    String illustType,
+            @RequestParam(defaultValue = "0")
+                    int minWidth,
+            @RequestParam(defaultValue = "0")
+                    int minHeight,
+            @RequestParam(defaultValue = "2008-01-01")
+                    String beginDate,
+            @RequestParam(defaultValue = "9999-12-31")
+                    String endDate,
+            @RequestParam(defaultValue = "0")
+                    int xRestrict,
+            @RequestParam(defaultValue = "0")
+                    int popWeight,
+            @RequestParam(defaultValue = "0")
+                    int minTotalBookmarks,
+            @RequestParam(defaultValue = "0")
+                    int minTotalView) {
+        if ("autoTranslate".equals(searchType)) {
             //自动翻译
-            String[] keywords = searchRequest.getKeyword().split(" ");
-            searchRequest.setKeyword(Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get());
+            String[] keywords = keyword.split(" ");
+          keyword= Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        return searchService.searchByKeyword(searchRequest).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
+        return searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 
     @GetMapping("/images")
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByImage(@RequestParam String imageUrl) {
         searchService.searchByImage(imageUrl);
         return null;
+    }
+
+    public String getKeyword( HttpServletRequest request){
+        final String path =
+                request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
+        final String bestMatchingPattern =
+                request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString();
+        String arguments = new AntPathMatcher().extractPathWithinPattern(bestMatchingPattern, path);
+        String moduleName;
+        if (null != arguments && !arguments.isEmpty()) {
+            moduleName =arguments.replace("/pixivSuggestions","");
+        } else {
+            moduleName = "";
+        }
+        System.out.println(moduleName);
+        return moduleName;
     }
 }

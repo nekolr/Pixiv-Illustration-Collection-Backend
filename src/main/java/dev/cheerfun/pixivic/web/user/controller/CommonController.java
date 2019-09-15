@@ -5,9 +5,9 @@ import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.web.common.model.User;
-import dev.cheerfun.pixivic.web.user.dto.UserSignInDTO;
-import dev.cheerfun.pixivic.web.user.dto.UserSignUpDTO;
-import dev.cheerfun.pixivic.web.user.service.UserService;
+import dev.cheerfun.pixivic.web.user.dto.SignInDTO;
+import dev.cheerfun.pixivic.web.user.dto.SignUpDTO;
+import dev.cheerfun.pixivic.web.user.service.CommonService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,8 +27,8 @@ import javax.validation.constraints.NotBlank;
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/users")
-public class UserController {
-    private final UserService userService;
+public class CommonController {
+    private final CommonService userService;
     private final JWTUtil jwtUtil;
 
     @GetMapping("/usernames/{username}")
@@ -49,13 +49,13 @@ public class UserController {
 
     @PostMapping
     @CheckVerification
-    public ResponseEntity<Result<String>> signUp(@Validated @RequestBody UserSignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
+    public ResponseEntity<Result<String>> signUp(@Validated @RequestBody SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
         User user = userInfo.castToUser();
         return ResponseEntity.ok().body(new Result<>("注册成功", userService.signUp(user)));
     }
 
     @GetMapping("/token")
-    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody UserSignInDTO userInfo) {
+    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody SignInDTO userInfo) {
         User user = userService.signIn(userInfo.getUsername(), userInfo.getPassword());
         return ResponseEntity.ok().header("Authorization",jwtUtil.getToken(user)).body(new Result<>("登录成功",user));
     }
