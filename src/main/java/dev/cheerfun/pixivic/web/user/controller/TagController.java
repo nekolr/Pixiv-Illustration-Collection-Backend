@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.illust.controller;
+package dev.cheerfun.pixivic.web.user.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Mapper
 public interface RankMapper {
-    @Insert("insert into ranks values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler})")
+    @Insert("insert into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler})")
     int insert(Rank rank);
 
     @Select("select * from ranks where date = #{date} and mode= #{mode} limit 1")

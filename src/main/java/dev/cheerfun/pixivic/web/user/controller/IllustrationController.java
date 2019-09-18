@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.illust.controller;
+package dev.cheerfun.pixivic.web.user.controller;
 
 import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.common.model.Illustration;
