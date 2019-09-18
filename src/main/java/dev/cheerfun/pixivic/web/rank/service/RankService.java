@@ -25,8 +25,10 @@ public class RankService {
     }
 
     public Rank queryByDateAndMode(String date, String mode, int page, int pageSize) {
+       page=page>0?page:1;
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
-        List<Illustration> illustrations = rank.getData().subList(page * pageSize, (page + 1) * pageSize);
+        int size = rank.getData().size();
+        List<Illustration> illustrations = rank.getData().subList(Math.min((page-1) * pageSize,size), Math.min(page * pageSize, size));
         rank.setData(illustrations);
         return rank;
     }

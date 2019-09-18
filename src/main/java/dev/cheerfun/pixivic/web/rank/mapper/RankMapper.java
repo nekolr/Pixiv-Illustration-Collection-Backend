@@ -1,9 +1,9 @@
 package dev.cheerfun.pixivic.web.rank.mapper;
 
 import dev.cheerfun.pixivic.web.rank.model.Rank;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -13,9 +13,14 @@ import org.apache.ibatis.annotations.Select;
  */
 @Mapper
 public interface RankMapper {
-    @Insert("insert into ranks values(#{date}, #{mode},#{data,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler})")
+    @Insert("insert into ranks values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler})")
     int insert(Rank rank);
 
-    @Select("select * from ranks where date = #{date} and mode= #{mode}")
-    public Rank queryByDateAndMode(String data, String mode);
+    @Select("select * from ranks where date = #{date} and mode= #{mode} limit 1")
+    @Results({
+            @Result(property="date", column="date"),
+            @Result(property="mode", column="mode"),
+            @Result(property="data", column="data", javaType = List.class,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
+    })
+     Rank queryByDateAndMode(String date, String mode);
 }
