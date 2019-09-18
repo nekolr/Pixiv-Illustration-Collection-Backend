@@ -28,9 +28,10 @@ public class TestController {
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustrationPersistentService illustrationPersistentService;
 
-    @PermissionRequired(PermissionLevel.VIP)
-    @GetMapping("/auth")
-    public String test(@RequestHeader("Authorization") String token) {
+    //@PermissionRequired(PermissionLevel.VIP)
+    @GetMapping("/test")
+    public String test(@RequestParam String date) throws InterruptedException {
+        //illustrationPersistentService.dailyPersistentTask();
         return "233";
     }
 

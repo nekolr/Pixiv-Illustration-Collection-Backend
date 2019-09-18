@@ -41,7 +41,7 @@ public class SearchUtil {
     private final static String POS = "}";
     private final static String QUERY_PRE = "\"query\":{\"function_score\":{\"query\":{\"bool\":{\"should\":[";
     private final static String FILTER_PRE = "],\"filter\":[";
-    private final static String FILTER_POS = "]}},";
+    private final static String FILTER_POS = "]}}";
     private final static String QUERY_POS = "}}";
 
     private final static String NESTED_PRE = "{\"nested\":{\"path\":\"tags\",\"query\":{\"boosting\":{\"positive\":{\"match\":{\"tags.name\":{\"query\":\"";
@@ -63,7 +63,8 @@ public class SearchUtil {
     private final static String DATE_RANGE_2 = "\",\"lte\":\"";
     private final static String DATE_RANGE_3 = "\"}}}";
 
-    private final static String SCRIPT_SCORE = "\"script_score\":{\"script\":{\"params\":{\"total_bookmarks_max\":25000,\"total_view_max\":1500000},\"source\":\"(1.00+doc['total_bookmarks'].value/params.total_bookmarks_max+doc['total_view'].value/params.total_view_max)\"}}";
+    private final static String SCRIPT_SCORE = "\"script_score\":{\"script\":{\"params\":{\"total_bookmarks_max\":35000,\"total_view_max\":2500000},\"source\":\"(1.00+doc['total_bookmarks'].value/params.total_bookmarks_max+doc['total_view'].value/params.total_view_max)\"}}";
+    private final static String SORT = "\"sort\":[\"_score\",{\"total_bookmarks\":{\"order\":\"desc\"}},{\"total_view\":{\"order\":\"desc\"}}],";
 
     public String build(
             String keyword,
@@ -80,7 +81,9 @@ public class SearchUtil {
             int minTotalBookmarks,
             int minTotalView) {
         StringBuilder stringBuilder = new StringBuilder(PRE);
-        stringBuilder.append(FROM)
+        stringBuilder
+                .append(SORT)
+                .append(FROM)
                 .append((page- 1) * pageSize)
                 .append(DOT)
                 .append(SIZE)
@@ -124,10 +127,10 @@ public class SearchUtil {
                     .append(DOT);
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
-        stringBuilder.append(FILTER_POS);
+        stringBuilder.append(FILTER_POS);//.append(DOT);
 
         //末尾
-        stringBuilder.append(SCRIPT_SCORE)
+        stringBuilder//.append(SCRIPT_SCORE)
                 .append(QUERY_POS)
                 .append(POS);
 
@@ -156,7 +159,4 @@ public class SearchUtil {
         );
     }
 
-    public void searchByImage(String imageUrl) {
-
-    }
 }

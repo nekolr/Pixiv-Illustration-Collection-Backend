@@ -23,9 +23,9 @@ spring:
     host: redis
     port: 6379
   datasource:
-    url: jdbc:mysql://mysql:3306/pixivic-test?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://mysql:3306/pixivic?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     username: root
-    password:
+    password: Cheerfun.dev
     type: com.alibaba.druid.pool.DruidDataSource
     batch:
       job:

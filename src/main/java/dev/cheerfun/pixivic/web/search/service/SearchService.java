@@ -6,19 +6,20 @@ import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.util.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import dev.cheerfun.pixivic.web.search.exception.SearchException;
-import dev.cheerfun.pixivic.web.search.model.Response.BangumiSearchResponse;
-import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchCandidatesResponse;
-import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchSuggestion;
-import dev.cheerfun.pixivic.web.search.model.Response.YoudaoTranslatedResponse;
+import dev.cheerfun.pixivic.web.search.model.Response.*;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
+import dev.cheerfun.pixivic.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.web.search.util.SearchUtil;
 import dev.cheerfun.pixivic.web.search.util.YouDaoTranslatedUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.servlet.HandlerMapping;
 import org.springframework.web.util.HtmlUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -46,6 +47,7 @@ public class SearchService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final SearchUtil searchUtil;
+    private final ImageSearchUtil imageSearchUtil;
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
     public PixivSearchCandidatesResponse getCandidateWords(String keyword) throws IOException, InterruptedException {
@@ -71,11 +73,11 @@ public class SearchService {
         String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
         List<PixivSearchSuggestion> pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
         });
-        return pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(),pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList());
+        return pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList());
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
-        return new SearchSuggestion(translatedByYouDao(keyword),keyword);
+        return new SearchSuggestion(translatedByYouDao(keyword), keyword);
     }
 
     private BangumiSearchResponse getSearchSuggestionFromBangumi(String keyword) throws IOException, InterruptedException {
@@ -126,8 +128,8 @@ public class SearchService {
         }
         assert youdaoTranslatedResponse != null;
         List<String> keywordTranslated = youdaoTranslatedResponse.getResult();
-        if(keywordTranslated==null) {
-            throw new SearchException(HttpStatus.BAD_REQUEST,"关键词非中文，自动翻译失败");
+        if (keywordTranslated == null) {
+            throw new SearchException(HttpStatus.BAD_REQUEST, "关键词非中文，自动翻译失败");
         }
         return keywordTranslated.get(0);
     }
@@ -149,7 +151,22 @@ public class SearchService {
         return searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView));
     }
 
-    public void searchByImage(String imageUrl) {
-        searchUtil.searchByImage(imageUrl);
+    public CompletableFuture<SaucenaoResponse> searchByImage(String imageUrl) {
+        return imageSearchUtil.searchBySaucenao(imageUrl);
+    }
+
+    public String getKeyword(HttpServletRequest request) {
+        final String path =
+                request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
+        final String bestMatchingPattern =
+                request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString();
+        String arguments = new AntPathMatcher().extractPathWithinPattern(bestMatchingPattern, path);
+        String moduleName;
+        if (!arguments.isEmpty()) {
+            moduleName = arguments.replace("/pixivSuggestions", "");
+        } else {
+            moduleName = "";
+        }
+        return moduleName;
     }
 }

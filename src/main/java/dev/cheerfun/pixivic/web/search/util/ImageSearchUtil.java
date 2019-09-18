@@ -2,11 +2,12 @@ package dev.cheerfun.pixivic.web.search.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.web.search.model.Response.SaucenaoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -26,7 +27,7 @@ import java.util.concurrent.CompletableFuture;
  * @date 2019/09/10 9:54
  * @description ImageSearchUtil
  */
-//@Component
+@Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageSearchUtil {
     private final HttpClient httpClient;
@@ -39,7 +40,7 @@ public class ImageSearchUtil {
     private int length;
     private List<String> tokens;
 
-    @PostConstruct
+    //@PostConstruct
     public void init(@Value("${saucenao.token.path}") String path) throws IOException {
         File json = new File(path);
         tokens = objectMapper.readValue(json, new TypeReference<ArrayList<String>>() {
@@ -47,12 +48,20 @@ public class ImageSearchUtil {
         length = tokens.size();
     }
 
-    public CompletableFuture<HttpResponse<String>> searchBySaucenao(String url) {
+    public CompletableFuture<SaucenaoResponse> searchBySaucenao(String url) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(SAUCENAO_URL_1 + url + SAUCENAO_URL_2 + tokens.get(random.nextInt(length))))
                 .GET()
                 .build();
-        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString());
+        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(s -> {
+            SaucenaoResponse saucenaoResponse= null;
+            try {
+                saucenaoResponse = objectMapper.readValue(s.body(), new TypeReference<SaucenaoResponse>() {});
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return saucenaoResponse;
+        });
     }
 
     public CompletableFuture<HttpResponse<String>> searchByAscii2D(String url) {

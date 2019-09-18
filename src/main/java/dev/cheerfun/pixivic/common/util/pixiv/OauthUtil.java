@@ -51,6 +51,7 @@ final public class OauthUtil {
         });
         //账号初始化
         oauths.stream().parallel().forEach(this::oauthInit);
+        oauths.forEach(oauth -> System.out.println(oauth.getAccess_token()));
         length = oauths.size();
 
     }
@@ -61,8 +62,8 @@ final public class OauthUtil {
                         , "username", oauth.getUsername(), "password", oauth.getPassword(), "device_token", device_token
                         , "get_secure_url", "true"));
         oauth.setAccess_token(refreshToken(RequestUtil.getPostEntity(paramMap)));
-        paramMap.replace("grant_type", "refresh_token");
-        paramMap.put("refresh_token", refresh_token);
+        //paramMap.replace("grant_type", "refresh_token");
+        //paramMap.put("refresh_token", refresh_token);
         oauth.setParam(RequestUtil.getPostEntity(paramMap));
     }
 

@@ -12,12 +12,13 @@ import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -37,30 +38,40 @@ public class ArtistService {
 
     public void pullArtistsInfo(List<Integer> artistIds) throws InterruptedException {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
-        int taskSum = artistIdsToDownload.size();
-        List<Artist> artists = new ArrayList<>(Collections.nCopies(taskSum, null));
-        final CountDownLatch cd = new CountDownLatch(taskSum);
-        artistIdsToDownload.stream().parallel().forEach(i -> {
-            requestUtil.getJson("https://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios")
-                    .orTimeout(10, TimeUnit.SECONDS).whenComplete((result, throwable) -> {
-                if ("false".equals(result)) {
-                    this.addToWaitingList(i);
-                }
-                try {
-                    Artist artist = ArtistDTO.castToArtist(objectMapper.readValue(result, new TypeReference<ArtistDTO>() {
-                    }));
-                    artists.set(i, artist);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                cd.countDown();
-            });
-        });
-        cd.await(taskSum, TimeUnit.SECONDS);
-        artists.removeIf(Objects::isNull);
-        System.out.println(artists);
-        if (artists.size() != 0)
-            artistMapper.insert(artists);
+        //List<Artist> artists = new ArrayList<>(Collections.nCopies(taskSum, null));
+        //  final CountDownLatch cd = new CountDownLatch(taskSum);
+        List<Artist> artistList = artistIdsToDownload.stream().parallel().distinct().map(i -> {
+            try {
+                return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios")
+                        .thenApply(result -> {
+                            if ("false".equals(result)) {
+                                this.addToWaitingList(i);
+                                return null;
+                            }
+                            Artist artist = null;
+                            try {
+                                artist = ArtistDTO.castToArtist(objectMapper.readValue(result, new TypeReference<ArtistDTO>() {
+                                }));
+                                //System.out.println(artist);
+
+                                //  System.out.println(artists[i]);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            // cd.countDown();
+                            return artist;
+                        }).get();
+            } catch (InterruptedException | ExecutionException e) {
+                e.printStackTrace();
+            }
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
+        //     cd.await(taskSum, TimeUnit.SECONDS);
+        //artists.removeIf(Objects::isNull);
+      // artistList.forEach(System.out::println);
+        if (artistList.size() != 0)
+            artistMapper.insert(artistList);
+        System.out.println("画师信息入库完毕");
     }
 
     private void dealReDownload() throws InterruptedException {

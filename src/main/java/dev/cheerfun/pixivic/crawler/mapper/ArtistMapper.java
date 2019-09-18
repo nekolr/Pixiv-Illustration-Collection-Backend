@@ -24,7 +24,7 @@ public interface ArtistMapper {
             "(#{artist.id}, #{artist.name}," +
                     "#{artist.account}, #{artist.avatar}," +
                     "#{artist.comment}, #{artist.gender}," +
-                    "#{artist.birthDay #{artist.region}," +
+                    "#{artist.birthDay}, #{artist.region}," +
                     "#{artist.webPage}, #{artist.twitterAccount}," +
                     "#{artist.twitterUrl}, #{artist.totalFollowUsers}," +
                     "#{artist.totalIllustBookmarksPublic})",

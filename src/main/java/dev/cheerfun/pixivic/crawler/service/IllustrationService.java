@@ -92,7 +92,7 @@ public class IllustrationService {
                         });
             });
         });
-        cd.await(10 * taskSum, TimeUnit.SECONDS);
+        cd.await(200, TimeUnit.SECONDS);
         while (waitForReDownload.removeIf(Objects::isNull)) {
             dealReDownload(date.toString(), waitForReDownload, illustrationLists);
         }
@@ -105,7 +105,6 @@ public class IllustrationService {
 
     private CompletableFuture<List<Illustration>> getDayRankInfo(ModeMeta modeMeta, String date, Integer index, List<String> waitForReDownload) {
         return getDayRankInfo(modeMeta.getMode(), date, index)
-                .orTimeout(10, TimeUnit.SECONDS)
                 .thenApply(result -> {
                     if ("false".equals(result)) {
                         System.err.println("获取信息失败");
@@ -154,7 +153,8 @@ public class IllustrationService {
         illustrationMapper.insertTag(tags);
         System.out.println("标签入库完毕");
         //获取标签id
-        illustrations.stream().parallel().forEach(illustration -> illustration.getTags().forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(),tag.getTranslatedName()))));
+        tags.forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(),tag.getTranslatedName())));
+       // illustrations.stream().parallel().forEach(illustration -> illustration.getTags().forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(),tag.getTranslatedName()))));
         System.out.println("标签id取回完毕");
         illustrationMapper.insert(illustrations);
         System.out.println("画作入库完毕");

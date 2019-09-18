@@ -19,7 +19,7 @@ import java.util.List;
 public interface IllustrationMapper {
     @Insert("<script>" +
             "REPLACE  INTO " +
-            "illusts(illust_id,title,type,caption,restrict,artist,tools,tags,create_date,page_count,width,height,sanity_level,x_restrict,total_bookmarks,total_view,image_urls,artist_id) " +
+            "illusts (`illust_id`, `title`, `type`, `caption`, `restrict`, `artist`, `tools`, `tags`, `create_date`, `page_count`, `width`, `height`, `sanity_level`, `x_restrict`, `total_bookmarks`, `total_view`, `image_urls`, `artist_id`)" +
             "VALUES" +
             "<foreach collection='illustrations' item='illustration' index='index'  separator=','>" +
             "(#{illustration.id}," +
@@ -36,10 +36,10 @@ public interface IllustrationMapper {
             "#{illustration.height}," +
             "#{illustration.sanityLevel}," +
             "#{illustration.xRestrict}," +
-            "#{illustration.totalView}," +
             "#{illustration.totalBookmarks}," +
+            "#{illustration.totalView}," +
             "#{illustration.imageUrls,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler}," +
-            "#{illustration.artistId} )" +
+            "#{illustration.artistId})" +
             "</foreach>" +
             "</script>")
     int insert(@Param("illustrations") List<Illustration> illustrations);
@@ -69,7 +69,7 @@ public interface IllustrationMapper {
     int insertTagIllustRelation(@Param("illustrations") List<Illustration> illustrations);
 
     @Select({
-            "SELECT tag_id FROM tags WHERE NAME = #{name} AND translated_name = #{translatedName})"
+            "SELECT tag_id FROM tags WHERE NAME = #{name} AND translated_name = #{translatedName}"
     })
-    long getTagId(String name, String translatedName);
+    Long getTagId(String name, String translatedName);
 }

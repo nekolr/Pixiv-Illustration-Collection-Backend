@@ -19,7 +19,6 @@ import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -49,8 +48,9 @@ final public class RequestUtil {
                 .header("Authorization", "Bearer " + oauth.getAccess_token())
                 .GET()
                 .build();
-        return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).orTimeout(5, TimeUnit.SECONDS).thenApply(resp -> {
+        return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
             int code = resp.statusCode();
+            //System.out.println(resp.body().length());
             if (code == 403) {
                 oauthUtil.ban(randomOauthIndex);
                 return "false";

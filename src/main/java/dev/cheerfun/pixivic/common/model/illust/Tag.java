@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.common.model.illust;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 
 /**
@@ -11,8 +10,7 @@ import lombok.Data;
  */
 @Data
 public class Tag {
-    @JsonIgnore
-    private long id;
+    private Long id;
     private String name;
     private String translatedName;
 }
