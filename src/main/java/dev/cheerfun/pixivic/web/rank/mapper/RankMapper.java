@@ -13,7 +13,7 @@ import org.apache.ibatis.annotations.Select;
  */
 @Mapper
 public interface RankMapper {
-    @Insert("insert into ranks values(#{rank.date}, #{rank.mode},#{rank.data,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler})")
+    @Insert("insert into ranks values(#{date}, #{mode},#{data,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler})")
     int insert(Rank rank);
 
     @Select("select * from ranks where date = #{date} and mode= #{mode}")
