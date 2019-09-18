@@ -13,7 +13,7 @@ import java.util.List;
  */
 @Data
 public class Rank {
-    private List<Illustration> illustrations;
+    private List<Illustration> data;
     private String mode;
     private String date;
 }

@@ -25,7 +25,7 @@ public class RankController {
     public ResponseEntity<Result<String>> insert(@RequestBody Rank rank) {
         boolean result = rankService.insert(rank);
         String message;
-        HttpStatus httpStatus = null;
+        HttpStatus httpStatus;
         if (result) {
             message = "插入成功";
             httpStatus = HttpStatus.OK;
