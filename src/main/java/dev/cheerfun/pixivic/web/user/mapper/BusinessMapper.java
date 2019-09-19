@@ -1,0 +1,71 @@
+package dev.cheerfun.pixivic.web.user.mapper;
+
+import dev.cheerfun.pixivic.common.model.Artist;
+import dev.cheerfun.pixivic.common.model.Illustration;
+import dev.cheerfun.pixivic.common.model.illust.ArtistPreView;
+import dev.cheerfun.pixivic.common.model.illust.Tag;
+import org.apache.ibatis.annotations.*;
+
+import java.util.ArrayList;
+import java.util.List;
+
+@Mapper
+public interface BusinessMapper {
+
+    @Select("select * from illusts where illust_id = #{illustId} ")
+    @Results({
+            @Result(property = "id", column = "illust_id"),
+            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
+    })
+    Illustration getIllustrationByIllustId(String illustId);
+
+    @Select("select * from illusts where artist_id = #{artistId} ")
+    @Results({
+            @Result(property = "id", column = "illust_id"),
+            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
+    })
+    Illustration getIllustrationByArtistId(String artistId);
+
+    @Select("select tags from illusts where illust_id = #{illustId} ")
+    @Results({
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
+    })
+    List<Tag> getIllustrationTagsByid(String illustId);
+
+    @Update("update illusts set tags=#{tags,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler} where id=#{illustId}")
+    Illustration updateIllustrationTagsByid(String illustId, List<Tag> tags);
+
+    @Select({"<script>",
+            "select * from illusts where illust_id in ",
+            "<foreach collection='illustIds' item='illustId' index='index' separator=',' close=')'>",
+            "#{illustId}",
+            "</foreach>",
+            "</script>"
+    })
+    @Results({
+            @Result(property = "id", column = "illust_id"),
+            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
+    })
+    List<Illustration> queryBookmarked(@Param("illustIds") ArrayList<String> illustIds);
+
+    @Select({"<script>",
+            "select * from artists where artist_id in ",
+            "<foreach collection='artistIds' item='artistId' index='index' separator=',' close=')'>",
+            "#{artistId}",
+            "</foreach>",
+            "</script>"
+    })
+    List<Artist> queryFollowed(ArrayList<String> artistIds);
+}

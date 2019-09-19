@@ -27,6 +27,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 public class CheckVerificationProcessor {
     private final CommonUtil commonUtil;
     private final StringRedisTemplate stringRedisTemplate;
+    private final String verificationCodeRedisPre="v:";
 
     @Pointcut("@annotation(dev.cheerfun.pixivic.verification.annotation.CheckVerification)")
     public void check() {
@@ -38,7 +39,7 @@ public class CheckVerificationProcessor {
         //其实这两个都不会为空，若为空在controller之前就会被拦截
         String value = commonUtil.getControllerArg(joinPoint, RequestParam.class, "value");
         String vid = commonUtil.getControllerArg(joinPoint, RequestParam.class, "vid");
-        String v = stringRedisTemplate.opsForValue().get(vid);
+        String v = stringRedisTemplate.opsForValue().get(verificationCodeRedisPre+vid);
         if (v == null) {
             throw new VerificationCheckException(HttpStatus.NOT_FOUND, "验证码不存在");
         }
@@ -46,7 +47,7 @@ public class CheckVerificationProcessor {
         if (!value.equalsIgnoreCase(v)) {
             throw new VerificationCheckException(HttpStatus.BAD_REQUEST, "验证码错误");
         }
-        stringRedisTemplate.delete(vid);
+        stringRedisTemplate.delete(verificationCodeRedisPre+vid);
         //放行
     }
 

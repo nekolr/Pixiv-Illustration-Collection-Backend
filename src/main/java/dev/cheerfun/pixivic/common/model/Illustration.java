@@ -1,11 +1,10 @@
 package dev.cheerfun.pixivic.common.model;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import dev.cheerfun.pixivic.common.model.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.model.illust.ImageUrl;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
@@ -52,13 +51,4 @@ public class Illustration {
     }
 }
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-class ArtistPreView {
-    private Integer id;
-    private String name;
-    private String account;
-    private String avatar;
-}
 
