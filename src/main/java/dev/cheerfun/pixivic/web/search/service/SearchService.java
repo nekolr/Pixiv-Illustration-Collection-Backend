@@ -22,6 +22,7 @@ import org.springframework.web.util.HtmlUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -163,10 +164,11 @@ public class SearchService {
         String arguments = new AntPathMatcher().extractPathWithinPattern(bestMatchingPattern, path);
         String moduleName;
         if (!arguments.isEmpty()) {
-            moduleName = arguments.replace("/pixivSuggestions", "");
+
+            moduleName = arguments.substring(0, arguments.lastIndexOf("/"));
         } else {
             moduleName = "";
         }
-        return moduleName;
+        return URLDecoder.decode(moduleName, StandardCharsets.UTF_8);
     }
 }

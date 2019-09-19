@@ -19,6 +19,7 @@ public class Application {
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Referer");
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Content-Length");
         System.setProperty("jdk.internal.httpclient.disableHostnameVerification", "true");//取消主机名验证
+        System.setProperty("org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "true");
         SpringApplication.run(Application.class, args);
     }
 }
