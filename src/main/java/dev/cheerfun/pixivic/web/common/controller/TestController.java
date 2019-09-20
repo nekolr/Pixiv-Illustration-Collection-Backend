@@ -29,11 +29,11 @@ public class TestController {
     private final IllustrationPersistentService illustrationPersistentService;
 
     //@PermissionRequired(PermissionLevel.VIP)
-    @GetMapping("/test")
+   /* @GetMapping("/test")
     public String test(@RequestParam String date) throws InterruptedException {
-        //illustrationPersistentService.dailyPersistentTask();
+        illustrationPersistentService.dailyPersistentTask();
         return "233";
-    }
+    }*/
 
     /*@GetMapping("/32")
     public String login() throws InterruptedException {

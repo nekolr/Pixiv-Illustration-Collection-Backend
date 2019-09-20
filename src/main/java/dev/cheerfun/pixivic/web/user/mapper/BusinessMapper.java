@@ -21,9 +21,9 @@ public interface BusinessMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    Illustration getIllustrationByIllustId(String illustId);
+    Illustration queryIllustrationByIllustId(String illustId);
 
-    @Select("select * from illusts where artist_id = #{artistId} ")
+    @Select("select * from illusts where artist_id = #{artistId} limit #{currIndex} , #{pageSize}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
@@ -32,13 +32,13 @@ public interface BusinessMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    Illustration getIllustrationByArtistId(String artistId);
+    List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize);
 
     @Select("select tags from illusts where illust_id = #{illustId} ")
     @Results({
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    List<Tag> getIllustrationTagsByid(String illustId);
+    List<Tag> queryIllustrationTagsByid(String illustId);
 
     @Update("update illusts set tags=#{tags,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler} where id=#{illustId}")
     Illustration updateIllustrationTagsByid(String illustId, List<Tag> tags);
@@ -48,6 +48,7 @@ public interface BusinessMapper {
             "<foreach collection='illustIds' item='illustId' index='index' separator=',' close=')'>",
             "#{illustId}",
             "</foreach>",
+            " limit #{currIndex} , #{pageSize}",
             "</script>"
     })
     @Results({
@@ -58,14 +59,15 @@ public interface BusinessMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    List<Illustration> queryBookmarked(@Param("illustIds") ArrayList<String> illustIds);
+    List<Illustration> queryBookmarked(@Param("illustIds") ArrayList<String> illustIds, int currIndex, int pageSize);
 
     @Select({"<script>",
             "select * from artists where artist_id in ",
             "<foreach collection='artistIds' item='artistId' index='index' separator=',' close=')'>",
             "#{artistId}",
             "</foreach>",
+            " limit #{currIndex} , #{pageSize}",
             "</script>"
     })
-    List<Artist> queryFollowed(ArrayList<String> artistIds);
+    List<Artist> queryFollowed(ArrayList<String> artistIds, int currIndex, int pageSize);
 }

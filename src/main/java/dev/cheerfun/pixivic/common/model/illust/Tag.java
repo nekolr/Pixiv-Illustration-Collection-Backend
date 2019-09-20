@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.common.model.illust;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author OysterQAQ
@@ -9,8 +10,14 @@ import lombok.Data;
  * @description Tag
  */
 @Data
+@NoArgsConstructor
 public class Tag {
     private Long id;
     private String name;
     private String translatedName;
+
+    public Tag(String name, String translatedName) {
+        this.name = name;
+        this.translatedName = translatedName;
+    }
 }

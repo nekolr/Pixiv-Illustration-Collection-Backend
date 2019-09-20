@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.search.util;
+package dev.cheerfun.pixivic.web.common.util;
 
 import org.springframework.stereotype.Component;
 

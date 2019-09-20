@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.web.user.service;
 import dev.cheerfun.pixivic.common.model.Artist;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.web.user.exception.BusinessException;
 import dev.cheerfun.pixivic.web.user.mapper.BusinessMapper;
 import lombok.RequiredArgsConstructor;
@@ -37,12 +38,12 @@ public class BusinessService {
 
     }
 
-    public List<Illustration> queryBookmarked(int userId) {
+    public List<Illustration> queryBookmarked(int userId, int currIndex, int pageSize) {
         Set<String> illustIds = stringRedisTemplate.opsForSet().members(bookmarkRedisPre + userId);
         if (illustIds == null) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
         }
-        return businessMapper.queryBookmarked(new ArrayList<>(illustIds));
+        return businessMapper.queryBookmarked(new ArrayList<>(illustIds), currIndex,  pageSize);
     }
 
     public Boolean queryIsBookmarked(int userId, String illustId) {
@@ -53,12 +54,12 @@ public class BusinessService {
         stringRedisTemplate.opsForSet().add(followRedisPre + userId, String.valueOf(artistId));
     }
 
-    public List<Artist> queryFollowed(int userId) {
+    public List<Artist> queryFollowed(int userId, int currIndex, int pageSize) {
         Set<String> artists = stringRedisTemplate.opsForSet().members(followRedisPre + userId);
         if (artists == null) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
         }
-        return businessMapper.queryFollowed(new ArrayList<>(artists));
+        return businessMapper.queryFollowed(new ArrayList<>(artists),currIndex,pageSize);
     }
 
     public Boolean queryIsFollowed(int userId, String artistId) {
@@ -67,9 +68,16 @@ public class BusinessService {
 
     @Transactional
     public void addTag(String illustId, List<Tag> tags) {
-        List<Tag> oldTags = businessMapper.getIllustrationTagsByid(illustId);
+        List<Tag> oldTags = businessMapper.queryIllustrationTagsByid(illustId);
         oldTags.addAll(tags);
         businessMapper.updateIllustrationTagsByid(illustId, oldTags);
     }
 
+    public Tag translationTag(String tag) {
+        return new Tag(tag,YouDaoTranslatedUtil.truncate(tag));
+    }
+
+    public List<Illustration> queryIllustrationsByArtistId(String artistId,int currIndex,int pageSize) {
+        return businessMapper.queryIllustrationsByArtistId(artistId,currIndex,pageSize);
+    }
 }

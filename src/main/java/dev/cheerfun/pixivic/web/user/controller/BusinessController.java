@@ -36,8 +36,8 @@ public class BusinessController {
     }
 
     @GetMapping("/{userId}/bookmarked")
-    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @RequestHeader("Authorization") String token) {
-        List<Illustration> illustrations = businessService.queryBookmarked((int) AppContext.get().get(USER_ID));
+    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @RequestParam int page, @RequestParam int pageSize, @RequestHeader("Authorization") String token) {
+        List<Illustration> illustrations = businessService.queryBookmarked((int) AppContext.get().get(USER_ID), (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
 
@@ -54,8 +54,8 @@ public class BusinessController {
     }
 
     @GetMapping("/{userId}/followed")
-    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestHeader("Authorization") String token) {
-        List<Artist> artists = businessService.queryFollowed((int) AppContext.get().get(USER_ID));
+    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestParam int page, @RequestParam int pageSize, @RequestHeader("Authorization") String token) {
+        List<Artist> artists = businessService.queryFollowed((int) AppContext.get().get(USER_ID), (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取跟随画师列表成功", artists));
     }
 
@@ -63,6 +63,17 @@ public class BusinessController {
     public ResponseEntity<Result<Boolean>> queryIsFollowed(@PathVariable String userId, @PathVariable String artistId, @RequestHeader("Authorization") String token) {
         Boolean isFollowed = businessService.queryIsFollowed((int) AppContext.get().get(USER_ID), artistId);
         return ResponseEntity.ok().body(new Result<>("收藏成功", isFollowed));
+    }
+
+    @GetMapping("/users/{userId}/actionHistory")
+    public ResponseEntity<Result<String>> queryActionHistory(@PathVariable String userId, @RequestHeader("Authorization") String token) {
+        //查看行为历史
+        return ResponseEntity.ok().body(new Result<>("获取行为历史成功"));
+    }
+
+    @GetMapping("/artists/{artistId}/illusts")
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @RequestParam int page, @RequestParam int pageSize, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", businessService.queryIllustrationsByArtistId(artistId, (page - 1) * pageSize, pageSize)));
     }
 
     @PostMapping("/{illustId}/tags")
@@ -80,14 +91,7 @@ public class BusinessController {
 
     @GetMapping("/tags/{tag}/translation")
     public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag, @RequestHeader("Authorization") String token, @RequestBody List<String> tagList) {
-        //更新画作tag
-        return ResponseEntity.ok().body(new Result<>("获取标签翻译成功", null));
-    }
-
-    @GetMapping("/users/{userId}/actionHistory")
-    public ResponseEntity<Result<String>> queryActionHistory(@PathVariable String userId, @RequestHeader("Authorization") String token) {
-        //查看行为历史
-        return ResponseEntity.ok().body(new Result<>("获取行为历史成功"));
+        return ResponseEntity.ok().body(new Result<>("获取标签翻译成功", businessService.translationTag(tag)));
     }
 
 }

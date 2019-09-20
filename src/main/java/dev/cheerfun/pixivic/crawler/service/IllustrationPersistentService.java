@@ -19,12 +19,18 @@ import java.util.List;
 public class IllustrationPersistentService {
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
+    private volatile int count = 1;
 
-
-    @Scheduled(cron = "0 0 0 */1 * ?")
+    @Scheduled(cron = "0 0 2,3,4,5 * * ?")
     public void dailyPersistentTask() throws InterruptedException {
-        LocalDate today = LocalDate.now().plusDays(-1);
-        List<Integer> artistIds = illustrationService.pullAllRankInfo(today);
-        artistService.pullArtistsInfo(artistIds);
+        if (count < 5) {
+            LocalDate today = LocalDate.now().plusDays(-count);
+            List<Integer> artistIds = illustrationService.pullAllRankInfo(today);
+            artistService.pullArtistsInfo(artistIds);
+            count++;
+        } else {
+            count = 1;
+        }
     }
+
 }

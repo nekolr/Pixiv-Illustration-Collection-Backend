@@ -5,12 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.util.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
+import dev.cheerfun.pixivic.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.web.search.exception.SearchException;
 import dev.cheerfun.pixivic.web.search.model.Response.*;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.web.search.util.SearchUtil;
-import dev.cheerfun.pixivic.web.search.util.YouDaoTranslatedUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -72,9 +72,12 @@ public class SearchService {
                 .GET()
                 .build();
         String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-        List<PixivSearchSuggestion> pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
-        });
-        return pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList());
+        List<PixivSearchSuggestion> pixivSearchSuggestions = null;
+        if (body.contains("data-related-tags")) {
+            pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
+            });
+        }
+        return pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> pixivSearchSuggestion == null ? null : new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList());
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
