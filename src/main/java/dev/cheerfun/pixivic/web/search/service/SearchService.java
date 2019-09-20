@@ -77,7 +77,7 @@ public class SearchService {
             pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
             });
         }
-        return pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> pixivSearchSuggestion == null ? null : new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList());
+        return pixivSearchSuggestions != null ? pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList()) : null;
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
@@ -166,8 +166,7 @@ public class SearchService {
                 request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString();
         String arguments = new AntPathMatcher().extractPathWithinPattern(bestMatchingPattern, path);
         String moduleName;
-        if (!arguments.isEmpty()) {
-
+        if (!arguments.isEmpty() && arguments.contains("/")) {
             moduleName = arguments.substring(0, arguments.lastIndexOf("/"));
         } else {
             moduleName = "";
