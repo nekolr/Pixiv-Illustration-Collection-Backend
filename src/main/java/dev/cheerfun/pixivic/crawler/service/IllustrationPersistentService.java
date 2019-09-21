@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.crawler.service;
 
+import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -19,10 +20,12 @@ import java.util.List;
 public class IllustrationPersistentService {
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
+    private final OauthUtil oauthUtil;
     private volatile int count = 1;
 
-    @Scheduled(cron = "0 0 2,3,4,5 * * ?")
+    @Scheduled(cron = "0 0 3,4,5,6 * * ?")
     public void dailyPersistentTask() throws InterruptedException {
+        oauthUtil.refreshAccess_token();
         if (count < 5) {
             LocalDate today = LocalDate.now().plusDays(-count);
             List<Integer> artistIds = illustrationService.pullAllRankInfo(today);

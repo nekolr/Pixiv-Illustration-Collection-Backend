@@ -84,7 +84,6 @@ final public class OauthUtil {
         return body.substring(index + 16, index + 59);
     }
 
-    @Scheduled(cron = "0 0 */1 * * ?")
     public void refreshAccess_token() {
         oauths.stream().parallel().forEach(oauth -> refreshToken(oauth.getParam()));
     }

@@ -32,10 +32,14 @@ public class BusinessService {
     private final String followRedisPre = "u:f:";
 
     public void bookmark(int userId, int illustId) {
-        //redis中存一份联系
+        //redis中存一份联系以及增加redis中该画作收藏数
         stringRedisTemplate.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
-        //匀速往mysql更新收藏数
+        //半夜往mysql更新收藏数
 
+    }
+
+    public void cancelBookmark(int userId, int illustId) {
+        stringRedisTemplate.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
     }
 
     public List<Illustration> queryBookmarked(int userId, int currIndex, int pageSize) {
@@ -43,7 +47,7 @@ public class BusinessService {
         if (illustIds == null) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
         }
-        return businessMapper.queryBookmarked(new ArrayList<>(illustIds), currIndex,  pageSize);
+        return businessMapper.queryBookmarked(new ArrayList<>(illustIds), currIndex, pageSize);
     }
 
     public Boolean queryIsBookmarked(int userId, String illustId) {
@@ -54,12 +58,16 @@ public class BusinessService {
         stringRedisTemplate.opsForSet().add(followRedisPre + userId, String.valueOf(artistId));
     }
 
+    public void cancelFollow(int userId, int artistId) {
+        stringRedisTemplate.opsForSet().remove(followRedisPre + userId, String.valueOf(artistId));
+    }
+
     public List<Artist> queryFollowed(int userId, int currIndex, int pageSize) {
         Set<String> artists = stringRedisTemplate.opsForSet().members(followRedisPre + userId);
         if (artists == null) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
         }
-        return businessMapper.queryFollowed(new ArrayList<>(artists),currIndex,pageSize);
+        return businessMapper.queryFollowed(new ArrayList<>(artists), currIndex, pageSize);
     }
 
     public Boolean queryIsFollowed(int userId, String artistId) {
@@ -74,10 +82,11 @@ public class BusinessService {
     }
 
     public Tag translationTag(String tag) {
-        return new Tag(tag,YouDaoTranslatedUtil.truncate(tag));
+        return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
     }
 
-    public List<Illustration> queryIllustrationsByArtistId(String artistId,int currIndex,int pageSize) {
-        return businessMapper.queryIllustrationsByArtistId(artistId,currIndex,pageSize);
+    public List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize) {
+        return businessMapper.queryIllustrationsByArtistId(artistId, currIndex, pageSize);
     }
+
 }

@@ -35,6 +35,12 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("收藏成功"));
     }
 
+    @DeleteMapping("/bookmarked")
+    public ResponseEntity<Result<String>> cancelBookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
+        businessService.cancelBookmark((int) AppContext.get().get(USER_ID), bookmarkRelation.getIllustId());
+        return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
+    }
+
     @GetMapping("/{userId}/bookmarked")
     public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @RequestParam int page, @RequestParam int pageSize, @RequestHeader("Authorization") String token) {
         List<Illustration> illustrations = businessService.queryBookmarked((int) AppContext.get().get(USER_ID), (page - 1) * pageSize, pageSize);
@@ -50,6 +56,12 @@ public class BusinessController {
     @PostMapping("/followed")
     public ResponseEntity<Result<String>> follow(@RequestBody FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
         businessService.follow((int) AppContext.get().get(USER_ID), followedRelation.getArtistId());
+        return ResponseEntity.ok().body(new Result<>("follow成功"));
+    }
+
+    @DeleteMapping("/followed")
+    public ResponseEntity<Result<String>> cancelFollow(@RequestBody FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
+        businessService.cancelFollow((int) AppContext.get().get(USER_ID), followedRelation.getArtistId());
         return ResponseEntity.ok().body(new Result<>("follow成功"));
     }
 
