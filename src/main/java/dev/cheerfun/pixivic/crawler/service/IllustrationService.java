@@ -40,13 +40,9 @@ public class IllustrationService {
     private static final List<ModeMeta> modes;
     private static final HashMap<String, Integer> modeIndex;
     private static final Integer taskSum;
-   // private static volatile List<List<Illustration>> illustrationLists;
-  //  private static volatile List<String> waitForReDownload;
 
     static {
         taskSum = 133;
-    //    illustrationLists = new ArrayList<>(Collections.nCopies(taskSum, null));
-   //     waitForReDownload = new ArrayList<>(Collections.nCopies(taskSum, null));
         modeIndex = new HashMap<>(11) {{
             put("day", 0);
             put("week", 17);
@@ -154,7 +150,6 @@ public class IllustrationService {
         System.out.println("标签入库完毕");
         //获取标签id
         tags.forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(),tag.getTranslatedName())));
-       // illustrations.stream().parallel().forEach(illustration -> illustration.getTags().forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(),tag.getTranslatedName()))));
         System.out.println("标签id取回完毕");
         illustrationMapper.insert(illustrations);
         System.out.println("画作入库完毕");

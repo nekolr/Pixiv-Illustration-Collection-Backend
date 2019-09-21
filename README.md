@@ -68,7 +68,7 @@
 
 ### 架构图
 
-![](https://upload.cc/i1/2019/09/07/p5wksW.png)
+![](https://upload.cc/i1/2019/09/21/LC8gfm.png)
 
 
 

@@ -29,6 +29,7 @@ public class BusinessService {
     private final StringRedisTemplate stringRedisTemplate;
     private final BusinessMapper businessMapper;
     private final String bookmarkRedisPre = "u:b:";
+    private final String bookmarkCountRedisPre = "u:bc:";
     private final String followRedisPre = "u:f:";
 
     public void bookmark(int userId, int illustId) {

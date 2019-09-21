@@ -86,6 +86,7 @@ final public class OauthUtil {
 
     public void refreshAccess_token() {
         oauths.stream().parallel().forEach(oauth -> refreshToken(oauth.getParam()));
+        oauths.forEach(oauth -> System.out.println(oauth.getAccess_token()));
     }
 
     public int getRandomOauthIndex() {

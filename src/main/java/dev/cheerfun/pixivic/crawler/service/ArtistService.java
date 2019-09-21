@@ -38,8 +38,6 @@ public class ArtistService {
 
     public void pullArtistsInfo(List<Integer> artistIds) throws InterruptedException {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
-        //List<Artist> artists = new ArrayList<>(Collections.nCopies(taskSum, null));
-        //  final CountDownLatch cd = new CountDownLatch(taskSum);
         List<Artist> artistList = artistIdsToDownload.stream().parallel().distinct().map(i -> {
             try {
                 return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios")
@@ -66,9 +64,6 @@ public class ArtistService {
             }
             return null;
         }).filter(Objects::nonNull).collect(Collectors.toList());
-        //     cd.await(taskSum, TimeUnit.SECONDS);
-        //artists.removeIf(Objects::isNull);
-      // artistList.forEach(System.out::println);
         if (artistList.size() != 0)
             artistMapper.insert(artistList);
         System.out.println("画师信息入库完毕");

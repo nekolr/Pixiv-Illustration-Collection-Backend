@@ -28,7 +28,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<Result> handleBaseException(MethodArgumentNotValidException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("参数不正确"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("参数错误"));
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)
@@ -40,11 +40,17 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Result> handleConstraintViolationException(SendFailedException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("邮箱地址错误"));
     }
-/*    @ExceptionHandler(Exception.class)//可以用来找异常类
-    public ResponseEntity handleException(Exception ae) {
-        System.out.println(ae);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result<>("登录异常"));
-        // return null;
-    }*/
+
+    @ExceptionHandler(value = IllegalArgumentException.class)
+    public ResponseEntity<Result> handleIllegalArgumentException(IllegalArgumentException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("参数错误"));
+    }
+
+    /*    @ExceptionHandler(Exception.class)//可以用来找异常类
+        public ResponseEntity handleException(Exception ae) {
+            System.out.println(ae);
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result<>("登录异常"));
+            // return null;
+        }*/
 
 }
