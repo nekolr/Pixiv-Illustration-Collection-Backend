@@ -51,11 +51,13 @@ public class BusinessService {
             @Override
             public List<Object> execute(RedisOperations operations) throws DataAccessException {
                 operations.multi();
-                if (increment > 0 && !operations.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId))) {
-                    operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
-                    operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
-                } else if (increment < 0&&operations.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId))) {
-                    operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+                Long result;
+                if (increment > 0) {
+                    result = operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
+                } else {
+                    result = operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+                }
+                if (result != null&&result!=0L) {
                     operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
                 }
                 return operations.exec();
