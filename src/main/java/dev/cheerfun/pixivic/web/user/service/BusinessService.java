@@ -47,19 +47,21 @@ public class BusinessService {
 
     private void bookmarkOperation(int userId, int illustId, int increment) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
+        if ((increment > 0 && stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId)))
+                || (increment < 0 && !stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId)))
+        ) {
+           throw new BusinessException(HttpStatus.BAD_REQUEST,"用户与画作的收藏关系请求错误");
+        }
         stringRedisTemplate.execute(new SessionCallback<>() {
             @Override
             public List<Object> execute(RedisOperations operations) throws DataAccessException {
                 operations.multi();
-                Long result;
                 if (increment > 0) {
-                    result = operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
+                    operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
                 } else {
-                    result = operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+                    operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
                 }
-                if (result != null&&result!=0L) {
-                    operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
-                }
+                operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
                 return operations.exec();
             }
         });
