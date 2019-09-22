@@ -41,8 +41,8 @@ public class SearchController {
     }
 
     @GetMapping("/keywords/**/suggestions")
-    public ResponseEntity<Result<List<SearchSuggestion>>> getSearchSuggestion(HttpServletRequest request) throws IOException, InterruptedException {
-        return ResponseEntity.ok().body(new Result<>("搜索建议获取成功", searchService.getSearchSuggestion(searchService.getKeyword(request))));
+    public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getSearchSuggestion(HttpServletRequest request) throws IOException, InterruptedException {
+        return searchService.getSearchSuggestion(searchService.getKeyword(request)).thenApply(r->ResponseEntity.ok().body(new Result<>("搜索建议获取成功", r)));
     }
 
     @GetMapping("/keywords/**/pixivSuggestions")

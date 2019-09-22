@@ -143,12 +143,12 @@ public class SearchUtil {
                 .uri(URI.create("http://"+elasticsearch+":9200/illust/_search"))
                 .method("GET", HttpRequest.BodyPublishers.ofString(body))
                 .build();
-        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body).thenApply(
-                b -> {
+        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(
+                r -> {
                     //System.out.println(b);
                     ElasticsearchResponse elasticsearchResponse = null;
                     try {
-                        elasticsearchResponse = objectMapper.readValue(b, new TypeReference<ElasticsearchResponse>() {
+                        elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<ElasticsearchResponse>() {
                         });
                     } catch (IOException e) {
                         e.printStackTrace();

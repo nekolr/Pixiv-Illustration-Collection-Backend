@@ -55,14 +55,18 @@ public class SearchService {
         return (PixivSearchCandidatesResponse) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + keyword, PixivSearchCandidatesResponse.class);
     }
 
-    public List<SearchSuggestion> getSearchSuggestion(String keyword) throws IOException, InterruptedException {
-        BangumiSearchResponse bangumi = getSearchSuggestionFromBangumi(keyword);
-        List<SearchSuggestion> searchSuggestions = BangumiSearchResponse.castToSearchSuggestionList(bangumi);
-        //平均分小于4则进行萌娘百科检索+有道翻译
-        if (BangumiSearchResponse.getAvgSum(bangumi) < 4) {
-            searchSuggestions.addAll(getSearchSuggestionFromMoeGirl(keyword));
-        }
-        return searchSuggestions;
+    public CompletableFuture<List<SearchSuggestion>> getSearchSuggestion(String keyword) throws IOException, InterruptedException {
+        return getSearchSuggestionFromBangumi(keyword).thenCompose(result -> {
+            List<SearchSuggestion> searchSuggestions = BangumiSearchResponse.castToSearchSuggestionList(result);
+            //平均分小于4则进行萌娘百科检索+有道翻译
+            if (BangumiSearchResponse.getAvgSum(result) < 4) {
+                return getSearchSuggestionFromMoeGirl(keyword).whenComplete((r, t) -> {
+                    searchSuggestions.addAll(r);
+                });
+            }
+            return CompletableFuture.completedFuture(searchSuggestions);
+        });
+
     }
 
     public List<SearchSuggestion> getPixivSearchSuggestion(String keyword) throws IOException, InterruptedException {
@@ -84,26 +88,36 @@ public class SearchService {
         return new SearchSuggestion(translatedByYouDao(keyword), keyword);
     }
 
-    private BangumiSearchResponse getSearchSuggestionFromBangumi(String keyword) throws IOException, InterruptedException {
+    private CompletableFuture<BangumiSearchResponse> getSearchSuggestionFromBangumi(String keyword) throws IOException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://api.bgm.tv/search/subject/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8) + "?app_id=bgm11725d4d9360d4cf5&max_results=3&responseGroup=large&start=0"))
                 .build();
-        BangumiSearchResponse bangumiSearchResponse = (BangumiSearchResponse) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(BangumiSearchResponse.class)).body();
-        return bangumiSearchResponse;
+        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body).thenApply(s -> {
+            BangumiSearchResponse bangumiSearchResponse = null;
+            try {
+                bangumiSearchResponse = objectMapper.readValue(s, new TypeReference<BangumiSearchResponse>() {
+                });
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return bangumiSearchResponse;
+        });
     }
 
-    public List<SearchSuggestion> getSearchSuggestionFromMoeGirl(String keyword) throws IOException, InterruptedException {
+    public CompletableFuture<List<SearchSuggestion>> getSearchSuggestionFromMoeGirl(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://zh.moegirl.org/index.php?limit=2&search=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
                 .build();
         //正则提取关键词
-        String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-        return moeGirlPattern.matcher(body).results().map(result -> {
-            String matchKeyword = result.group();
-            return new SearchSuggestion(matchKeyword, translatedByYouDao(keyword));
-        }).collect(Collectors.toList());
+        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r ->
+                moeGirlPattern.matcher(r.body()).results().map(result -> {
+                    String matchKeyword = result.group();
+                    return new SearchSuggestion(matchKeyword, translatedByYouDao(keyword));
+                }).collect(Collectors.toList())
+        );
+
     }
 
     public String translatedByYouDao(String keyword) {
