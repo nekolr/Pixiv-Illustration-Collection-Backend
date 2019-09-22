@@ -40,7 +40,7 @@ public interface BusinessMapper {
     })
     List<Tag> queryIllustrationTagsByid(String illustId);
 
-    @Update("update illusts set tags=#{tags,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler} where id=#{illustId}")
+    @Update("update illusts set tags=#{tags,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler} where illust_id=#{illustId}")
     Illustration updateIllustrationTagsByid(String illustId, List<Tag> tags);
 
     @Select({"<script>",
@@ -70,4 +70,10 @@ public interface BusinessMapper {
             "</script>"
     })
     List<Artist> queryFollowed(ArrayList<String> artistIds, int currIndex, int pageSize);
+
+    @Update("update illusts set total_bookmarks=total_bookmarks+#{increment}  where illust_id=#{illustId}")
+    int updateIllustBookmark(int illustId, int increment);
+
+    @Update("update users set star=star+#{increment}  where user_id=#{userId}")
+    int updateUserStar(int userId, int increment);
 }

@@ -8,13 +8,18 @@ import dev.cheerfun.pixivic.web.user.exception.BusinessException;
 import dev.cheerfun.pixivic.web.user.mapper.BusinessMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.core.RedisOperations;
+import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -29,18 +34,43 @@ public class BusinessService {
     private final StringRedisTemplate stringRedisTemplate;
     private final BusinessMapper businessMapper;
     private final String bookmarkRedisPre = "u:b:";
-    private final String bookmarkCountRedisPre = "u:bc:";
+    private final String bookmarkCountMapRedisPre = "u:bcm";
     private final String followRedisPre = "u:f:";
 
     public void bookmark(int userId, int illustId) {
-        //redis中存一份联系以及增加redis中该画作收藏数
-        stringRedisTemplate.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
-        //半夜往mysql更新收藏数
-
+        bookmarkOperation(userId, illustId, 1);
     }
 
     public void cancelBookmark(int userId, int illustId) {
-        stringRedisTemplate.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+        bookmarkOperation(userId, illustId, -1);
+    }
+
+    private void bookmarkOperation(int userId, int illustId, int increment) {
+        //redis修改联系以及修改redis中该画作收藏数(事务)
+        stringRedisTemplate.execute(new SessionCallback<>() {
+            @Override
+            public List<Object> execute(RedisOperations operations) throws DataAccessException {
+                operations.multi();
+                if (increment > 0) {
+                    operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
+                } else {
+                    operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+                }
+                operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
+                return operations.exec();
+            }
+        });
+    }
+
+    @Scheduled(cron = "0 0 16 * * ?")
+    private void flushBookmarkCountToDb() {
+        //半夜三点往mysql更新收藏数
+        Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(bookmarkCountMapRedisPre);
+        for (Map.Entry<Object, Object> entry : map.entrySet()) {
+            int illustId = Integer.parseInt(entry.getKey().toString());
+            int increment = Integer.parseInt(entry.getValue().toString());
+            businessMapper.updateIllustBookmark(illustId, increment);
+        }
     }
 
     public List<Illustration> queryBookmarked(int userId, int currIndex, int pageSize) {
@@ -76,10 +106,13 @@ public class BusinessService {
     }
 
     @Transactional
-    public void addTag(String illustId, List<Tag> tags) {
+    public void addTag(int userId, String illustId, List<Tag> tags) {
         List<Tag> oldTags = businessMapper.queryIllustrationTagsByid(illustId);
         oldTags.addAll(tags);
         businessMapper.updateIllustrationTagsByid(illustId, oldTags);
+        //用户积分增加
+        int starIncrement = 10;
+        businessMapper.updateUserStar(userId, starIncrement);
     }
 
     public Tag translationTag(String tag) {

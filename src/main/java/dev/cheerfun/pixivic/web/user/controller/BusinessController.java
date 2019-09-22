@@ -90,8 +90,7 @@ public class BusinessController {
 
     @PostMapping("/{illustId}/tags")
     public ResponseEntity<Result<String>> addTag(@PathVariable String illustId, @RequestHeader("Authorization") String token, @RequestBody List<Tag> tags) {
-        businessService.addTag(illustId, tags);
-        //用户积分增加
+        businessService.addTag((int) AppContext.get().get(USER_ID),illustId, tags);
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
     }
 
