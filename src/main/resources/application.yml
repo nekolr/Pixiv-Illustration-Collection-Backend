@@ -56,7 +56,7 @@ pixiv:
     client_secret: W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP
     refresh_token: 07FHA5xA6NkOIxIayqm3tZbJqxbypDJHrXguT7cazLI
     device_token: fb12e7c1945000850deb5f7001c02745
-    config: D:\user2.json
+    config: /home/PIC/user2.json
 mybatis:
   configuration:
     mapUnderscoreToCamelCase: true

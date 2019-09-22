@@ -26,7 +26,7 @@ public class IllustrationPersistentService {
     @Scheduled(cron = "0 0 3,4,5,6 * * ?")
     public void dailyPersistentTask() throws InterruptedException {
         if (count < 5) {
-            oauthUtil.refreshAccess_token();
+           // oauthUtil.refreshAccess_token();
             LocalDate today = LocalDate.now().plusDays(-count);
             List<Integer> artistIds = illustrationService.pullAllRankInfo(today);
             artistService.pullArtistsInfo(artistIds);

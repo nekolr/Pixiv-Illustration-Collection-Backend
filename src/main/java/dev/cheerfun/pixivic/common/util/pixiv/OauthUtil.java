@@ -24,7 +24,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class OauthUtil {
     private final HttpClient httpClient;
-    private final ObjectMapper objectMapper ;
+    private final ObjectMapper objectMapper;
     @Value("${pixiv.oauth.client_id}")
     private String client_id;
     @Value("${pixiv.oauth.client_secret}")
@@ -84,6 +84,7 @@ final public class OauthUtil {
         return body.substring(index + 16, index + 59);
     }
 
+    @Scheduled(cron = "0 0 * * * ?")
     public void refreshAccess_token() {
         oauths.stream().parallel().forEach(oauth -> refreshToken(oauth.getParam()));
         oauths.forEach(oauth -> System.out.println(oauth.getAccess_token()));

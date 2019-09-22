@@ -72,6 +72,19 @@ final public class RequestUtil {
         return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
     }
 
+    public CompletableFuture<String> getJsonAsync(String url) {
+        HttpRequest.Builder uri = HttpRequest.newBuilder()
+                .uri(URI.create(url));
+        decorateHeader(uri);
+        int randomOauthIndex = oauthUtil.getRandomOauthIndex();
+        Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
+        HttpRequest getRank = uri
+                .header("Authorization", "Bearer " + oauth.getAccess_token())
+                .GET()
+                .build();
+        return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body);
+    }
+
     private static String[] gethash() {
         SimpleDateFormat simpleDateFormat;
         String fortmat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";

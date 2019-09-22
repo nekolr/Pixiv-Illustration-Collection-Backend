@@ -36,22 +36,22 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/keywords/**/candidates")
-    public ResponseEntity<Result<PixivSearchCandidatesResponse>> getCandidateWords(HttpServletRequest request) throws IOException, InterruptedException {
-        return ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", searchService.getCandidateWords(searchService.getKeyword(request))));
+    public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) throws IOException, InterruptedException {
+        return searchService.getCandidateWords(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", r)));
     }
 
     @GetMapping("/keywords/**/suggestions")
     public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getSearchSuggestion(HttpServletRequest request) throws IOException, InterruptedException {
-        return searchService.getSearchSuggestion(searchService.getKeyword(request)).thenApply(r->ResponseEntity.ok().body(new Result<>("搜索建议获取成功", r)));
+        return searchService.getSearchSuggestion(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议获取成功", r)));
     }
 
     @GetMapping("/keywords/**/pixivSuggestions")
-    public ResponseEntity<Result<List<SearchSuggestion>>> getPixivSearchSuggestion(HttpServletRequest request) throws IOException, InterruptedException {
-        return ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", searchService.getPixivSearchSuggestion(searchService.getKeyword(request))));
+    public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getPixivSearchSuggestion(HttpServletRequest request) throws IOException, InterruptedException {
+        return searchService.getPixivSearchSuggestion(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", r)));
     }
 
     @GetMapping("/keywords/**/translations")
-    public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request)  {
+    public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request) {
         return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(searchService.getKeyword(request))));
     }
 

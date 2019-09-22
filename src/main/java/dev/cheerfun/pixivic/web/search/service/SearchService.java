@@ -27,6 +27,7 @@ import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -51,11 +52,21 @@ public class SearchService {
     private final ImageSearchUtil imageSearchUtil;
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
-    public PixivSearchCandidatesResponse getCandidateWords(String keyword) throws IOException, InterruptedException {
-        return (PixivSearchCandidatesResponse) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + keyword, PixivSearchCandidatesResponse.class);
+    public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(String keyword) {
+        return requestUtil.getJsonAsync("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
+                .thenApply(r -> {
+                    PixivSearchCandidatesResponse pixivSearchCandidatesResponse = null;
+                    try {
+                        pixivSearchCandidatesResponse = objectMapper.readValue(r, new TypeReference<PixivSearchCandidatesResponse>() {
+                        });
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                    return pixivSearchCandidatesResponse;
+                });
     }
 
-    public CompletableFuture<List<SearchSuggestion>> getSearchSuggestion(String keyword) throws IOException, InterruptedException {
+    public CompletableFuture<List<SearchSuggestion>> getSearchSuggestion(String keyword) {
         return getSearchSuggestionFromBangumi(keyword).thenCompose(result -> {
             List<SearchSuggestion> searchSuggestions = BangumiSearchResponse.castToSearchSuggestionList(result);
             //平均分小于4则进行萌娘百科检索+有道翻译
@@ -69,34 +80,40 @@ public class SearchService {
 
     }
 
-    public List<SearchSuggestion> getPixivSearchSuggestion(String keyword) throws IOException, InterruptedException {
+    public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(String keyword) throws IOException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("accept-language", "zh-CN,zh;q=0.9")
                 .uri(URI.create("https://proxy.pixivic.com:23334/search.php?s_mode=s_tag&word=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
                 .GET()
                 .build();
-        String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-        List<PixivSearchSuggestion> pixivSearchSuggestions = null;
-        if (body.contains("data-related-tags")) {
-            pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
-            });
-        }
-        return pixivSearchSuggestions != null ? pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList()) : null;
+        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r -> {
+            String body = r.body();
+            List<PixivSearchSuggestion> pixivSearchSuggestions = null;
+            if (body.contains("data-related-tags")) {
+                try {
+                    pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            return pixivSearchSuggestions != null ? pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList()) : null;
+        });
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
         return new SearchSuggestion(translatedByYouDao(keyword), keyword);
     }
 
-    private CompletableFuture<BangumiSearchResponse> getSearchSuggestionFromBangumi(String keyword) throws IOException, InterruptedException {
+    private CompletableFuture<BangumiSearchResponse> getSearchSuggestionFromBangumi(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://api.bgm.tv/search/subject/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8) + "?app_id=bgm11725d4d9360d4cf5&max_results=3&responseGroup=large&start=0"))
                 .build();
-        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body).thenApply(s -> {
+        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r -> {
             BangumiSearchResponse bangumiSearchResponse = null;
             try {
-                bangumiSearchResponse = objectMapper.readValue(s, new TypeReference<BangumiSearchResponse>() {
+                bangumiSearchResponse = objectMapper.readValue(r.body(), new TypeReference<BangumiSearchResponse>() {
                 });
             } catch (IOException e) {
                 e.printStackTrace();
