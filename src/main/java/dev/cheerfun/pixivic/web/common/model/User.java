@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.web.common.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.auth.model.Authable;
 import lombok.AllArgsConstructor;
@@ -20,6 +21,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Authable {
+    @JsonProperty("id")
     private int userId;
     private String username;
     private String email;

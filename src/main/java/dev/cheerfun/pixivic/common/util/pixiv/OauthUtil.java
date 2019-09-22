@@ -44,6 +44,7 @@ final public class OauthUtil {
     private volatile List<Oauth> oauths;
 
     @PostConstruct
+    @Scheduled(cron = "0 0 * * * ?")
     private void init() throws IOException {
         //读取账号信息
         File json = new File(path);
@@ -64,7 +65,7 @@ final public class OauthUtil {
         oauth.setAccess_token(refreshToken(RequestUtil.getPostEntity(paramMap)));
         //paramMap.replace("grant_type", "refresh_token");
         //paramMap.put("refresh_token", refresh_token);
-        oauth.setParam(RequestUtil.getPostEntity(paramMap));
+        // oauth.setParam(RequestUtil.getPostEntity(paramMap));
     }
 
     private String refreshToken(String param) {
@@ -84,7 +85,6 @@ final public class OauthUtil {
         return body.substring(index + 16, index + 59);
     }
 
-    @Scheduled(cron = "0 0 * * * ?")
     public void refreshAccess_token() {
         oauths.stream().parallel().forEach(oauth -> refreshToken(oauth.getParam()));
         oauths.forEach(oauth -> System.out.println(oauth.getAccess_token()));

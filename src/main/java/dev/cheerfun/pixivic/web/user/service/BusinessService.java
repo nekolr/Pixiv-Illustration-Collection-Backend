@@ -63,7 +63,7 @@ public class BusinessService {
     }
 
     @Scheduled(cron = "0 0 16 * * ?")
-    private void flushBookmarkCountToDb() {
+    public void flushBookmarkCountToDb() {
         //半夜三点往mysql更新收藏数
         Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(bookmarkCountMapRedisPre);
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
@@ -71,6 +71,7 @@ public class BusinessService {
             int increment = Integer.parseInt(entry.getValue().toString());
             businessMapper.updateIllustBookmark(illustId, increment);
         }
+        stringRedisTemplate.delete(bookmarkCountMapRedisPre);
     }
 
     public List<Illustration> queryBookmarked(int userId, int currIndex, int pageSize) {
