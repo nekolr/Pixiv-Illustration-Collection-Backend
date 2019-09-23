@@ -111,9 +111,9 @@ public class BusinessService {
 
     @Transactional
     public void addTag(int userId, String illustId, List<Tag> tags) {
-        List<Tag> oldTags = businessMapper.queryIllustrationTagsByid(illustId);
+        List<Tag> oldTags = businessMapper.queryIllustrationTagsById(illustId);
         oldTags.addAll(tags);
-        businessMapper.updateIllustrationTagsByid(illustId, oldTags);
+        businessMapper.updateIllustrationTagsById(illustId, oldTags);
         //用户积分增加
         int starIncrement = 10;
         businessMapper.updateUserStar(userId, starIncrement);

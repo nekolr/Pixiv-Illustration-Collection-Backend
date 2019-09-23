@@ -37,10 +37,10 @@ public interface BusinessMapper {
     @Results({
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    List<Tag> queryIllustrationTagsByid(String illustId);
+    List<Tag> queryIllustrationTagsById(String illustId);
 
     @Update("update illusts set tags=#{tags,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler} where illust_id=#{illustId}")
-    Illustration updateIllustrationTagsByid(String illustId, List<Tag> tags);
+    Illustration updateIllustrationTagsById(String illustId, List<Tag> tags);
 
     @Select({"<script>",
             "select * from illusts where illust_id in (",
@@ -67,6 +67,9 @@ public interface BusinessMapper {
             "</foreach>",
             " limit #{currIndex} , #{pageSize}",
             "</script>"
+    })
+    @Results({
+            @Result(property = "id", column = "artist_id"),
     })
     List<Artist> queryFollowed(List<Integer> artistIds, int currIndex, int pageSize);
 
