@@ -20,4 +20,12 @@ public class Tag {
         this.name = name;
         this.translatedName = translatedName;
     }
+
+    public String getName() {
+        return name == null ? "" : name;
+    }
+
+    public String getTranslatedName() {
+        return translatedName == null ? "" : translatedName;
+    }
 }

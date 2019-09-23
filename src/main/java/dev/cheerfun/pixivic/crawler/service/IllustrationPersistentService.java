@@ -23,7 +23,7 @@ public class IllustrationPersistentService {
     private final OauthUtil oauthUtil;
     private volatile int count = 1;
 
-    @Scheduled(cron = "0 0 3,4,5,6 * * ?")
+    @Scheduled(cron = "0 10 15,16,17,18 * * ?")
     public void dailyPersistentTask() throws InterruptedException {
         if (count < 5) {
            // oauthUtil.refreshAccess_token();
