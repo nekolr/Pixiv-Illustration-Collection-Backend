@@ -62,19 +62,19 @@ public class BusinessController {
     @DeleteMapping("/followed")
     public ResponseEntity<Result<String>> cancelFollow(@RequestBody FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
         businessService.cancelFollow((int) AppContext.get().get(USER_ID), followedRelation.getArtistId());
-        return ResponseEntity.ok().body(new Result<>("follow成功"));
+        return ResponseEntity.ok().body(new Result<>("取消follow成功"));
     }
 
     @GetMapping("/{userId}/followed")
-    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestParam int page, @RequestParam int pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
         List<Artist> artists = businessService.queryFollowed((int) AppContext.get().get(USER_ID), (page - 1) * pageSize, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取跟随画师列表成功", artists));
+        return ResponseEntity.ok().body(new Result<>("获取follow画师列表成功", artists));
     }
 
     @GetMapping("/{userId}/{artistId}/isFollowed")
     public ResponseEntity<Result<Boolean>> queryIsFollowed(@PathVariable String userId, @PathVariable String artistId, @RequestHeader("Authorization") String token) {
         Boolean isFollowed = businessService.queryIsFollowed((int) AppContext.get().get(USER_ID), artistId);
-        return ResponseEntity.ok().body(new Result<>("收藏成功", isFollowed));
+        return ResponseEntity.ok().body(new Result<>("获取是否follow画师成功", isFollowed));
     }
 
     @GetMapping("/users/{userId}/actionHistory")

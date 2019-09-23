@@ -13,7 +13,6 @@ import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,7 +67,7 @@ public class BusinessService {
         });
     }
 
-    @Scheduled(cron = "0 0 16 * * ?")
+    //@Scheduled(cron = "0 0 16 * * ?")
     public void flushBookmarkCountToDb() {
         //半夜三点往mysql更新收藏数
         Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(bookmarkCountMapRedisPre);
