@@ -16,10 +16,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -100,11 +98,11 @@ public class BusinessService {
     }
 
     public List<Artist> queryFollowed(int userId, int currIndex, int pageSize) {
-        Set<String> artists = stringRedisTemplate.opsForSet().members(followRedisPre + userId);
-        if (artists == null) {
+        List<Integer> artists = stringRedisTemplate.opsForSet().members(followRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
+        if (artists.size()==0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
         }
-        return businessMapper.queryFollowed(new ArrayList<>(artists), currIndex, pageSize);
+        return businessMapper.queryFollowed(artists, currIndex, pageSize);
     }
 
     public Boolean queryIsFollowed(int userId, String artistId) {

@@ -6,7 +6,6 @@ import dev.cheerfun.pixivic.common.model.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
 import org.apache.ibatis.annotations.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Mapper
@@ -62,14 +61,14 @@ public interface BusinessMapper {
     List<Illustration> queryBookmarked(@Param("illustIds") List<Integer> illustIds, int currIndex, int pageSize);
 
     @Select({"<script>",
-            "select * from artists where artist_id in ",
+            "select * from artists where artist_id in (",
             "<foreach collection='artistIds' item='artistId' index='index' separator=',' close=')'>",
             "#{artistId}",
             "</foreach>",
             " limit #{currIndex} , #{pageSize}",
             "</script>"
     })
-    List<Artist> queryFollowed(ArrayList<String> artistIds, int currIndex, int pageSize);
+    List<Artist> queryFollowed(List<Integer> artistIds, int currIndex, int pageSize);
 
     @Update("update illusts set total_bookmarks=total_bookmarks+#{increment}  where illust_id=#{illustId}")
     int updateIllustBookmark(int illustId, int increment);
