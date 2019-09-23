@@ -44,7 +44,7 @@ public interface BusinessMapper {
     Illustration updateIllustrationTagsByid(String illustId, List<Tag> tags);
 
     @Select({"<script>",
-            "select * from illusts where illust_id in ",
+            "select * from illusts where illust_id in (",
             "<foreach collection='illustIds' item='illustId' index='index' separator=',' close=')'>",
             "#{illustId}",
             "</foreach>",
@@ -59,7 +59,7 @@ public interface BusinessMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    List<Illustration> queryBookmarked(@Param("illustIds") ArrayList<String> illustIds, int currIndex, int pageSize);
+    List<Illustration> queryBookmarked(@Param("illustIds") List<Integer> illustIds, int currIndex, int pageSize);
 
     @Select({"<script>",
             "select * from artists where artist_id in ",

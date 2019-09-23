@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -80,11 +81,11 @@ public class BusinessService {
     }
 
     public List<Illustration> queryBookmarked(int userId, int currIndex, int pageSize) {
-        Set<String> illustIds = stringRedisTemplate.opsForSet().members(bookmarkRedisPre + userId);
-        if (illustIds == null) {
+        List<Integer> illustIds = stringRedisTemplate.opsForSet().members(bookmarkRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
+        if (illustIds.size()==0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
         }
-        return businessMapper.queryBookmarked(new ArrayList<>(illustIds), currIndex, pageSize);
+        return businessMapper.queryBookmarked(illustIds, currIndex, pageSize);
     }
 
     public Boolean queryIsBookmarked(int userId, String illustId) {

@@ -42,7 +42,7 @@ public class BusinessController {
     }
 
     @GetMapping("/{userId}/bookmarked")
-    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @RequestParam int page, @RequestParam int pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
         List<Illustration> illustrations = businessService.queryBookmarked((int) AppContext.get().get(USER_ID), (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
