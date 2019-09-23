@@ -84,13 +84,13 @@ public class BusinessController {
     }
 
     @GetMapping("/artists/{artistId}/illusts")
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @RequestParam int page, @RequestParam int pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", businessService.queryIllustrationsByArtistId(artistId, (page - 1) * pageSize, pageSize)));
     }
 
     @PostMapping("/{illustId}/tags")
     public ResponseEntity<Result<String>> addTag(@PathVariable String illustId, @RequestHeader("Authorization") String token, @RequestBody List<Tag> tags) {
-        businessService.addTag((int) AppContext.get().get(USER_ID),illustId, tags);
+        businessService.addTag((int) AppContext.get().get(USER_ID), illustId, tags);
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
     }
 
