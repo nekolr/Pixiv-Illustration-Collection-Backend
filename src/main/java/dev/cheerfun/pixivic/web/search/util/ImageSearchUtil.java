@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -39,9 +40,11 @@ public class ImageSearchUtil {
     private Random random = new Random();
     private int length;
     private List<String> tokens;
+    @Value("${saucenao.token.path}")
+    private String path;
 
-    //@PostConstruct
-    public void init(@Value("${saucenao.token.path}") String path) throws IOException {
+    @PostConstruct
+    public void init() throws IOException {
         File json = new File(path);
         tokens = objectMapper.readValue(json, new TypeReference<ArrayList<String>>() {
         });
