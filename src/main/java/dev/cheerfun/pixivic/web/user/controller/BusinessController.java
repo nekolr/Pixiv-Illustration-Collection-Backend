@@ -95,7 +95,7 @@ public class BusinessController {
 
     @GetMapping("/illusts/{illustId}")
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", businessService.queryIllustrationById(illustId)));
+        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", businessService.queryIllustrationById(illustId)));
     }
 
     @PostMapping("/{illustId}/tags")
