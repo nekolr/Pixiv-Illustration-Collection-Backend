@@ -94,7 +94,7 @@ public class SearchController {
         return searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 
-    @GetMapping("/images")
+    @GetMapping("/similarityImages")
     public CompletableFuture<ResponseEntity<Result<SaucenaoResponse>>> searchByImage(@RequestParam String imageUrl) {
         return searchService.searchByImage(imageUrl).thenApply(saucenaoResponse -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", saucenaoResponse)));
 
