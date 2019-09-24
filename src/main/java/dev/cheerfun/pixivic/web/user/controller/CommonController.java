@@ -99,4 +99,6 @@ public class CommonController {
         return ResponseEntity.ok().body(new Result<>("发送密码重置邮件成功"));
     }
 
+
+
 }

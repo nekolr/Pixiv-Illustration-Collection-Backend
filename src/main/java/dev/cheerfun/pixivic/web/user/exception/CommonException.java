@@ -8,12 +8,12 @@ import org.springframework.http.HttpStatus;
 /**
  * @author OysterQAQ
  * @version 1.0
- * @date 2019/08/17 14:24
- * @description UserAuthException
+ * @date 2019/09/23 23:21
+ * @description CommonException
  */
-@AllArgsConstructor
 @Data
-public class AuthException extends BaseException {
+@AllArgsConstructor
+public class CommonException  extends BaseException {
     private HttpStatus httpStatus;
     private String message;
 }

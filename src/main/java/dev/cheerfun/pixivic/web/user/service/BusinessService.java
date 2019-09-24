@@ -48,7 +48,7 @@ public class BusinessService {
         if ((increment > 0 && stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId)))
                 || (increment < 0 && !stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId)))
         ) {
-           throw new BusinessException(HttpStatus.BAD_REQUEST,"用户与画作的收藏关系请求错误");
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "用户与画作的收藏关系请求错误");
         }
         stringRedisTemplate.execute(new SessionCallback<>() {
             @Override
@@ -79,7 +79,7 @@ public class BusinessService {
 
     public List<Illustration> queryBookmarked(int userId, int currIndex, int pageSize) {
         List<Integer> illustIds = stringRedisTemplate.opsForSet().members(bookmarkRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
-        if (illustIds.size()==0) {
+        if (illustIds.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
         }
         return businessMapper.queryBookmarked(illustIds, currIndex, pageSize);
@@ -99,7 +99,7 @@ public class BusinessService {
 
     public List<Artist> queryFollowed(int userId, int currIndex, int pageSize) {
         List<Integer> artists = stringRedisTemplate.opsForSet().members(followRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
-        if (artists.size()==0) {
+        if (artists.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
         }
         return businessMapper.queryFollowed(artists, currIndex, pageSize);
@@ -127,4 +127,19 @@ public class BusinessService {
         return businessMapper.queryIllustrationsByArtistId(artistId, currIndex, pageSize);
     }
 
+    public Artist queryArtistById(String artistId) {
+        Artist artist = businessMapper.queryArtistById(artistId);
+        if(artist==null){
+            throw new BusinessException(HttpStatus.NOT_FOUND,"画师不存在");
+        }
+        return artist;
+    }
+
+    public Illustration queryIllustrationById(String illustId) {
+        Illustration illustration = businessMapper.queryIllustrationByIllustId(illustId);
+        if(illustration==null){
+            throw new BusinessException(HttpStatus.NOT_FOUND,"画作不存在");
+        }
+        return illustration;
+    }
 }

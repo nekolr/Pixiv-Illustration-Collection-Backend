@@ -3,11 +3,9 @@ package dev.cheerfun.pixivic.web.user.service;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.verification.model.EmailBindingVerificationCode;
 import dev.cheerfun.pixivic.web.common.model.User;
-import dev.cheerfun.pixivic.web.message.util.EmailUtil;
-import dev.cheerfun.pixivic.web.user.exception.AuthException;
-import dev.cheerfun.pixivic.web.user.exception.RegistrationException;
-import dev.cheerfun.pixivic.web.user.exception.SignInException;
+import dev.cheerfun.pixivic.web.user.exception.CommonException;
 import dev.cheerfun.pixivic.web.user.mapper.CommonMapper;
+import dev.cheerfun.pixivic.web.user.util.EmailUtil;
 import dev.cheerfun.pixivic.web.user.util.PasswordUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +35,7 @@ public class CommonService {
     public String signUp(User user) throws MessagingException {
         //检测用户名或邮箱是否重复
         if (userMapper.checkUserNameAndEmail(user.getUsername(), user.getEmail()) == 1) {
-            throw new RegistrationException(HttpStatus.CONFLICT, "用户名或邮箱已存在");
+            throw new CommonException(HttpStatus.CONFLICT, "用户名或邮箱已存在");
         }
         user.setPassword(passwordUtil.encrypt(user.getPassword()));
         user.init();
@@ -53,7 +51,7 @@ public class CommonService {
         System.out.println(passwordUtil.encrypt(password));
         User user = userMapper.getUser(username, passwordUtil.encrypt(password));
         if (user == null) {
-            throw new SignInException(HttpStatus.BAD_REQUEST, "用户名或密码不正确");
+            throw new CommonException(HttpStatus.BAD_REQUEST, "用户名或密码不正确");
         }
         return user;
     }
@@ -82,7 +80,7 @@ public class CommonService {
 
     private void checkUser(int userId, String token) {
         if (userId!=(int)jwtUtil.getAllClaimsFromToken(token).get("userId")) {
-            throw new AuthException(HttpStatus.UNAUTHORIZED, "token与操作对象不匹配");
+            throw new CommonException(HttpStatus.UNAUTHORIZED, "token与操作对象不匹配");
         }
     }
 
@@ -100,7 +98,7 @@ public class CommonService {
             emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
         }
         else {
-            throw new AuthException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
+            throw new CommonException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
         }
     }
 }

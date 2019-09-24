@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.message.util;
+package dev.cheerfun.pixivic.web.user.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;

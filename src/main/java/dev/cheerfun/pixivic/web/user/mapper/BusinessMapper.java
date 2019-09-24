@@ -40,7 +40,7 @@ public interface BusinessMapper {
     List<Tag> queryIllustrationTagsById(String illustId);
 
     @Update("update illusts set tags=#{tags,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler} where illust_id=#{illustId}")
-    Illustration updateIllustrationTagsById(String illustId, List<Tag> tags);
+    int updateIllustrationTagsById(String illustId, List<Tag> tags);
 
     @Select({"<script>",
             "select * from illusts where illust_id in (",
@@ -78,4 +78,10 @@ public interface BusinessMapper {
 
     @Update("update users set star=star+#{increment}  where user_id=#{userId}")
     int updateUserStar(int userId, int increment);
+
+    @Select("select * from artists where artist_id =#{artistId}")
+    @Results({
+            @Result(property = "id", column = "artist_id"),
+    })
+    Artist queryArtistById(String artistId);
 }
