@@ -48,7 +48,6 @@ public class CommonService {
     }
 
     public User signIn(String username, String password) {
-        System.out.println(passwordUtil.encrypt(password));
         User user = userMapper.getUser(username, passwordUtil.encrypt(password));
         if (user == null) {
             throw new CommonException(HttpStatus.BAD_REQUEST, "用户名或密码不正确");
