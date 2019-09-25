@@ -32,12 +32,12 @@ class Header {
 @Data
 class Content {
     @JsonSetter("ext_urls")
-    private List<String> extUrls;
+    private List<String> originalUrls;
     private String title;
     @JsonSetter("pixiv_id")
-    private String pixivId;
+    private String illustId;
     @JsonSetter("member_name")
-    private String memberName;
+    private String artistName;
     @JsonSetter("member_id")
-    private String memberId;
+    private String artistId;
 }
