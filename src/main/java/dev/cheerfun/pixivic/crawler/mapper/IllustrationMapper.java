@@ -72,4 +72,15 @@ public interface IllustrationMapper {
             "SELECT tag_id FROM tags WHERE NAME = #{name} AND translated_name = #{translatedName}"
     })
     Long getTagId(String name, String translatedName);
+
+    @Select({
+            "<script>",
+            "SELECT temp.illust_id FROM (",
+            "<foreach collection='illustIds' item='illustId' index='index' separator='UNION ALL'>",
+            "(SELECT #{illustId} AS illust_id )",
+            "</foreach>",
+            ") as temp WHERE temp.illust_id  NOT IN (SELECT illusts.illust_id FROM illusts)",
+            "</script>"
+    })
+    List<Integer> queryIllustsNotInDb(@Param("illustIds") List<Integer> illustIds);
 }

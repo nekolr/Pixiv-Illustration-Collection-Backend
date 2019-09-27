@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import dev.cheerfun.pixivic.crawler.dto.IllustrationDTO;
+import dev.cheerfun.pixivic.crawler.dto.IllustrationDetailDTO;
 import dev.cheerfun.pixivic.crawler.dto.RankDTO;
 import dev.cheerfun.pixivic.crawler.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.crawler.model.ModeMeta;
@@ -81,7 +82,7 @@ public class IllustrationService {
                         .whenComplete((illustrations, throwable) -> {
                             if (illustrations == null)
                                 waitForReDownload.set(i + modeIndex.get(modeMeta.getMode()), modeMeta.getMode() + "-" + i);
-                            else{
+                            else {
                                 illustrationLists.set(i + modeIndex.get(modeMeta.getMode()), illustrations);
                             }
                             cd.countDown();
@@ -149,11 +150,21 @@ public class IllustrationService {
         illustrationMapper.insertTag(tags);
         System.out.println("标签入库完毕");
         //获取标签id
-        tags.forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(),tag.getTranslatedName())));
+        tags.forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName())));
         System.out.println("标签id取回完毕");
         illustrationMapper.insert(illustrations);
         System.out.println("画作入库完毕");
         illustrationMapper.insertTagIllustRelation(illustrations);
         System.out.println("标签与画作的联系入库完毕");
+    }
+
+    public Illustration pullIllustrationInfo(Integer illustId) {
+        IllustrationDetailDTO illustrationDetailDTO = (IllustrationDetailDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/illust/detail?illust_id=" + illustId, IllustrationDetailDTO.class);
+        assert illustrationDetailDTO != null;
+        return IllustrationDTO.castToIllustration(illustrationDetailDTO.getIllustrationDTO());
+    }
+
+    public List<Integer> queryIllustsNotInDb(List<Integer> illustIds) {
+        return illustrationMapper.queryIllustsNotInDb(illustIds);
     }
 }

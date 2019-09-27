@@ -26,7 +26,7 @@ public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper = new ObjectMapper();
 
     private Class<T> type;
 

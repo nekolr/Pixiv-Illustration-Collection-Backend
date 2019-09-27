@@ -59,7 +59,7 @@ final public class RequestUtil {
         });
     }
 
-    public Object getJsonSync(String url, Class target) throws IOException, InterruptedException {
+    public Object getJsonSync(String url, Class target) {
         HttpRequest.Builder uri = HttpRequest.newBuilder()
                 .uri(URI.create(url));
         decorateHeader(uri);
@@ -69,7 +69,12 @@ final public class RequestUtil {
                 .header("Authorization", "Bearer " + oauth.getAccess_token())
                 .GET()
                 .build();
-        return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
+        try {
+            return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     public CompletableFuture<String> getJsonAsync(String url) {
