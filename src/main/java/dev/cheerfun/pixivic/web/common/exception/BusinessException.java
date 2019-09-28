@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.user.exception;
+package dev.cheerfun.pixivic.web.common.exception;
 
 import dev.cheerfun.pixivic.common.exception.BaseException;
 import lombok.AllArgsConstructor;

@@ -83,36 +83,10 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("获取行为历史成功"));
     }
 
-    @GetMapping("/artists/{artistId}/illusts")
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", businessService.queryIllustrationsByArtistId(artistId, (page - 1) * pageSize, pageSize)));
-    }
-
-    @GetMapping("/artists/{artistId}")
-    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable String artistId, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", businessService.queryArtistById(artistId)));
-    }
-
-    @GetMapping("/illusts/{illustId}")
-    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", businessService.queryIllustrationById(illustId)));
-    }
-
     @PostMapping("/{illustId}/tags")
     public ResponseEntity<Result<String>> addTag(@PathVariable String illustId, @RequestHeader("Authorization") String token, @RequestBody List<Tag> tags) {
         businessService.addTag((int) AppContext.get().get(USER_ID), illustId, tags);
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
-    }
-
-    @GetMapping("/tags/{tag}/candidates")
-    public ResponseEntity<Result<List<Tag>>> autoCompleteTag(@PathVariable String tag, @RequestHeader("Authorization") String token, @RequestBody List<String> tagList) {
-
-        return ResponseEntity.ok().body(new Result<>("获取标签候选成功", null));
-    }
-
-    @GetMapping("/tags/{tag}/translation")
-    public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag, @RequestHeader("Authorization") String token, @RequestBody List<String> tagList) {
-        return ResponseEntity.ok().body(new Result<>("获取标签翻译成功", businessService.translationTag(tag)));
     }
 
 }

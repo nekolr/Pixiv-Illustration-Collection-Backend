@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.web.search.mapper;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -24,14 +23,4 @@ public interface CandidatesMapper {
     })
     int insert(String tagName, List<String> keywordList);
 
-    @Select({
-            "<script>",
-            "SELECT temp.artist_id FROM (",
-            "<foreach collection='artistIds' item='artistId' index='index' separator='UNION ALL'>",
-            "(SELECT #{artistId} AS artist_id )",
-            "</foreach>",
-            ") as temp WHERE temp.artist_id  NOT IN (SELECT artists.artist_id FROM artists)",
-            "</script>"
-    })
-    List<Integer> queryArtistsNotInDb(String tagName);
 }

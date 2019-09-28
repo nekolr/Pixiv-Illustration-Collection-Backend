@@ -42,7 +42,7 @@ public class SpotlightService {
     public void pullAllSpotlight() {
         int index = 1;
         List<List<Spotlight>> spotlightsList = new ArrayList<>();
-        while (index < 5) {
+        while (index < 3) {
             spotlightsList.add(getSpotlightInfo(index));
             index++;
         }

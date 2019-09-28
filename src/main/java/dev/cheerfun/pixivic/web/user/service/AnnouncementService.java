@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.web.user.service;
 
-import dev.cheerfun.pixivic.web.user.exception.BusinessException;
+import dev.cheerfun.pixivic.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.web.user.mapper.AnnouncementMapper;
 import dev.cheerfun.pixivic.web.user.model.Announcement;
 import lombok.RequiredArgsConstructor;

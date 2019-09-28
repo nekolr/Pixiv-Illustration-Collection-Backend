@@ -3,8 +3,7 @@ package dev.cheerfun.pixivic.web.user.service;
 import dev.cheerfun.pixivic.common.model.Artist;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
-import dev.cheerfun.pixivic.web.common.util.YouDaoTranslatedUtil;
-import dev.cheerfun.pixivic.web.user.exception.BusinessException;
+import dev.cheerfun.pixivic.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.web.user.mapper.BusinessMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -119,27 +118,4 @@ public class BusinessService {
         businessMapper.updateUserStar(userId, starIncrement);
     }
 
-    public Tag translationTag(String tag) {
-        return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
-    }
-
-    public List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize) {
-        return businessMapper.queryIllustrationsByArtistId(artistId, currIndex, pageSize);
-    }
-
-    public Artist queryArtistById(String artistId) {
-        Artist artist = businessMapper.queryArtistById(artistId);
-        if(artist==null){
-            throw new BusinessException(HttpStatus.NOT_FOUND,"画师不存在");
-        }
-        return artist;
-    }
-
-    public Illustration queryIllustrationById(String illustId) {
-        Illustration illustration = businessMapper.queryIllustrationByIllustId(illustId);
-        if(illustration==null){
-            throw new BusinessException(HttpStatus.NOT_FOUND,"画作不存在");
-        }
-        return illustration;
-    }
 }

@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.web.user.exception;
+package dev.cheerfun.pixivic.web.common.exception;
 
 import dev.cheerfun.pixivic.common.exception.BaseException;
 import lombok.AllArgsConstructor;
@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
  */
 @Data
 @AllArgsConstructor
-public class CommonException  extends BaseException {
+public class UserCommonException extends BaseException {
     private HttpStatus httpStatus;
     private String message;
 }
