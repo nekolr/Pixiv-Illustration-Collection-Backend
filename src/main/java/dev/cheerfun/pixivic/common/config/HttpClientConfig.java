@@ -74,7 +74,7 @@ public class HttpClientConfig {
                 .sslParameters(sslParams)
                 .sslContext(sc)
                 .connectTimeout(Duration.ofMinutes(5))
-                  //     .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 9999)))
+               //        .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 8888)))
                 .executor(executorService)
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .build();

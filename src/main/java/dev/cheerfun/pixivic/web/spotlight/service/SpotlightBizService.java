@@ -21,11 +21,11 @@ public class SpotlightBizService {
     private final SpotlightBizMapper spotlightBizMapper;
 
     public List<Spotlight> query(int page, int pageSize) {
-       return spotlightBizMapper.query(pageSize,(page-1)*pageSize);
+       return spotlightBizMapper.queryList(pageSize,(page-1)*pageSize);
     }
 
     public Spotlight queryDetail(int spotlightId) {
-        return spotlightBizMapper.query(spotlightId);
+        return spotlightBizMapper.queryDetail(spotlightId);
     }
 
     public List<Illustration> queryIllustrations(int spotlightId) {

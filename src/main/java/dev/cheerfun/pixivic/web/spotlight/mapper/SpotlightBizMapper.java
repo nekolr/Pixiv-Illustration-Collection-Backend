@@ -20,7 +20,17 @@ public interface SpotlightBizMapper {
     int insert(Rank rank);
 
 
-    @Select("select * from spotlights limit #{pageSize} ,#{currIndex}")
+    @Select("select * from spotlights limit #{currIndex} , #{pageSize}")
+    @Results({
+            @Result(property="id", column="spotlight_id"),
+            @Result(property="pureTitle", column="pure_title"),
+            @Result(property="publishDate", column="publish_date"),
+            @Result(property="subcategoryLabel", column="subcategory_label"),
+            @Result(property="articleUrl", column="article_url")
+    })
+    List<Spotlight> queryList(int pageSize, int currIndex);
+
+    @Select("select * from spotlights where spotlight_id = #{spotlightId} limit 1")
     @Results({
             @Result(property="pureTitle", column="pure_title"),
             @Result(property="id", column="spotlight_id"),
@@ -28,16 +38,8 @@ public interface SpotlightBizMapper {
             @Result(property="subcategoryLabel", column="subcategory_label"),
             @Result(property="articleUrl", column="article_url")
     })
-    List<Spotlight> query(int page, int currIndex);
-    @Select("select * from spotlights where spotlight_id = #{spotlightId} limit1")
-    @Results({
-            @Result(property="pureTitle", column="pure_title"),
-            @Result(property="id", column="spotlight_id"),
-            @Result(property="publishDate", column="publish_date"),
-            @Result(property="subcategoryLabel", column="subcategory_label"),
-            @Result(property="articleUrl", column="article_url")
-    })
-    Spotlight query(int spotlightId);
+    Spotlight queryDetail(int spotlightId);
+
     @Select("SELECT * FROM illusts WHERE illust_id IN (SELECT illust_id from spotlight_illust_relation WHERE spotlight_id=#{spotlight_id})")
     @Results({
             @Result(property = "id", column = "illust_id"),

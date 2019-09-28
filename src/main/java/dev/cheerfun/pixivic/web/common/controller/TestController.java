@@ -14,6 +14,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
+import java.util.concurrent.ExecutionException;
+
 /**
  * @author OysterQAQ
  * @version 1.0
@@ -29,11 +32,11 @@ public class TestController {
     private final SpotlightService spotlightService;
 
     //@PermissionRequired(PermissionLevel.VIP)
-/*    @GetMapping("/test")
+    @GetMapping("/test")
     public String test(@RequestParam String date) throws InterruptedException, ExecutionException, IOException {
         spotlightService.pullAllSpotlight();
         return "233";
-    }*/
+    }
 
     /*@GetMapping("/32")
     public String login() throws InterruptedException {
