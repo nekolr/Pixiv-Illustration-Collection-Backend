@@ -147,15 +147,20 @@ public class IllustrationService {
     @Transactional
     public void saveToDb(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
-        illustrationMapper.insertTag(tags);
-        System.out.println("标签入库完毕");
-        //获取标签id
-        tags.forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName())));
-        System.out.println("标签id取回完毕");
+        if(tags.size()>0){
+            illustrationMapper.insertTag(tags);
+            System.out.println("标签入库完毕");
+            //获取标签id
+            tags.forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName())));
+            System.out.println("标签id取回完毕");
+            illustrationMapper.insertTagIllustRelation(illustrations);
+            System.out.println("标签与画作的联系入库完毕");
+        }
+        else {
+            System.out.println("标签为null");
+        }
         illustrationMapper.insert(illustrations);
         System.out.println("画作入库完毕");
-        illustrationMapper.insertTagIllustRelation(illustrations);
-        System.out.println("标签与画作的联系入库完毕");
     }
 
     public Illustration pullIllustrationInfo(Integer illustId) {

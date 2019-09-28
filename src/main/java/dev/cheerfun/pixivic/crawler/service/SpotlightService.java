@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.crawler.dto.SpotlightDTO;
 import dev.cheerfun.pixivic.crawler.mapper.SpotlightMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -37,10 +38,11 @@ public class SpotlightService {
     private Pattern illustIdPattern = Pattern.compile("(?<=(?:id=))\\d+?(?=\" class=\"author)");
     private Pattern imageUrlPattern = Pattern.compile("(?<=(?:src\" content=\")).+?(?=\"><meta property=\"og:title\")");
 
+    @Scheduled(cron = "0 10 10 * * ?")
     public void pullAllSpotlight() {
-        int index = 2;
+        int index = 1;
         List<List<Spotlight>> spotlightsList = new ArrayList<>();
-        while (index < 3) {
+        while (index < 5) {
             spotlightsList.add(getSpotlightInfo(index));
             index++;
         }
@@ -49,13 +51,13 @@ public class SpotlightService {
     }
 
     private List<Spotlight> getSpotlightInfo(int index) {
-        SpotlightDTO spotlightDTO = (SpotlightDTO) requestUtil.getJsonSync("https://app-api.pixiv.net/v1/spotlight/articles?category=all&offset=" + "&offset=" + index * 10, SpotlightDTO.class);
+        SpotlightDTO spotlightDTO = (SpotlightDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/spotlight/articles?category=all&offset=" + "&offset=" + index * 10, SpotlightDTO.class);
         assert spotlightDTO != null;
         return spotlightDTO.getSpotlightAticles();
     }
 
     private void dealRelationWithIllustration(List<Spotlight> spotlights) {
-        spotlights.forEach(s -> {
+        spotlights.stream().parallel().forEach(s -> {
             HttpRequest.Builder uri = HttpRequest.newBuilder()
                     .uri(URI.create(s.getArticleUrl()));
             RequestUtil.decorateHeader(uri);
@@ -65,21 +67,25 @@ public class SpotlightService {
                 s.setThumbnail(imageUrlPattern.matcher(body).results().findFirst().get().group());
                 List<Integer> illustIds = illustIdPattern.matcher(body).results().map(m -> Integer.parseInt(m.group())).collect(Collectors.toList());
                 //联系入库
-                spotlightMapper.insertRelation(s.getId(), illustIds);
-                //查找出没在数据库的画作
-                illustIds = illustrationService.queryIllustsNotInDb(illustIds);
-                //拉取
-                List<Illustration> illustrations = illustIds.stream().map(illustrationService::pullIllustrationInfo).filter(Objects::nonNull).collect(Collectors.toList());
-                //持久化
-                if(illustrations.size()!=0){
-                    illustrationService.saveToDb(illustrations);
+                if (illustIds.size() > 0) {
+                    spotlightMapper.insertRelation(s.getId(), illustIds);
+                    //查找出没在数据库的画作
+                    illustIds = illustrationService.queryIllustsNotInDb(illustIds);
+                    //拉取
+                    if (illustIds.size() > 0) {
+                        List<Illustration> illustrations = illustIds.stream().map(illustrationService::pullIllustrationInfo).filter(Objects::nonNull).collect(Collectors.toList());
+                        //持久化
+                        if (illustrations.size() > 0) {
+                            illustrationService.saveToDb(illustrations);
+                        }
+                    }
                 }
-
             } catch (IOException | InterruptedException e) {
                 e.printStackTrace();
             }
         });
         saveToDb(spotlights);
+        System.out.println("spotlight处理完毕");
     }
 
     private void saveToDb(List<Spotlight> spotlights) {

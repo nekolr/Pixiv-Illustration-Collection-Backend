@@ -18,6 +18,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.time.Duration;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -72,6 +73,7 @@ public class HttpClientConfig {
                 .version(HttpClient.Version.HTTP_2)
                 .sslParameters(sslParams)
                 .sslContext(sc)
+                .connectTimeout(Duration.ofMinutes(5))
                   //     .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 9999)))
                 .executor(executorService)
                 .followRedirects(HttpClient.Redirect.NEVER)
