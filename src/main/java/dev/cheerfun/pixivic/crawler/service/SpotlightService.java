@@ -44,7 +44,6 @@ public class SpotlightService {
         int index =1;
         List<List<Spotlight>> spotlightsList = new ArrayList<>();
         while (index < 3) {
-            System.out.println(index);
             spotlightsList.add(getSpotlightInfo(index));
             index++;
         }
