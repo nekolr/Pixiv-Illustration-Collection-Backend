@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -43,14 +44,9 @@ public class SpotlightService {
         int index =1;
         List<List<Spotlight>> spotlightsList = new ArrayList<>();
         while (index < 3) {
-            //System.out.println(index);
+            System.out.println(index);
             spotlightsList.add(getSpotlightInfo(index));
             index++;
-/*            try {
-                Thread.sleep(500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }*/
         }
         List<Spotlight> spotlights = spotlightsList.stream().flatMap(Collection::stream).collect(Collectors.toList());
         dealRelationWithIllustration(spotlights);
@@ -77,7 +73,10 @@ public class SpotlightService {
                     spotlightMapper.insertRelation(s.getId(), illustIds);
                     //查找出没在数据库的画作
                     illustIds = illustrationService.queryIllustsNotInDb(illustIds);
-                    illustIds.forEach(System.out::println);
+                    FileWriter writer = new FileWriter("D:\\illustId.txt");
+                    for(Integer str: illustIds) {
+                        writer.write(str + System.lineSeparator());
+                    }
                     //拉取
                     if (illustIds.size() > 0) {
                         List<Illustration> illustrations = illustIds.stream().map(illustrationService::pullIllustrationInfo).filter(Objects::nonNull).collect(Collectors.toList());
