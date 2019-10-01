@@ -54,8 +54,9 @@ public class CommonController {
         return ResponseEntity.ok().body(new Result<>("注册成功", userService.signUp(user)));
     }
 
-    @GetMapping("/token")
-    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody SignInDTO userInfo) {
+    @PostMapping("/token")
+    @CheckVerification
+    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody SignInDTO userInfo,@RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userService.signIn(userInfo.getUsername(), userInfo.getPassword());
         return ResponseEntity.ok().header("Authorization",jwtUtil.getToken(user)).body(new Result<>("登录成功",user));
     }
