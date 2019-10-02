@@ -39,7 +39,7 @@ public class SpotlightService {
     private Pattern illustIdPattern = Pattern.compile("(?<=(?:id=))\\d+?(?=\" class=\"author)");
     private Pattern imageUrlPattern = Pattern.compile("(?<=(?:src\" content=\")).+?(?=\"><meta property=\"og:title\")");
 
-    @Scheduled(cron = "0 10 10 * * ?")
+    @Scheduled(cron = "0 30 3 * * ?")
     public void pullAllSpotlight() {
         int index =1;
         List<List<Spotlight>> spotlightsList = new ArrayList<>();

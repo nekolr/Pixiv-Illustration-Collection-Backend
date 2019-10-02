@@ -21,10 +21,10 @@ public class IllustrationPersistentService {
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
 
-    @Scheduled(cron = "0 10 4,5,6,7,8,9 * * ?")
+    @Scheduled(cron = "0 10 2,3,4,5,6,7 * * ?")
     public void dailyPersistentTask() throws InterruptedException {
         int hour = LocalTime.now().getHour();
-        LocalDate today = LocalDate.now().plusDays(-(hour-3));
+        LocalDate today = LocalDate.now().plusDays(-(hour-1));
         System.out.println(today);
         List<Integer> artistIds = illustrationService.pullAllRankInfo(today);
         artistService.pullArtistsInfo(artistIds);

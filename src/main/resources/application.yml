@@ -66,4 +66,6 @@ mybatis:
   type-handlers-package: dev.cheerfun.pixivic.common.handler
 elasticsearch:
   ip: elasticsearch
+apiLog:
+  path: D:\log
 
