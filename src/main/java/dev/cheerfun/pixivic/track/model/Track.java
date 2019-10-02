@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.track.model;
 
 import lombok.Data;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 /**
  * @author OysterQAQ
@@ -12,10 +12,13 @@ import java.util.Date;
  */
 @Data
 public class Track {
-    private Date timestamp;
+    private LocalDateTime timestamp;
     private String ip;
     private String url;
+    private String args;
     private String method;
     private String agent;
     private String authorization;
+    private int userId;
+    private String desc;
 }
