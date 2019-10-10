@@ -1,7 +1,9 @@
 package dev.cheerfun.pixivic.web.rank.model;
 
 import dev.cheerfun.pixivic.common.model.Illustration;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -12,6 +14,8 @@ import java.util.List;
  * @description Rank
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Rank {
     private List<Illustration> data;
     private String mode;

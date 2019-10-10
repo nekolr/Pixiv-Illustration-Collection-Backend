@@ -77,6 +77,7 @@ final public class RequestUtil {
         return null;
     }
 
+/*
     public CompletableFuture<String> getJsonAsync(String url) {
         HttpRequest.Builder uri = HttpRequest.newBuilder()
                 .uri(URI.create(url));
@@ -89,6 +90,7 @@ final public class RequestUtil {
                 .build();
         return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body);
     }
+*/
 
     private static String[] gethash() {
         SimpleDateFormat simpleDateFormat;

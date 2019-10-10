@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.crawler.mapper;
 
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.web.rank.model.Rank;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -83,4 +84,7 @@ public interface IllustrationMapper {
             "</script>"
     })
     List<Integer> queryIllustsNotInDb(@Param("illustIds") List<Integer> illustIds);
+
+    @Insert("insert into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler})")
+    int insertRank(Rank rank);
 }

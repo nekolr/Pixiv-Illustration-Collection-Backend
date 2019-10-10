@@ -5,7 +5,7 @@ import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
-import dev.cheerfun.pixivic.crawler.service.SpotlightService;
+import dev.cheerfun.pixivic.crawler.service.RankDailyService;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.web.common.model.User;
 import lombok.RequiredArgsConstructor;
@@ -29,12 +29,12 @@ public class TestController {
     private final JWTUtil jwtUtil;
     private final OauthUtil oauthUtil;
     private final StringRedisTemplate stringRedisTemplate;
-    private final SpotlightService spotlightService;
+    private final RankDailyService spotlightService;
 
     //@PermissionRequired(PermissionLevel.VIP)
     @GetMapping("/test")
-    public String test(@RequestParam String date) throws InterruptedException, ExecutionException, IOException {
-        spotlightService.pullAllSpotlight();
+    public String test() throws InterruptedException, ExecutionException, IOException {
+        spotlightService.pullAllRank();
         return "233";
     }
 

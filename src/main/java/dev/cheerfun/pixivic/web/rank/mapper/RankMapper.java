@@ -1,7 +1,10 @@
 package dev.cheerfun.pixivic.web.rank.mapper;
 
 import dev.cheerfun.pixivic.web.rank.model.Rank;
-import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Result;
+import org.apache.ibatis.annotations.Results;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -13,8 +16,6 @@ import java.util.List;
  */
 @Mapper
 public interface RankMapper {
-    @Insert("insert into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler})")
-    int insert(Rank rank);
 
     @Select("select * from ranks where date = #{date} and mode= #{mode} limit 1")
     @Results({

@@ -53,7 +53,7 @@ public class SearchService {
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(String keyword) {
-        return requestUtil.getJsonAsync("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
+        return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
                 .thenApply(r -> {
                     PixivSearchCandidatesResponse pixivSearchCandidatesResponse = null;
                     try {

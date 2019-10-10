@@ -5,9 +5,11 @@ import dev.cheerfun.pixivic.web.rank.model.Rank;
 import dev.cheerfun.pixivic.web.rank.service.RankService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author OysterQAQ
@@ -20,21 +22,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RankController {
     private final RankService rankService;
-
-    @PostMapping
-    public ResponseEntity<Result<String>> insert(@RequestBody Rank rank) {
-        boolean result = rankService.insert(rank);
-        String message;
-        HttpStatus httpStatus;
-        if (result) {
-            message = "插入成功";
-            httpStatus = HttpStatus.OK;
-        } else {
-            message = "插入失败";
-            httpStatus = HttpStatus.EXPECTATION_FAILED;
-        }
-        return ResponseEntity.status(httpStatus).body(new Result<>(message));
-    }
 
     @GetMapping
     public ResponseEntity<Result<Rank>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {

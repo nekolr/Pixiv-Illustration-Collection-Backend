@@ -20,9 +20,6 @@ import java.util.List;
 public class RankService {
     private final RankMapper rankMapper;
 
-    public boolean insert(Rank rank) {
-        return rankMapper.insert(rank)==1;
-    }
 
     public Rank queryByDateAndMode(String date, String mode, int page, int pageSize) {
        page=page>0?page:1;
