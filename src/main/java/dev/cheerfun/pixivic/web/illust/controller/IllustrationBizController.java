@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.common.model.illust.Tag;
 import dev.cheerfun.pixivic.web.illust.service.IllustrationBizService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +42,19 @@ public class IllustrationBizController {
     @GetMapping("/illusts/{illustId}")
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId, @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId)));
+    }
+
+    @GetMapping("/illusts/random")
+    public ResponseEntity<Result<Illustration>> queryRandomIllustration(
+            @RequestParam(defaultValue = "original") String urlType,
+            @RequestParam(defaultValue = "illust") String illustType,
+            @RequestParam(defaultValue = "false") Boolean detail,
+            @RequestParam(defaultValue = "1") Integer range,
+            @RequestParam(defaultValue = "16:9") String ratio,
+            @RequestParam(defaultValue = "4") Integer maxSanityLevel
+    ) {
+        String url = illustrationBizService.queryRandomIllustration(urlType, illustType, detail, ratio, range, maxSanityLevel);
+        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header("Location", url).header("Cache-Control", "no-cache").body(null);
     }
 
     @GetMapping("/tags/{tag}/candidates")

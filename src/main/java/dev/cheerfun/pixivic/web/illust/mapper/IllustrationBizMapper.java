@@ -39,4 +39,30 @@ public interface IllustrationBizMapper {
             @Result(property = "id", column = "artist_id"),
     })
     Artist queryArtistById(String artistId);
+    @Select("  SELECT\n" +
+            "          * \n" +
+            "     FROM\n" +
+            "         `illusts` AS t1\n" +
+            "    JOIN (\n" +
+            "             SELECT\n" +
+            "                   ROUND(\n" +
+            "                          RAND( ) * (\n" +
+            "                           ( SELECT MIN( illust_id ) FROM (SELECT illust_id FROM `illusts` WHERE illust_id > 1000  ORDER BY illust_id desc limit 5) tt ) - ( SELECT MIN( illust_id ) FROM `illusts` WHERE illust_id > 1000 ) \n" +
+            "                           ) + ( SELECT MIN( illust_id ) FROM `illusts` WHERE illust_id > 1000 ) \n" +
+            "                      ) AS illust_id \n" +
+            "         ) AS t2 \n" +
+            "WHERE\n" +
+            "   t1.illust_id >= t2.illust_id \n" +
+            "ORDER BY\n" +
+            "    t1.illust_id \n" +
+            "LIMIT 1000")
+    @Results({
+            @Result(property = "id", column = "illust_id"),
+            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
+    })
+    List<Illustration> queryRandomIllustration();
 }

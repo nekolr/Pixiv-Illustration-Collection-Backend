@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author OysterQAQ
@@ -46,5 +47,27 @@ public class IllustrationBizService {
             throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
         }
         return illustration;
+    }
+
+    public String queryRandomIllustration(String urlType, String illustType, Boolean detail, String ratio, Integer range, Integer maxSanityLevel) {
+        String[] split = ratio.split(":");
+        float r = Float.parseFloat(split[0]) / Float.parseFloat(split[1]);
+        float minR = r - range;
+        float maxR = r + range;
+        List<Illustration> illustrations = illustrationBizMapper.queryRandomIllustration();
+        Illustration illustration = illustrations.stream().takeWhile(i -> {
+            float w_h = (float) i.getWidth() / i.getHeight();
+            return illustType.equals(i.getType()) && w_h >= minR && w_h <= maxR && i.getSanityLevel() <= maxSanityLevel;
+        }).findAny().orElse(illustrations.get(0));
+        Map<String,String> imageUrl = (Map<String, String>) illustration.getImageUrls().get(0);
+        StringBuilder url ;
+                url = new StringBuilder(imageUrl.get(urlType).replace("i.pximg.net", "i.pximg.qixiv.me"));
+        if (detail) {
+            url.append("?title=").append(illustration.getTitle())
+                    .append("&id=").append(illustration.getId())
+                    .append("&artistName=").append(illustration.getArtistPreView().getName())
+                    .append("&artistId=").append(illustration.getArtistId());
+        }
+        return url.toString();
     }
 }
