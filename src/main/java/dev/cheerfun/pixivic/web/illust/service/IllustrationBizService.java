@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -55,7 +56,7 @@ public class IllustrationBizService {
         float minR = r - range;
         float maxR = r + range;
         List<Illustration> illustrations = illustrationBizMapper.queryRandomIllustration();
-        Illustration illustration = illustrations.stream().takeWhile(i -> {
+        Illustration illustration = illustrations.stream().sorted(Comparator.comparingInt(Illustration::getTotalBookmarks)).takeWhile(i -> {
             float w_h = (float) i.getWidth() / i.getHeight();
             return illustType.equals(i.getType()) && w_h >= minR && w_h <= maxR && i.getSanityLevel() <= maxSanityLevel;
         }).findAny().orElse(illustrations.get(0));
