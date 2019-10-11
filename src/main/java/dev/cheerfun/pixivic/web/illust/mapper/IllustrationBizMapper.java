@@ -47,7 +47,7 @@ public interface IllustrationBizMapper {
             "             SELECT\n" +
             "                   ROUND(\n" +
             "                          RAND( ) * (\n" +
-            "                           ( SELECT MIN( illust_id ) FROM (SELECT illust_id FROM `illusts` WHERE illust_id > 1000  ORDER BY illust_id desc limit 5) tt ) - ( SELECT MIN( illust_id ) FROM `illusts` WHERE illust_id > 1000 ) \n" +
+            "                           ( SELECT MIN( illust_id ) FROM (SELECT illust_id FROM `illusts` WHERE illust_id > 1000 AND total_bookmarks > 1000  ORDER BY illust_id desc limit 5) tt ) - ( SELECT MIN( illust_id ) FROM `illusts` WHERE illust_id > 1000 ) \n" +
             "                           ) + ( SELECT MIN( illust_id ) FROM `illusts` WHERE illust_id > 1000 ) \n" +
             "                      ) AS illust_id \n" +
             "         ) AS t2 \n" +
