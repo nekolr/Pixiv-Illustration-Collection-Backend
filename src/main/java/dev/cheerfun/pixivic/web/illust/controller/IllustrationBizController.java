@@ -49,7 +49,7 @@ public class IllustrationBizController {
             @RequestParam(defaultValue = "original") String urlType,
             @RequestParam(defaultValue = "illust") String illustType,
             @RequestParam(defaultValue = "false") Boolean detail,
-            @RequestParam(defaultValue = "1") Integer range,
+            @RequestParam(defaultValue = "1") Float range,
             @RequestParam(defaultValue = "16:9") String ratio,
             @RequestParam(defaultValue = "4") Integer maxSanityLevel
     ) {

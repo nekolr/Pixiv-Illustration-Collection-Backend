@@ -51,7 +51,7 @@ public class IllustrationBizService {
         return illustration;
     }
 
-    public String queryRandomIllustration(String urlType, String illustType, Boolean detail, String ratio, Integer range, Integer maxSanityLevel) {
+    public String queryRandomIllustration(String urlType, String illustType, Boolean detail, String ratio, Float range, Integer maxSanityLevel) {
         String[] split = ratio.split(":");
         float r = Float.parseFloat(split[0]) / Float.parseFloat(split[1]);
         float minR = r - range;
