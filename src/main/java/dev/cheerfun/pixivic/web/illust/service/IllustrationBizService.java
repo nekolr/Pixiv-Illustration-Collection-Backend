@@ -11,6 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -65,9 +67,9 @@ public class IllustrationBizService {
         StringBuilder url ;
                 url = new StringBuilder(imageUrl.get(urlType).replace("i.pximg.net", "i.pximg.qixiv.me"));
         if (detail) {
-            url.append("?title=").append(illustration.getTitle())
+            url.append("?title=").append(URLEncoder.encode(illustration.getTitle(),StandardCharsets.UTF_8))
                     .append("&id=").append(illustration.getId())
-                    .append("&artistName=").append(illustration.getArtistPreView().getName())
+                    .append("&artistName=").append(URLEncoder.encode(illustration.getArtistPreView().getName(), StandardCharsets.UTF_8))
                     .append("&artistId=").append(illustration.getArtistId());
         }
         return url.toString();
