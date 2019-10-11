@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -56,7 +57,7 @@ public class IllustrationBizService {
         float minR = r - range;
         float maxR = r + range;
         List<Illustration> illustrations = illustrationBizMapper.queryRandomIllustration();
-        Illustration illustration = illustrations.stream().sorted(Comparator.comparingInt(Illustration::getTotalBookmarks)).takeWhile(i -> {
+        Illustration illustration = illustrations.stream().sorted(Comparator.comparingInt(Illustration::getTotalBookmarks)).collect(Collectors.toList()).stream().takeWhile(i -> {
             float w_h = (float) i.getWidth() / i.getHeight();
             return illustType.equals(i.getType()) && w_h >= minR && w_h <= maxR && i.getSanityLevel() <= maxSanityLevel;
         }).findAny().orElse(illustrations.get(0));
