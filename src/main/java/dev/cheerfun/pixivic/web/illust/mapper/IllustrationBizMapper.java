@@ -55,7 +55,7 @@ public interface IllustrationBizMapper {
             "   t1.illust_id >= t2.illust_id \n" +
             "ORDER BY\n" +
             "    t1.illust_id \n" +
-            "LIMIT 1000")
+            "LIMIT 2000")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
