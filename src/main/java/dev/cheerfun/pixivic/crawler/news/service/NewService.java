@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.crawler.news.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.model.ACGNew;
+import dev.cheerfun.pixivic.crawler.news.dto.ACGMHNewsDTO;
 import dev.cheerfun.pixivic.crawler.news.dto.DMZJNewDTO;
 import dev.cheerfun.pixivic.crawler.news.mapper.NewMapper;
 import lombok.RequiredArgsConstructor;
@@ -64,6 +65,7 @@ public class NewService {
                         //提取元素
                         Document doc = Jsoup.parse(b);
                         Elements newsBox = doc.getElementsByClass("news_box");
+                        //替换图片
                         acgNew = new ACGNew(d.getTitle(), d.getIntro(), d.getAuthor(), d.getCover(), d.getRefererUrl(), newsBox.html(), new Date(d.getCreateTime()), "动漫之家");
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
@@ -74,8 +76,14 @@ public class NewService {
         newMapper.insert(acgNewList);
     }
 
-    private void pullHXSNews() {
-
+    private void pullACGMHNews() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://www.acgmh.com/wp-admin/admin-ajax.php?action=zrz_load_more_posts")).POST(HttpRequest.BodyPublishers.ofString("type=catL3&paged=1")).build();
+        String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        ACGMHNewsDTO acgmhNewsDTO = objectMapper.readValue(body, ACGMHNewsDTO.class);
+        Document doc = Jsoup.parse(acgmhNewsDTO.getMsg().replace("\\\"", "\""));
+        Elements elements = doc.getElementsByClass("pos-r pd10 post-list box mar10-b content");
+        //elements.
     }
 
 }
