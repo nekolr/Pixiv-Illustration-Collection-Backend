@@ -39,9 +39,9 @@ public class RankDailyService {
 
     @Scheduled(cron = "0 1 0 * * ?")
     public void pullAllRank() throws InterruptedException {
-        LocalDate date = LocalDate.now().plusDays(-1);
+        LocalDate date = LocalDate.now().plusDays(-2);
         for (String mode : modes) {
-            illustrationMapper.insertRank(getIllustrations(mode, date.toString()));
+            illustrationMapper.insertRank(getIllustrations(mode, /*date.toString()*/"2019-10-10"));
         }
     }
 
