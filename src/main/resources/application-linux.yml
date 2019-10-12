@@ -1,8 +1,8 @@
 server:
   port: 8080
 spring:
-  profiles:
-    active: linux
+  #  profiles:
+  #    active: oyster
   mail:
     host: smtp.qq.com
     username: 403827354@qq.com
@@ -30,13 +30,13 @@ spring:
     batch:
       job:
         enabled: false
-#mybatis-plus:
-#  configuration:
-#    cache-enabled: true
-#    map-underscore-to-camel-case: true
-#  mapper-locations: classpath*:/ArtistMapper/*Mapper.xml
-#  type-aliases-package: dev.cheerfun.pixivic.web
-# logging:
+  #mybatis-plus:
+  #  configuration:
+  #    cache-enabled: true
+  #    map-underscore-to-camel-case: true
+  #  mapper-locations: classpath*:/ArtistMapper/*Mapper.xml
+  #  type-aliases-package: dev.cheerfun.pixivic.web
+  # logging:
   # config: classpath:logback-${spring.profiles.active}.xml
 management:
   endpoints:
@@ -56,10 +56,10 @@ pixiv:
     client_secret: W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP
     refresh_token: 07FHA5xA6NkOIxIayqm3tZbJqxbypDJHrXguT7cazLI
     device_token: fb12e7c1945000850deb5f7001c02745
-    config: D:\Backup\配置文件\user2.json
+    config: /home/PIC/user2.json
 saucenao:
   token:
-    path: D:\Backup\配置文件\saucenao.json
+    path: /home/PIC/saucenao.json
 mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
