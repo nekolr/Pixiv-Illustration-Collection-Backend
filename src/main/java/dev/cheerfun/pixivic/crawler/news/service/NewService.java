@@ -83,7 +83,7 @@ public class NewService {
         ACGMHNewsDTO acgmhNewsDTO = objectMapper.readValue(body, ACGMHNewsDTO.class);
         Document doc = Jsoup.parse(acgmhNewsDTO.getMsg().replace("\\\"", "\""));
         Elements elements = doc.getElementsByClass("pos-r pd10 post-list box mar10-b content");
-        //elements.
+
     }
 
 }
