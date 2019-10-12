@@ -1,11 +1,11 @@
-package dev.cheerfun.pixivic.crawler.service;
+package dev.cheerfun.pixivic.crawler.pixiv.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.model.Artist;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
-import dev.cheerfun.pixivic.crawler.dto.ArtistDTO;
-import dev.cheerfun.pixivic.crawler.mapper.ArtistMapper;
+import dev.cheerfun.pixivic.crawler.pixiv.dto.ArtistDTO;
+import dev.cheerfun.pixivic.crawler.pixiv.mapper.ArtistMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

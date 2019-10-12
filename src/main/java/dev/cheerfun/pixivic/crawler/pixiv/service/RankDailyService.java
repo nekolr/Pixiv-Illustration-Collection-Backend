@@ -1,12 +1,12 @@
-package dev.cheerfun.pixivic.crawler.service;
+package dev.cheerfun.pixivic.crawler.pixiv.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
-import dev.cheerfun.pixivic.crawler.dto.IllustrationDTO;
-import dev.cheerfun.pixivic.crawler.dto.RankDTO;
-import dev.cheerfun.pixivic.crawler.mapper.IllustrationMapper;
+import dev.cheerfun.pixivic.crawler.pixiv.dto.IllustrationDTO;
+import dev.cheerfun.pixivic.crawler.pixiv.dto.RankDTO;
+import dev.cheerfun.pixivic.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.web.rank.model.Rank;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

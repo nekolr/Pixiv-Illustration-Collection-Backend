@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.crawler.service;
+package dev.cheerfun.pixivic.crawler.pixiv.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.crawler.mapper;
+package dev.cheerfun.pixivic.crawler.pixiv.mapper;
 
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;

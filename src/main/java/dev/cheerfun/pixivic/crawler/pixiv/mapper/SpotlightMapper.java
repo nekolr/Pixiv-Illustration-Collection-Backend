@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.crawler.mapper;
+package dev.cheerfun.pixivic.crawler.pixiv.mapper;
 
 import dev.cheerfun.pixivic.common.model.Spotlight;
 import org.apache.ibatis.annotations.Insert;

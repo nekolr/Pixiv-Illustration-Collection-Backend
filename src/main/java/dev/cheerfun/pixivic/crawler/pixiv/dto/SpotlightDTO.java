@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.crawler.dto;
+package dev.cheerfun.pixivic.crawler.pixiv.dto;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dev.cheerfun.pixivic.common.model.Spotlight;

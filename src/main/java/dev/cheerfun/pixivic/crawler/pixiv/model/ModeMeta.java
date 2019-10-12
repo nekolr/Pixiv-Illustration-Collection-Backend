@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.crawler.model;
+package dev.cheerfun.pixivic.crawler.pixiv.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

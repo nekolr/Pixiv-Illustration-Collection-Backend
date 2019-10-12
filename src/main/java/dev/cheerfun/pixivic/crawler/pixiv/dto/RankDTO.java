@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.crawler.dto;
+package dev.cheerfun.pixivic.crawler.pixiv.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

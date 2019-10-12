@@ -1,10 +1,10 @@
-package dev.cheerfun.pixivic.crawler.service;
+package dev.cheerfun.pixivic.crawler.pixiv.service;
 
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.Spotlight;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
-import dev.cheerfun.pixivic.crawler.dto.SpotlightDTO;
-import dev.cheerfun.pixivic.crawler.mapper.SpotlightMapper;
+import dev.cheerfun.pixivic.crawler.pixiv.dto.SpotlightDTO;
+import dev.cheerfun.pixivic.crawler.pixiv.mapper.SpotlightMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
