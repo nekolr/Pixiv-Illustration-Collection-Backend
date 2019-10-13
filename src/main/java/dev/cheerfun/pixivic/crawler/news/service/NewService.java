@@ -19,7 +19,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -66,7 +67,7 @@ public class NewService {
                         Document doc = Jsoup.parse(b);
                         Elements newsBox = doc.getElementsByClass("news_box");
                         //替换图片
-                        acgNew = new ACGNew(d.getTitle(), d.getIntro(), d.getAuthor(), d.getCover(), d.getRefererUrl(), newsBox.html(), new Date(d.getCreateTime()), "动漫之家");
+                        acgNew = new ACGNew(d.getTitle(), d.getIntro(), d.getAuthor(), d.getCover(), d.getRefererUrl(), newsBox.html(), LocalDateTime.ofEpochSecond(d.getCreateTime() / 1000, 0, ZoneOffset.ofHours(8)), "动漫之家");
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -83,7 +84,34 @@ public class NewService {
         ACGMHNewsDTO acgmhNewsDTO = objectMapper.readValue(body, ACGMHNewsDTO.class);
         Document doc = Jsoup.parse(acgmhNewsDTO.getMsg().replace("\\\"", "\""));
         Elements elements = doc.getElementsByClass("pos-r pd10 post-list box mar10-b content");
-
+        List<ACGNew> acgNewList = elements.stream().map(e -> {
+            String style = e.getElementsByClass("preview thumb-in").get(0).attributes().get("style");
+            String cover = style.substring(style.indexOf("('") + 2, style.length() - 2);
+            String author = e.getElementsByClass("users").text();
+            String createDate = e.getElementsByClass("timeago").text();
+            Elements es = e.getElementsByClass("entry-title");
+            String title = es.text();
+            String refererUrl = es.get(0).getElementsByTag("a").get(0).attributes().get("href");
+            String intro = e.getElementsByClass("mar10-b post-ex mar10-t mobile-hide").text();
+            return new ACGNew(title, intro, author, cover, refererUrl, LocalDateTime.parse(createDate), "ACG门户");
+        }).collect(Collectors.toList());
+        Set<String> titleList = acgNewList.stream().map(ACGNew::getTitle).collect(Collectors.toSet());
+        Set<String> finalTitleList = newMapper.queryNewsNotInDb(titleList);
+        acgNewList.stream()
+                .filter(d -> finalTitleList.contains(d.getTitle())).forEach(n -> {
+            HttpRequest r = HttpRequest.newBuilder()
+                    .uri(URI.create(n.getRefererUrl())).GET().build();
+            try {
+                String b = httpClient.send(r, HttpResponse.BodyHandlers.ofString()).body();
+                Document d = Jsoup.parse(b);
+                n.setContent(d.getElementById("content-innerText").html());
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        newMapper.insert(acgNewList);
     }
+
+
 
 }
