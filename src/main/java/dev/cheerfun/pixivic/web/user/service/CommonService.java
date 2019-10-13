@@ -11,8 +11,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.AntPathMatcher;
+import org.springframework.web.servlet.HandlerMapping;
 
 import javax.mail.MessagingException;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * @author OysterQAQ
@@ -43,12 +46,12 @@ public class CommonService {
         //签发token
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
-        emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
+        emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId());
         return jwtUtil.getToken(user);
     }
 
     public User signIn(String username, String password) {
-        User user = userMapper.getUser(username, passwordUtil.encrypt(password));
+        User user = userMapper.queryUserByusernameAndPassword(username, passwordUtil.encrypt(password));
         if (user == null) {
             throw new UserCommonException(HttpStatus.BAD_REQUEST, "用户名或密码不正确");
         }
@@ -78,7 +81,7 @@ public class CommonService {
     }
 
     private void checkUser(int userId, String token) {
-        if (userId!=(int)jwtUtil.getAllClaimsFromToken(token).get("userId")) {
+        if (userId != (int) jwtUtil.getAllClaimsFromToken(token).get("userId")) {
             throw new UserCommonException(HttpStatus.UNAUTHORIZED, "token与操作对象不匹配");
         }
     }
@@ -87,17 +90,38 @@ public class CommonService {
         return userMapper.setEmail(email, userId);
     }
 
-    public int setPassword(String password,String email) {
-        return userMapper.setPassword(passwordUtil.encrypt(password),email);
+    public int setPassword(String password, String email) {
+        return userMapper.setPassword(passwordUtil.encrypt(password), email);
     }
 
     public void getResetPasswordEmail(String email) throws MessagingException {
         if (checkEmail(email)) {
             EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
             emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
-        }
-        else {
+        } else {
             throw new UserCommonException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
         }
+    }
+
+    public void getCheckEmail(String email,int userId) throws MessagingException {
+        User user = userMapper.queryUserByUserId(userId);
+        EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
+        emailUtil.sendEmail(email, user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + userId);
+    }
+
+    public String getEmail(HttpServletRequest request){
+        final String path =
+                request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
+        final String bestMatchingPattern =
+                request.getAttribute(HandlerMapping.BEST_MATCHING_PATTERN_ATTRIBUTE).toString();
+        String arguments = new AntPathMatcher().extractPathWithinPattern(bestMatchingPattern, path);
+        String moduleName;
+        if (!arguments.isEmpty() && arguments.contains("/")) {
+            moduleName = arguments.substring(0, arguments.lastIndexOf("/"));
+        } else {
+            moduleName = "";
+        }
+        return moduleName;
+
     }
 }

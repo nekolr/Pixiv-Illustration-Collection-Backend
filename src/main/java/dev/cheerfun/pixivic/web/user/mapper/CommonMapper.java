@@ -15,13 +15,18 @@ public interface CommonMapper {
     int checkUserNameAndEmail(String username, String email);
 
     @Insert("insert into users (email, username,password,permission_level,is_ban) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan})")
-    @Options(useGeneratedKeys = true, keyProperty = "userId", keyColumn = "user_id")
-    void insertUser(User user);
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "user_id")
+    int insertUser(User user);
 
     @Select({
             " SELECT * FROM (SELECT * FROM users WHERE username= #{username} OR email=#{username})  temp where temp.PASSWORD=#{password}",
     })
-    User getUser(String username, String password);
+    User queryUserByusernameAndPassword(String username, String password);
+
+    @Select({
+            "SELECT * FROM users WHERE user_id= #{userId} ",
+    })
+    User queryUserByUserId(int userId);
 
     @Select({
             "SELECT *\n" +

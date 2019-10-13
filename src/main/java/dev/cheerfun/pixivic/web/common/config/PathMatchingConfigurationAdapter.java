@@ -1,10 +1,11 @@
 package dev.cheerfun.pixivic.web.common.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.web.servlet.config.annotation.ContentNegotiationConfigurer;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UrlPathHelper;
 
 /**
@@ -15,7 +16,7 @@ import org.springframework.web.util.UrlPathHelper;
  */
 @Configuration
 @EnableWebMvc
-public class PathMatchingConfigurationAdapter extends WebMvcConfigurationSupport {
+public class PathMatchingConfigurationAdapter  implements WebMvcConfigurer {
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         UrlPathHelper urlPathHelper = new UrlPathHelper();
@@ -25,5 +26,11 @@ public class PathMatchingConfigurationAdapter extends WebMvcConfigurationSupport
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer.favorPathExtension(false);
+        configurer.favorParameter(true);
+        configurer.mediaType("json", MediaType.APPLICATION_JSON);
+        configurer.mediaType("xml", MediaType.APPLICATION_XML);
     }
+
+
+
 }

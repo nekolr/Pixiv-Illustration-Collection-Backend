@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.web.user.controller;
 
 import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.web.common.model.User;
@@ -30,6 +31,7 @@ import javax.validation.constraints.NotBlank;
 public class CommonController {
     private final CommonService userService;
     private final JWTUtil jwtUtil;
+    private static final String USER_ID = "userId";
 
     @GetMapping("/usernames/{username}")
     public ResponseEntity<Result> checkUsername(@Validated @NotBlank @PathVariable("username") String username) {
@@ -56,9 +58,9 @@ public class CommonController {
 
     @PostMapping("/token")
     @CheckVerification
-    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody SignInDTO userInfo,@RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody SignInDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userService.signIn(userInfo.getUsername(), userInfo.getPassword());
-        return ResponseEntity.ok().header("Authorization",jwtUtil.getToken(user)).body(new Result<>("登录成功",user));
+        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
     }
 
     @PostMapping("/tokenWithQQ")
@@ -77,7 +79,7 @@ public class CommonController {
     @PermissionRequired
     public ResponseEntity<Result<String>> setAvatar(@RequestParam String avatar, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
         userService.setAvatar(avatar, userId, token);
-        return ResponseEntity.ok().body(new Result<>("修改头像成功",avatar));
+        return ResponseEntity.ok().body(new Result<>("修改头像成功", avatar));
     }
 
     @PutMapping("/{userId}/email")
@@ -100,6 +102,12 @@ public class CommonController {
         return ResponseEntity.ok().body(new Result<>("发送密码重置邮件成功"));
     }
 
-
+    @GetMapping("/emails/{email:.+}/checkEmail")
+    @PermissionRequired
+    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") String email) throws MessagingException {
+        userService.checkEmail(email);
+        userService.getCheckEmail(email, (int) AppContext.get().get(USER_ID));
+        return ResponseEntity.ok().body(new Result<>("发送邮箱验证邮件成功"));
+    }
 
 }
