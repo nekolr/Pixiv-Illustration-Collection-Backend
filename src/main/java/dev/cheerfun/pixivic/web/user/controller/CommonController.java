@@ -82,15 +82,15 @@ public class CommonController {
 
     @PutMapping("/{userId}/email")
     @CheckVerification
-    public ResponseEntity<Result> checkEmail(@RequestBody String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result> checkEmail(@RequestParam String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         userService.setEmail(email, userId);
         return ResponseEntity.ok().body(new Result<>("完成验证邮箱"));
     }
 
-    @PutMapping("/{userId}/password")
+    @PutMapping("/password")
     @CheckVerification
-    public ResponseEntity<Result> setPassword(@RequestBody String password, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        userService.setPassword(password, userId, value.substring(4));
+    public ResponseEntity<Result> setPassword(@RequestParam String password, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+        userService.setPassword(password, value.substring(4));
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }
 

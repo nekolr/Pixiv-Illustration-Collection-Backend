@@ -21,6 +21,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -37,7 +38,12 @@ public class NewService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final NewMapper newMapper;
-
+    private static final String DMZJ = "动漫之家";
+    private static final String ACGMH = "ACG门户";
+    private static final String ACG17 = "ACG在一起";
+    private static final String LOLIHY = "萝莉花园";
+    private static final String FUTA404 = "扶她404";
+    DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
     @Scheduled(cron = "0 1 0 * * ?")
     public void dailyPullTask() throws IOException, InterruptedException {
         pullDMZJNews();
@@ -67,7 +73,7 @@ public class NewService {
                         Document doc = Jsoup.parse(b);
                         Elements newsBox = doc.getElementsByClass("news_box");
                         //替换图片
-                        acgNew = new ACGNew(d.getTitle(), d.getIntro(), d.getAuthor(), d.getCover(), d.getRefererUrl(), newsBox.html(), LocalDateTime.ofEpochSecond(d.getCreateTime() / 1000, 0, ZoneOffset.ofHours(8)), "动漫之家");
+                        acgNew = new ACGNew(d.getTitle(), d.getIntro(), d.getAuthor(), d.getCover(), d.getRefererUrl(), newsBox.html(), LocalDateTime.ofEpochSecond(d.getCreateTime() / 1000, 0, ZoneOffset.ofHours(8)), DMZJ);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -85,15 +91,15 @@ public class NewService {
         Document doc = Jsoup.parse(acgmhNewsDTO.getMsg().replace("\\\"", "\""));
         Elements elements = doc.getElementsByClass("pos-r pd10 post-list box mar10-b content");
         List<ACGNew> acgNewList = elements.stream().map(e -> {
-            String style = e.getElementsByClass("preview thumb-in").get(0).attributes().get("style");
+            String style = e.getElementsByClass("preview thumb-in").get(0).attr("style");
             String cover = style.substring(style.indexOf("('") + 2, style.length() - 2);
             String author = e.getElementsByClass("users").text();
             String createDate = e.getElementsByClass("timeago").text();
             Elements es = e.getElementsByClass("entry-title");
             String title = es.text();
-            String refererUrl = es.get(0).getElementsByTag("a").get(0).attributes().get("href");
+            String refererUrl = es.get(0).getElementsByTag("a").get(0).attr("href");
             String intro = e.getElementsByClass("mar10-b post-ex mar10-t mobile-hide").text();
-            return new ACGNew(title, intro, author, cover, refererUrl, LocalDateTime.parse(createDate), "ACG门户");
+            return new ACGNew(title, intro, author, cover, refererUrl, LocalDateTime.parse(createDate), ACGMH);
         }).collect(Collectors.toList());
         Set<String> titleList = acgNewList.stream().map(ACGNew::getTitle).collect(Collectors.toSet());
         Set<String> finalTitleList = newMapper.queryNewsNotInDb(titleList);
@@ -112,6 +118,19 @@ public class NewService {
         newMapper.insert(acgNewList);
     }
 
+    private void pullACG17News() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://acg17.com/category/news/")).GET().build();
+        String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        Document doc = Jsoup.parse(body);
+        Elements elements = doc.getElementsByClass("item-list");
+        /*elements.stream().map(e->{
+            Element t = e.getElementsByClass("post-box-title").get(0).child(0);
+           *//* String create =*//* e.getElementsByClass("tie-date").get(0).text();
+            String title =t.text();
+            String rerfererUrl=t.attr("href");
 
+        })*/
+    }
 
 }
