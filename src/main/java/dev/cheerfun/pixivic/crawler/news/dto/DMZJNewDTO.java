@@ -1,7 +1,11 @@
 package dev.cheerfun.pixivic.crawler.news.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import dev.cheerfun.pixivic.common.model.ACGNew;
 import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 /**
  * @author OysterQAQ
@@ -21,4 +25,7 @@ public class DMZJNewDTO {
     private String refererUrl;
     @JsonProperty("nickname")
     private String author;
+    public ACGNew cast(){
+       return new ACGNew(title, intro, author, cover, refererUrl, LocalDateTime.ofEpochSecond(createTime/ 1000, 0, ZoneOffset.ofHours(8)),"动漫之家");
+    }
 }

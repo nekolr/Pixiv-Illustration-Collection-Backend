@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.crawler.news.mapper.NewMapper;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -20,7 +21,6 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Set;
@@ -44,6 +44,7 @@ public class NewService {
     private static final String LOLIHY = "萝莉花园";
     private static final String FUTA404 = "扶她404";
     DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
+
     @Scheduled(cron = "0 1 0 * * ?")
     public void dailyPullTask() throws IOException, InterruptedException {
         pullDMZJNews();
@@ -57,30 +58,8 @@ public class NewService {
         String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
         List<DMZJNewDTO> dmzjNewDTOList = objectMapper.readValue(body, new TypeReference<List<DMZJNewDTO>>() {
         });
-        //查询未在数据库中的
-        Set<String> titleList = dmzjNewDTOList.stream().map(DMZJNewDTO::getTitle).collect(Collectors.toSet());
-        Set<String> finalTitleList = newMapper.queryNewsNotInDb(titleList);
-        //进行抓取实际文章
-        List<ACGNew> acgNewList = dmzjNewDTOList.stream()
-                .filter(d -> finalTitleList.contains(d.getTitle()))
-                .map(d -> {
-                    HttpRequest r = HttpRequest.newBuilder()
-                            .uri(URI.create(d.getRefererUrl())).GET().build();
-                    ACGNew acgNew = null;
-                    try {
-                        String b = httpClient.send(r, HttpResponse.BodyHandlers.ofString()).body();
-                        //提取元素
-                        Document doc = Jsoup.parse(b);
-                        Elements newsBox = doc.getElementsByClass("news_box");
-                        //替换图片
-                        acgNew = new ACGNew(d.getTitle(), d.getIntro(), d.getAuthor(), d.getCover(), d.getRefererUrl(), newsBox.html(), LocalDateTime.ofEpochSecond(d.getCreateTime() / 1000, 0, ZoneOffset.ofHours(8)), DMZJ);
-                    } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    return acgNew;
-                }).collect(Collectors.toList());
-        //处理后存入数据库
-        newMapper.insert(acgNewList);
+        List<ACGNew> acgNewList = dmzjNewDTOList.stream().map(DMZJNewDTO::cast).collect(Collectors.toList());
+        process(acgNewList, "class", "news_box");
     }
 
     private void pullACGMHNews() throws IOException, InterruptedException {
@@ -101,21 +80,7 @@ public class NewService {
             String intro = e.getElementsByClass("mar10-b post-ex mar10-t mobile-hide").text();
             return new ACGNew(title, intro, author, cover, refererUrl, LocalDateTime.parse(createDate), ACGMH);
         }).collect(Collectors.toList());
-        Set<String> titleList = acgNewList.stream().map(ACGNew::getTitle).collect(Collectors.toSet());
-        Set<String> finalTitleList = newMapper.queryNewsNotInDb(titleList);
-        acgNewList.stream()
-                .filter(d -> finalTitleList.contains(d.getTitle())).forEach(n -> {
-            HttpRequest r = HttpRequest.newBuilder()
-                    .uri(URI.create(n.getRefererUrl())).GET().build();
-            try {
-                String b = httpClient.send(r, HttpResponse.BodyHandlers.ofString()).body();
-                Document d = Jsoup.parse(b);
-                n.setContent(d.getElementById("content-innerText").html());
-            } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-        newMapper.insert(acgNewList);
+        process(acgNewList, "id", "content-innerText");
     }
 
     private void pullACG17News() throws IOException, InterruptedException {
@@ -124,13 +89,41 @@ public class NewService {
         String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
         Document doc = Jsoup.parse(body);
         Elements elements = doc.getElementsByClass("item-list");
-        /*elements.stream().map(e->{
+        List<ACGNew> acgNewList = elements.stream().map(e -> {
+            String style = e.getElementsByClass("attachment-tie-medium size-tie-medium wp-post-image").get(0).attr("style");
+            String cover = style.substring(style.indexOf("url(") + 4, style.indexOf(")"));
             Element t = e.getElementsByClass("post-box-title").get(0).child(0);
-           *//* String create =*//* e.getElementsByClass("tie-date").get(0).text();
-            String title =t.text();
-            String rerfererUrl=t.attr("href");
+            LocalDateTime createDate = LocalDateTime.parse(e.getElementsByClass("tie-date").get(0).text(), df);
+            String intro = e.getElementsByClass("entry").get(0).child(0).text();
+            String title = t.text();
+            String rerfererUrl = t.attr("href");
+            return new ACGNew(title, intro, ACG17, cover, rerfererUrl, createDate, ACG17);
+        }).collect(Collectors.toList());
+        process(acgNewList, "class", "entry");
+    }
 
-        })*/
+    private void process(List<ACGNew> acgNewList, String type, String name) {
+        //查询未在数据库中的
+        Set<String> titleList = acgNewList.stream().map(ACGNew::getTitle).collect(Collectors.toSet());
+        Set<String> finalTitleList = newMapper.queryNewsNotInDb(titleList);
+        //进行抓取实际文章
+        acgNewList.stream()
+                .filter(d -> finalTitleList.contains(d.getTitle())).forEach(n -> {
+            HttpRequest r = HttpRequest.newBuilder()
+                    .uri(URI.create(n.getRefererUrl())).GET().build();
+            try {
+                String b = httpClient.send(r, HttpResponse.BodyHandlers.ofString()).body();
+                Document d = Jsoup.parse(b);
+                if ("class".equals(type)) {
+                    n.setContent(d.getElementsByClass(name).get(0).html());
+                } else {
+                    n.setContent(d.getElementById(name).html());
+                }
+            } catch (IOException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+        newMapper.insert(acgNewList);
     }
 
 }
