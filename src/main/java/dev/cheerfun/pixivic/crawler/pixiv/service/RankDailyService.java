@@ -41,7 +41,7 @@ public class RankDailyService {
     public void pullAllRank() throws InterruptedException {
         LocalDate date = LocalDate.now().plusDays(-2);
         for (String mode : modes) {
-            illustrationMapper.insertRank(getIllustrations(mode, /*date.toString()*/"2019-10-10"));
+            illustrationMapper.insertRank(getIllustrations(mode, date.toString()));
         }
     }
 
