@@ -17,6 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
 /**
@@ -42,7 +43,7 @@ public class CommonController {
     }
 
     @GetMapping("/emails/{email:.+}")
-    public ResponseEntity<Result<Boolean>> checkEmail(@Validated @NotBlank @PathVariable("email") String email) {
+    public ResponseEntity<Result<Boolean>> checkEmail(@Validated @Email @NotBlank @PathVariable("email") String email) {
         if (userService.checkEmail(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("邮箱已存在"));
         }
@@ -84,7 +85,7 @@ public class CommonController {
 
     @PutMapping("/{userId}/email")
     @CheckVerification
-    public ResponseEntity<Result> checkEmail(@RequestParam String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result> checkEmail(@RequestParam @Email@Validated  String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         userService.setEmail(email, userId);
         return ResponseEntity.ok().body(new Result<>("完成验证邮箱"));
     }
@@ -97,14 +98,14 @@ public class CommonController {
     }
 
     @GetMapping("/emails/{email:.+}/resetPasswordEmail")
-    public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email") String email) throws MessagingException {
+    public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email")@Email@Validated String email) throws MessagingException {
         userService.getResetPasswordEmail(email);
         return ResponseEntity.ok().body(new Result<>("发送密码重置邮件成功"));
     }
 
     @GetMapping("/emails/{email:.+}/checkEmail")
     @PermissionRequired
-    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") String email) throws MessagingException {
+    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") @Email@Validated String email) throws MessagingException {
         userService.checkEmail(email);
         userService.getCheckEmail(email, (int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("发送邮箱验证邮件成功"));
