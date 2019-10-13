@@ -12,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -44,11 +43,11 @@ public class NewService {
     private static final String LOLIHY = "萝莉花园";
     private static final String FUTA404 = "扶她404";
     DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
+    DateTimeFormatter df2 = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @Scheduled(cron = "0 1 0 * * ?")
+    //@Scheduled(cron = "0 1 0 * * ?")
     public void dailyPullTask() throws IOException, InterruptedException {
         pullDMZJNews();
-
     }
 
     private void pullDMZJNews() throws IOException, InterruptedException {
@@ -100,6 +99,30 @@ public class NewService {
             return new ACGNew(title, intro, ACG17, cover, rerfererUrl, createDate, ACG17);
         }).collect(Collectors.toList());
         process(acgNewList, "class", "entry");
+    }
+
+    private void pullFUTA404News() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://www.futa404.com/category/dmaz")).GET().build();
+        String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        Document doc = Jsoup.parse(body);
+        Elements elements = doc.getElementsByClass("card flex-fill mb-4 mb-sm-4-2 mb-md-4 mb-lg-4-2");
+        List<ACGNew> acgNewList = elements.stream().map(e -> {
+            String cover = e.getElementsByClass("custom-hover-img original lazyloaded").get(0).attr("src");
+            Element t = e.getElementsByClass("font-16 font-md-14 font-xs-16 text-l2 font-weight-bold light-14").get(0).child(0);
+            String title = t.attr("title");
+            String rerfererUrl = t.attr("href");
+            String time = e.getElementsByClass("u-time").get(0).text();
+            LocalDateTime createDate;
+            if (time.contains("-")) {
+                createDate = LocalDateTime.parse(time, df2);
+            } else {
+                createDate = LocalDateTime.now();
+            }
+            String intro = e.getElementsByClass("text-l2 font-md-12 text-secondary").get(0).text();
+            return new ACGNew(title, intro, FUTA404, cover, rerfererUrl, createDate, FUTA404);
+        }).collect(Collectors.toList());
+        process(acgNewList, "class", "post-content suxing-popup-gallery");
     }
 
     private void process(List<ACGNew> acgNewList, String type, String name) {
