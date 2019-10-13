@@ -1,7 +1,6 @@
 package dev.cheerfun.pixivic.web.common.config;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -12,7 +11,7 @@ import org.springframework.web.filter.CorsFilter;
  * @date 2019/09/15 17:56
  * @description CorsConfig
  */
-@Configuration
+//@Configuration
 public class CorsConfig {
     private CorsConfiguration buildConfig() {
         CorsConfiguration corsConfiguration = new CorsConfiguration();
