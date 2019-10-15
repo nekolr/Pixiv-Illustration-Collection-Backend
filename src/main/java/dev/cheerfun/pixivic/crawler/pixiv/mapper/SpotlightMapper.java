@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.common.model.Spotlight;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
@@ -35,4 +36,13 @@ public interface SpotlightMapper {
             "</script>"
     })
     int insertRelation(int spotlightId, List<Integer> illustIds);
+    @Select({"\n" +
+            "select distinct t.illust_id\n" +
+            "from (select spotlights.*,spotlight_illust_relation.illust_id\n" +
+            "                from spotlights\n" +
+            "                         left join spotlight_illust_relation\n" +
+            "                                   on spotlights.spotlight_id = spotlight_illust_relation.spotlight_id\n" +
+            "                order by spotlight_illust_relation.spotlight_id desc\n" +
+            "               ) t left join illusts on t.illust_id=illusts.illust_id where illusts.illust_id is null"})
+    List<Integer> queryIllustIdNotInDb();
 }

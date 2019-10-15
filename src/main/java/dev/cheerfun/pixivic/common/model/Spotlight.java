@@ -19,7 +19,6 @@ public class Spotlight {
     @JsonSetter("pure_title")
     private String pureTitle;
     private String thumbnail;
-    @JsonIgnore
     @JsonSetter("article_url")
     private String articleUrl;
     @JsonSetter("publish_date")

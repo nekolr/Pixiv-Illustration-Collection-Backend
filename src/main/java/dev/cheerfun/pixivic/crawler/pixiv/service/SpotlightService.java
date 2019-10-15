@@ -41,9 +41,9 @@ public class SpotlightService {
 
     @Scheduled(cron = "0 30 3 * * ?")
     public void pullAllSpotlight() {
-        int index =1;
+        int index =0;
         List<List<Spotlight>> spotlightsList = new ArrayList<>();
-        while (index < 3) {
+        while (index < 10) {
             spotlightsList.add(getSpotlightInfo(index));
             index++;
         }
@@ -72,10 +72,10 @@ public class SpotlightService {
                     spotlightMapper.insertRelation(s.getId(), illustIds);
                     //查找出没在数据库的画作
                     illustIds = illustrationService.queryIllustsNotInDb(illustIds);
-                    FileWriter writer = new FileWriter("D:\\illustId.txt");
+                  /*  FileWriter writer = new FileWriter("D:\\illustId.txt");
                     for(Integer str: illustIds) {
                         writer.write(str + System.lineSeparator());
-                    }
+                    }*/
                     //拉取
                     if (illustIds.size() > 0) {
                         List<Illustration> illustrations = illustIds.stream().map(illustrationService::pullIllustrationInfo).filter(Objects::nonNull).collect(Collectors.toList());
