@@ -37,7 +37,7 @@ public class RankDailyService {
     private final RequestUtil requestUtil;
     private final static String[] modes = {"day", "week", "month"};
 
-    @Scheduled(cron = "0 1 0 * * ?")
+    @Scheduled(cron = "0 0 1 * * ?")
     public void pullAllRank() throws InterruptedException {
         LocalDate date = LocalDate.now().plusDays(-2);
         for (String mode : modes) {
