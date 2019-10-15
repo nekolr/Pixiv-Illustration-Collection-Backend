@@ -90,8 +90,8 @@ public class CommonService {
         return userMapper.setEmail(email, userId);
     }
 
-    public int setPassword(String password, String email) {
-        return userMapper.setPassword(passwordUtil.encrypt(password), email);
+    public int setPasswordByEmail(String password, String email) {
+        return userMapper.setPasswordByEmail(passwordUtil.encrypt(password), email);
     }
 
     public void getResetPasswordEmail(String email) throws MessagingException {
@@ -123,5 +123,9 @@ public class CommonService {
         }
         return moduleName;
 
+    }
+
+    public int setPasswordById(String password, int userId) {
+        return userMapper.setPasswordById(passwordUtil.encrypt(password), userId);
     }
 }

@@ -45,5 +45,7 @@ public interface CommonMapper {
     int setEmail(String email, int userId);
 
     @Update("update users set password=#{password} where email=#{email}")
-    int setPassword(String password,String email);
+    int setPasswordByEmail(String password,String email);
+    @Update("update users set password=#{password} where user_id=#{userId}")
+    int setPasswordById(String password,int userId);
 }

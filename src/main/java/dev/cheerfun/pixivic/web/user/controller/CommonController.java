@@ -85,27 +85,34 @@ public class CommonController {
 
     @PutMapping("/{userId}/email")
     @CheckVerification
-    public ResponseEntity<Result> checkEmail(@RequestParam @Email@Validated  String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result> checkEmail(@RequestParam @Email @Validated String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         userService.setEmail(email, userId);
         return ResponseEntity.ok().body(new Result<>("完成验证邮箱"));
     }
 
     @PutMapping("/password")
     @CheckVerification
-    public ResponseEntity<Result> setPassword(@RequestParam String password, @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        userService.setPassword(password, value.substring(4));
+    public ResponseEntity<Result> resetPassword(@RequestParam String password, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+        userService.setPasswordByEmail(password, value.substring(4));
+        return ResponseEntity.ok().body(new Result<>("重置密码成功"));
+    }
+
+    @PutMapping("/{userId}/password")
+    @PermissionRequired
+    public ResponseEntity<Result> setPassword(@RequestHeader("Authorization") String token, @RequestParam String password) {
+        userService.setPasswordById(password, (int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }
 
     @GetMapping("/emails/{email:.+}/resetPasswordEmail")
-    public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email")@Email@Validated String email) throws MessagingException {
+    public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email") @Email @Validated String email) throws MessagingException {
         userService.getResetPasswordEmail(email);
         return ResponseEntity.ok().body(new Result<>("发送密码重置邮件成功"));
     }
 
     @GetMapping("/emails/{email:.+}/checkEmail")
     @PermissionRequired
-    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") @Email@Validated String email) throws MessagingException {
+    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") @Email @Validated String email, @RequestHeader("Authorization") String token) throws MessagingException {
         userService.checkEmail(email);
         userService.getCheckEmail(email, (int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("发送邮箱验证邮件成功"));
