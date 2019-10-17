@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.web.common.model.User;
+import dev.cheerfun.pixivic.web.user.dto.ResetPasswordDTO;
 import dev.cheerfun.pixivic.web.user.dto.SignInDTO;
 import dev.cheerfun.pixivic.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.web.user.service.CommonService;
@@ -92,15 +93,15 @@ public class CommonController {
 
     @PutMapping("/password")
     @CheckVerification
-    public ResponseEntity<Result> resetPassword(@RequestParam String password, @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        userService.setPasswordByEmail(password, value.substring(4));
+    public ResponseEntity<Result> resetPassword(@RequestBody ResetPasswordDTO item, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+        userService.setPasswordByEmail(item.getPassword(), value.substring(4));
         return ResponseEntity.ok().body(new Result<>("重置密码成功"));
     }
 
     @PutMapping("/{userId}/password")
     @PermissionRequired
-    public ResponseEntity<Result> setPassword(@RequestHeader("Authorization") String token, @RequestParam String password) {
-        userService.setPasswordById(password, (int) AppContext.get().get(USER_ID));
+    public ResponseEntity<Result> setPassword(@RequestHeader("Authorization") String token, @RequestBody ResetPasswordDTO item) {
+        userService.setPasswordById(item.getPassword(), (int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }
 
