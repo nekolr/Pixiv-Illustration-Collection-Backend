@@ -40,7 +40,7 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/illusts/{illustId}")
-    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId) {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId)));
     }
 
