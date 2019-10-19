@@ -37,8 +37,9 @@ public class RankDailyService {
     private final RequestUtil requestUtil;
     private final static String[] modes = {"day", "week", "month"};
 
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 10 1 * * ?")
     public void pullAllRank() throws InterruptedException {
+
         LocalDate date = LocalDate.now().plusDays(-2);
         for (String mode : modes) {
             illustrationMapper.insertRank(getIllustrations(mode, date.toString()));
