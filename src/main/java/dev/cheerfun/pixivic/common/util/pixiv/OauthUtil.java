@@ -44,7 +44,7 @@ final public class OauthUtil {
     private volatile List<Oauth> oauths;
 
     @PostConstruct
-    @Scheduled(cron = "0 0 * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     private void init() throws IOException {
         //读取账号信息
         File json = new File(path);
