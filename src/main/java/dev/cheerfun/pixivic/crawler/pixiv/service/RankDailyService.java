@@ -14,6 +14,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,7 @@ import java.util.stream.IntStream;
 public class RankDailyService {
     private final ObjectMapper objectMapper;
     private final IllustrationMapper illustrationMapper;
+    private final IllustrationService illustrationService;
     private final RequestUtil requestUtil;
     private final static String[] modes = {"day", "week", "month"};
 
@@ -73,6 +76,28 @@ public class RankDailyService {
                     }
                     return null;
                 });
+    }
+
+    public void deal() throws IOException, InterruptedException {
+        //读取文件中所有未获取的画作id
+        String s = Files.readString(Paths.get("/home/oysterqaq/文档/illustIdList.txt"));
+        String[] split = s.split("\n");
+        //遍历
+        int length = split.length;
+        for (int i=1360;i<length;i++) {
+            System.out.println(split[i]);
+            Illustration illustration = illustrationService.pullIllustrationInfo(Integer.parseInt(split[i]));
+            if(illustration!=null){
+                System.out.println(split[i]+"存在");
+                List<Illustration> illustrations = new ArrayList<>();
+                illustrations.add(illustration);
+                illustrationMapper.insert(illustrations);
+            }
+            Thread.sleep(1000);
+        }
+
+        //下载
+        //存入数据库
     }
 
 }

@@ -59,7 +59,7 @@ final public class RequestUtil {
         });
     }
 
-    public Object getJsonSync(String url, Class target) {
+    public Object  getJsonSync(String url, Class target) {
         HttpRequest.Builder uri = HttpRequest.newBuilder()
                 .uri(URI.create(url));
         decorateHeader(uri);

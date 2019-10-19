@@ -31,11 +31,13 @@ public class TestController {
     private final OauthUtil oauthUtil;
     private final StringRedisTemplate stringRedisTemplate;
     private final SpotlightService spotlightService;
+    private final RankDailyService rankDailyService;
 
     //@PermissionRequired(PermissionLevel.VIP)
     @GetMapping("/test")
     public String test() throws InterruptedException, ExecutionException, IOException {
-        spotlightService.pullAllSpotlight();
+        //spotlightService.pullAllSpotlight();
+        rankDailyService.deal();
         return "233";
     }
 

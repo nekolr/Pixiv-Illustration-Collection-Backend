@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -147,7 +148,7 @@ public class IllustrationService {
     @Transactional
     public void saveToDb(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
-        if(tags.size()>0){
+        if (tags.size() > 0) {
             illustrationMapper.insertTag(tags);
             System.out.println("标签入库完毕");
             //获取标签id
@@ -155,8 +156,7 @@ public class IllustrationService {
             System.out.println("标签id取回完毕");
             illustrationMapper.insertTagIllustRelation(illustrations);
             System.out.println("标签与画作的联系入库完毕");
-        }
-        else {
+        } else {
             System.out.println("标签为null");
         }
         illustrationMapper.insert(illustrations);
@@ -164,6 +164,12 @@ public class IllustrationService {
     }
 
     public Illustration pullIllustrationInfo(Integer illustId) {
+/*        CompletableFuture<String> json = requestUtil.getJson("https://proxy.pixivic.com:23334/v1/illust/detail?illust_id=" + illustId);
+        try {
+            System.out.println(json.get());
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }*/
         IllustrationDetailDTO illustrationDetailDTO = (IllustrationDetailDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/illust/detail?illust_id=" + illustId, IllustrationDetailDTO.class);
         assert illustrationDetailDTO != null;
         return IllustrationDTO.castToIllustration(illustrationDetailDTO.getIllustrationDTO());
