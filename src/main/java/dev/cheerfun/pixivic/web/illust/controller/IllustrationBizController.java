@@ -25,7 +25,7 @@ public class IllustrationBizController {
     private final IllustrationBizService illustrationBizService;
 
     @GetMapping("/tags/{tag}/translation")
-    public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag, @RequestHeader("Authorization") String token, @RequestBody List<String> tagList) {
+    public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag, @RequestBody List<String> tagList) {
         return ResponseEntity.ok().body(new Result<>("获取标签翻译成功", illustrationBizService.translationTag(tag)));
     }
 
@@ -35,12 +35,12 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/artists/{artistId}")
-    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable String artistId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable String artistId) {
         return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationBizService.queryArtistById(artistId)));
     }
 
     @GetMapping("/illusts/{illustId}")
-    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId) {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId)));
     }
 
