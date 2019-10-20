@@ -11,6 +11,7 @@ import java.util.Set;
 
 @Mapper
 public interface NewMapper {
+
     @Select({
             "<script>",
             "SELECT temp.title FROM (",
@@ -20,17 +21,17 @@ public interface NewMapper {
             ") as temp WHERE temp.title  NOT IN (SELECT news.title FROM news)",
             "</script>"
     })
-    Set<String> queryNewsNotInDb(@Param("titleList") Set<String> titleList);
+    List<String> queryNewsNotInDb(@Param("titleList") List<String> titleList);
 
     @Insert({
             "<script>",
-            "insert IGNORE into news values (`title`, `intro`, `author`,`cover`, `referer_url`, `content`, `from`, `create_date`) ",
+            "insert IGNORE into news (`title`, `intro`, `author`,`cover`, `referer_url`, `content`, `from`, `create_date`) VALUES",
             "<foreach collection='acgNewList' item='acgNew' index='index' separator=','>",
             "(#{acgNew.title}," +
                     "#{acgNew.intro}, #{acgNew.author}," +
                     "#{acgNew.cover}, #{acgNew.refererUrl}," +
-                    "#{acgNew.content}, #{acgNew.createDate}," +
-                    "#{acgNew.from})",
+                    "#{acgNew.content},#{acgNew.from}, #{acgNew.createDate}" +
+                    ")",
             "</foreach>",
             "</script>"
     })

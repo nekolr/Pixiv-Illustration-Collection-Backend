@@ -1,9 +1,11 @@
 package dev.cheerfun.pixivic.crawler.news.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonSetter;
 import dev.cheerfun.pixivic.common.model.ACGNew;
 import lombok.Data;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
@@ -17,15 +19,15 @@ import java.time.ZoneOffset;
 public class DMZJNewDTO {
     private String title;
     private String intro;
-    @JsonProperty("create_time")
+    @JsonSetter("create_time")
     private int createTime;
-    @JsonProperty("row_pic_url")
+    @JsonSetter("row_pic_url")
     private String cover;
-    @JsonProperty("page_url")
+    @JsonSetter("page_url")
     private String refererUrl;
-    @JsonProperty("nickname")
+    @JsonSetter("nickname")
     private String author;
     public ACGNew cast(){
-       return new ACGNew(title, intro, author, cover, refererUrl, LocalDateTime.ofEpochSecond(createTime/ 1000, 0, ZoneOffset.ofHours(8)),"动漫之家");
+       return new ACGNew(title, intro, author, cover, refererUrl, Instant.ofEpochMilli(createTime).atZone(ZoneOffset.ofHours(8)).toLocalDate(),"动漫之家");
     }
 }

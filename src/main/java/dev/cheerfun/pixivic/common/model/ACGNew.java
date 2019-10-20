@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.common.model;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 /**
@@ -21,10 +22,10 @@ public class ACGNew {
     private String cover;
     private String refererUrl;
     private String content;
-    private LocalDateTime createDate;
+    private LocalDate createDate;
     private String from;
 
-    public ACGNew(String title, String intro, String author, String cover, String refererUrl, String content, LocalDateTime createDate, String from) {
+    public ACGNew(String title, String intro, String author, String cover, String refererUrl, String content, LocalDate createDate, String from) {
         this.title = title;
         this.intro = intro;
         this.author = author;
@@ -35,7 +36,7 @@ public class ACGNew {
         this.from = from;
     }
 
-    public ACGNew(String title, String intro, String author, String cover, String refererUrl, LocalDateTime createDate, String from) {
+    public ACGNew(String title, String intro, String author, String cover, String refererUrl, LocalDate createDate, String from) {
         this.title = title;
         this.intro = intro;
         this.author = author;

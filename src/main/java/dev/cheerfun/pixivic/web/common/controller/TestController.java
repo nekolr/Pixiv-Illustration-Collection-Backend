@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
+import dev.cheerfun.pixivic.crawler.news.service.NewService;
 import dev.cheerfun.pixivic.crawler.pixiv.service.RankDailyService;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.web.common.model.User;
@@ -30,11 +31,13 @@ public class TestController {
     private final OauthUtil oauthUtil;
     private final StringRedisTemplate stringRedisTemplate;
     private final RankDailyService rankDailyService;
+    private final NewService newService;
 
     //@PermissionRequired(PermissionLevel.VIP)
     @GetMapping("/test")
     public String test() throws InterruptedException, ExecutionException, IOException {
-        rankDailyService.pullAllRank();
+        //rankDailyService.pullAllRank();
+        newService.dailyPullTask();
         return "233";
     }
 
