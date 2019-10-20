@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.common.model;
 
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import dev.cheerfun.pixivic.common.serializer.LocalDateSerializer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -22,10 +24,11 @@ public class ACGNew {
     private String cover;
     private String refererUrl;
     private String content;
+    @JsonSerialize(using = LocalDateSerializer.class)
     private LocalDate createDate;
-    private String from;
+    private String referer;
 
-    public ACGNew(String title, String intro, String author, String cover, String refererUrl, String content, LocalDate createDate, String from) {
+    public ACGNew(String title, String intro, String author, String cover, String refererUrl, String content, LocalDate createDate, String referer) {
         this.title = title;
         this.intro = intro;
         this.author = author;
@@ -33,16 +36,16 @@ public class ACGNew {
         this.refererUrl = refererUrl;
         this.content = content;
         this.createDate = createDate;
-        this.from = from;
+        this.referer = referer;
     }
 
-    public ACGNew(String title, String intro, String author, String cover, String refererUrl, LocalDate createDate, String from) {
+    public ACGNew(String title, String intro, String author, String cover, String refererUrl, LocalDate createDate, String referer) {
         this.title = title;
         this.intro = intro;
         this.author = author;
         this.cover = cover;
         this.refererUrl = refererUrl;
         this.createDate = createDate;
-        this.from = from;
+        this.referer = referer;
     }
 }

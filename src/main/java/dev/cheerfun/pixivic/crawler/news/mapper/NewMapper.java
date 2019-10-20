@@ -25,12 +25,12 @@ public interface NewMapper {
 
     @Insert({
             "<script>",
-            "insert IGNORE into news (`title`, `intro`, `author`,`cover`, `referer_url`, `content`, `from`, `create_date`) VALUES",
+            "insert IGNORE into news (`title`, `intro`, `author`,`cover`, `referer_url`, `content`, `referer`, `create_date`) VALUES",
             "<foreach collection='acgNewList' item='acgNew' index='index' separator=','>",
             "(#{acgNew.title}," +
                     "#{acgNew.intro}, #{acgNew.author}," +
                     "#{acgNew.cover}, #{acgNew.refererUrl}," +
-                    "#{acgNew.content},#{acgNew.from}, #{acgNew.createDate}" +
+                    "#{acgNew.content},#{acgNew.referer}, #{acgNew.createDate}" +
                     ")",
             "</foreach>",
             "</script>"

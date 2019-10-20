@@ -58,16 +58,16 @@ public class IllustrationBizService {
         float r = Float.parseFloat(split[0]) / Float.parseFloat(split[1]);
         float minR = r - range;
         float maxR = r + range;
-        List<Illustration> illustrations = illustrationBizMapper.queryRandomIllustration().stream().sorted(Comparator.comparingInt(i->-i.getTotalBookmarks())).collect(Collectors.toList());
+        List<Illustration> illustrations = illustrationBizMapper.queryRandomIllustration().stream().sorted(Comparator.comparingInt(i -> -i.getTotalBookmarks())).collect(Collectors.toList());
         Illustration illustration = illustrations.stream().takeWhile(i -> {
             float w_h = (float) i.getWidth() / i.getHeight();
             return illustType.equals(i.getType()) && w_h >= minR && w_h <= maxR && i.getSanityLevel() <= maxSanityLevel;
         }).findAny().orElse(illustrations.get(0));
-        Map<String,String> imageUrl = (Map<String, String>) illustration.getImageUrls().get(0);
-        StringBuilder url ;
-                url = new StringBuilder(imageUrl.get(urlType).replace("i.pximg.net", "i.pximg.qixiv.me"));
+        Map<String, String> imageUrl = (Map<String, String>) illustration.getImageUrls().get(0);
+        StringBuilder url;
+        url = new StringBuilder(imageUrl.get(urlType).replace("i.pximg.net", "i.pximg.qixiv.me"));
         if (detail) {
-            url.append("?title=").append(URLEncoder.encode(illustration.getTitle(),StandardCharsets.UTF_8))
+            url.append("?title=").append(URLEncoder.encode(illustration.getTitle(), StandardCharsets.UTF_8))
                     .append("&id=").append(illustration.getId())
                     .append("&artistName=").append(URLEncoder.encode(illustration.getArtistPreView().getName(), StandardCharsets.UTF_8))
                     .append("&artistId=").append(illustration.getArtistId());
