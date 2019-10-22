@@ -10,9 +10,9 @@
         <relativePath/>
     </parent>
     <groupId>dev.cheerfun.pixivic</groupId>
-    <artifactId>pixiv-Illustration-collection-web</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
-    <description>pixivic.com Web后端</description>
+    <artifactId>pixiv-llustration-collection</artifactId>
+    <version>3.0</version>
+    <description>pixivic.com 后端</description>
     <packaging>jar</packaging>
 
     <properties>
@@ -22,18 +22,14 @@
         <jjwt.version>0.10.7</jjwt.version>
         <fastjson.version>1.2.56</fastjson.version>
         <mysql.version>8.0.15</mysql.version>
-        <mybatis-plus.version>3.1.2</mybatis-plus.version>
         <maven.complie.version>3.7.0</maven.complie.version>
         <velocity.version>2.1</velocity.version>
         <common.lang3.version>3.8.1</common.lang3.version>
         <druid.version>1.1.20</druid.version>
         <guava.version>27.0.1-jre</guava.version>
         <hibernate.validate.version>6.0.16.Final</hibernate.validate.version>
-        <kaptcha.version>2.3.2</kaptcha.version>
-        <elasticsearch.version>7.3.1</elasticsearch.version>
-        <mybatis.version>3.5.2</mybatis.version>
-        <mybatis-plus.version>3.2.0</mybatis-plus.version>
         <jsoup.version>1.12.1</jsoup.version>
+        <mybatis-spring-boot-starter.version>2.1.0</mybatis-spring-boot-starter.version>
     </properties>
 
     <dependencies>
@@ -65,9 +61,8 @@
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>2.1.0</version>
+            <version>${mybatis-spring-boot-starter.version}</version>
         </dependency>
-
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
