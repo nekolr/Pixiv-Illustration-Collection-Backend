@@ -10,7 +10,7 @@
         <relativePath/>
     </parent>
     <groupId>dev.cheerfun.pixivic</groupId>
-    <artifactId>pixiv-llustration-collection</artifactId>
+    <artifactId>pixiv-illustration-collection</artifactId>
     <version>3.0</version>
     <description>pixivic.com 后端</description>
     <packaging>jar</packaging>
