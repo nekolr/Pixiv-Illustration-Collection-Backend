@@ -34,7 +34,8 @@ public class IllustrationBizService {
     }
 
     public List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize) {
-        return illustrationBizMapper.queryIllustrationsByArtistId(artistId, currIndex, pageSize);
+        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, currIndex, pageSize);
+        return illustrations;
     }
 
     public Artist queryArtistById(String artistId) {
