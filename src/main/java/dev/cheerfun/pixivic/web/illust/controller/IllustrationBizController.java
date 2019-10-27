@@ -30,7 +30,7 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/artists/{artistId}/illusts")
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {
         return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationBizService.queryIllustrationsByArtistId(artistId, (page - 1) * pageSize, pageSize)));
     }
 
@@ -58,7 +58,7 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/tags/{tag}/candidates")
-    public ResponseEntity<Result<List<Tag>>> autoCompleteTag(@PathVariable String tag, @RequestHeader("Authorization") String token, @RequestBody List<String> tagList) {
+    public ResponseEntity<Result<List<Tag>>> autoCompleteTag(@PathVariable String tag, @RequestBody List<String> tagList) {
         return ResponseEntity.ok().body(new Result<>("获取标签候选成功", null));
     }
 
