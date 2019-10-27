@@ -26,7 +26,7 @@ public class RankController {
     @GetMapping
     public ResponseEntity<Result<Rank>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {
         Rank rank = rankService.queryByDateAndMode(date, mode, page, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取日排行成功", rank));
+        return ResponseEntity.ok().body(new Result<>("获取排行成功", rank));
     }
 
 }
