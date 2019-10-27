@@ -36,7 +36,7 @@ public class IllustrationBizController {
 
     @GetMapping("/artists/{artistId}")
     public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable String artistId) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationBizService.queryArtistById(artistId)));
+        return ResponseEntity.ok().body(new Result<>("获取画师详情成功", illustrationBizService.queryArtistById(artistId)));
     }
 
     @GetMapping("/illusts/{illustId}")
