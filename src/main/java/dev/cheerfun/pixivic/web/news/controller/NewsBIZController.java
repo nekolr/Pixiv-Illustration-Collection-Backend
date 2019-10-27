@@ -27,6 +27,6 @@ public class NewsBIZController {
     public ResponseEntity<Result< List<ACGNew>>> queryByDateAndMode(@PathVariable String referer, @RequestParam String date, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {
 
         List<ACGNew> acgNewList = newsBIZService.queryByFromAndDate(referer, date, page, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取日排行成功", acgNewList));
+        return ResponseEntity.ok().body(new Result<>("获取"+referer+"资讯成功", acgNewList));
     }
 }
