@@ -59,6 +59,9 @@ public class SearchUtil {
     private final static String MIN_HEIGHT_PRE = "{\"range\":{\"height\":{\"gte\":";
     private final static String MIN_HEIGHT_POS = "}}}";
 
+    private final static String MAX_SANITY_LEVEL_PRE  = "{\"range\":{\"sanity_level\":{\"lte\":";
+    private final static String MAX_SANITY_LEVEL_POS = "}}}";
+
     private final static String DATE_RANGE_1 = "{\"range\":{\"create_date\":{\"gte\":\"";
     private final static String DATE_RANGE_2 = "\",\"lte\":\"";
     private final static String DATE_RANGE_3 = "\"}}}";
@@ -126,6 +129,10 @@ public class SearchUtil {
                     .append(MIN_HEIGHT_POS)
                     .append(DOT);
         }
+        stringBuilder.append(MAX_SANITY_LEVEL_PRE)
+                .append(5)
+                .append(MAX_SANITY_LEVEL_POS)
+                .append(DOT);
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         stringBuilder.append(FILTER_POS);//.append(DOT);
 
