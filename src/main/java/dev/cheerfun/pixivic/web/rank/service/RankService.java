@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -23,12 +24,15 @@ public class RankService {
 
     public Rank queryByDateAndMode(String date, String mode, int page, int pageSize) {
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
+        List<Illustration> illustrations;
         if (rank != null) {
             int size = rank.getData().size();
-            List<Illustration> illustrations = rank.getData().stream().skip(pageSize * (page - 1))
+            illustrations = rank.getData().stream().skip(pageSize * (page - 1))
                     .limit(pageSize).collect(Collectors.toList());
-            rank.setData(illustrations);
+        } else {
+            illustrations = new ArrayList<>();
         }
+        rank.setData(illustrations);
         return rank;
     }
 }
