@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -20,13 +21,12 @@ import java.util.List;
 public class RankService {
     private final RankMapper rankMapper;
 
-
     public Rank queryByDateAndMode(String date, String mode, int page, int pageSize) {
-       page=page>0?page:1;
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
-        if(rank!=null){
+        if (rank != null) {
             int size = rank.getData().size();
-            List<Illustration> illustrations = rank.getData().subList(Math.min((page-1) * pageSize,size), Math.min(page * pageSize, size));
+            List<Illustration> illustrations = rank.getData().stream().skip(pageSize * (page - 1))
+                    .limit(pageSize).collect(Collectors.toList());
             rank.setData(illustrations);
         }
         return rank;
