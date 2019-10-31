@@ -24,15 +24,13 @@ public class RankService {
 
     public Rank queryByDateAndMode(String date, String mode, int page, int pageSize) {
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
-        List<Illustration> illustrations;
         if (rank != null) {
-            int size = rank.getData().size();
-            illustrations = rank.getData().stream().skip(pageSize * (page - 1))
+            List<Illustration> illustrations = rank.getData().stream().skip(pageSize * (page - 1))
                     .limit(pageSize).collect(Collectors.toList());
+            rank.setData(illustrations);
         } else {
-            illustrations = new ArrayList<>();
+            rank = new Rank(new ArrayList<>(), mode, date);
         }
-        rank.setData(illustrations);
         return rank;
     }
 }
