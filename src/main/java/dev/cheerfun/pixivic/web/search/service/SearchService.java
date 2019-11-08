@@ -33,6 +33,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -50,6 +51,7 @@ public class SearchService {
     private final ObjectMapper objectMapper;
     private final SearchUtil searchUtil;
     private final ImageSearchUtil imageSearchUtil;
+    private volatile ConcurrentHashMap<String, List<PixivSearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(5000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(String keyword) {
@@ -80,7 +82,7 @@ public class SearchService {
 
     }
 
-    public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(String keyword) throws IOException, InterruptedException {
+    public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("accept-language", "zh-CN,zh;q=0.9")
                 .uri(URI.create("https://proxy.pixivic.com:23334/search.php?s_mode=s_tag&word=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
@@ -93,12 +95,23 @@ public class SearchService {
                 try {
                     pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
                     });
+                    //保存
+                    waitSaveToDb.put(keyword, pixivSearchSuggestions);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
             return pixivSearchSuggestions != null ? pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList()) : null;
         });
+    }
+
+    private void savePixivSuggestionToDb() {
+        HashMap<String, List<PixivSearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
+        //PixivSearchSuggestion[] searchSuggestions = waitSaveToDb.toArray(new PixivSearchSuggestion[100000]);
+        waitSaveToDb.clear();
+        //持久化
+        temp.keySet().forEach(e->);
+        temp=null;
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
