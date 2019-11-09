@@ -116,7 +116,7 @@ public class SearchService {
         });
     }
 
-    @Scheduled(cron = "0 0/15 * * * ? ")
+    @Scheduled(cron = "0 0/5 * * * ? ")
     private void savePixivSuggestionToDb() {
         final HashMap<String, List<SearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
@@ -130,14 +130,12 @@ public class SearchService {
             List<Tag> tags = pixivSuggestionMapper.queryByNoSuggestId().stream().map(SearchSuggestionSyncDTO::getSearchSuggestion).collect(Collectors.toList());
             if (tags.size() > 0) {
                 illustrationMapper.insertTag(tags);
-                //获取标签id
-                //写回
+                //获取标签id并写回
                 tags.forEach(tag -> {
                     Long tagId = illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName());
                     pixivSuggestionMapper.updateSuggestionTagId(tag, tagId);
                 });
             }
-
         }
 
     }
