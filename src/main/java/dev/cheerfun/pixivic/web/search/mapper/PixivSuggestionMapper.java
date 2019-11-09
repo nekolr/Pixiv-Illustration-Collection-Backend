@@ -13,7 +13,7 @@ public interface PixivSuggestionMapper {
             "insert IGNORE into tag_suggestion (`tag`, `suggestion_tag`,`suggestion_tag_id`) values ",
             "<foreach collection='tags' item='tag' index='index' separator=','>",
             "(#{keyword}, #{tag,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler}," +
-                    "(select tag_id from tags where  name=#{tag.name} and translated_name=#{tag.translatedName}))",
+                    "(select tag_id from tags where  name=ifnull(#{tag.name},'') and translated_name=ifnull(#{tag.translatedName},'')))",
             "</foreach>",
             "</script>"
     })
