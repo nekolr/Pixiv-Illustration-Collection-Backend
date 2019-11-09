@@ -121,7 +121,7 @@ public class SearchService {
         final HashMap<String, List<SearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
         //持久化
-        if (!waitSaveToDb.isEmpty()) {
+        if (!temp.isEmpty()) {
             temp.keySet().forEach(e -> {
                 List<Tag> searchSuggestions = temp.get(e).stream().map(t -> new Tag(t.getKeyword(), t.getKeywordTranslated())).collect(Collectors.toList());
                 pixivSuggestionMapper.insert(e, searchSuggestions);
