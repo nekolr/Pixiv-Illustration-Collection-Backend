@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.web.search.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author OysterQAQ
@@ -10,6 +11,7 @@ import lombok.Data;
  * @description SearchSuggestion
  */
 @Data
+@NoArgsConstructor
 @AllArgsConstructor
 public class SearchSuggestion {
     private String keyword;

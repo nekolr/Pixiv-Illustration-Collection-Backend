@@ -3,10 +3,14 @@ package dev.cheerfun.pixivic.web.search.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.model.Illustration;
+import dev.cheerfun.pixivic.common.model.illust.Tag;
 import dev.cheerfun.pixivic.common.util.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
+import dev.cheerfun.pixivic.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.web.common.util.YouDaoTranslatedUtil;
+import dev.cheerfun.pixivic.web.search.dto.SearchSuggestionSyncDTO;
 import dev.cheerfun.pixivic.web.search.exception.SearchException;
+import dev.cheerfun.pixivic.web.search.mapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.web.search.model.Response.*;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.web.search.util.ImageSearchUtil;
@@ -14,6 +18,7 @@ import dev.cheerfun.pixivic.web.search.util.SearchUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
@@ -51,7 +56,9 @@ public class SearchService {
     private final ObjectMapper objectMapper;
     private final SearchUtil searchUtil;
     private final ImageSearchUtil imageSearchUtil;
-    private volatile ConcurrentHashMap<String, List<PixivSearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(5000);
+    private final PixivSuggestionMapper pixivSuggestionMapper;
+    private final IllustrationMapper illustrationMapper;
+    private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(5000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(String keyword) {
@@ -95,23 +102,42 @@ public class SearchService {
                 try {
                     pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
                     });
-                    //保存
-                    waitSaveToDb.put(keyword, pixivSearchSuggestions);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            return pixivSearchSuggestions != null ? pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList()) : null;
+            List<SearchSuggestion> searchSuggestions = null;
+            if (pixivSearchSuggestions != null) {
+                searchSuggestions = pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList());
+                //保存
+                waitSaveToDb.put(keyword, searchSuggestions);
+            }
+            return searchSuggestions;
         });
     }
 
+    @Scheduled(cron = "0 0/1 * * * ? ")
     private void savePixivSuggestionToDb() {
-        HashMap<String, List<PixivSearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
-        //PixivSearchSuggestion[] searchSuggestions = waitSaveToDb.toArray(new PixivSearchSuggestion[100000]);
+        final HashMap<String, List<SearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
         //持久化
-        temp.keySet().forEach(e->);
-        temp=null;
+        if (!temp.isEmpty()) {
+            temp.keySet().forEach(e -> {
+                List<Tag> searchSuggestions = temp.get(e).stream().map(t -> new Tag(t.getKeyword(), t.getKeywordTranslated())).collect(Collectors.toList());
+                pixivSuggestionMapper.insert(e, searchSuggestions);
+            });
+            //取出没有id的suggest
+            List<Tag> tags = pixivSuggestionMapper.queryByNoSuggestId().stream().map(SearchSuggestionSyncDTO::getSearchSuggestion).collect(Collectors.toList());
+            if (tags.size() > 0) {
+                illustrationMapper.insertTag(tags);
+                //获取标签id并写回
+                tags.forEach(tag -> {
+                    Long tagId = illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName());
+                    pixivSuggestionMapper.updateSuggestionTagId(tag, tagId);
+                });
+            }
+        }
+
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
