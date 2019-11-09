@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.web.search.mapper;
 import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchSuggestion;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -10,17 +11,12 @@ import java.util.List;
 public interface PixivSuggestionMapper {
     @Insert({
             "<script>",
-            "insert IGNORE into artists values ",
+            "insert IGNORE into tag_suggestion (`tag`, `suggestion_tag`,`suggestion_tag_id`) values ",
             "<foreach collection='pixivSearchSuggestionList' item='pixivSearchSuggestion' index='index' separator=','>",
-            "(#{artist.id}, #{artist.name}," +
-                    "#{artist.account}, #{artist.avatar}," +
-                    "#{artist.comment}, #{artist.gender}," +
-                    "#{artist.birthDay #{artist.region}," +
-                    "#{artist.webPage}, #{artist.twitterAccount}," +
-                    "#{artist.twitterUrl}, #{artist.totalFollowUsers}," +
-                    "#{artist.totalIllustBookmarksPublic})",
+            "(#{keyword}, #{pixivSearchSuggestion,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler}," +
+                    "(select tag_id from tags where  name=#{pixivSearchSuggestion.tag} and translated_name=#{pixivSearchSuggestion.tag_translation}))",
             "</foreach>",
             "</script>"
     })
-    int insert(String keyword, List<PixivSearchSuggestion> pixivSearchSuggestionList);
+    int insert(String keyword, @Param("pixivSearchSuggestionList") List<PixivSearchSuggestion> pixivSearchSuggestionList);
 }

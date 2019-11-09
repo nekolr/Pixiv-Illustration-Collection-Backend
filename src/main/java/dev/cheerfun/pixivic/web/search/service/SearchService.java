@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.common.util.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import dev.cheerfun.pixivic.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.web.search.exception.SearchException;
+import dev.cheerfun.pixivic.web.search.mapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.web.search.model.Response.*;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.web.search.util.ImageSearchUtil;
@@ -14,6 +15,7 @@ import dev.cheerfun.pixivic.web.search.util.SearchUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
@@ -51,6 +53,7 @@ public class SearchService {
     private final ObjectMapper objectMapper;
     private final SearchUtil searchUtil;
     private final ImageSearchUtil imageSearchUtil;
+    private final PixivSuggestionMapper pixivSuggestionMapper;
     private volatile ConcurrentHashMap<String, List<PixivSearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(5000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
@@ -105,13 +108,15 @@ public class SearchService {
         });
     }
 
+    @Scheduled(cron = "0 0/10 * * * ? ")
     private void savePixivSuggestionToDb() {
-        HashMap<String, List<PixivSearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
-        //PixivSearchSuggestion[] searchSuggestions = waitSaveToDb.toArray(new PixivSearchSuggestion[100000]);
+        final HashMap<String, List<PixivSearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
         //持久化
-        temp.keySet().forEach(e->);
-        temp=null;
+        temp.keySet().forEach(e -> {
+            List<PixivSearchSuggestion> pixivSearchSuggestions = temp.get(e);
+            pixivSuggestionMapper.insert(e, pixivSearchSuggestions);
+        });
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
