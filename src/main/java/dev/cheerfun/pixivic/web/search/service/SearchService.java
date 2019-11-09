@@ -124,7 +124,10 @@ public class SearchService {
         if (!temp.isEmpty()) {
             temp.keySet().forEach(e -> {
                 List<Tag> searchSuggestions = temp.get(e).stream().map(t -> new Tag(t.getKeyword(), t.getKeywordTranslated())).collect(Collectors.toList());
-                pixivSuggestionMapper.insert(e, searchSuggestions);
+               try{pixivSuggestionMapper.insert(e, searchSuggestions);}
+               catch (Exception e1){
+                   searchSuggestions.forEach(System.out::println);
+               }
             });
             //取出没有id的suggest
             List<Tag> tags = pixivSuggestionMapper.queryByNoSuggestId().stream().map(SearchSuggestionSyncDTO::getSearchSuggestion).collect(Collectors.toList());
