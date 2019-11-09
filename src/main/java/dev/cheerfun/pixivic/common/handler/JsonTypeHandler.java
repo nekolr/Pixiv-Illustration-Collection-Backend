@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.model.Artist;
 import dev.cheerfun.pixivic.common.model.illust.ImageUrl;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;
@@ -21,7 +22,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 @MappedJdbcTypes(value = {JdbcType.OTHER}, includeNullJdbcType = true)
-@MappedTypes({ Artist.class , ArrayList.class, Tag.class, ImageUrl.class})
+@MappedTypes({ Artist.class , ArrayList.class, Tag.class, ImageUrl.class, SearchSuggestion.class})
 public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
