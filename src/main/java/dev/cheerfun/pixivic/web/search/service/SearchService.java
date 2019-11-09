@@ -121,19 +121,25 @@ public class SearchService {
         final HashMap<String, List<SearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
         //持久化
-        temp.keySet().forEach(e -> {
-            List<Tag> searchSuggestions = temp.get(e).stream().map(t -> new Tag(t.getKeyword(), t.getKeywordTranslated())).collect(Collectors.toList());
-            pixivSuggestionMapper.insert(e, searchSuggestions);
-        });
-        //取出没有id的suggest
-        List<Tag> tags = pixivSuggestionMapper.queryByNoSuggestId().stream().map(SearchSuggestionSyncDTO::getSearchSuggestion).collect(Collectors.toList());
-        illustrationMapper.insertTag(tags);
-        //获取标签id
-        //写回
-        tags.forEach(tag -> {
-            Long tagId = illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName());
-            pixivSuggestionMapper.updateSuggestionTagId(tag,tagId);
-        });
+        if (!waitSaveToDb.isEmpty()) {
+            temp.keySet().forEach(e -> {
+                List<Tag> searchSuggestions = temp.get(e).stream().map(t -> new Tag(t.getKeyword(), t.getKeywordTranslated())).collect(Collectors.toList());
+                pixivSuggestionMapper.insert(e, searchSuggestions);
+            });
+            //取出没有id的suggest
+            List<Tag> tags = pixivSuggestionMapper.queryByNoSuggestId().stream().map(SearchSuggestionSyncDTO::getSearchSuggestion).collect(Collectors.toList());
+            if (tags.size() > 0) {
+                illustrationMapper.insertTag(tags);
+                //获取标签id
+                //写回
+                tags.forEach(tag -> {
+                    Long tagId = illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName());
+                    pixivSuggestionMapper.updateSuggestionTagId(tag, tagId);
+                });
+            }
+
+        }
+
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
