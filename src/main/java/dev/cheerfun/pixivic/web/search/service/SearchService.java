@@ -18,6 +18,7 @@ import dev.cheerfun.pixivic.web.search.util.SearchUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
@@ -115,7 +116,7 @@ public class SearchService {
         });
     }
 
-   // @Scheduled(cron = "0 0/1 * * * ? ")
+    @Scheduled(cron = "0 0/5 * * * ? ")
     private void savePixivSuggestionToDb() {
         final HashMap<String, List<SearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
