@@ -107,7 +107,7 @@ public class SearchService {
                 }
             }
             List<SearchSuggestion> searchSuggestions = null;
-            if (pixivSearchSuggestions != null) {
+            if (pixivSearchSuggestions != null&&pixivSearchSuggestions.size()>0) {
                 searchSuggestions = pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList());
                 //保存
                 waitSaveToDb.put(keyword, searchSuggestions);
@@ -116,7 +116,7 @@ public class SearchService {
         });
     }
 
-    @Scheduled(cron = "0 0/1 * * * ? ")
+    @Scheduled(cron = "0 0/15 * * * ? ")
     private void savePixivSuggestionToDb() {
         final HashMap<String, List<SearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
