@@ -124,7 +124,6 @@ public class SearchService {
         if (!temp.isEmpty()) {
             temp.keySet().forEach(e -> {
                 List<Tag> searchSuggestions = temp.get(e).stream().map(t -> new Tag(t.getKeyword(), t.getKeywordTranslated())).collect(Collectors.toList());
-                searchSuggestions.forEach(System.out::println);
                 pixivSuggestionMapper.insert(e, searchSuggestions);
 
             });

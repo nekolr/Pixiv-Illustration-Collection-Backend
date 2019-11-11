@@ -59,7 +59,7 @@ public class SearchUtil {
     private final static String MIN_HEIGHT_PRE = "{\"range\":{\"height\":{\"gte\":";
     private final static String MIN_HEIGHT_POS = "}}}";
 
-    private final static String MAX_SANITY_LEVEL_PRE  = "{\"range\":{\"sanity_level\":{\"lte\":";
+    private final static String MAX_SANITY_LEVEL_PRE = "{\"range\":{\"sanity_level\":{\"lte\":";
     private final static String MAX_SANITY_LEVEL_POS = "}}}";
 
     private final static String DATE_RANGE_1 = "{\"range\":{\"create_date\":{\"gte\":\"";
@@ -87,7 +87,7 @@ public class SearchUtil {
         stringBuilder
                 .append(SORT)
                 .append(FROM)
-                .append((page- 1) * pageSize)
+                .append((page - 1) * pageSize)
                 .append(DOT)
                 .append(SIZE)
                 .append(pageSize)
@@ -146,21 +146,23 @@ public class SearchUtil {
 
     public CompletableFuture<List<Illustration>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
-                .header("Content-Type","application/json")
-                .uri(URI.create("http://"+elasticsearch+":9200/illust/_search"))
+                .header("Content-Type", "application/json")
+                .uri(URI.create("http://" + elasticsearch + ":9200/illust/_search"))
                 .method("GET", HttpRequest.BodyPublishers.ofString(body))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(
                 r -> {
                     ElasticsearchResponse elasticsearchResponse = null;
                     try {
-                        elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<ElasticsearchResponse>() {
-                        });
+                        if (r.body() != null) {
+                            elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<ElasticsearchResponse>() {
+                            });
+                            return elasticsearchResponse.getHits().getHits().stream().map(Hit::getIllustration).collect(Collectors.toList());
+                        }
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
-                    assert elasticsearchResponse != null;
-                    return elasticsearchResponse.getHits().getHits().stream().map(Hit::getIllustration).collect(Collectors.toList());
+                    return null;
                 }
         );
     }
