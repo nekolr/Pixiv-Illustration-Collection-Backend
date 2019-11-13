@@ -36,8 +36,8 @@ public class TestController {
     //@PermissionRequired(PermissionLevel.VIP)
     @GetMapping("/test")
     public String test() throws InterruptedException, ExecutionException, IOException {
-        //rankDailyService.pullAllRank();
-        newService.dailyPullTask();
+        rankDailyService.pullAllRank();
+       // newService.dailyPullTask();
         return "233";
     }
 
