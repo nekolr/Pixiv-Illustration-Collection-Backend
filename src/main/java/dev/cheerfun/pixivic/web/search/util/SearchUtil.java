@@ -152,7 +152,7 @@ public class SearchUtil {
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(
                 r -> {
-                    ElasticsearchResponse elasticsearchResponse = null;
+                    ElasticsearchResponse elasticsearchResponse;
                     try {
                         if (r.body() != null) {
                             elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<ElasticsearchResponse>() {
