@@ -20,7 +20,6 @@ import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
@@ -44,8 +43,8 @@ public class IllustrationService {
     private static final Integer taskSum;
 
     static {
-        taskSum = 133;
-        modeIndex = new HashMap<>(11) {{
+        taskSum = 162;
+        modeIndex = new HashMap<>(14) {{
             put("day", 0);
             put("week", 17);
             put("month", 34);
@@ -57,8 +56,12 @@ public class IllustrationService {
             put("day_male_r18", 115);
             put("day_r18", 125);
             put("week_r18", 129);
+            put("day_manga", 146);
+            put("week_manga", 150);
+            put("month_manga", 154);
+            put("week_rookie_manga", 158);
         }};
-        modes = new ArrayList<>(11) {{
+        modes = new ArrayList<>(15) {{
             add(new ModeMeta("day", 17));
             add(new ModeMeta("week", 17));
             add(new ModeMeta("month", 17));
@@ -70,6 +73,10 @@ public class IllustrationService {
             add(new ModeMeta("day_male_r18", 10));
             add(new ModeMeta("day_r18", 4));
             add(new ModeMeta("week_r18", 4));
+            add(new ModeMeta("day_manga", 17));
+            add(new ModeMeta("week_manga", 4));
+            add(new ModeMeta("month_manga", 4));
+            add(new ModeMeta("week_rookie_manga", 4));
         }};
     }
 

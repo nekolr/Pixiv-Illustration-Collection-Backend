@@ -38,13 +38,12 @@ public class RankDailyService {
     private final IllustrationMapper illustrationMapper;
     private final IllustrationService illustrationService;
     private final RequestUtil requestUtil;
-    private final static String[] modes = {"day", "week", "month", "day_female", "day_male"};
+    private final static String[] MODES = {"day", "week", "month", "day_female", "day_male","day_manga","week_manga","month_manga","week_rookie_manga"};
 
     @Scheduled(cron = "0 10 1 * * ?")
     public void pullAllRank() throws InterruptedException {
-
         LocalDate date = LocalDate.now().plusDays(-2);
-        for (String mode : modes) {
+        for (String mode : MODES) {
             illustrationMapper.insertRank(getIllustrations(mode, date.toString()));
         }
     }
