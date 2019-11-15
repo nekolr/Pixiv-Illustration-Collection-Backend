@@ -16,6 +16,7 @@ public class Track {
     private String ip;
     private String url;
     private String args;
+    private String body;
     private String method;
     private String agent;
     private String authorization;
