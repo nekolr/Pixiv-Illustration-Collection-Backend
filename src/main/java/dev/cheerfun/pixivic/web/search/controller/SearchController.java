@@ -85,13 +85,15 @@ public class SearchController {
             @RequestParam(defaultValue = "0")
                     int minTotalBookmarks,
             @RequestParam(defaultValue = "0")
-                    int minTotalView) {
+                    int minTotalView,
+            @RequestParam(defaultValue = "5")
+                    int maxSanityLevel) {
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
             String[] keywords = keyword.split(" ");
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        return searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
+        return searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView,maxSanityLevel).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 
     @GetMapping("/similarityImages")

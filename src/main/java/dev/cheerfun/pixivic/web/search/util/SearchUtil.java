@@ -82,7 +82,9 @@ public class SearchUtil {
             int xRestrict,
             int popWeight,
             int minTotalBookmarks,
-            int minTotalView) {
+            int minTotalView,
+            int maxSanityLevel
+    ) {
         StringBuilder stringBuilder = new StringBuilder(PRE);
         stringBuilder
                 .append(SORT)

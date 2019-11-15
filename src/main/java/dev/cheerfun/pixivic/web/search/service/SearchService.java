@@ -222,8 +222,9 @@ public class SearchService {
             int xRestrict,
             int popWeight,
             int minTotalBookmarks,
-            int minTotalView) {
-        return searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView));
+            int minTotalView,
+            int maxSanityLevel) {
+        return searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView,maxSanityLevel));
     }
 
     public CompletableFuture<SaucenaoResponse> searchByImage(String imageUrl) {
