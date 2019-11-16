@@ -33,8 +33,8 @@ public class IllustrationBizService {
         return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
     }
 
-    public List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize) {
-        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, currIndex, pageSize);
+    public List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize, int maxSanityLevel) {
+        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, currIndex, pageSize,maxSanityLevel);
         return illustrations;
     }
 

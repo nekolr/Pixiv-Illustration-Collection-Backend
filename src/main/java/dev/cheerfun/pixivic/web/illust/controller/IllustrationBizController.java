@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.web.illust.controller;
 
-import dev.cheerfun.pixivic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.common.model.Artist;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.Result;
@@ -32,8 +31,8 @@ public class IllustrationBizController {
 
     @GetMapping("/artists/{artistId}/illusts")
     //@PermissionRequired
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationBizService.queryIllustrationsByArtistId(artistId, (page - 1) * pageSize, pageSize)));
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestParam(defaultValue = "5") int maxSanityLevel) {
+        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationBizService.queryIllustrationsByArtistId(artistId, (page - 1) * pageSize, pageSize,maxSanityLevel)));
     }
 
     @GetMapping("/artists/{artistId}")
