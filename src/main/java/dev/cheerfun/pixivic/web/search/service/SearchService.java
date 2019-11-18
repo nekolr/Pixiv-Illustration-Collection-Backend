@@ -6,12 +6,18 @@ import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
 import dev.cheerfun.pixivic.common.util.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
+import dev.cheerfun.pixivic.crawler.pixiv.dto.RankDTO;
 import dev.cheerfun.pixivic.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.web.common.util.YouDaoTranslatedUtil;
+import dev.cheerfun.pixivic.web.search.dto.PixivSearchSuggestionDTO;
 import dev.cheerfun.pixivic.web.search.dto.SearchSuggestionSyncDTO;
+import dev.cheerfun.pixivic.web.search.dto.TagTranslation;
 import dev.cheerfun.pixivic.web.search.exception.SearchException;
 import dev.cheerfun.pixivic.web.search.mapper.PixivSuggestionMapper;
-import dev.cheerfun.pixivic.web.search.model.Response.*;
+import dev.cheerfun.pixivic.web.search.model.Response.BangumiSearchResponse;
+import dev.cheerfun.pixivic.web.search.model.Response.PixivSearchCandidatesResponse;
+import dev.cheerfun.pixivic.web.search.model.Response.SaucenaoResponse;
+import dev.cheerfun.pixivic.web.search.model.Response.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.web.search.util.SearchUtil;
@@ -22,7 +28,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
-import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -92,27 +97,26 @@ public class SearchService {
     public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("accept-language", "zh-CN,zh;q=0.9")
-                .uri(URI.create("https://proxy.pixivic.com:23334/search.php?s_mode=s_tag&word=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
+                .uri(URI.create("https://proxy.pixivic.com:23334/ajax/search/artworks/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
                 .GET()
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r -> {
             String body = r.body();
-            List<PixivSearchSuggestion> pixivSearchSuggestions = null;
-            if (body.contains("data-related-tags")) {
-                try {
-                    pixivSearchSuggestions = objectMapper.readValue(HtmlUtils.htmlUnescape(body.substring(body.indexOf("data-related-tags") + 19, body.indexOf("\"data-tag"))), new TypeReference<List<PixivSearchSuggestion>>() {
-                    });
-                } catch (IOException e) {
-                    e.printStackTrace();
+            try {
+                PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
+                Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
+                List<String> relatedTags = pixivSearchSuggestionDTO.getBody().getRelatedTags();
+                List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(e, tagTranslation.get(e)==null? "":tagTranslation.get(e).getZh())).collect(Collectors.toList());
+                if (searchSuggestions.size() > 0) {
+                    //保存
+                    waitSaveToDb.put(keyword, searchSuggestions);
                 }
+                return searchSuggestions;
+            } catch (IOException e) {
+                e.printStackTrace();
             }
-            List<SearchSuggestion> searchSuggestions = null;
-            if (pixivSearchSuggestions != null&&pixivSearchSuggestions.size()>0) {
-                searchSuggestions = pixivSearchSuggestions.stream().map(pixivSearchSuggestion -> new SearchSuggestion(pixivSearchSuggestion.getTag(), pixivSearchSuggestion.getTag_translation())).collect(Collectors.toList());
-                //保存
-                waitSaveToDb.put(keyword, searchSuggestions);
-            }
-            return searchSuggestions;
+            // List<SearchSuggestion> searchSuggestions = null;
+            return null;
         });
     }
 
@@ -224,7 +228,7 @@ public class SearchService {
             int minTotalBookmarks,
             int minTotalView,
             int maxSanityLevel) {
-        return searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView,maxSanityLevel));
+        return searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel));
     }
 
     public CompletableFuture<SaucenaoResponse> searchByImage(String imageUrl) {

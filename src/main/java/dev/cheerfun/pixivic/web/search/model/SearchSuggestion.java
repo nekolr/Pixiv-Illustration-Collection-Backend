@@ -16,4 +16,8 @@ import lombok.NoArgsConstructor;
 public class SearchSuggestion {
     private String keyword;
     private String keywordTranslated;
+
+    public SearchSuggestion(String keyword) {
+        this.keyword = keyword;
+    }
 }
