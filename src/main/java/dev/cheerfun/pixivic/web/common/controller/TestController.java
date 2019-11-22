@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
 import dev.cheerfun.pixivic.crawler.news.service.NewService;
 import dev.cheerfun.pixivic.crawler.pixiv.service.RankDailyService;
+import dev.cheerfun.pixivic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.web.common.model.User;
 import lombok.RequiredArgsConstructor;
@@ -35,10 +36,11 @@ public class TestController {
 
     //@PermissionRequired(PermissionLevel.VIP)
     @GetMapping("/test")
-    public String test() throws InterruptedException, ExecutionException, IOException {
-        rankDailyService.pullAllRank();
+    @RateLimit
+    public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException {
+        //rankDailyService.pullAllRank();
        // newService.dailyPullTask();
-        return "233";
+        return ResponseEntity.ok().body("233");
     }
 
     /*@GetMapping("/32")

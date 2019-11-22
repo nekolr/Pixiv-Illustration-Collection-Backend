@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.auth.exception;
 
 import dev.cheerfun.pixivic.common.exception.BaseException;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
  * @date 2019/08/17 10:44
  * @description AuthBanException
  */
+@Data
 @AllArgsConstructor
 public class AuthBanException  extends BaseException {
     private HttpStatus httpStatus;

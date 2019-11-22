@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.auth.exception;
 
 import dev.cheerfun.pixivic.common.exception.BaseException;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import org.springframework.http.HttpStatus;
 
 /**
@@ -10,6 +11,7 @@ import org.springframework.http.HttpStatus;
  * @date 2019/07/18 14:08
  * @description token失效异常
  */
+@Data
 @AllArgsConstructor
 public class AuthExpirationException extends BaseException {
     private HttpStatus httpStatus;

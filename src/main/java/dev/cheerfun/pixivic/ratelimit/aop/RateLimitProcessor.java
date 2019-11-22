@@ -13,6 +13,7 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -45,11 +46,11 @@ public class RateLimitProcessor implements HandlerInterceptor {
     }
 
     @Around(value = "pointCut()")
-    public void handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
-        Integer userId = (Integer) AppContext.get().get(USER_ID);
-        Integer permissionLevel = (Integer) AppContext.get().get(PERMISSION_LEVEL);
+    public ResponseEntity handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
         Bucket requestBucket;
-        if (userId != null) {
+        if (AppContext.get() != null) {
+            Integer userId = (Integer) AppContext.get().get(USER_ID);
+            Integer permissionLevel = (Integer) AppContext.get().get(PERMISSION_LEVEL);
             if (permissionLevel == PermissionLevel.VIP) {
                 requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> premiumBucket());
             } else {
@@ -58,9 +59,13 @@ public class RateLimitProcessor implements HandlerInterceptor {
         } else {
             requestBucket = this.freeBucket;
         }
+
+/*        if (userId != null && permissionLevel != null) {
+
+        }*/
         ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
         if (probe.isConsumed()) {
-            joinPoint.proceed();
+            return (ResponseEntity) joinPoint.proceed();
         }
         throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
     }

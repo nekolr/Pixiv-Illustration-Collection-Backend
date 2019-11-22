@@ -1,8 +1,8 @@
 server:
   port: 8080
 spring:
-  profiles:
-    active: linux
+#  profiles:
+#    active: linux
   mail:
     host: smtp.qq.com
     username: 403827354@qq.com
