@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.common.util.pixiv;
 
+import dev.cheerfun.pixivic.biz.crawler.pixiv.model.Oauth;
 import dev.cheerfun.pixivic.common.util.JsonBodyHandler;
-import dev.cheerfun.pixivic.crawler.pixiv.model.Oauth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.common.util;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.web.search.exception.JsonCastException;
+import dev.cheerfun.pixivic.biz.web.search.exception.JsonCastException;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 
