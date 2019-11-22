@@ -1,70 +1,79 @@
 package dev.cheerfun.pixivic.ratelimit.aop;
 
-import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.RateLimiter;
-import dev.cheerfun.pixivic.ratelimit.annotation.RateLimit;
+import dev.cheerfun.pixivic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.common.context.AppContext;
+import dev.cheerfun.pixivic.ratelimit.exception.RateLimitException;
+import io.github.bucket4j.*;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.Signature;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
-import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.time.Duration;
 import java.util.Map;
-
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * @author echo huang
- * @version 1.0
- * @date 2019-07-13 15:12
- * @description 限流监听器
+ * @author OysterQAQ
+ * @version 2.0
+ * @date 2019-11-22 15:12
+ * @description 限流处理器
  */
 @Aspect
 @Component
 @Slf4j
-public class RateLimitProcessor {
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Order(1)
+public class RateLimitProcessor implements HandlerInterceptor {
+    private static final String USER_ID = "userId";
+    private final static String PERMISSION_LEVEL = "permissionLevel";
+    private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
+    //未登录用户
+    private final Bucket freeBucket = Bucket4j.builder()
+            .addLimit(Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(1))))
+            .build();
 
-    /**
-     * 用来存放不同接口的RateLimiter(key为接口名称，value为RateLimiter)
-     */
-    private Map<String, RateLimiter> map = Maps.newConcurrentMap();
-    private RateLimiter rateLimiter;
-
-    @Pointcut(value = "@annotation(dev.cheerfun.pixivic.ratelimit.annotation.RateLimit)")
+    @Pointcut(value = "@annotation(dev.cheerfun.pixivic.ratelimit.annotation.RateLimit)||@within(dev.cheerfun.pixivic.ratelimit.annotation.RateLimit)")
     public void pointCut() {
     }
 
     @Around(value = "pointCut()")
-    public Object handleRateLimiter(ProceedingJoinPoint joinPoint) {
-        Object obj = null;
-        Signature signature = joinPoint.getSignature();
-        MethodSignature methodSignature = (MethodSignature) signature;
-        RateLimit annotation = methodSignature.getMethod().getAnnotation(RateLimit.class);
-        double limitNum = annotation.limitNum();
-        String functionName = methodSignature.getName();
-        if (map.containsKey(functionName)) {
-            rateLimiter = map.get(functionName);
-        } else {
-            //每秒允许多少请求limitNum
-            map.put(functionName, RateLimiter.create(limitNum));
-            rateLimiter = map.get(functionName);
-        }
-
-        if (rateLimiter.tryAcquire()) {
-            //执行方法
-            try {
-                obj = joinPoint.proceed();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
+    public void handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
+        Integer userId = (Integer) AppContext.get().get(USER_ID);
+        Integer permissionLevel = (Integer) AppContext.get().get(PERMISSION_LEVEL);
+        Bucket requestBucket;
+        if (userId != null) {
+            if (permissionLevel == PermissionLevel.VIP) {
+                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> premiumBucket());
+            } else {
+                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
             }
         } else {
-            //拒绝了请求（服务降级）
-            //TODO 拒绝后提示
-            //throw new VisitOftenException(HttpStatus.FORBIDDEN.value(), HttpStatus.FORBIDDEN.getReasonPhrase());
+            requestBucket = this.freeBucket;
         }
+        ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
+        if (probe.isConsumed()) {
+            joinPoint.proceed();
+        }
+        throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
+    }
 
-        return obj;
+    private static Bucket standardBucket() {
+        return Bucket4j.builder()
+                .addLimit(Bandwidth.classic(50, Refill.intervally(50, Duration.ofMinutes(1))))
+                .build();
+    }
+
+    private static Bucket premiumBucket() {
+        return Bucket4j.builder()
+                .addLimit(Bandwidth.classic(100, Refill.intervally(100, Duration.ofMinutes(1))))
+                .build();
     }
 }

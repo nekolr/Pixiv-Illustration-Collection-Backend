@@ -30,6 +30,9 @@
         <hibernate.validate.version>6.0.16.Final</hibernate.validate.version>
         <jsoup.version>1.12.1</jsoup.version>
         <mybatis-spring-boot-starter.version>2.1.0</mybatis-spring-boot-starter.version>
+        <mybatis-typehandlers-jsr310.version>1.0.2</mybatis-typehandlers-jsr310.version>
+        <jackson-modules-java8.version>2.10.0</jackson-modules-java8.version>
+        <bucket4j-core.version>4.5.0</bucket4j-core.version>
     </properties>
 
     <dependencies>
@@ -102,21 +105,23 @@
             <artifactId>druid</artifactId>
             <version>${druid.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.module/jackson-modules-java8 -->
+        <dependency>
+            <groupId>com.github.vladimir-bukhtoyarov</groupId>
+            <artifactId>bucket4j-core</artifactId>
+            <version>${bucket4j-core.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-modules-java8</artifactId>
-            <version>2.10.0</version>
+            <version>${jackson-modules-java8.version}</version>
             <type>pom</type>
             <scope>runtime</scope>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mybatis/mybatis-typehandlers-jsr310 -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-typehandlers-jsr310</artifactId>
-            <version>1.0.2</version>
+            <version>${mybatis-typehandlers-jsr310.version}</version>
         </dependency>
-
     </dependencies>
     <build>
         <plugins>
