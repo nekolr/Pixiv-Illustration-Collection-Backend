@@ -101,19 +101,20 @@ public class SearchService {
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r -> {
             String body = r.body();
-            try {
-                PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
-                Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
-                List<String> relatedTags = pixivSearchSuggestionDTO.getBody().getRelatedTags();
-                List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(e, tagTranslation.get(e)==null? "":tagTranslation.get(e).getZh())).collect(Collectors.toList());
-                if (searchSuggestions.size() > 0) {
-                    //保存
-                    waitSaveToDb.put(keyword, searchSuggestions);
+            if (!body.contains("\"tagTranslation\":[]"))
+                try {
+                    PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
+                    Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
+                    List<String> relatedTags = pixivSearchSuggestionDTO.getBody().getRelatedTags();
+                    List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(e, tagTranslation.get(e) == null ? "" : tagTranslation.get(e).getZh())).collect(Collectors.toList());
+                    if (searchSuggestions.size() > 0) {
+                        //保存
+                        waitSaveToDb.put(keyword, searchSuggestions);
+                    }
+                    return searchSuggestions;
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
-                return searchSuggestions;
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
             // List<SearchSuggestion> searchSuggestions = null;
             return null;
         });
