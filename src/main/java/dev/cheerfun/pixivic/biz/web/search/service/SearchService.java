@@ -101,7 +101,7 @@ public class SearchService {
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r -> {
             String body = r.body();
-            if (!body.contains("\"tagTranslation\":[]"))
+            if (!body.contains("\"body\":[]")&&!body.contains("\"tagTranslation\":[]"))
                 try {
                     PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
                     Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
