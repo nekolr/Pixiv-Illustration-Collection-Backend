@@ -178,8 +178,10 @@ public class IllustrationService {
             e.printStackTrace();
         }*/
         IllustrationDetailDTO illustrationDetailDTO = (IllustrationDetailDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/illust/detail?illust_id=" + illustId, IllustrationDetailDTO.class);
-        assert illustrationDetailDTO != null;
-        return IllustrationDTO.castToIllustration(illustrationDetailDTO.getIllustrationDTO());
+        if(illustrationDetailDTO!=null){
+            return IllustrationDTO.castToIllustration(illustrationDetailDTO.getIllustrationDTO());
+        }
+        return null;
     }
 
     public List<Integer> queryIllustsNotInDb(List<Integer> illustIds) {

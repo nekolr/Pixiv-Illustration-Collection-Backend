@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.illust.service;
 
+import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
@@ -7,12 +8,14 @@ import dev.cheerfun.pixivic.common.model.Artist;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
 import lombok.RequiredArgsConstructor;
+import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationBizService {
     private final IllustrationBizMapper illustrationBizMapper;
+    private final IllustrationService illustrationService;
 
     public Tag translationTag(String tag) {
         return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
@@ -49,7 +53,14 @@ public class IllustrationBizService {
     public Illustration queryIllustrationById(String illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
-            throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
+            illustration = illustrationService.pullIllustrationInfo(Integer.parseInt(illustId));
+            if(illustration==null){
+                throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
+            }else {
+                List<Illustration> illustrations = new ArrayList<>(1);
+                illustrations.add(illustration);
+                illustrationService.saveToDb(illustrations);
+            }
         }
         return illustration;
     }

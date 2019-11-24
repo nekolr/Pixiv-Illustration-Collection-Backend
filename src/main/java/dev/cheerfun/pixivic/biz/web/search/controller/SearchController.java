@@ -93,9 +93,10 @@ public class SearchController {
             String[] keywords = keyword.split(" ");
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        return searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView,maxSanityLevel).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
+        return searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 
+    //TODO 存在画作数据时查询并返回画作信息
     @GetMapping("/similarityImages")
     public CompletableFuture<ResponseEntity<Result<SaucenaoResponse>>> searchByImage(@RequestParam String imageUrl) {
         return searchService.searchByImage(imageUrl).thenApply(saucenaoResponse -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", saucenaoResponse)));
