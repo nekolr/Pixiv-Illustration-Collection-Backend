@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.illust.mapper;
 
 import dev.cheerfun.pixivic.common.model.Artist;
+import dev.cheerfun.pixivic.common.model.ArtistSummary;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.ArtistPreView;
 import org.apache.ibatis.annotations.Mapper;
@@ -65,4 +66,10 @@ public interface IllustrationBizMapper {
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
     List<Illustration> queryRandomIllustration();
+    @Select("select count(type) sum,type from illusts where artist_id=#{artistId} group by type")
+    @Results({
+            @Result(property = "type", column = "type"),
+            @Result(property = "sum", column = "sum"),
+    })
+    List<ArtistSummary> querySummaryByArtistId(String artistId);
 }

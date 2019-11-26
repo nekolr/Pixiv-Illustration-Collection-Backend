@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.common.model.Artist;
+import dev.cheerfun.pixivic.common.model.ArtistSummary;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
 import lombok.RequiredArgsConstructor;
@@ -85,5 +86,9 @@ public class IllustrationBizService {
                     .append("&artistId=").append(illustration.getArtistId());
         }
         return url.toString();
+    }
+
+    public List<ArtistSummary> querySummaryByArtistId(String artistId) {
+        return illustrationBizMapper.querySummaryByArtistId(artistId);
     }
 }
