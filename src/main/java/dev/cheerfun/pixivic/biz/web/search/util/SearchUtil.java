@@ -45,7 +45,7 @@ public class SearchUtil {
     private final static String QUERY_POS = "}}";
 
     private final static String NESTED_PRE = "{\"nested\":{\"path\":\"tags\",\"query\":{\"boosting\":{\"positive\":{\"match\":{\"tags.name\":{\"query\":\"";
-    private final static String NESTED_POS = "\"}}},\"negative\":{\"term\":{\"tags.translated_name.keyword\":\"\"}},\"negative_boost\":0.865}}}}";
+    private final static String NESTED_POS = "\"}}},\"negative\":{\"match\":{\"tags.translated_name.keyword\":\"\"}},\"negative_boost\":0.865}}}}";
 
     private final static String TYPE_PRE = "{\"term\":{\"type\":\"";
     private final static String TYPE_POS = "\"}}";
@@ -132,7 +132,7 @@ public class SearchUtil {
                     .append(DOT);
         }
         stringBuilder.append(MAX_SANITY_LEVEL_PRE)
-                .append(5)
+                .append(maxSanityLevel)
                 .append(MAX_SANITY_LEVEL_POS)
                 .append(DOT);
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
@@ -142,7 +142,7 @@ public class SearchUtil {
         stringBuilder//.append(SCRIPT_SCORE)
                 .append(QUERY_POS)
                 .append(POS);
-
+        System.out.println(stringBuilder.toString());
         return stringBuilder.toString();
     }
 
