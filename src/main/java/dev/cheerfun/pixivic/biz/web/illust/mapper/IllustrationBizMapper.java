@@ -24,7 +24,7 @@ public interface IllustrationBizMapper {
     })
     Illustration queryIllustrationByIllustId(String illustId);
 
-    @Select("select * from illusts where artist_id = #{artistId} and sanity_level<=#{maxSanityLevel} limit #{currIndex} , #{pageSize}")
+    @Select("select * from illusts where artist_id = #{artistId} and type = #{type} and sanity_level<=#{maxSanityLevel} limit #{currIndex} , #{pageSize}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
@@ -33,7 +33,7 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize, int maxSanityLevel);
+    List<Illustration> queryIllustrationsByArtistId(String artistId, String type, int currIndex, int pageSize, int maxSanityLevel);
 
     @Select("select * from artists where artist_id =#{artistId}")
     @Results({

@@ -2,8 +2,10 @@ package dev.cheerfun.pixivic.biz.web.search.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.biz.web.search.model.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.model.elasticsearch.ElasticsearchResponse;
 import dev.cheerfun.pixivic.biz.web.search.model.elasticsearch.Hit;
+import dev.cheerfun.pixivic.biz.web.search.model.elasticsearch.Hits;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -148,7 +150,7 @@ public class SearchUtil {
         return stringBuilder.toString();
     }
 
-    public CompletableFuture<List<Illustration>> request(String body) {
+    public CompletableFuture<SearchResult> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .uri(URI.create("http://" + elasticsearch + ":9200/illust/_search"))
@@ -161,7 +163,9 @@ public class SearchUtil {
                         if (r.body() != null) {
                             elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<ElasticsearchResponse>() {
                             });
-                            return elasticsearchResponse.getHits().getHits().stream().map(Hit::getIllustration).collect(Collectors.toList());
+                            Hits hits = elasticsearchResponse.getHits();
+                            List<Illustration> illustrationList = hits.getHits().stream().map(Hit::getIllustration).collect(Collectors.toList());
+                            return new SearchResult(hits.getTotal().getValue(), illustrationList);
                         }
                     } catch (IOException e) {
                         e.printStackTrace();

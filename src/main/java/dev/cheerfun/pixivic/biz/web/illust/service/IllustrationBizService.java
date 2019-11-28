@@ -9,7 +9,6 @@ import dev.cheerfun.pixivic.common.model.ArtistSummary;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -38,8 +37,8 @@ public class IllustrationBizService {
         return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
     }
 
-    public List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize, int maxSanityLevel) {
-        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, currIndex, pageSize,maxSanityLevel);
+    public List<Illustration> queryIllustrationsByArtistId(String artistId, String type, int currIndex, int pageSize, int maxSanityLevel) {
+        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize, maxSanityLevel);
         return illustrations;
     }
 
@@ -55,9 +54,9 @@ public class IllustrationBizService {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
             illustration = illustrationService.pullIllustrationInfo(Integer.parseInt(illustId));
-            if(illustration==null){
+            if (illustration == null) {
                 throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
-            }else {
+            } else {
                 List<Illustration> illustrations = new ArrayList<>(1);
                 illustrations.add(illustration);
                 illustrationService.saveToDb(illustrations);

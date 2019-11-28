@@ -13,6 +13,7 @@ import dev.cheerfun.pixivic.biz.web.search.model.Response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.biz.web.search.model.Response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.model.Response.SaucenaoResponse;
 import dev.cheerfun.pixivic.biz.web.search.model.Response.YoudaoTranslatedResponse;
+import dev.cheerfun.pixivic.biz.web.search.model.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.biz.web.search.util.SearchUtil;
@@ -213,7 +214,7 @@ public class SearchService {
         return keywordTranslated.get(0);
     }
 
-    public CompletableFuture<List<Illustration>> searchByKeyword(
+    public CompletableFuture<SearchResult> searchByKeyword(
             String keyword,
             int pageSize,
             int page,
