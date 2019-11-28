@@ -33,15 +33,16 @@ public class SearchUtil {
     @Value("${elasticsearch.ip}")
     private String elasticsearch;
 
+    private final static String MIN_SCORE = "\"min_score\": 0.5";
     private final static String FROM = "\"from\":";
     private final static String SIZE = "\"size\": ";
 
     private final static String PRE = "{";
     private final static String DOT = ",";
     private final static String POS = "}";
-    private final static String QUERY_PRE = "\"query\":{\"function_score\":{\"query\":{\"bool\":{\"should\":[";
+    private final static String QUERY_PRE = /*"query":{"function_score":{*/"\"query\":{\"bool\":{\"should\":[";
     private final static String FILTER_PRE = "],\"filter\":[";
-    private final static String FILTER_POS = "]}}";
+    private final static String FILTER_POS = "]";
     private final static String QUERY_POS = "}}";
 
     private final static String NESTED_PRE = "{\"nested\":{\"path\":\"tags\",\"query\":{\"boosting\":{\"positive\":{\"match\":{\"tags.name\":{\"query\":\"";
@@ -87,6 +88,8 @@ public class SearchUtil {
     ) {
         StringBuilder stringBuilder = new StringBuilder(PRE);
         stringBuilder
+                .append(MIN_SCORE)
+                .append(DOT)
                 .append(SORT)
                 .append(FROM)
                 .append((page - 1) * pageSize)
@@ -142,7 +145,6 @@ public class SearchUtil {
         stringBuilder//.append(SCRIPT_SCORE)
                 .append(QUERY_POS)
                 .append(POS);
-        System.out.println(stringBuilder.toString());
         return stringBuilder.toString();
     }
 

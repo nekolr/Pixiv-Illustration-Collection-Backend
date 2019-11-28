@@ -13,4 +13,5 @@ import java.util.List;
 @Data
 public class Hits {
     private List<Hit> hits;
+    private Total total;
 }
