@@ -57,8 +57,8 @@ public class IllustrationBizController {
 
     @GetMapping("/illusts/{illustId}/related")
     //@PermissionRequired
-    public ResponseEntity<Result<CompletableFuture<List<Illustration>>>> queryIllustrationRelated(@PathVariable int illustId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {
-        return ResponseEntity.ok().body(new Result<>("获取关联画作成功", illustrationBizService.queryIllustrationRelated(illustId, page, pageSize)));
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable int illustId, @RequestParam(defaultValue = "1") int page/*, @RequestParam(defaultValue = "30") int pageSize*/) {
+      return illustrationBizService.queryIllustrationRelated(illustId, page).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
     }
 
     @GetMapping("/illusts/random")

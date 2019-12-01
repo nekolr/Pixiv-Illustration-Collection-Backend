@@ -38,6 +38,7 @@ public interface IllustrationBizMapper {
             @Result(property = "id", column = "artist_id"),
     })
     Artist queryArtistById(String artistId);
+
     @Select("  SELECT\n" +
             "          * \n" +
             "     FROM\n" +
@@ -64,17 +65,21 @@ public interface IllustrationBizMapper {
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
     List<Illustration> queryRandomIllustration();
+
     @Select("select count(type) sum,type from illusts where artist_id=#{artistId} group by type")
     @Results({
             @Result(property = "type", column = "type"),
             @Result(property = "sum", column = "sum"),
     })
     List<ArtistSummary> querySummaryByArtistId(String artistId);
+
     @Insert({
-            "insert IGNORE into illust_related (`illust_id`, `related_illust_id`) values ",
+            "<script>",
+            "replace into illust_related (`illust_id`, `related_illust_id`, `order_num`) values ",
             "<foreach collection='illustRelatedList' item='illustRelated' index='index' separator=','>",
-            "(#{illustRelated.illustId}, #{illustRelated.relatedIllustId})",
+            "(#{illustRelated.illustId}, #{illustRelated.relatedIllustId}, #{illustRelated.orderNum})",
             "</foreach>",
+            "</script>"
     })
     int insertIllustRelated(@Param("illustRelatedList") List<IllustRelated> illustRelatedList);
 

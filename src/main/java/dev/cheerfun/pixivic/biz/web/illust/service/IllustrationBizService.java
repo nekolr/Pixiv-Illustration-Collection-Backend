@@ -42,7 +42,7 @@ public class IllustrationBizService {
     private final IllustrationMapper illustrationMapper;
     private final IllustrationService illustrationService;
     private final RequestUtil requestUtil;
-    private static volatile ConcurrentHashMap<Integer, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
+    private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
 
     public Tag translationTag(String tag) {
@@ -103,17 +103,19 @@ public class IllustrationBizService {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
     }
 
-    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
-        return requestUtil.getJson("https://proxy.pixivic.com:23334/v2/illust/related?filter=for_ios&illust_id=" + illustId + "&offset=" + (page - 1) * pageSize).thenApply(r -> {
+    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page) {
+        return requestUtil.getJson("https://proxy.pixivic.com:23334/v2/illust/related?illust_id=" + illustId + "&offset=" + (page - 1) * 30).thenApply(r -> {
             try {
                 IllustsDTO illustsDTO = objectMapper.readValue(r, new TypeReference<IllustsDTO>() {
                 });
-                List<Illustration> illustrationList = illustsDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
-                if (illustrationList.size() > 0) {
-                    //保存
-                     waitSaveToDb.put(illustId, illustrationList);
+                if (illustsDTO.getIllusts() != null) {
+                    List<Illustration> illustrationList = illustsDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
+                    if (illustrationList.size() > 0) {
+                        //保存
+                        waitSaveToDb.put(illustId + ":" + page, illustrationList);
+                    }
+                    return illustrationList;
                 }
-                return illustrationList;
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -123,14 +125,25 @@ public class IllustrationBizService {
 
     @Scheduled(cron = "0 0/5 * * * ? ")
     private void saveIllustRelatedToDb() {
-        final HashMap<Integer, List<Illustration>> temp = new HashMap<>(waitSaveToDb);
+        final HashMap<String, List<Illustration>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
         //持久化
         if (!temp.isEmpty()) {
             List<IllustRelated> illustRelatedList = new ArrayList<>(2000);
             List<Illustration> illustrationList = temp.keySet().stream().map(e -> {
-                illustRelatedList.addAll(temp.get(e).stream().map(i -> new IllustRelated(e, i.getId())).collect(Collectors.toList()));
-                return temp.get(e);
+                String[] split = e.split(":");
+                int illustId = Integer.parseInt(split[0]);
+                int page = Integer.parseInt(split[1]);
+                List<Illustration> illustrations = temp.get(e);
+
+                int size = illustrations.size();
+                for (int i = 0; i < size; i++) {
+                    illustRelatedList.add(new IllustRelated(illustId, illustrations.get(i).getId(), (page - 1) * 30 + i));
+                }
+            /*    illustRelatedList.addAll(
+                        temp.get(e).stream().map(i ->
+                        ).collect(Collectors.toList()));*/
+                return illustrations;
             }).flatMap(Collection::stream).collect(Collectors.toList());
             //先更新画作
             illustrationMapper.insert(illustrationList);

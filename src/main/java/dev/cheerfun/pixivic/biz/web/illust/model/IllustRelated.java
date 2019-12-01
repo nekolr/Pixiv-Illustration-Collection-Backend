@@ -16,4 +16,5 @@ import lombok.NoArgsConstructor;
 public class IllustRelated {
     private int illustId;
     private int relatedIllustId;
+    private int orderNum;
 }
