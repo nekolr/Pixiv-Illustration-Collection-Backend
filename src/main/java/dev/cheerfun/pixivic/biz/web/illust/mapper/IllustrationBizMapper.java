@@ -1,13 +1,11 @@
 package dev.cheerfun.pixivic.biz.web.illust.mapper;
 
+import dev.cheerfun.pixivic.biz.web.illust.model.IllustRelated;
 import dev.cheerfun.pixivic.common.model.Artist;
 import dev.cheerfun.pixivic.common.model.ArtistSummary;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.ArtistPreView;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -72,4 +70,12 @@ public interface IllustrationBizMapper {
             @Result(property = "sum", column = "sum"),
     })
     List<ArtistSummary> querySummaryByArtistId(String artistId);
+    @Insert({
+            "insert IGNORE into illust_related (`illust_id`, `related_illust_id`) values ",
+            "<foreach collection='illustRelatedList' item='illustRelated' index='index' separator=','>",
+            "(#{illustRelated.illustId}, #{illustRelated.relatedIllustId})",
+            "</foreach>",
+    })
+    int insertIllustRelated(@Param("illustRelatedList") List<IllustRelated> illustRelatedList);
+
 }

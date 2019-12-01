@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDetailDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.RankDTO;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.model.ModeMeta;
 import dev.cheerfun.pixivic.common.model.Illustration;
@@ -117,7 +117,7 @@ public class IllustrationService {
                         return null;
                     }
                     try {
-                        RankDTO rankDTO = objectMapper.readValue(result, new TypeReference<RankDTO>() {
+                        IllustsDTO rankDTO = objectMapper.readValue(result, new TypeReference<IllustsDTO>() {
                         });
                         return rankDTO.getIllusts().stream().filter(Objects::nonNull).map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
                     } catch (IOException e) {
@@ -137,7 +137,7 @@ public class IllustrationService {
             String[] split = i.split("-");
             getDayRankInfo(split[0], date, Integer.parseInt(split[1])).whenComplete((result, throwable) -> {
                         try {
-                            RankDTO rankDTO = objectMapper.readValue(result, new TypeReference<RankDTO>() {
+                            IllustsDTO rankDTO = objectMapper.readValue(result, new TypeReference<IllustsDTO>() {
                             });
                             List<Illustration> illustrations = rankDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
                             illustrationLists.set(Integer.parseInt(split[1]) + modeIndex.get(split[0]), illustrations);

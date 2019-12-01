@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author OysterQAQ
@@ -52,6 +53,12 @@ public class IllustrationBizController {
     //@PermissionRequired
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId) {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId)));
+    }
+
+    @GetMapping("/illusts/{illustId}/related")
+    //@PermissionRequired
+    public ResponseEntity<Result<CompletableFuture<List<Illustration>>>> queryIllustrationRelated(@PathVariable int illustId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {
+        return ResponseEntity.ok().body(new Result<>("获取关联画作成功", illustrationBizService.queryIllustrationRelated(illustId, page, pageSize)));
     }
 
     @GetMapping("/illusts/random")
