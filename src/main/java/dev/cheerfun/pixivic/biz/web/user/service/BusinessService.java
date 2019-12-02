@@ -118,4 +118,11 @@ public class BusinessService {
         businessMapper.updateUserStar(userId, starIncrement);
     }
 
+    public List<Artist> queryFollowedLatest(int userId, int currIndex, int pageSize) {
+        List<Integer> artists = stringRedisTemplate.opsForSet().members(followRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
+        if (artists.size() == 0) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
+        }
+        return businessMapper.queryFollowedLatest(artists, currIndex, pageSize);
+    }
 }

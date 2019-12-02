@@ -56,4 +56,20 @@ public interface BusinessMapper {
     @Update("update users set star=star+#{increment}  where user_id=#{userId}")
     int updateUserStar(int userId, int increment);
 
+    @Select({"<script>",
+            "select * from illusts where artist_id in (",
+            "<foreach collection='artistIds' item='artistId' index='index' separator=',' close=')'>",
+            "#{artistId}",
+            "</foreach>",
+            "order by create_date desc  limit #{currIndex} , #{pageSize}",
+            "</script>"})
+    @Results({
+            @Result(property = "id", column = "illust_id"),
+            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
+    })
+    List<Artist> queryFollowedLatest(List<Integer> artists, int currIndex, int pageSize);
 }
