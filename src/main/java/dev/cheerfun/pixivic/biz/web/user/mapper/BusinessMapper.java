@@ -24,7 +24,7 @@ public interface BusinessMapper {
             "<foreach collection='illustIds' item='illustId' index='index' separator=',' close=')'>",
             "#{illustId}",
             "</foreach>",
-            " limit #{currIndex} , #{pageSize}",
+            "and type = #{type} limit #{currIndex} , #{pageSize}",
             "</script>"
     })
     @Results({
@@ -35,7 +35,7 @@ public interface BusinessMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    List<Illustration> queryBookmarked(@Param("illustIds") List<Integer> illustIds, int currIndex, int pageSize);
+    List<Illustration> queryBookmarked(@Param("illustIds") List<Integer> illustIds, String type, int currIndex, int pageSize);
 
     @Select({"<script>",
             "select * from artists where artist_id in (",
@@ -61,7 +61,7 @@ public interface BusinessMapper {
             "<foreach collection='artistIds' item='artistId' index='index' separator=',' close=')'>",
             "#{artistId}",
             "</foreach>",
-            "order by create_date desc  limit #{currIndex} , #{pageSize}",
+            "and type = #{type} order by create_date desc  limit #{currIndex} , #{pageSize}",
             "</script>"})
     @Results({
             @Result(property = "id", column = "illust_id"),
@@ -71,5 +71,5 @@ public interface BusinessMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    List<Artist> queryFollowedLatest(List<Integer> artists, int currIndex, int pageSize);
+    List<Illustration> queryFollowedLatest(List<Integer> artists, String type, int currIndex, int pageSize);
 }

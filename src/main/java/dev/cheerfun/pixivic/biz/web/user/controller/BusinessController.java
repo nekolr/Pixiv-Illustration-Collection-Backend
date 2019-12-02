@@ -41,9 +41,9 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
     }
 
-    @GetMapping("/{userId}/bookmarked")
-    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
-        List<Illustration> illustrations = businessService.queryBookmarked((int) AppContext.get().get(USER_ID), (page - 1) * pageSize, pageSize);
+    @GetMapping("/{userId}/bookmarked/{type}")
+    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
+        List<Illustration> illustrations = businessService.queryBookmarked((int) AppContext.get().get(USER_ID), type, (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
 
@@ -71,10 +71,10 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("获取follow画师列表成功", artists));
     }
 
-    @GetMapping("/{userId}/followed/latest")
-    public ResponseEntity<Result<List<Artist>>> queryFollowedLatest(@PathVariable String userId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
-        List<Artist> artists = businessService.queryFollowedLatest((int) AppContext.get().get(USER_ID), (page - 1) * pageSize, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取follow画师最新画作成功", artists));
+    @GetMapping("/{userId}/followed/latest/{type}")
+    public ResponseEntity<Result<List<Illustration>>> queryFollowedLatest(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
+        List<Illustration> illustrationList = businessService.queryFollowedLatest((int) AppContext.get().get(USER_ID), type, (page - 1) * pageSize, pageSize);
+        return ResponseEntity.ok().body(new Result<>("获取follow画师最新画作成功", illustrationList));
     }
 
     @GetMapping("/{userId}/{artistId}/isFollowed")

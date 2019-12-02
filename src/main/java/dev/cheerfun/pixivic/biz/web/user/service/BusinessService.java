@@ -76,12 +76,12 @@ public class BusinessService {
         stringRedisTemplate.delete(bookmarkCountMapRedisPre);
     }
 
-    public List<Illustration> queryBookmarked(int userId, int currIndex, int pageSize) {
+    public List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize) {
         List<Integer> illustIds = stringRedisTemplate.opsForSet().members(bookmarkRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
         if (illustIds.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
         }
-        return businessMapper.queryBookmarked(illustIds, currIndex, pageSize);
+        return businessMapper.queryBookmarked(illustIds, type, currIndex, pageSize);
     }
 
     public Boolean queryIsBookmarked(int userId, String illustId) {
@@ -118,11 +118,11 @@ public class BusinessService {
         businessMapper.updateUserStar(userId, starIncrement);
     }
 
-    public List<Artist> queryFollowedLatest(int userId, int currIndex, int pageSize) {
+    public List<Illustration> queryFollowedLatest(int userId, String type, int currIndex, int pageSize) {
         List<Integer> artists = stringRedisTemplate.opsForSet().members(followRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
         if (artists.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
         }
-        return businessMapper.queryFollowedLatest(artists, currIndex, pageSize);
+        return businessMapper.queryFollowedLatest(artists, type, currIndex, pageSize);
     }
 }
