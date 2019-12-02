@@ -28,9 +28,9 @@ public interface IllustrationMapper {
             "#{illustration.type}," +
             "#{illustration.caption}," +
             "#{illustration.restrict}," +
-            "#{illustration.artistPreView,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler}," +
-            "#{illustration.tools,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler}," +
-            "#{illustration.tags,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler}," +
+            "#{illustration.artistPreView,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}," +
+            "#{illustration.tools,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}," +
+            "#{illustration.tags,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}," +
             "#{illustration.createDate}," +
             "#{illustration.pageCount}," +
             "#{illustration.width}," +
@@ -39,7 +39,7 @@ public interface IllustrationMapper {
             "#{illustration.xRestrict}," +
             "#{illustration.totalBookmarks}," +
             "#{illustration.totalView}," +
-            "#{illustration.imageUrls,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler}," +
+            "#{illustration.imageUrls,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}," +
             "#{illustration.artistId})" +
             "</foreach>" +
             "</script>")
@@ -85,6 +85,6 @@ public interface IllustrationMapper {
     })
     List<Integer> queryIllustsNotInDb(@Param("illustIds") List<Integer> illustIds);
 
-    @Insert("insert into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler})")
+    @Insert("insert into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler})")
     int insertRank(Rank rank);
 }

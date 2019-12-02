@@ -10,7 +10,6 @@ import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -33,14 +32,13 @@ import java.util.stream.IntStream;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class RankDailyService {
+public class IllustRankService {
     private final ObjectMapper objectMapper;
     private final IllustrationMapper illustrationMapper;
     private final IllustrationService illustrationService;
     private final RequestUtil requestUtil;
     private final static String[] MODES = {"day", "week", "month", "day_female", "day_male","day_manga","week_manga","month_manga","week_rookie_manga"};
 
-    @Scheduled(cron = "0 10 1 * * ?")
     public void pullAllRank() throws InterruptedException {
         LocalDate date = LocalDate.now().plusDays(-2);
         for (String mode : MODES) {

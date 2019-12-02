@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.common.handler;
+package dev.cheerfun.pixivic.common.util.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;

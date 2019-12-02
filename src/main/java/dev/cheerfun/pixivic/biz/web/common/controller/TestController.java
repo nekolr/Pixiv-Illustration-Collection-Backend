@@ -6,7 +6,7 @@ import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.biz.crawler.news.service.NewService;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.service.RankDailyService;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
 import dev.cheerfun.pixivic.biz.web.common.model.User;
 import dev.cheerfun.pixivic.common.model.Result;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
@@ -31,7 +31,7 @@ public class TestController {
     private final JWTUtil jwtUtil;
     private final OauthUtil oauthUtil;
     private final StringRedisTemplate stringRedisTemplate;
-    private final RankDailyService rankDailyService;
+    private final IllustRankService rankDailyService;
     private final NewService newService;
 
     //@PermissionRequired(PermissionLevel.VIP)

@@ -7,7 +7,6 @@ import dev.cheerfun.pixivic.common.model.Spotlight;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,9 +37,8 @@ public class SpotlightService {
     private Pattern illustIdPattern = Pattern.compile("(?<=(?:id=))\\d+?(?=\" class=\"author)");
     private Pattern imageUrlPattern = Pattern.compile("(?<=(?:src\" content=\")).+?(?=\"><meta property=\"og:title\")");
 
-    @Scheduled(cron = "0 30 3 * * ?")
     public void pullAllSpotlight() {
-        int index =0;
+        int index = 0;
         List<List<Spotlight>> spotlightsList = new ArrayList<>();
         while (index < 10) {
             spotlightsList.add(getSpotlightInfo(index));

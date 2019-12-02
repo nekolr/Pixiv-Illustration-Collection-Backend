@@ -1,12 +1,11 @@
 package dev.cheerfun.pixivic.common.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import dev.cheerfun.pixivic.common.serializer.LocalDateSerializer;
+import dev.cheerfun.pixivic.common.util.json.LocalDateSerializer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 /**
  * @author OysterQAQ

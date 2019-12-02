@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.rank.mapper;
 
 import dev.cheerfun.pixivic.biz.web.rank.model.Rank;
+import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
@@ -21,7 +22,7 @@ public interface RankMapper {
     @Results({
             @Result(property="date", column="date"),
             @Result(property="mode", column="mode"),
-            @Result(property="data", column="data", javaType = List.class,typeHandler=dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
+            @Result(property="data", column="data", javaType = List.class,typeHandler= JsonTypeHandler.class)
     })
      Rank queryByDateAndMode(String date, String mode);
 }

@@ -30,14 +30,6 @@ spring:
     batch:
       job:
         enabled: false
-  #mybatis-plus:
-  #  configuration:
-  #    cache-enabled: true
-  #    map-underscore-to-camel-case: true
-  #  mapper-locations: classpath*:/ArtistMapper/*Mapper.xml
-  #  type-aliases-package: dev.cheerfun.pixivic.biz.web
-  # logging:
-  # config: classpath:logback-${spring.profiles.active}.xml
 management:
   endpoints:
     web:
@@ -63,7 +55,7 @@ saucenao:
 mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
-  type-handlers-package: dev.cheerfun.pixivic.common.handler
+  type-handlers-package: dev.cheerfun.pixivic.common.util.json
 elasticsearch:
   ip: elasticsearch
 apiLog:
