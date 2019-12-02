@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.search.controller;
 
 import dev.cheerfun.pixivic.biz.web.search.model.Response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.model.Response.SaucenaoResponse;
+import dev.cheerfun.pixivic.biz.web.search.model.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
 import dev.cheerfun.pixivic.common.model.Illustration;
@@ -56,7 +57,7 @@ public class SearchController {
     }
 
     @GetMapping("/illustrations")
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
+    public CompletableFuture<ResponseEntity<Result<SearchResult>>> searchByKeyword(
             @RequestParam
             @NotBlank
                     String keyword,

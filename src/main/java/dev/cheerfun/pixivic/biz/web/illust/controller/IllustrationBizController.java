@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author OysterQAQ
@@ -30,10 +31,10 @@ public class IllustrationBizController {
         return ResponseEntity.ok().body(new Result<>("获取标签翻译成功", illustrationBizService.translationTag(tag)));
     }
 
-    @GetMapping("/artists/{artistId}/illusts")
+    @GetMapping("/artists/{artistId}/illusts/{type}")
     //@PermissionRequired
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestParam(defaultValue = "5") int maxSanityLevel) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationBizService.queryIllustrationsByArtistId(artistId, (page - 1) * pageSize, pageSize,maxSanityLevel)));
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestParam(defaultValue = "5") int maxSanityLevel) {
+        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize, maxSanityLevel)));
     }
 
     @GetMapping("/artists/{artistId}/summary")
@@ -52,6 +53,12 @@ public class IllustrationBizController {
     //@PermissionRequired
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId) {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId)));
+    }
+
+    @GetMapping("/illusts/{illustId}/related")
+    //@PermissionRequired
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable int illustId, @RequestParam(defaultValue = "1") int page/*, @RequestParam(defaultValue = "30") int pageSize*/) {
+      return illustrationBizService.queryIllustrationRelated(illustId, page).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
     }
 
     @GetMapping("/illusts/random")

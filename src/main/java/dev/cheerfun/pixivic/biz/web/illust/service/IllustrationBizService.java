@@ -1,25 +1,32 @@
 package dev.cheerfun.pixivic.biz.web.illust.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
+import dev.cheerfun.pixivic.biz.web.illust.model.IllustRelated;
 import dev.cheerfun.pixivic.common.model.Artist;
 import dev.cheerfun.pixivic.common.model.ArtistSummary;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
-import org.checkerframework.checker.units.qual.A;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -32,14 +39,18 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationBizService {
     private final IllustrationBizMapper illustrationBizMapper;
+    private final IllustrationMapper illustrationMapper;
     private final IllustrationService illustrationService;
+    private final RequestUtil requestUtil;
+    private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
+    private final ObjectMapper objectMapper;
 
     public Tag translationTag(String tag) {
         return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
     }
 
-    public List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize, int maxSanityLevel) {
-        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, currIndex, pageSize,maxSanityLevel);
+    public List<Illustration> queryIllustrationsByArtistId(String artistId, String type, int currIndex, int pageSize, int maxSanityLevel) {
+        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize, maxSanityLevel);
         return illustrations;
     }
 
@@ -55,9 +66,9 @@ public class IllustrationBizService {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
             illustration = illustrationService.pullIllustrationInfo(Integer.parseInt(illustId));
-            if(illustration==null){
+            if (illustration == null) {
                 throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
-            }else {
+            } else {
                 List<Illustration> illustrations = new ArrayList<>(1);
                 illustrations.add(illustration);
                 illustrationService.saveToDb(illustrations);
@@ -90,5 +101,55 @@ public class IllustrationBizService {
 
     public List<ArtistSummary> querySummaryByArtistId(String artistId) {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
+    }
+
+    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page) {
+        return requestUtil.getJson("https://proxy.pixivic.com:23334/v2/illust/related?illust_id=" + illustId + "&offset=" + (page - 1) * 30).thenApply(r -> {
+            try {
+                IllustsDTO illustsDTO = objectMapper.readValue(r, new TypeReference<IllustsDTO>() {
+                });
+                if (illustsDTO.getIllusts() != null) {
+                    List<Illustration> illustrationList = illustsDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
+                    if (illustrationList.size() > 0) {
+                        //保存
+                        waitSaveToDb.put(illustId + ":" + page, illustrationList);
+                    }
+                    return illustrationList;
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
+        });
+    }
+
+    @Scheduled(cron = "0 0/5 * * * ? ")
+    private void saveIllustRelatedToDb() {
+        final HashMap<String, List<Illustration>> temp = new HashMap<>(waitSaveToDb);
+        waitSaveToDb.clear();
+        //持久化
+        if (!temp.isEmpty()) {
+            List<IllustRelated> illustRelatedList = new ArrayList<>(2000);
+            List<Illustration> illustrationList = temp.keySet().stream().map(e -> {
+                String[] split = e.split(":");
+                int illustId = Integer.parseInt(split[0]);
+                int page = Integer.parseInt(split[1]);
+                List<Illustration> illustrations = temp.get(e);
+
+                int size = illustrations.size();
+                for (int i = 0; i < size; i++) {
+                    illustRelatedList.add(new IllustRelated(illustId, illustrations.get(i).getId(), (page - 1) * 30 + i));
+                }
+            /*    illustRelatedList.addAll(
+                        temp.get(e).stream().map(i ->
+                        ).collect(Collectors.toList()));*/
+                return illustrations;
+            }).flatMap(Collection::stream).collect(Collectors.toList());
+            //先更新画作
+            illustrationMapper.insert(illustrationList);
+            //插入联系
+            illustrationBizMapper.insertIllustRelated(illustRelatedList);
+        }
+
     }
 }

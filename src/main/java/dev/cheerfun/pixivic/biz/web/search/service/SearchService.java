@@ -13,6 +13,7 @@ import dev.cheerfun.pixivic.biz.web.search.model.Response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.biz.web.search.model.Response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.model.Response.SaucenaoResponse;
 import dev.cheerfun.pixivic.biz.web.search.model.Response.YoudaoTranslatedResponse;
+import dev.cheerfun.pixivic.biz.web.search.model.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.model.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.biz.web.search.util.SearchUtil;
@@ -62,7 +63,7 @@ public class SearchService {
     private final ImageSearchUtil imageSearchUtil;
     private final PixivSuggestionMapper pixivSuggestionMapper;
     private final IllustrationMapper illustrationMapper;
-    private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(5000);
+    private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(String keyword) {
@@ -213,7 +214,7 @@ public class SearchService {
         return keywordTranslated.get(0);
     }
 
-    public CompletableFuture<List<Illustration>> searchByKeyword(
+    public CompletableFuture<SearchResult> searchByKeyword(
             String keyword,
             int pageSize,
             int page,

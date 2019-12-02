@@ -1,13 +1,11 @@
 package dev.cheerfun.pixivic.biz.web.illust.mapper;
 
+import dev.cheerfun.pixivic.biz.web.illust.model.IllustRelated;
 import dev.cheerfun.pixivic.common.model.Artist;
 import dev.cheerfun.pixivic.common.model.ArtistSummary;
 import dev.cheerfun.pixivic.common.model.Illustration;
 import dev.cheerfun.pixivic.common.model.illust.ArtistPreView;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -24,7 +22,7 @@ public interface IllustrationBizMapper {
     })
     Illustration queryIllustrationByIllustId(String illustId);
 
-    @Select("select * from illusts where artist_id = #{artistId} and sanity_level<=#{maxSanityLevel} limit #{currIndex} , #{pageSize}")
+    @Select("select * from illusts where artist_id = #{artistId} and type = #{type} and sanity_level<=#{maxSanityLevel} limit #{currIndex} , #{pageSize}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
@@ -33,13 +31,14 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
-    List<Illustration> queryIllustrationsByArtistId(String artistId, int currIndex, int pageSize, int maxSanityLevel);
+    List<Illustration> queryIllustrationsByArtistId(String artistId, String type, int currIndex, int pageSize, int maxSanityLevel);
 
     @Select("select * from artists where artist_id =#{artistId}")
     @Results({
             @Result(property = "id", column = "artist_id"),
     })
     Artist queryArtistById(String artistId);
+
     @Select("  SELECT\n" +
             "          * \n" +
             "     FROM\n" +
@@ -66,10 +65,22 @@ public interface IllustrationBizMapper {
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = dev.cheerfun.pixivic.common.handler.JsonTypeHandler.class)
     })
     List<Illustration> queryRandomIllustration();
+
     @Select("select count(type) sum,type from illusts where artist_id=#{artistId} group by type")
     @Results({
             @Result(property = "type", column = "type"),
             @Result(property = "sum", column = "sum"),
     })
     List<ArtistSummary> querySummaryByArtistId(String artistId);
+
+    @Insert({
+            "<script>",
+            "replace into illust_related (`illust_id`, `related_illust_id`, `order_num`) values ",
+            "<foreach collection='illustRelatedList' item='illustRelated' index='index' separator=','>",
+            "(#{illustRelated.illustId}, #{illustRelated.relatedIllustId}, #{illustRelated.orderNum})",
+            "</foreach>",
+            "</script>"
+    })
+    int insertIllustRelated(@Param("illustRelatedList") List<IllustRelated> illustRelatedList);
+
 }

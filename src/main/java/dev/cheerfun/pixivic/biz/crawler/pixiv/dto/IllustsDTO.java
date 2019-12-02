@@ -15,6 +15,6 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RankDTO {
+public class IllustsDTO {
     private List<IllustrationDTO> illusts;
 }

@@ -3,7 +3,7 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.RankDTO;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.rank.model.Rank;
 import dev.cheerfun.pixivic.common.model.Illustration;
@@ -80,7 +80,7 @@ public class RankDailyService {
                         return null;
                     }
                     try {
-                        RankDTO rankDTO = objectMapper.readValue(result, new TypeReference<RankDTO>() {
+                        IllustsDTO rankDTO = objectMapper.readValue(result, new TypeReference<IllustsDTO>() {
                         });
                         return rankDTO.getIllusts().stream().filter(Objects::nonNull).map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
                     } catch (IOException e) {
