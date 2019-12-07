@@ -19,11 +19,11 @@ import java.lang.reflect.Method;
  */
 @Component
 public class CommonUtil {
-    public String getControllerArg(JoinPoint joinPoint, Class argAnnotationType, String argAnnotationValue) {
+    public String getControllerArg(JoinPoint joinPoint, Class argAnnotationType, String argAnnotationValue) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         return (String) getControllerArg(joinPoint, String.class, argAnnotationType, argAnnotationValue);
     }
 
-    public Object getControllerArg(JoinPoint joinPoint, Class argClass, Class argAnnotationType, String argAnnotationValue) {
+    public Object getControllerArg(JoinPoint joinPoint, Class argClass, Class argAnnotationType, String argAnnotationValue) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
         Object[] args = joinPoint.getArgs();
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
@@ -34,43 +34,9 @@ public class CommonUtil {
                 if (!annotation.annotationType().equals(argAnnotationType)) {
                     continue;
                 }
-                switch (argAnnotationType.getSimpleName()) {
-                    case "RequestHeader": {
-                            try {
-                                Method m =  argAnnotationType.getMethod("value");
-                               // Method value1 = requestHeader.getDeclaredMethod("value");
-                                try {
-                                    Object invoke = m.invoke(annotation);
-                                    System.out.println("23");
-                                    System.out.println(m);
-                                } catch (IllegalAccessException | InvocationTargetException e) {
-                                    e.printStackTrace();
-                                }
-                            } catch (NoSuchMethodException e) {
-                                e.printStackTrace();
-                            }
-                        RequestHeader requestHeader = (RequestHeader) annotation;
-                        if (!argAnnotationValue.equals(requestHeader.value())) {
-                            continue;
-                        }
-                        break;
-                    }
-                    case "RequestParam": {
-                        RequestParam requestParam = (RequestParam) annotation;
-                        if (!argAnnotationValue.equals(requestParam.value())) {
-                            continue;
-                        }
-                        break;
-                    }
-                    case "PathVariable": {
-                        PathVariable pathVariable = (PathVariable) annotation;
-                        if (!argAnnotationValue.equals(pathVariable.value())) {
-                            continue;
-                        }
-                        break;
-                    }
-                    default:
-                        break;
+                Method m =  argAnnotationType.getMethod("value");
+                if (!argAnnotationValue.equals( m.invoke(annotation))) {
+                    continue;
                 }
                 return argClass.cast(args[argIndex]);
             }

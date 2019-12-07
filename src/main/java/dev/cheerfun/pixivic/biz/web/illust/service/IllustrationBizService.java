@@ -135,14 +135,10 @@ public class IllustrationBizService {
                 int illustId = Integer.parseInt(split[0]);
                 int page = Integer.parseInt(split[1]);
                 List<Illustration> illustrations = temp.get(e);
-
                 int size = illustrations.size();
                 for (int i = 0; i < size; i++) {
                     illustRelatedList.add(new IllustRelated(illustId, illustrations.get(i).getId(), (page - 1) * 30 + i));
                 }
-            /*    illustRelatedList.addAll(
-                        temp.get(e).stream().map(i ->
-                        ).collect(Collectors.toList()));*/
                 return illustrations;
             }).flatMap(Collection::stream).collect(Collectors.toList());
             //先更新画作

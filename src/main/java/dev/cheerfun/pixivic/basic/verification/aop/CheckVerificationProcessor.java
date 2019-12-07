@@ -14,6 +14,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * @author OysterQAQ
  * @version 1.0
@@ -34,7 +36,7 @@ public class CheckVerificationProcessor {
     }
 
     @Before("check()")
-    public void checkVerification(JoinPoint joinPoint) {
+    public void checkVerification(JoinPoint joinPoint) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         //获取共有value属性，没有就抛异常
         //其实这两个都不会为空，若为空在controller之前就会被拦截
         String value = commonUtil.getControllerArg(joinPoint, RequestParam.class, "value");
