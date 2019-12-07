@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /**
@@ -35,6 +36,19 @@ public class CommonUtil {
                 }
                 switch (argAnnotationType.getSimpleName()) {
                     case "RequestHeader": {
+                            try {
+                                Method m =  argAnnotationType.getMethod("value");
+                               // Method value1 = requestHeader.getDeclaredMethod("value");
+                                try {
+                                    Object invoke = m.invoke(annotation);
+                                    System.out.println("23");
+                                    System.out.println(m);
+                                } catch (IllegalAccessException | InvocationTargetException e) {
+                                    e.printStackTrace();
+                                }
+                            } catch (NoSuchMethodException e) {
+                                e.printStackTrace();
+                            }
                         RequestHeader requestHeader = (RequestHeader) annotation;
                         if (!argAnnotationValue.equals(requestHeader.value())) {
                             continue;

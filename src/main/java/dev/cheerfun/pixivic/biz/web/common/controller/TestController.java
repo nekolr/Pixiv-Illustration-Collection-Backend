@@ -37,7 +37,8 @@ public class TestController {
     //@PermissionRequired(PermissionLevel.VIP)
     @GetMapping("/test")
     @RateLimit
-    public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException {
+    @PermissionRequired
+    public ResponseEntity<String> test(@RequestHeader("233") String token) throws InterruptedException, ExecutionException, IOException {
         //rankDailyService.pullAllRank();
        // newService.dailyPullTask();
         return ResponseEntity.ok().body("233");
