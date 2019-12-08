@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.biz.web.user.service;
 
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.user.mapper.AnnouncementMapper;
-import dev.cheerfun.pixivic.biz.web.user.model.Announcement;
+import dev.cheerfun.pixivic.biz.web.user.po.Announcement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

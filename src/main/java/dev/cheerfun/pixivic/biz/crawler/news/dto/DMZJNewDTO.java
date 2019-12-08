@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.crawler.news.dto;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
-import dev.cheerfun.pixivic.common.model.ACGNew;
+import dev.cheerfun.pixivic.common.po.ACGNew;
 import lombok.Data;
 
 import java.time.Instant;

@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.search.mapper;
 
 import dev.cheerfun.pixivic.biz.web.search.dto.SearchSuggestionSyncDTO;
-import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 

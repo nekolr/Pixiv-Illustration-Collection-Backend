@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.search.dto;
 
-import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.Data;
 
 /**

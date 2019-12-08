@@ -1,12 +1,11 @@
 package dev.cheerfun.pixivic.biz.web.search.controller;
 
-import dev.cheerfun.pixivic.biz.web.search.model.Response.PixivSearchCandidatesResponse;
-import dev.cheerfun.pixivic.biz.web.search.model.Response.SaucenaoResponse;
-import dev.cheerfun.pixivic.biz.web.search.model.SearchResult;
-import dev.cheerfun.pixivic.biz.web.search.model.SearchSuggestion;
+import dev.cheerfun.pixivic.biz.web.search.domain.Response.PixivSearchCandidatesResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.Response.SaucenaoResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
+import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
-import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.common.model.Result;
+import dev.cheerfun.pixivic.common.po.Result;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

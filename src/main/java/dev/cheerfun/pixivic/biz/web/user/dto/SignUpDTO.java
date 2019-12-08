@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.user.dto;
 
-import dev.cheerfun.pixivic.biz.web.common.model.User;
+import dev.cheerfun.pixivic.biz.web.common.po.User;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

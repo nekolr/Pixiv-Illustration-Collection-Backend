@@ -1,8 +1,8 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.common.model.illust.ImageUrl;
+import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -53,9 +53,9 @@ public class IllustrationDTO {
             illustration.setArtistPreView(user.getId(), user.getName(), user.getAccount(), user.getProfile_image_urls().getMedium());
             illustration.setArtistId(user.getId());
             illustration.setTags(new ArrayList<>());
-            List<dev.cheerfun.pixivic.common.model.illust.Tag> tags = illustration.getTags();
+            List<dev.cheerfun.pixivic.common.po.illust.Tag> tags = illustration.getTags();
             illustrationDTO.getTags().forEach(t -> {
-                dev.cheerfun.pixivic.common.model.illust.Tag tag = new dev.cheerfun.pixivic.common.model.illust.Tag();
+                dev.cheerfun.pixivic.common.po.illust.Tag tag = new dev.cheerfun.pixivic.common.po.illust.Tag();
                 tag.setName(t.getName());
                 tag.setTranslatedName(t.getTranslated_name());
                 tags.add(tag);

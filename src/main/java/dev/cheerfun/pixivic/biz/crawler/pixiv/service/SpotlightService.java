@@ -2,8 +2,8 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.SpotlightDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.SpotlightMapper;
-import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.common.model.Spotlight;
+import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.Spotlight;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

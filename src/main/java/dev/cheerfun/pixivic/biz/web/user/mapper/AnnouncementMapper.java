@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.user.mapper;
 
-import dev.cheerfun.pixivic.biz.web.user.model.Announcement;
+import dev.cheerfun.pixivic.biz.web.user.po.Announcement;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;

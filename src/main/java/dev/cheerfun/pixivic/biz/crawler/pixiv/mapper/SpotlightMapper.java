@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.mapper;
 
-import dev.cheerfun.pixivic.common.model.Spotlight;
+import dev.cheerfun.pixivic.common.po.Spotlight;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;

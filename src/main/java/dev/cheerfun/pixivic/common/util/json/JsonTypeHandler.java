@@ -2,10 +2,10 @@ package dev.cheerfun.pixivic.common.util.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.web.search.model.SearchSuggestion;
-import dev.cheerfun.pixivic.common.model.Artist;
-import dev.cheerfun.pixivic.common.model.illust.ImageUrl;
-import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
+import dev.cheerfun.pixivic.common.po.Artist;
+import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
+import dev.cheerfun.pixivic.common.po.illust.Tag;
 import org.apache.ibatis.type.BaseTypeHandler;
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.MappedJdbcTypes;

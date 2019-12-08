@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.dto;
 
-import dev.cheerfun.pixivic.common.model.Artist;
+import dev.cheerfun.pixivic.common.po.Artist;
 import lombok.Data;
 
 /**

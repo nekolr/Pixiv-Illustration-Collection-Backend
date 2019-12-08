@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.dto;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
-import dev.cheerfun.pixivic.common.model.Spotlight;
+import dev.cheerfun.pixivic.common.po.Spotlight;
 import lombok.Data;
 
 import java.util.List;

@@ -4,11 +4,12 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
+import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.biz.crawler.news.service.NewService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
-import dev.cheerfun.pixivic.biz.web.common.model.User;
-import dev.cheerfun.pixivic.common.model.Result;
+import dev.cheerfun.pixivic.biz.web.common.po.User;
+import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -37,11 +39,12 @@ public class TestController {
     //@PermissionRequired(PermissionLevel.VIP)
     @GetMapping("/test")
     @RateLimit
-    @PermissionRequired
-    public ResponseEntity<String> test(@RequestHeader("233") String token) throws InterruptedException, ExecutionException, IOException {
+    //@PermissionRequired
+    public ResponseEntity<String> test(/*@RequestHeader("Authorization")  String token,*/@RequestParam @SensitiveCheck String content,@RequestParam @SensitiveCheck String title) throws InterruptedException, ExecutionException, IOException {
         //rankDailyService.pullAllRank();
        // newService.dailyPullTask();
-        return ResponseEntity.ok().body("233");
+        System.out.println(content+title);
+        return ResponseEntity.ok().body(content);
     }
 
     /*@GetMapping("/32")

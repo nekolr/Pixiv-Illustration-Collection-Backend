@@ -1,14 +1,14 @@
 package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
-import dev.cheerfun.pixivic.biz.web.user.model.BookmarkRelation;
-import dev.cheerfun.pixivic.biz.web.user.model.FollowedRelation;
+import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
+import dev.cheerfun.pixivic.biz.web.user.po.FollowedRelation;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.context.AppContext;
-import dev.cheerfun.pixivic.common.model.Artist;
-import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.common.model.Result;
-import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.common.po.Artist;
+import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.Result;
+import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

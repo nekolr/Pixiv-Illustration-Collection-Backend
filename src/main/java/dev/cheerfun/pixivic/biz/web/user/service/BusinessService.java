@@ -2,9 +2,9 @@ package dev.cheerfun.pixivic.biz.web.user.service;
 
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
-import dev.cheerfun.pixivic.common.model.Artist;
-import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.common.model.illust.Tag;
+import dev.cheerfun.pixivic.common.po.Artist;
+import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;

@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.basic.verification.aop;
 
 import dev.cheerfun.pixivic.basic.verification.exception.VerificationCheckException;
-import dev.cheerfun.pixivic.common.util.CommonUtil;
+import dev.cheerfun.pixivic.common.util.JoinPointArgUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
@@ -27,7 +27,7 @@ import java.lang.reflect.InvocationTargetException;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CheckVerificationProcessor {
-    private final CommonUtil commonUtil;
+    private final JoinPointArgUtil commonUtil;
     private final StringRedisTemplate stringRedisTemplate;
     private final String verificationCodeRedisPre="v:";
 
@@ -39,8 +39,8 @@ public class CheckVerificationProcessor {
     public void checkVerification(JoinPoint joinPoint) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         //获取共有value属性，没有就抛异常
         //其实这两个都不会为空，若为空在controller之前就会被拦截
-        String value = commonUtil.getControllerArg(joinPoint, RequestParam.class, "value");
-        String vid = commonUtil.getControllerArg(joinPoint, RequestParam.class, "vid");
+        String value = commonUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestParam.class, "value");
+        String vid = commonUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestParam.class, "vid");
         String v = stringRedisTemplate.opsForValue().get(verificationCodeRedisPre+vid);
         if (v == null) {
             throw new VerificationCheckException(HttpStatus.NOT_FOUND, "验证码不存在");

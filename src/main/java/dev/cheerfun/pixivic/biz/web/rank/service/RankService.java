@@ -1,8 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.rank.service;
 
 import dev.cheerfun.pixivic.biz.web.rank.mapper.RankMapper;
-import dev.cheerfun.pixivic.biz.web.rank.model.Rank;
-import dev.cheerfun.pixivic.common.model.Illustration;
+import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
+import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

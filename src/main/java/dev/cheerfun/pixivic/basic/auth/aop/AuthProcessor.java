@@ -5,7 +5,7 @@ import dev.cheerfun.pixivic.basic.auth.exception.AuthBanException;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthLevelException;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.common.context.AppContext;
-import dev.cheerfun.pixivic.common.util.CommonUtil;
+import dev.cheerfun.pixivic.common.util.JoinPointArgUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
@@ -37,7 +37,7 @@ import java.util.Map;
 @Order(0)
 public class AuthProcessor {
     private final JWTUtil jwtUtil;
-    private final CommonUtil commonUtil;
+    private final JoinPointArgUtil commonUtil;
     private final static String IS_BAN = "isBan";
     private final static String AUTHORIZATION = "Authorization";
     private final static String PERMISSION_LEVEL = "permissionLevel";
@@ -52,7 +52,7 @@ public class AuthProcessor {
         MethodSignature signature = ((MethodSignature) joinPoint.getSignature());
         Method method = signature.getMethod();
         //取出token
-        String token = commonUtil.getControllerArg(joinPoint, RequestHeader.class, AUTHORIZATION);
+        String token = commonUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestHeader.class, AUTHORIZATION);
         /*进行jwt校验，成功则将返回包含Claim信息的Map（token即将过期则将刷新后的token放入返回值Map）
         过期则抛出自定义未授权过期异常*/
         Map<String, Object> claims = jwtUtil.validateToken(token);

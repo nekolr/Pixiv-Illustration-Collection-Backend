@@ -1,10 +1,10 @@
 package dev.cheerfun.pixivic.biz.web.illust.mapper;
 
-import dev.cheerfun.pixivic.biz.web.illust.model.IllustRelated;
-import dev.cheerfun.pixivic.common.model.Artist;
-import dev.cheerfun.pixivic.common.model.ArtistSummary;
-import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.common.model.illust.ArtistPreView;
+import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
+import dev.cheerfun.pixivic.common.po.Artist;
+import dev.cheerfun.pixivic.common.po.ArtistSummary;
+import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 

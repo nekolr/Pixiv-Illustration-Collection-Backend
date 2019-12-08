@@ -12,9 +12,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface RateLimit {
-   /* *//**
-     * 默认每秒放进桶中的令牌
-     * @return double
-     *//*
-    double limitNum() default 20.0;*/
+
 }

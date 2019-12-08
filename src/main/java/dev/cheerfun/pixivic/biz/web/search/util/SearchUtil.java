@@ -2,11 +2,11 @@ package dev.cheerfun.pixivic.biz.web.search.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.web.search.model.SearchResult;
-import dev.cheerfun.pixivic.biz.web.search.model.elasticsearch.ElasticsearchResponse;
-import dev.cheerfun.pixivic.biz.web.search.model.elasticsearch.Hit;
-import dev.cheerfun.pixivic.biz.web.search.model.elasticsearch.Hits;
-import dev.cheerfun.pixivic.common.model.Illustration;
+import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
+import dev.cheerfun.pixivic.biz.web.search.domain.elasticsearch.ElasticsearchResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.elasticsearch.Hit;
+import dev.cheerfun.pixivic.biz.web.search.domain.elasticsearch.Hits;
+import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

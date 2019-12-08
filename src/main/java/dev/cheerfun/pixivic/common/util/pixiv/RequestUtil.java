@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.common.util.pixiv;
 
-import dev.cheerfun.pixivic.biz.crawler.pixiv.model.Oauth;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.Oauth;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

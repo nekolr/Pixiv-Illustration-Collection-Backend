@@ -1,9 +1,9 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
-import dev.cheerfun.pixivic.basic.verification.model.EmailBindingVerificationCode;
+import dev.cheerfun.pixivic.basic.verification.domain.EmailBindingVerificationCode;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
-import dev.cheerfun.pixivic.biz.web.common.model.User;
+import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.mapper.CommonMapper;
 import dev.cheerfun.pixivic.biz.web.user.util.EmailUtil;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;

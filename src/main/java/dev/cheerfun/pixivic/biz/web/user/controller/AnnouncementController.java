@@ -2,10 +2,10 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
-import dev.cheerfun.pixivic.biz.web.user.model.Announcement;
+import dev.cheerfun.pixivic.biz.web.user.po.Announcement;
 import dev.cheerfun.pixivic.biz.web.user.service.AnnouncementService;
 import dev.cheerfun.pixivic.common.context.AppContext;
-import dev.cheerfun.pixivic.common.model.Result;
+import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,8 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import dev.cheerfun.pixivic.basic.verification.constant.VerificationType;
-import dev.cheerfun.pixivic.basic.verification.model.EmailBindingVerificationCode;
-import dev.cheerfun.pixivic.basic.verification.model.ImageVerificationCode;
+import dev.cheerfun.pixivic.basic.verification.domain.EmailBindingVerificationCode;
+import dev.cheerfun.pixivic.basic.verification.domain.ImageVerificationCode;
 import dev.cheerfun.pixivic.basic.verification.util.VerificationCodeBuildUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

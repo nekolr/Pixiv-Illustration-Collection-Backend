@@ -1,9 +1,9 @@
 package dev.cheerfun.pixivic.biz.web.spotlight.mapper;
 
-import dev.cheerfun.pixivic.biz.web.rank.model.Rank;
-import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.common.model.Spotlight;
-import dev.cheerfun.pixivic.common.model.illust.ArtistPreView;
+import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
+import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.Spotlight;
+import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 

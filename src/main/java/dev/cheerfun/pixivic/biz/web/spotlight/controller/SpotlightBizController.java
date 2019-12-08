@@ -1,9 +1,9 @@
 package dev.cheerfun.pixivic.biz.web.spotlight.controller;
 
 import dev.cheerfun.pixivic.biz.web.spotlight.service.SpotlightBizService;
-import dev.cheerfun.pixivic.common.model.Illustration;
-import dev.cheerfun.pixivic.common.model.Result;
-import dev.cheerfun.pixivic.common.model.Spotlight;
+import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.Result;
+import dev.cheerfun.pixivic.common.po.Spotlight;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

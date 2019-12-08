@@ -1,8 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.news.controller;
 
 import dev.cheerfun.pixivic.biz.web.news.service.NewsBIZService;
-import dev.cheerfun.pixivic.common.model.ACGNew;
-import dev.cheerfun.pixivic.common.model.Result;
+import dev.cheerfun.pixivic.common.po.ACGNew;
+import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.ArtistDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.ArtistMapper;
-import dev.cheerfun.pixivic.common.model.Artist;
+import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

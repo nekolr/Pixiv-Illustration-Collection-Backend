@@ -1,9 +1,9 @@
 package dev.cheerfun.pixivic.basic.verification.util;
 
 import dev.cheerfun.pixivic.basic.verification.constant.VerificationType;
-import dev.cheerfun.pixivic.basic.verification.model.AbstractVerificationCode;
-import dev.cheerfun.pixivic.basic.verification.model.EmailBindingVerificationCode;
-import dev.cheerfun.pixivic.basic.verification.model.ImageVerificationCode;
+import dev.cheerfun.pixivic.basic.verification.domain.AbstractVerificationCode;
+import dev.cheerfun.pixivic.basic.verification.domain.EmailBindingVerificationCode;
+import dev.cheerfun.pixivic.basic.verification.domain.ImageVerificationCode;
 
 import java.util.Random;
 

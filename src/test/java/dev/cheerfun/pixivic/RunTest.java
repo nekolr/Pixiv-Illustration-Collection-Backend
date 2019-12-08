@@ -1,10 +1,17 @@
 package dev.cheerfun.pixivic;
 
+import com.huaban.analysis.jieba.JiebaSegmenter;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;
 import io.github.bucket4j.Bucket4j;
+import org.ansj.splitWord.analysis.IndexAnalysis;
+import org.ansj.splitWord.analysis.ToAnalysis;
+import org.apdplat.word.WordSegmenter;
+import org.apdplat.word.segmentation.Word;
 
 import java.time.Duration;
+import java.util.Date;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.stream.IntStream;
@@ -18,20 +25,12 @@ import java.util.stream.IntStream;
 public class RunTest {
     public static void main(String[] args) {
         // define the limit 1 time per 10 minute
-        Bandwidth limit = Bandwidth.simple(1, Duration.ofMillis(1));
-        // construct the bucket
-        Bucket bucket = Bucket4j.builder().addLimit(limit).build();
-        ExecutorService executor = Executors.newFixedThreadPool(24);
-        IntStream.rangeClosed(1,100)
-                .forEach(i -> {
-                    executor.submit(() -> {
-                        if(bucket.tryConsume(1)){
-                            System.out.println(("acquired"));
-                        }else{
-                            System.out.println("blocked");
-                        }
-                    });
-                });
+        JiebaSegmenter segmenter = new JiebaSegmenter();
+        String str = "中共独裁" ;
+        System.out.println(new Date());
+        //System.out.println(segmenter.process(str, JiebaSegmenter.SegMode.INDEX).toString());
+        IndexAnalysis.parse(str).forEach(System.out::println);
+        System.out.println(new Date());
     }
 
 }
