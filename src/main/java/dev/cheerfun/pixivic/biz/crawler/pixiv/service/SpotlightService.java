@@ -69,10 +69,6 @@ public class SpotlightService {
                     spotlightMapper.insertRelation(s.getId(), illustIds);
                     //查找出没在数据库的画作
                     illustIds = illustrationService.queryIllustsNotInDb(illustIds);
-                  /*  FileWriter writer = new FileWriter("D:\\illustId.txt");
-                    for(Integer str: illustIds) {
-                        writer.write(str + System.lineSeparator());
-                    }*/
                     //拉取
                     if (illustIds.size() > 0) {
                         List<Illustration> illustrations = illustIds.stream().map(illustrationService::pullIllustrationInfo).filter(Objects::nonNull).collect(Collectors.toList());
