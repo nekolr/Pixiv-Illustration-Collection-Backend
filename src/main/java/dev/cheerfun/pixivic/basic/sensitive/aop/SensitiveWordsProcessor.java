@@ -15,7 +15,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Stream;
 
 /**
  * @author OysterQAQ
@@ -32,21 +31,20 @@ public class SensitiveWordsProcessor {
     private final SensitiveFilter sensitiveFilter;
 
     @Pointcut(value = "execution(public * *(.., @dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck (*), ..))")
-    public void pointCut() {
+    public void pointCutInMethodParam() {
     }
 
-    @Around(value = "pointCut()")
+    @Around(value = "pointCutInMethodParam()")
     private ResponseEntity handleSensitiveCheck(ProceedingJoinPoint joinPoint) throws Throwable {
-        List<JoinPointArg> contentStream = commonUtil.getMethodArgsByAnnotationValueMethodValue(joinPoint, SensitiveCheck.class);
 
+        List<JoinPointArg> contentStream = commonUtil.getMethodArgsByAnnotationValueMethodValue(joinPoint, SensitiveCheck.class);
         contentStream.forEach(e -> {
-                    String result = sensitiveFilter.filter((String) e.getValue());
-                    if (result.contains("*")) {
-                        joinPoint.getArgs()[e.getIndex()] = result;
-                        //TODO (异步)发现含有敏感词则进行一定的降权
-                    }
-                }
-        );
+            try {
+                joinPoint.getArgs()[e.getIndex()] = sensitiveFilter.filter(e.getValue());
+            } catch (IllegalAccessException ex) {
+                ex.printStackTrace();
+            }
+        });
         return (ResponseEntity) joinPoint.proceed(joinPoint.getArgs());
     }
 

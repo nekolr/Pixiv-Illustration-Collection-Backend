@@ -12,11 +12,12 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Date;
 import java.util.NavigableSet;
-import java.util.function.Function;
+
 
 @Component
 @Data
@@ -215,5 +216,36 @@ public class SensitiveFilter implements Serializable {
             return sentence;
         }
     }
+    public Object filter(Object object) throws IllegalAccessException {
+        if (object == null)
+            return object;
+        if (object instanceof String) {
+            return filter((String) object);
+        } else if (!isBaseType(object)) {
+            //如果是对象则遍历里面的属性
+            Class<?> valueClass = object.getClass();
+            for (Field declaredField : valueClass.getDeclaredFields()) {
+                declaredField.setAccessible(true);
+                //递归处理
+                declaredField.set(object, filter(declaredField.get(object)));
+            }
+            return object;
+        }
+        return object;
+    }
 
+    public static boolean isBaseType(Object object) {
+        Class className = object.getClass();
+        if (className.equals(java.lang.Integer.class) ||
+                className.equals(java.lang.Byte.class) ||
+                className.equals(java.lang.Long.class) ||
+                className.equals(java.lang.Double.class) ||
+                className.equals(java.lang.Float.class) ||
+                className.equals(java.lang.Character.class) ||
+                className.equals(java.lang.Short.class) ||
+                className.equals(java.lang.Boolean.class)) {
+            return true;
+        }
+        return false;
+    }
 }

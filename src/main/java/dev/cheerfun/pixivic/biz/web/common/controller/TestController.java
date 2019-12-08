@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.biz.crawler.news.service.NewService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
+import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
 import lombok.RequiredArgsConstructor;
@@ -37,13 +38,14 @@ public class TestController {
     private final NewService newService;
 
     //@PermissionRequired(PermissionLevel.VIP)
-    @GetMapping("/test")
+    @PostMapping("/test")
     @RateLimit
     //@PermissionRequired
-    public ResponseEntity<String> test(/*@RequestHeader("Authorization")  String token,*/@RequestParam @SensitiveCheck String content,@RequestParam @SensitiveCheck String title) throws InterruptedException, ExecutionException, IOException {
+    public ResponseEntity<String> test(@RequestBody @SensitiveCheck SignUpDTO signUpDTO,/*@RequestHeader("Authorization")  String token,*/@RequestParam @SensitiveCheck String content, @RequestParam @SensitiveCheck String title) throws InterruptedException, ExecutionException, IOException {
         //rankDailyService.pullAllRank();
        // newService.dailyPullTask();
         System.out.println(content+title);
+        System.out.println(signUpDTO);
         return ResponseEntity.ok().body(content);
     }
 
