@@ -41,8 +41,8 @@ public class BusinessService {
     public void cancelBookmark(int userId, int illustId) {
         bookmarkOperation(userId, illustId, -1);
     }
-
-    private void bookmarkOperation(int userId, int illustId, int increment) {
+    @Transactional
+    void bookmarkOperation(int userId, int illustId, int increment) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
         if ((increment > 0 && stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId)))
                 || (increment < 0 && !stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId)))
@@ -65,6 +65,7 @@ public class BusinessService {
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")
+    @Transactional
     public void flushBookmarkCountToDb() {
         //半夜三点往mysql更新收藏数
         Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(bookmarkCountMapRedisPre);

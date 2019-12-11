@@ -1,9 +1,13 @@
 package dev.cheerfun.pixivic.biz.comment.service;
 
+import dev.cheerfun.pixivic.biz.comment.dto.Like;
+import dev.cheerfun.pixivic.biz.comment.mapper.CommentMapper;
+import dev.cheerfun.pixivic.biz.comment.po.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author OysterQAQ
@@ -15,18 +19,25 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommentService {
     private final StringRedisTemplate stringRedisTemplate;
-    private final String likeRedisPre = "u:l:";//+appType:appId
-    private final String likeCountRedisPre = "l:c:";
+    private final CommentMapper commentMapper;
+    private final String likeRedisPre = "u:l:c:";
+    private final String likeCountMapRedisPre = "c:lcm";//+appType:appId
 
-    //点赞
-    public void like() {
+    public void pushComment(Comment comment) {
+        commentMapper.pushComment(comment);
     }
 
-    //取消点赞
-    public void cancelLike() {
+    @Transactional
+    public void likeComment(Like like, int userId) {
+        stringRedisTemplate.opsForSet().add(likeRedisPre, like.toString());
+        stringRedisTemplate.opsForHash().increment(likeCountMapRedisPre, like.toString(), 1);
     }
 
-    private void likeOperation(int userId, int commentId, int increment) {
+    @Transactional
+    public void cancelLikeComment(int userId, Like like) {
+        stringRedisTemplate.opsForSet().remove(likeRedisPre, like.toString());
+        stringRedisTemplate.opsForHash().increment(likeCountMapRedisPre, like.toString(), -1);
     }
+
 
 }

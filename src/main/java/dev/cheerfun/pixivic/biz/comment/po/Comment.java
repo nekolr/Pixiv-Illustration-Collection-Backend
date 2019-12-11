@@ -1,8 +1,9 @@
 package dev.cheerfun.pixivic.biz.comment.po;
 
+import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import lombok.Data;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * @author OysterQAQ
@@ -16,14 +17,21 @@ public class Comment {
     private Integer appId;
     private Integer id;
     private Integer parentId;
-    private Integer userId;
+    private Integer from;
     private Integer replyTo;
+    @SensitiveCheck
     private String content;
-    private LocalDate createDate;
+    private LocalDateTime createDate;
     private Integer likedCount;
     private Boolean isLike;
 
-    public LocalDate getCreateDate() {
-        return createDate == null ? LocalDate.now() : createDate;
+    public LocalDateTime getCreateDate() {
+        return createDate == null ? LocalDateTime.now() : createDate;
+    }
+
+    public void init(String commentAppType, int commentAppId, int userId) {
+        this.appType=commentAppType;
+        this.appId=commentAppId;
+        this.from=userId;
     }
 }

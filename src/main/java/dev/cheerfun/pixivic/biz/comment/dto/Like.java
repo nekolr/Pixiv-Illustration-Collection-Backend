@@ -1,6 +1,8 @@
 package dev.cheerfun.pixivic.biz.comment.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author OysterQAQ
@@ -9,9 +11,15 @@ import lombok.Data;
  * @description Like
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Like {
-    private Integer userId;
     private String commentAppType;
     private Integer commentAppId;
     private Integer commentId;
+
+    @Override
+    public String toString() {
+        return commentAppType + ':' + commentAppId + ":" + commentId;
+    }
 }
