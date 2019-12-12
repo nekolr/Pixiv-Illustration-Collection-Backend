@@ -25,7 +25,6 @@ public class RankService {
 
     @Cacheable(value = "rank")
     public Rank queryByDateAndMode(String date, String mode, int page, int pageSize) {
-        System.out.println("缓存");
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
         if (rank != null) {
             List<Illustration> illustrations = rank.getData().stream().skip(pageSize * (page - 1))
