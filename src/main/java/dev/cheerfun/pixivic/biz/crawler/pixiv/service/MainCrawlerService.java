@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -20,9 +21,10 @@ public class MainCrawlerService {
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
 
+    @CacheEvict(cacheNames = "illust", allEntries = true)
     public void dailyPersistentTask() throws InterruptedException {
         int hour = LocalTime.now().getHour();
-        LocalDate date = LocalDate.now().plusDays(-(hour+1));
+        LocalDate date = LocalDate.now().plusDays(-(hour + 1));
         System.out.println(date);
         List<Integer> artistIds = illustrationService.pullAllRankInfo(date);
         artistService.pullArtistsInfo(artistIds);

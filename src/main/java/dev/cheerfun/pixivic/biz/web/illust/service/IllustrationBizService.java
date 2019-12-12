@@ -51,7 +51,7 @@ public class IllustrationBizService {
         return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
     }
 
-    @Cacheable(value = "illusts")
+    @Cacheable(value = "illust")
     public List<Illustration> queryIllustrationsByArtistId(String artistId, String type, int currIndex, int pageSize, int maxSanityLevel) {
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize, maxSanityLevel);
         return illustrations;
@@ -109,7 +109,7 @@ public class IllustrationBizService {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
     }
 
-    @Cacheable(value = "illustrationRelateds")
+    @Cacheable(value = "illust")
     public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page) {
         return requestUtil.getJson("https://proxy.pixivic.com:23334/v2/illust/related?illust_id=" + illustId + "&offset=" + (page - 1) * 30).thenApply(r -> {
             try {
