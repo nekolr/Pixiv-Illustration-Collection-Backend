@@ -98,7 +98,6 @@ public class SearchService {
 
     @Cacheable(value = "pixivSearchSuggestions")
     public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(String keyword) {
-        System.out.println("未命中缓存");
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("accept-language", "zh-CN,zh;q=0.9")
                 .uri(URI.create("https://proxy.pixivic.com:23334/ajax/search/artworks/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))

@@ -21,7 +21,6 @@ public class NewsBIZService {
     private final NewsBIZMapper newsBIZMapper;
     @Cacheable(value = "new")
     public List<ACGNew> queryByFromAndDate(String referer, String date, int page, int pageSize) {
-        System.out.println("未命中缓存");
         return newsBIZMapper.queryByFromAndDate(referer,date,pageSize*(page-1),pageSize);
     }
 }
