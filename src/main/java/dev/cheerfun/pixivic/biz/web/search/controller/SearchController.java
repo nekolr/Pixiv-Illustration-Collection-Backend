@@ -36,7 +36,7 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/keywords/**/candidates")
-    public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) throws IOException, InterruptedException {
+    public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request)  {
         return searchService.getCandidateWords(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", r)));
     }
 

@@ -27,7 +27,7 @@ public class IllustrationBizController {
     private final IllustrationBizService illustrationBizService;
 
     @GetMapping("/tags/{tag}/translation")
-    public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag, @RequestBody List<String> tagList) {
+    public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag) {
         return ResponseEntity.ok().body(new Result<>("获取标签翻译成功", illustrationBizService.translationTag(tag)));
     }
 

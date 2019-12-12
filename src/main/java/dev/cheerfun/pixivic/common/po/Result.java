@@ -17,11 +17,12 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Result<T> {
+public class Result<T>  {
     @JsonIgnore
     private HttpStatus httpStatus;
     private String message;
     private T data;
+
     public Result(String message, T data) {
         this.message = message;
         this.data = data;

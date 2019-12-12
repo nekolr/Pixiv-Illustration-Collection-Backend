@@ -4,17 +4,17 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
-import dev.cheerfun.pixivic.biz.web.search.dto.PixivSearchSuggestionDTO;
-import dev.cheerfun.pixivic.biz.web.search.dto.SearchSuggestionSyncDTO;
-import dev.cheerfun.pixivic.biz.web.search.dto.TagTranslation;
-import dev.cheerfun.pixivic.biz.web.search.exception.SearchException;
-import dev.cheerfun.pixivic.biz.web.search.mapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.biz.web.search.domain.Response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.Response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.Response.SaucenaoResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.Response.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
+import dev.cheerfun.pixivic.biz.web.search.dto.PixivSearchSuggestionDTO;
+import dev.cheerfun.pixivic.biz.web.search.dto.SearchSuggestionSyncDTO;
+import dev.cheerfun.pixivic.biz.web.search.dto.TagTranslation;
+import dev.cheerfun.pixivic.biz.web.search.exception.SearchException;
+import dev.cheerfun.pixivic.biz.web.search.mapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.biz.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.biz.web.search.util.SearchUtil;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
@@ -22,6 +22,7 @@ import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -65,6 +66,7 @@ public class SearchService {
     private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
+    @Cacheable(value = "candidateWords")
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(String keyword) {
         return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
                 .thenApply(r -> {
@@ -79,6 +81,7 @@ public class SearchService {
                 });
     }
 
+    @Cacheable(value = "searchSuggestions")
     public CompletableFuture<List<SearchSuggestion>> getSearchSuggestion(String keyword) {
         return getSearchSuggestionFromBangumi(keyword).thenCompose(result -> {
             List<SearchSuggestion> searchSuggestions = BangumiSearchResponse.castToSearchSuggestionList(result);
@@ -93,6 +96,7 @@ public class SearchService {
 
     }
 
+    @Cacheable(value = "pixivSearchSuggestions")
     public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("accept-language", "zh-CN,zh;q=0.9")
@@ -101,7 +105,7 @@ public class SearchService {
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r -> {
             String body = r.body();
-            if (!body.contains("\"body\":[]")&&!body.contains("\"tagTranslation\":[]"))
+            if (!body.contains("\"body\":[]") && !body.contains("\"tagTranslation\":[]"))
                 try {
                     PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
                     Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
@@ -121,7 +125,7 @@ public class SearchService {
     }
 
     @Scheduled(cron = "0 0/5 * * * ? ")
-    private void savePixivSuggestionToDb() {
+    void savePixivSuggestionToDb() {
         final HashMap<String, List<SearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
         //持久化
@@ -149,7 +153,8 @@ public class SearchService {
         return new SearchSuggestion(translatedByYouDao(keyword), keyword);
     }
 
-    private CompletableFuture<BangumiSearchResponse> getSearchSuggestionFromBangumi(String keyword) {
+    @Cacheable(value = "bangumiSearch")
+    public CompletableFuture<BangumiSearchResponse> getSearchSuggestionFromBangumi(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://api.bgm.tv/search/subject/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8) + "?app_id=bgm11725d4d9360d4cf5&max_results=3&responseGroup=large&start=0"))
@@ -166,6 +171,7 @@ public class SearchService {
         });
     }
 
+    @Cacheable(value = "searchSuggestions")
     public CompletableFuture<List<SearchSuggestion>> getSearchSuggestionFromMoeGirl(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
@@ -181,6 +187,7 @@ public class SearchService {
 
     }
 
+    @Cacheable(value = "translated")
     public String translatedByYouDao(String keyword) {
         Map<String, String> params = new HashMap<>();
         String salt = String.valueOf(System.currentTimeMillis());
@@ -213,6 +220,7 @@ public class SearchService {
         return keywordTranslated.get(0);
     }
 
+    @Cacheable(value = "searchResult")
     public CompletableFuture<SearchResult> searchByKeyword(
             String keyword,
             int pageSize,
@@ -231,6 +239,7 @@ public class SearchService {
         return searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel));
     }
 
+    @Cacheable(value = "saucenaoResponse")
     public CompletableFuture<SaucenaoResponse> searchByImage(String imageUrl) {
         return imageSearchUtil.searchBySaucenao(imageUrl);
     }

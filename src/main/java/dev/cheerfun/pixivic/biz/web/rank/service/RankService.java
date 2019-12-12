@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -22,7 +23,9 @@ import java.util.stream.Collectors;
 public class RankService {
     private final RankMapper rankMapper;
 
+    @Cacheable(value = "rank")
     public Rank queryByDateAndMode(String date, String mode, int page, int pageSize) {
+        System.out.println("缓存");
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
         if (rank != null) {
             List<Illustration> illustrations = rank.getData().stream().skip(pageSize * (page - 1))

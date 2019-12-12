@@ -47,7 +47,7 @@ public class NewService {
     DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @Scheduled(cron = "0 30 0 * * ?")
-    public void dailyPullTask() throws IOException, InterruptedException {
+    void dailyPullTask() throws IOException, InterruptedException {
         pullDMZJNews();
         pullACGMHNews();
         pullACG17News();
@@ -81,7 +81,7 @@ public class NewService {
             String title = es.text();
             String refererUrl = es.get(0).getElementsByTag("a").get(0).attr("href");
             String intro = e.getElementsByClass("mar10-b post-ex mar10-t mobile-hide").text();
-            return new ACGNew(title, intro, author, cover, refererUrl, LocalDate.parse(createDate.substring(0,10)), ACGMH);
+            return new ACGNew(title, intro, author, cover, refererUrl, LocalDate.parse(createDate.substring(0, 10)), ACGMH);
         }).collect(Collectors.toList());
         process(acgNewList, "id", "content-innerText");
     }
@@ -96,7 +96,7 @@ public class NewService {
             String style = e.getElementsByClass("attachment-tie-medium size-tie-medium wp-post-image").get(0).attr("style");
             String cover = style.substring(style.indexOf("url(") + 4, style.indexOf(")"));
             Element t = e.getElementsByClass("post-box-title").get(0).child(0);
-            LocalDate createDate = LocalDate.parse(e.getElementsByClass("tie-date").get(0).text().replaceAll("[年月]","-").replace("日",""));
+            LocalDate createDate = LocalDate.parse(e.getElementsByClass("tie-date").get(0).text().replaceAll("[年月]", "-").replace("日", ""));
             String intro = e.getElementsByClass("entry").get(0).child(0).text();
             String title = t.text();
             String rerfererUrl = t.attr("href");

@@ -16,7 +16,7 @@ import java.util.List;
  * @description illustration
  */
 @Data
-public class Illustration {
+public class Illustration  {
     @JsonSetter("illust_id")
     private Integer id;
     @JsonSetter("artist_id")

@@ -1,8 +1,8 @@
 package dev.cheerfun.pixivic.basic.auth.util;
 
 import dev.cheerfun.pixivic.basic.auth.config.AuthProperties;
-import dev.cheerfun.pixivic.basic.auth.exception.AuthExpirationException;
 import dev.cheerfun.pixivic.basic.auth.domain.Authable;
+import dev.cheerfun.pixivic.basic.auth.exception.AuthExpirationException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;

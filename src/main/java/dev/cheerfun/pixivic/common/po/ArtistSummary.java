@@ -9,7 +9,7 @@ import lombok.Data;
  * @description ArtistSummary
  */
 @Data
-public class ArtistSummary {
+public class ArtistSummary  {
     private String type;
     private Integer sum;
 }

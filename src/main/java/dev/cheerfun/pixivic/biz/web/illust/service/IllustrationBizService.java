@@ -17,6 +17,7 @@ import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -45,15 +46,18 @@ public class IllustrationBizService {
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
 
+    @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
         return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
     }
 
+    @Cacheable(value = "illusts")
     public List<Illustration> queryIllustrationsByArtistId(String artistId, String type, int currIndex, int pageSize, int maxSanityLevel) {
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize, maxSanityLevel);
         return illustrations;
     }
 
+    @Cacheable(value = "artist")
     public Artist queryArtistById(String artistId) {
         Artist artist = illustrationBizMapper.queryArtistById(artistId);
         if (artist == null) {
@@ -62,6 +66,7 @@ public class IllustrationBizService {
         return artist;
     }
 
+    @Cacheable(value = "illust")
     public Illustration queryIllustrationById(String illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
@@ -99,10 +104,12 @@ public class IllustrationBizService {
         return url.toString();
     }
 
+    @Cacheable(value = "artistSummarys")
     public List<ArtistSummary> querySummaryByArtistId(String artistId) {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
     }
 
+    @Cacheable(value = "illustrationRelateds")
     public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page) {
         return requestUtil.getJson("https://proxy.pixivic.com:23334/v2/illust/related?illust_id=" + illustId + "&offset=" + (page - 1) * 30).thenApply(r -> {
             try {
@@ -124,7 +131,7 @@ public class IllustrationBizService {
     }
 
     @Scheduled(cron = "0 0/5 * * * ? ")
-    private void saveIllustRelatedToDb() {
+    void saveIllustRelatedToDb() {
         final HashMap<String, List<Illustration>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
         //持久化

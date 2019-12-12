@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Rank {
+public class Rank  {
     private List<Illustration> data;
     private String mode;
     private String date;

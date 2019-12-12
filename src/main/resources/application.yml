@@ -1,8 +1,8 @@
 server:
   port: 8080
 spring:
-  profiles:
-    active: linux
+#  profiles:
+#    active: linux
   mail:
     host: smtp.qq.com
     username: 403827354@qq.com
@@ -30,6 +30,10 @@ spring:
     batch:
       job:
         enabled: false
+  cache:
+    caffeine:
+      spec: maximumSize=500,expireAfterAccess=600s
+    type: caffeine
 management:
   endpoints:
     web:
@@ -60,4 +64,6 @@ elasticsearch:
   ip: elasticsearch
 apiLog:
   path: D:\log
+sensitiveWordList:
+  path: D:\Backup\配置文件\sensitive
 

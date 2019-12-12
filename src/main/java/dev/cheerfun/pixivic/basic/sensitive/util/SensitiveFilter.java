@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.basic.sensitive.util;
 
 import dev.cheerfun.pixivic.basic.sensitive.domain.SensitiveNode;
 import dev.cheerfun.pixivic.basic.sensitive.domain.StringPointer;
-import dev.cheerfun.pixivic.common.util.dto.JoinPointArg;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -11,7 +10,6 @@ import javax.annotation.PostConstruct;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.Serializable;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -21,7 +19,7 @@ import java.util.NavigableSet;
 
 @Component
 @Data
-public class SensitiveFilter implements Serializable {
+public class SensitiveFilter  {
 
     private final long serialVersionUID = 1L;
     @Value("${sensitiveWordList.path}")

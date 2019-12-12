@@ -15,7 +15,7 @@ import java.time.LocalDate;
  */
 @Data
 @NoArgsConstructor
-public class ACGNew {
+public class ACGNew  {
     private int id;
     private String title;
     private String intro;
