@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -35,8 +34,7 @@ public class SensitiveWordsProcessor {
     }
 
     @Around(value = "pointCutInMethodParam()")
-    private ResponseEntity handleSensitiveCheck(ProceedingJoinPoint joinPoint) throws Throwable {
-
+    private Object handleSensitiveCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         List<JoinPointArg> contentStream = commonUtil.getMethodArgsByAnnotationValueMethodValue(joinPoint, SensitiveCheck.class);
         contentStream.forEach(e -> {
             try {
@@ -45,7 +43,7 @@ public class SensitiveWordsProcessor {
                 ex.printStackTrace();
             }
         });
-        return (ResponseEntity) joinPoint.proceed(joinPoint.getArgs());
+        return joinPoint.proceed(joinPoint.getArgs());
     }
 
 }

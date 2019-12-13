@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.search.controller;
 
+import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.web.search.domain.Response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.Response.SaucenaoResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
@@ -57,6 +58,7 @@ public class SearchController {
 
     @GetMapping("/illustrations")
     public CompletableFuture<ResponseEntity<Result<SearchResult>>> searchByKeyword(
+            @SensitiveCheck
             @RequestParam
             @NotBlank
                     String keyword,

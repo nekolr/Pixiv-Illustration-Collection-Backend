@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.lang.reflect.Method;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author OysterQAQ
@@ -48,7 +49,7 @@ public class AuthProcessor {
     }
 
     @Around(value = "pointCut()")
-    public ResponseEntity handleAuthorityBefore(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object handleAuthorityBefore(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = ((MethodSignature) joinPoint.getSignature());
         Method method = signature.getMethod();
         //取出token
@@ -68,13 +69,26 @@ public class AuthProcessor {
         }
         //放入threadlocal
         AppContext.set(claims);
-        ResponseEntity response = (ResponseEntity) joinPoint.proceed();
+        Object proceed = joinPoint.proceed();
         //直接修改返回值的token为更新后的token，若之后在业务逻辑中有更改，则在threadlocal中放入NEW_TOKEN就行
-        if (AppContext.get().get(NEW_TOKEN) != null) {
+/*        if (AppContext.get().get(NEW_TOKEN) != null) {
             response = ResponseEntity.status(response.getStatusCode())
                     .header(AUTHORIZATION, String.valueOf(claims.get(NEW_TOKEN)))
                     .body(response.getBody());
+        }*/
+        if (proceed instanceof CompletableFuture) {
+            CompletableFuture<ResponseEntity> response = (CompletableFuture<ResponseEntity>) joinPoint.proceed();
+            return response.thenApply(e -> dealReturn(e, claims));
         }
-        return response;
+        return dealReturn((ResponseEntity)proceed, claims);
+    }
+
+    private ResponseEntity dealReturn(ResponseEntity responseEntity, Map<String, Object> claims) {
+        if (AppContext.get().get(NEW_TOKEN) != null) {
+            responseEntity = ResponseEntity.status(responseEntity.getStatusCode())
+                    .header(AUTHORIZATION, String.valueOf(claims.get(NEW_TOKEN)))
+                    .body(responseEntity.getBody());
+        }
+        return responseEntity;
     }
 }

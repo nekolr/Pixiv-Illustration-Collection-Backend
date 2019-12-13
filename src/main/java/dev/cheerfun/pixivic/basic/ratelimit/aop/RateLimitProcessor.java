@@ -13,7 +13,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -46,7 +45,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
     }
 
     @Around(value = "pointCut()")
-    public ResponseEntity handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
         Bucket requestBucket;
         if (AppContext.get() != null) {
             Integer userId = (Integer) AppContext.get().get(USER_ID);
@@ -65,7 +64,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
         }*/
         ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
         if (probe.isConsumed()) {
-            return (ResponseEntity) joinPoint.proceed();
+            return joinPoint.proceed();
         }
         throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
     }
