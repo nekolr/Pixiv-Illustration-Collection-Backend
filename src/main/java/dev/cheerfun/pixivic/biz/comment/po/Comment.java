@@ -23,15 +23,19 @@ public class Comment {
     private String content;
     private LocalDateTime createDate;
     private Integer likedCount;
-    private Boolean isLike;
+    private Boolean isLike=false;
 
     public LocalDateTime getCreateDate() {
         return createDate == null ? LocalDateTime.now() : createDate;
     }
 
     public void init(String commentAppType, int commentAppId, int userId) {
-        this.appType=commentAppType;
-        this.appId=commentAppId;
-        this.from=userId;
+        this.appType = commentAppType;
+        this.appId = commentAppId;
+        this.from = userId;
+    }
+
+    public String toStringForQueryLike() {
+        return appType + ':' + appId + ":" + id;
     }
 }
