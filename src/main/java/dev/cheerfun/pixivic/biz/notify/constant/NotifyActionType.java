@@ -7,6 +7,6 @@ package dev.cheerfun.pixivic.biz.notify.constant;
  * @description NotifyActionType
  */
 public class NotifyActionType {
-    public final static String COMMENT="comment";
-    public final static String LIKE="like";
+    public final static String REPLIED="replied";
+    public final static String LIKED="liked";
 }
