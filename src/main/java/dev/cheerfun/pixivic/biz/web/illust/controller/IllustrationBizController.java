@@ -52,7 +52,7 @@ public class IllustrationBizController {
     @GetMapping("/illusts/{illustId}")
     //@PermissionRequired
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId, @RequestParam(defaultValue = "0") Integer xRestrict) {
-        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId, xRestrict)));
+        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId/*, xRestrict*/)));
     }
 
     @GetMapping("/illusts/{illustId}/related")

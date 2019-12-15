@@ -67,8 +67,8 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "illust")
-    public Illustration queryIllustrationById(String illustId, Integer xRestrict) {
-        Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId, xRestrict);
+    public Illustration queryIllustrationById(String illustId/*, Integer xRestrict*/) {
+        Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId/*, xRestrict*/);
         if (illustration == null) {
             illustration = illustrationService.pullIllustrationInfo(Integer.parseInt(illustId));
             if (illustration == null) {

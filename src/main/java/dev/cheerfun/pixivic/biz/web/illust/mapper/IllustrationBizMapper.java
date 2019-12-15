@@ -12,7 +12,7 @@ import java.util.List;
 
 @Mapper
 public interface IllustrationBizMapper {
-    @Select("select * from illusts where illust_id = #{illustId} where x_restrict = xRestrict")
+    @Select("select * from illusts where illust_id = #{illustId}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
@@ -21,7 +21,7 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-    Illustration queryIllustrationByIllustId(String illustId, Integer xRestrict);
+    Illustration queryIllustrationByIllustId(String illustId/*, Integer xRestrict*/);
 
     @Select("select * from illusts where artist_id = #{artistId} and type = #{type} and sanity_level<=#{maxSanityLevel} limit #{currIndex} , #{pageSize}")
     @Results({
