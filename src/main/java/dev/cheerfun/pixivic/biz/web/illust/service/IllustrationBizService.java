@@ -67,12 +67,12 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "illust")
-    public Illustration queryIllustrationById(String illustId) {
-        Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
+    public Illustration queryIllustrationById(String illustId, Integer xRestrict) {
+        Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId, xRestrict);
         if (illustration == null) {
             illustration = illustrationService.pullIllustrationInfo(Integer.parseInt(illustId));
             if (illustration == null) {
-                throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
+                throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
             } else {
                 List<Illustration> illustrations = new ArrayList<>(1);
                 illustrations.add(illustration);
