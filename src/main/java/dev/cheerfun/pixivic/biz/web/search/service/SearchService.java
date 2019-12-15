@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.search.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.search.domain.Response.BangumiSearchResponse;
@@ -67,7 +68,7 @@ public class SearchService {
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
     @Cacheable(value = "candidateWords")
-    public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(String keyword) {
+    public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(@SensitiveCheck String keyword) {
         return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
                 .thenApply(r -> {
                     PixivSearchCandidatesResponse pixivSearchCandidatesResponse = null;
@@ -97,7 +98,7 @@ public class SearchService {
     }
 
     @Cacheable(value = "pixivSearchSuggestions")
-    public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(String keyword) {
+    public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(@SensitiveCheck String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("accept-language", "zh-CN,zh;q=0.9")
                 .uri(URI.create("https://proxy.pixivic.com:23334/ajax/search/artworks/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
@@ -172,7 +173,7 @@ public class SearchService {
     }
 
     @Cacheable(value = "searchSuggestions")
-    public CompletableFuture<List<SearchSuggestion>> getSearchSuggestionFromMoeGirl(String keyword) {
+    public CompletableFuture<List<SearchSuggestion>> getSearchSuggestionFromMoeGirl(@SensitiveCheck String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
                 .uri(URI.create("https://zh.moegirl.org/index.php?limit=2&search=" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
@@ -188,7 +189,7 @@ public class SearchService {
     }
 
     @Cacheable(value = "translated")
-    public String translatedByYouDao(String keyword) {
+    public String translatedByYouDao(@SensitiveCheck String keyword) {
         Map<String, String> params = new HashMap<>();
         String salt = String.valueOf(System.currentTimeMillis());
         params.put("from", "auto");
