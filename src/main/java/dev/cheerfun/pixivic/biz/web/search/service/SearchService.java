@@ -161,7 +161,7 @@ public class SearchService {
                 .uri(URI.create("https://api.bgm.tv/search/subject/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8) + "?app_id=bgm11725d4d9360d4cf5&max_results=3&responseGroup=large&start=0"))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r -> {
-            BangumiSearchResponse bangumiSearchResponse = null;
+            BangumiSearchResponse bangumiSearchResponse;
             try {
                 bangumiSearchResponse = objectMapper.readValue(r.body(), new TypeReference<BangumiSearchResponse>() {
                 });

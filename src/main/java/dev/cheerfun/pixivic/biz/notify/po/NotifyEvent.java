@@ -3,7 +3,6 @@ package dev.cheerfun.pixivic.biz.notify.po;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 /**
  * @author OysterQAQ
@@ -13,7 +12,7 @@ import java.time.LocalTime;
  */
 @Data
 public class NotifyEvent {
-    private Integer id;
+   // private Integer id;
     private Integer userId;
     private String action;
     private Integer objectId;
