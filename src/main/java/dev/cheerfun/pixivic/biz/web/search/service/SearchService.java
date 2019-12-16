@@ -166,7 +166,7 @@ public class SearchService {
                 bangumiSearchResponse = objectMapper.readValue(r.body(), new TypeReference<BangumiSearchResponse>() {
                 });
             } catch (IOException e) {
-                e.printStackTrace();
+               throw new SearchException(HttpStatus.NOT_FOUND,"未找到搜索建议");
             }
             return bangumiSearchResponse;
         });

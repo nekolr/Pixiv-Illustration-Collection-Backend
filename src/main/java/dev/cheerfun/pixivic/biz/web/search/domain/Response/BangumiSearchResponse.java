@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import lombok.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -19,9 +20,9 @@ public class BangumiSearchResponse {
     private List<ResultItem> Result;
 
     public static List<SearchSuggestion> castToSearchSuggestionList(BangumiSearchResponse bangumiSearchResponse) {
-        return bangumiSearchResponse.getResult().stream()
+        return bangumiSearchResponse!=null?bangumiSearchResponse.getResult().stream()
                 .map(resultItem -> new SearchSuggestion(resultItem.getKeyword(), resultItem.getKeywordTranslated()))
-                .collect(Collectors.toList());
+                .collect(Collectors.toList()):new ArrayList<>();
     }
     public static double getAvgSum(BangumiSearchResponse bangumiSearchResponse){
         return bangumiSearchResponse.getResult().stream().filter(b->b.getRating()!=null&&b.getRating().getScore()!=0).mapToInt(resultItem -> resultItem.getRating().getScore()).average().getAsDouble();
