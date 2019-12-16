@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
  * @author OysterQAQ
@@ -20,8 +23,9 @@ public class NotifyService {
     private final StringRedisTemplate stringRedisTemplate;
     private final static String NOTIFYEVENTSTREAMKEY = "n:e";
 
-    public void pushNotifyEvent(NotifyEvent notifyEvent) {
-        ObjectRecord<String, NotifyEvent> objectRecord = StreamRecords.objectBacked(notifyEvent).withStreamKey(NOTIFYEVENTSTREAMKEY);
+    @Scheduled(cron = "0/1 * * * * ? ")
+    public void pushNotifyEvent() {
+        ObjectRecord<String, NotifyEvent> objectRecord = StreamRecords.newRecord().ofObject(new NotifyEvent(1,"a",1,"a", LocalDateTime.now())).withStreamKey(NOTIFYEVENTSTREAMKEY);
         stringRedisTemplate.opsForStream().add(objectRecord);
     }
 

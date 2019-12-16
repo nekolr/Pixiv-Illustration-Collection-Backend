@@ -1,7 +1,10 @@
 package dev.cheerfun.pixivic.biz.notify.po;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 
 /**
@@ -11,7 +14,9 @@ import java.time.LocalDateTime;
  * @description NotifyEvent
  */
 @Data
-public class NotifyEvent {
+@NoArgsConstructor
+@AllArgsConstructor
+public class NotifyEvent implements Serializable {
    // private Integer id;
     private Integer userId;
     private String action;
