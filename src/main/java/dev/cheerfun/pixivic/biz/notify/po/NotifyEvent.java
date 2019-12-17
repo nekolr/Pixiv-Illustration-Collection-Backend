@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 /**
  * @author OysterQAQ
@@ -22,5 +22,5 @@ public class NotifyEvent implements Serializable {
     private String action;
     private Integer objectId;
     private String objectType;
-    private LocalDateTime createDate;
+    private Date createDate;
 }

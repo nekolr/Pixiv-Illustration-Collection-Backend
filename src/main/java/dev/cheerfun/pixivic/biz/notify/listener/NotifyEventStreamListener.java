@@ -1,11 +1,16 @@
 package dev.cheerfun.pixivic.biz.notify.listener;
 
-import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
+import dev.cheerfun.pixivic.biz.notify.service.NotifyEventService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.MapRecord;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.stream.StreamListener;
 import org.springframework.stereotype.Component;
+
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author OysterQAQ
@@ -14,14 +19,17 @@ import org.springframework.stereotype.Component;
  * @description NotifyEventStreamListener
  */
 @Component
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NotifyEventStreamListener implements StreamListener<String, MapRecord<String, String, String>> {
+    private final ObjectMapper objectMapper;
+    private final NotifyEventService notifyEventService;
+    private final StringRedisTemplate stringRedisTemplate;
+
     @Override
     public void onMessage(MapRecord<String, String, String> entries) {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        System.out.println("MessageId: " + entries.getId());
-        System.out.println("Stream: " + entries.getStream());
-        System.out.println("Body: " +objectMapper.convertValue(entries.getValue(),NotifyEvent.class));
-        System.out.println("Body: " +entries.getValue());
+        CompletableFuture.supplyAsync(() -> notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class)))
+                .thenAccept(e->stringRedisTemplate.opsForStream().acknowledge("n:e","email",entries.getId()));
+      //  notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class));
+
     }
 }
