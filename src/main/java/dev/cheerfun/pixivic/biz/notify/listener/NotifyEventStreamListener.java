@@ -28,7 +28,7 @@ public class NotifyEventStreamListener implements StreamListener<String, MapReco
     @Override
     public void onMessage(MapRecord<String, String, String> entries) {
         CompletableFuture.supplyAsync(() -> notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class)))
-                .thenAccept(e->stringRedisTemplate.opsForStream().acknowledge("n:e","email",entries.getId()));
+                .thenAccept(e-> System.out.println(stringRedisTemplate.opsForStream().acknowledge("n:e","email",entries.getId())));
       //  notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class));
 
     }

@@ -38,8 +38,6 @@ public class NotifyStreamConfig {
                 .builder().pollTimeout(Duration.ofMillis(100)).build();
         StreamMessageListenerContainer<String, MapRecord<String, String, String>> container = StreamMessageListenerContainer.create(redisConnectionFactory,
                 containerOptions);
-        StreamMessageListenerContainer<String, MapRecord<String, String, String>> container2 = StreamMessageListenerContainer.create(redisConnectionFactory,
-                containerOptions);
         container.start();
         container.receive(StreamOffset.fromStart(NOTIFYEVENTSTREAMKEY), streamListener);
     }

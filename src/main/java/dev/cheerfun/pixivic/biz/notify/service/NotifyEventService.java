@@ -28,11 +28,7 @@ public class NotifyEventService {
 
     public boolean dealNotifyEvent(NotifyEvent notifyEvent) {
         System.out.println(notifyEvent);
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
         return true;
     }
 
