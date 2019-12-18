@@ -4,9 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.io.Serializable;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 /**
  * @author OysterQAQ
@@ -17,8 +15,7 @@ import java.util.Date;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotifyEvent implements Serializable {
-   // private Integer id;
+public class NotifyEvent {
     private Integer userId;
     private String action;
     private Integer objectId;

@@ -14,6 +14,7 @@ import java.time.LocalDateTime;
 public class NotifySetting {
     private Integer id;
     private Integer userId;
+    private String email;
     private Integer settingId;
     private LocalDateTime createDate;
 }

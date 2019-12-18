@@ -1,8 +1,8 @@
 server:
   port: 8080
 spring:
-  profiles:
-    active: linux
+#  profiles:
+#    active: linux
   mail:
     host: smtp.qq.com
     username: 403827354@qq.com
@@ -32,7 +32,7 @@ spring:
         enabled: false
   cache:
     caffeine:
-      spec: maximumSize=500,expireAfterAccess=600s
+      spec: maximumSize=788,expireAfterAccess=3600s
     type: caffeine
 management:
   endpoints:

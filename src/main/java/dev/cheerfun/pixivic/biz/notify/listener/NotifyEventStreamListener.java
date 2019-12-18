@@ -5,7 +5,6 @@ import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
 import dev.cheerfun.pixivic.biz.notify.service.NotifyEventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.stream.MapRecord;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.stream.StreamListener;
@@ -28,7 +27,7 @@ public class NotifyEventStreamListener implements StreamListener<String, ObjectR
 
     @Override
     public void onMessage(ObjectRecord<String, Object> entries) {
-        System.out.println((NotifyEvent)entries.getValue());
+        System.out.println(entries.getValue());
         CompletableFuture.supplyAsync(() -> notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class)))
                 .thenAccept(e-> System.out.println(stringRedisTemplate.opsForStream().acknowledge("n:e","email",entries.getId())));
       //  notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class));

@@ -9,4 +9,5 @@ package dev.cheerfun.pixivic.biz.notify.constant;
 public class NotifyActionType {
     public final static String REPLIED="replied";
     public final static String LIKED="liked";
+    public final static String RELEASED="released";
 }
