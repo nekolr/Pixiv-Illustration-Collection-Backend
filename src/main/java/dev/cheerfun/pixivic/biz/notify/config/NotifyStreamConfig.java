@@ -17,6 +17,7 @@ import org.springframework.data.redis.stream.StreamListener;
 import org.springframework.data.redis.stream.StreamMessageListenerContainer;
 import org.springframework.data.redis.stream.Subscription;
 
+import javax.annotation.PostConstruct;
 import java.time.Duration;
 
 /**
@@ -35,7 +36,7 @@ public class NotifyStreamConfig {
     private final static String NOTIFYEVENTSTREAMKEY = "n:e";
     private final static String NOTIFYEVENTSTREAMEMAILGROUP = "email";
 
-    //@PostConstruct
+   @PostConstruct
     public void init() {
         //stringRedisTemplate.opsForStream().createGroup(NOTIFYEVENTSTREAMKEY,"email");
         initNotifySetting();
