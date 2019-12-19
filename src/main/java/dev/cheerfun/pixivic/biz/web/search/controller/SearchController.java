@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -37,7 +38,7 @@ public class SearchController {
     private final SearchService searchService;
 
     @GetMapping("/keywords/**/candidates")
-    public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request)  {
+    public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
         return searchService.getCandidateWords(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", r)));
     }
 
@@ -62,10 +63,10 @@ public class SearchController {
             @RequestParam
             @NotBlank
                     String keyword,
-            @RequestParam(defaultValue = "30")
+            @RequestParam(defaultValue = "30") @Valid
             @NonNull @Max(60) @Min(1)
                     int pageSize,
-            @RequestParam
+            @RequestParam @Valid
             @NonNull @Max(1600) @Min(1)
                     int page,
             @RequestParam(defaultValue = "original")
