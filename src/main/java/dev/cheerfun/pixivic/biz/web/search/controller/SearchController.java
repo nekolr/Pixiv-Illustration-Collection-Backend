@@ -11,6 +11,7 @@ import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -63,10 +64,10 @@ public class SearchController {
             @RequestParam
             @NotBlank
                     String keyword,
-            @RequestParam(defaultValue = "30") @Valid
+            @RequestParam(defaultValue = "30") @Validated
             @NonNull @Max(60) @Min(1)
                     int pageSize,
-            @RequestParam @Valid
+            @RequestParam @Validated
             @NonNull @Max(1600) @Min(1)
                     int page,
             @RequestParam(defaultValue = "original")

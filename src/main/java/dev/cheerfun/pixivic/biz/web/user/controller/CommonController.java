@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.mail.MessagingException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * @author OysterQAQ
@@ -36,7 +37,7 @@ public class CommonController {
     private static final String USER_ID = "userId";
 
     @GetMapping("/usernames/{username}")
-    public ResponseEntity<Result> checkUsername(@Validated @NotBlank @PathVariable("username") String username) {
+    public ResponseEntity<Result> checkUsername(@Validated @NotBlank @PathVariable("username") @Size(min = 4, max = 10) String username) {
         if (userService.checkUsername(username)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("用户名已存在"));
         }

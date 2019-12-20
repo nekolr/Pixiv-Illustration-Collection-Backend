@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.biz.web.common.po.User;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.Size;
 
 /**
  * @author OysterQAQ
@@ -16,12 +17,13 @@ import javax.validation.constraints.NotBlank;
 public class SignUpDTO {
     @NotBlank
     @SensitiveCheck
+    @Size(min = 4, max = 10)
     private String username;
     @NotBlank
     private String email;
     @NotBlank
+    @Size(min = 8, max = 20)
     private String password;
-    private SignUpDTO signUpDTO;
 
     public User castToUser() {
         return new User(username, email, password);
