@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 public class SignUpDTO {
     @NotBlank
     @SensitiveCheck
-    @Size(min = 4, max = 10)
+    @Size(min = 4, max = 40)
     private String username;
     @NotBlank
     private String email;
