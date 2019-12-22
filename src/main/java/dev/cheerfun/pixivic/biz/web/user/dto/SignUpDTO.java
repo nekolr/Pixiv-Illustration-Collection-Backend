@@ -17,12 +17,12 @@ import javax.validation.constraints.Size;
 public class SignUpDTO {
     @NotBlank
     @SensitiveCheck
-    @Size(min = 4, max = 40)
+    @Size(min = 2, max = 40)
     private String username;
     @NotBlank
     private String email;
     @NotBlank
-    @Size(min = 8, max = 20)
+    @Size(min = 6, max = 20)
     private String password;
 
     public User castToUser() {
