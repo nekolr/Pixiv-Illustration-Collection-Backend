@@ -79,7 +79,7 @@ public class BusinessService {
     }
 
     public List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize) {
-        Set<String> range = stringRedisTemplate.opsForZSet().range(bookmarkRedisPre + userId, currIndex, currIndex + pageSize);
+        Set<String> range = stringRedisTemplate.opsForZSet().range(bookmarkRedisPre + userId,currIndex, currIndex + pageSize);
         if (range == null || range.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
         }

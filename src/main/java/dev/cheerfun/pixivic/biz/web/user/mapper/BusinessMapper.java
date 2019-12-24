@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -25,7 +26,10 @@ public interface BusinessMapper {
             "<foreach collection='illustIds' item='illustId' index='index' separator=',' close=')'>",
             "#{illustId}",
             "</foreach>",
-            "and type = #{type} limit #{currIndex} , #{pageSize}",
+            " order by field(illust_id,",
+            "<foreach collection='illustIds' item='illustId' index='index' separator=',' close=')'>",
+            "#{illustId}",
+            "</foreach>",
             "</script>"
     })
     @Results({
@@ -36,6 +40,7 @@ public interface BusinessMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
+    @Cacheable(value = "illust")
     List<Illustration> queryBookmarked(@Param("illustIds") List<Integer> illustIds, String type, int currIndex, int pageSize);
 
     @Select({"<script>",

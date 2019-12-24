@@ -31,6 +31,7 @@ public class BusinessController {
 
     @PostMapping("/bookmarked")
     public ResponseEntity<Result<String>> bookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
+        System.out.println((int) AppContext.get().get(USER_ID));
         businessService.bookmark((int) AppContext.get().get(USER_ID), bookmarkRelation.getIllustId());
         return ResponseEntity.ok().body(new Result<>("收藏成功"));
     }
