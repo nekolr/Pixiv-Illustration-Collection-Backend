@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -41,11 +42,11 @@ public class BusinessService {
     public void cancelBookmark(int userId, int illustId) {
         bookmarkOperation(userId, illustId, -1);
     }
-    @Transactional
+
     void bookmarkOperation(int userId, int illustId, int increment) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
-        if ((increment > 0 && stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId)))
-                || (increment < 0 && !stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId)))
+        if ((increment > 0 && stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, String.valueOf(illustId)) != null)
+                || (increment < 0 && stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, String.valueOf(illustId)) == null)
         ) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "用户与画作的收藏关系请求错误");
         }
@@ -54,9 +55,9 @@ public class BusinessService {
             public List<Object> execute(RedisOperations operations) throws DataAccessException {
                 operations.multi();
                 if (increment > 0) {
-                    operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
+                    operations.opsForZSet().add(bookmarkRedisPre + userId, String.valueOf(illustId), System.currentTimeMillis());
                 } else {
-                    operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+                    operations.opsForZSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
                 }
                 operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
                 return operations.exec();
@@ -78,15 +79,16 @@ public class BusinessService {
     }
 
     public List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize) {
-        List<Integer> illustIds = stringRedisTemplate.opsForSet().members(bookmarkRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
-        if (illustIds.size() == 0) {
+        Set<String> range = stringRedisTemplate.opsForZSet().range(bookmarkRedisPre + userId, currIndex, currIndex + pageSize);
+        if (range == null || range.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
         }
+        List<Integer> illustIds = range.stream().map(Integer::parseInt).collect(Collectors.toList());
         return businessMapper.queryBookmarked(illustIds, type, currIndex, pageSize);
     }
 
     public Boolean queryIsBookmarked(int userId, String illustId) {
-        return stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, illustId);
+        return stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, illustId)!=null;
     }
 
     public void follow(int userId, int artistId) {
