@@ -1,9 +1,10 @@
-package dev.cheerfun.pixivic.biz.web.search.domain.Response;
+package dev.cheerfun.pixivic.biz.web.search.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * @author OysterQAQ
@@ -14,6 +15,9 @@ import java.util.List;
 @Data
 public class SaucenaoResponse {
     private List<Item> results;
+    public Stream<String> getPixivIdList(){
+        return results.stream().filter(e->e.getData().getOriginalUrls().stream().allMatch(s->s.contains("pixiv"))).map(e->e.getData().getIllustId());
+    }
 }
 
 @Data

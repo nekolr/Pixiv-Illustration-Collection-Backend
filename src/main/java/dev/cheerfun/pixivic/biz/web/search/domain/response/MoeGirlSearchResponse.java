@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.search.domain.Response;
+package dev.cheerfun.pixivic.biz.web.search.domain.response;
 
 import lombok.Data;
 

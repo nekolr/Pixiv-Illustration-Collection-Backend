@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.biz.web.search.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.web.search.domain.Response.SaucenaoResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.SaucenaoResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
