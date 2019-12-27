@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.notify.po;
+package dev.cheerfun.pixivic.basic.notify.po;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

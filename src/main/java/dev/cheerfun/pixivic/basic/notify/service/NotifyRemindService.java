@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.notify.service;
+package dev.cheerfun.pixivic.basic.notify.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

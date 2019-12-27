@@ -1,11 +1,10 @@
-package dev.cheerfun.pixivic.biz.notify.config;
+package dev.cheerfun.pixivic.basic.notify.config;
 
-import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
+import dev.cheerfun.pixivic.basic.notify.po.NotifyEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.stream.Consumer;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;

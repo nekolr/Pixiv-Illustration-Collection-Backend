@@ -1,8 +1,7 @@
-package dev.cheerfun.pixivic.biz.notify.po;
+package dev.cheerfun.pixivic.basic.notify.po;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 /**

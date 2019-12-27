@@ -1,8 +1,8 @@
-package dev.cheerfun.pixivic.biz.notify.listener;
+package dev.cheerfun.pixivic.basic.notify.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
-import dev.cheerfun.pixivic.biz.notify.service.NotifyEventService;
+import dev.cheerfun.pixivic.basic.notify.po.NotifyEvent;
+import dev.cheerfun.pixivic.basic.notify.service.NotifyEventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
@@ -29,6 +29,7 @@ public class NotifyEventStreamListener implements StreamListener<String, ObjectR
 
     @Override
     public void onMessage(ObjectRecord<String, Object> entries) {
+        System.out.println(entries.getValue());
         //处理成功后ack
         CompletableFuture.supplyAsync(() -> notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class)))
                 .thenAccept(e -> {
