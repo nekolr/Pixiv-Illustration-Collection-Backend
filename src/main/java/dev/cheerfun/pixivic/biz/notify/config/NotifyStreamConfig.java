@@ -28,15 +28,14 @@ import java.time.Duration;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NotifyStreamConfig {
     private final StreamListener streamListener;
-    private final LettuceConnectionFactory lettuceConnectionFactory;
     private final RedisConnectionFactory redisConnectionFactory;
     private final StringRedisTemplate stringRedisTemplate;
     private final static String NOTIFYEVENTSTREAMKEY = "n:e";
-    private final static String NOTIFYEVENTSTREAMEMAILGROUP = "email";
+    private final static String NOTIFYEVENTSTREAMEMAILGROUP = "common";
 
    @PostConstruct
     public void init() {
-        //stringRedisTemplate.opsForStream().createGroup(NOTIFYEVENTSTREAMKEY,"email");
+        //stringRedisTemplate.opsForStream().createGroup(NOTIFYEVENTSTREAMKEY,NOTIFYEVENTSTREAMEMAILGROUP);
         initNotifySetting();
         listenerNotifyEvent();
     }

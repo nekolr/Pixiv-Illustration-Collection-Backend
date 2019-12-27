@@ -24,13 +24,17 @@ public class NotifyEventStreamListener implements StreamListener<String, ObjectR
     private final ObjectMapper objectMapper;
     private final NotifyEventService notifyEventService;
     private final StringRedisTemplate stringRedisTemplate;
+    private final static String NOTIFYEVENTSTREAMKEY = "n:e";
+    private final static String NOTIFYEVENTSTREAMEMAILGROUP = "common";
 
     @Override
     public void onMessage(ObjectRecord<String, Object> entries) {
-        System.out.println(entries.getValue());
+        //处理成功后ack
         CompletableFuture.supplyAsync(() -> notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class)))
-                .thenAccept(e-> System.out.println(stringRedisTemplate.opsForStream().acknowledge("n:e","email",entries.getId())));
-      //  notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class));
-
+                .thenAccept(e -> {
+                    if (e) {
+                        stringRedisTemplate.opsForStream().acknowledge(NOTIFYEVENTSTREAMKEY, NOTIFYEVENTSTREAMEMAILGROUP, entries.getId());
+                    }
+                });
     }
 }

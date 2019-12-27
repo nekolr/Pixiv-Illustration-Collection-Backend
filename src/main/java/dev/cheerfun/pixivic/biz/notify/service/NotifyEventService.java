@@ -7,6 +7,7 @@ import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 
@@ -28,12 +29,11 @@ public class NotifyEventService {
         stringRedisTemplate.opsForStream().add(objectRecord);
     }
 
-   // @Scheduled(cron = "0/1 * * * * ? ")
+    // @Scheduled(cron = "0/1 * * * * ? ")
     public void pushNotifyEvent() {
         ObjectRecord<String, NotifyEvent> objectRecord = StreamRecords.newRecord()
                 .ofObject(new NotifyEvent(1, "a", 1, "a", LocalDateTime.now())).withStreamKey(NOTIFYEVENTSTREAMKEY);
         stringRedisTemplate.opsForStream().add(objectRecord);
-
     }
 
     public boolean dealNotifyEvent(NotifyEvent notifyEvent) {
