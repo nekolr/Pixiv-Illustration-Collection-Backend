@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 public class SaucenaoResponse {
     private List<Item> results;
     public Stream<String> getPixivIdList(){
-        return results.stream().filter(e->e.getData().getOriginalUrls().stream().allMatch(s->s.contains("pixiv"))).map(e->e.getData().getIllustId());
+        return results.stream().filter(e-> e!=null&&e.getData()!=null&&e.getData().getOriginalUrls()!=null&&e.getData().getOriginalUrls().stream().anyMatch(s->s.contains("pixiv"))).map(e->e.getData().getIllustId());
     }
 }
 
