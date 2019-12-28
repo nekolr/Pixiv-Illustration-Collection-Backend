@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.track.domain;
+package dev.cheerfun.pixivic.basic.track.domain;
 
 import lombok.Data;
 

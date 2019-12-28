@@ -1,10 +1,10 @@
-package dev.cheerfun.pixivic.biz.track.service;
+package dev.cheerfun.pixivic.basic.track.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
-import dev.cheerfun.pixivic.biz.track.mapper.TrackMapper;
-import dev.cheerfun.pixivic.biz.track.domain.Track;
+import dev.cheerfun.pixivic.basic.track.mapper.TrackMapper;
+import dev.cheerfun.pixivic.basic.track.domain.Track;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

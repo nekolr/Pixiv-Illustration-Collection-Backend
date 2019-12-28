@@ -33,7 +33,8 @@ public class BusinessService {
     private final BusinessMapper businessMapper;
     private final String bookmarkRedisPre = "u:b:";
     private final String bookmarkCountMapRedisPre = "u:bcm";
-    private final String followRedisPre = "u:f:";
+    private final String userFollowRedisPre = "u:f:";
+    private final String artistFollowRedisPre = "a:f:";
 
     public void bookmark(int userId, int illustId) {
         bookmarkOperation(userId, illustId, 1);
@@ -79,7 +80,7 @@ public class BusinessService {
     }
 
     public List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize) {
-        Set<String> range = stringRedisTemplate.opsForZSet().range(bookmarkRedisPre + userId,currIndex, currIndex + pageSize);
+        Set<String> range = stringRedisTemplate.opsForZSet().range(bookmarkRedisPre + userId, currIndex, currIndex + pageSize);
         if (range == null || range.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
         }
@@ -88,19 +89,21 @@ public class BusinessService {
     }
 
     public Boolean queryIsBookmarked(int userId, String illustId) {
-        return stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, illustId)!=null;
+        return stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, illustId) != null;
     }
 
+    @Transactional
     public void follow(int userId, int artistId) {
-        stringRedisTemplate.opsForSet().add(followRedisPre + userId, String.valueOf(artistId));
+        stringRedisTemplate.opsForSet().add(userFollowRedisPre + userId, String.valueOf(artistId));
+        stringRedisTemplate.opsForSet().add(artistFollowRedisPre + artistId, String.valueOf(userId));
     }
 
     public void cancelFollow(int userId, int artistId) {
-        stringRedisTemplate.opsForSet().remove(followRedisPre + userId, String.valueOf(artistId));
+        stringRedisTemplate.opsForSet().remove(userFollowRedisPre + userId, String.valueOf(artistId));
     }
 
     public List<Artist> queryFollowed(int userId, int currIndex, int pageSize) {
-        List<Integer> artists = stringRedisTemplate.opsForSet().members(followRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
+        List<Integer> artists = stringRedisTemplate.opsForSet().members(userFollowRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
         if (artists.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
         }
@@ -108,7 +111,7 @@ public class BusinessService {
     }
 
     public Boolean queryIsFollowed(int userId, String artistId) {
-        return stringRedisTemplate.opsForSet().isMember(followRedisPre + userId, artistId);
+        return stringRedisTemplate.opsForSet().isMember(userFollowRedisPre + userId, artistId);
     }
 
     @Transactional
@@ -122,7 +125,7 @@ public class BusinessService {
     }
 
     public List<Illustration> queryFollowedLatest(int userId, String type, int currIndex, int pageSize) {
-        List<Integer> artists = stringRedisTemplate.opsForSet().members(followRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
+        List<Integer> artists = stringRedisTemplate.opsForSet().members(userFollowRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
         if (artists.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
         }
