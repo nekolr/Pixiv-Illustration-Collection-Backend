@@ -1,11 +1,10 @@
-package dev.cheerfun.pixivic.biz.notify.config;
+package dev.cheerfun.pixivic.basic.notify.config;
 
-import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
+import dev.cheerfun.pixivic.basic.notify.po.NotifyEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
 import org.springframework.data.redis.connection.stream.Consumer;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.ReadOffset;
@@ -28,15 +27,14 @@ import java.time.Duration;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NotifyStreamConfig {
     private final StreamListener streamListener;
-    private final LettuceConnectionFactory lettuceConnectionFactory;
     private final RedisConnectionFactory redisConnectionFactory;
     private final StringRedisTemplate stringRedisTemplate;
     private final static String NOTIFYEVENTSTREAMKEY = "n:e";
-    private final static String NOTIFYEVENTSTREAMEMAILGROUP = "email";
+    private final static String NOTIFYEVENTSTREAMEMAILGROUP = "common";
 
    @PostConstruct
     public void init() {
-        //stringRedisTemplate.opsForStream().createGroup(NOTIFYEVENTSTREAMKEY,"email");
+        //stringRedisTemplate.opsForStream().createGroup(NOTIFYEVENTSTREAMKEY,NOTIFYEVENTSTREAMEMAILGROUP);
         initNotifySetting();
         listenerNotifyEvent();
     }

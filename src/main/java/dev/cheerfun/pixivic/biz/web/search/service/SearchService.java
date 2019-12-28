@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
-import dev.cheerfun.pixivic.biz.web.search.domain.Response.BangumiSearchResponse;
-import dev.cheerfun.pixivic.biz.web.search.domain.Response.PixivSearchCandidatesResponse;
-import dev.cheerfun.pixivic.biz.web.search.domain.Response.SaucenaoResponse;
-import dev.cheerfun.pixivic.biz.web.search.domain.Response.YoudaoTranslatedResponse;
+import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
+import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.BangumiSearchResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.SaucenaoResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.dto.PixivSearchSuggestionDTO;
@@ -18,6 +20,7 @@ import dev.cheerfun.pixivic.biz.web.search.exception.SearchException;
 import dev.cheerfun.pixivic.biz.web.search.mapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.biz.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.biz.web.search.util.SearchUtil;
+import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
@@ -64,6 +67,7 @@ public class SearchService {
     private final ImageSearchUtil imageSearchUtil;
     private final PixivSuggestionMapper pixivSuggestionMapper;
     private final IllustrationMapper illustrationMapper;
+    private final IllustrationBizService illustrationBizService;
     private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
@@ -241,8 +245,9 @@ public class SearchService {
     }
 
     @Cacheable(value = "saucenaoResponse")
-    public CompletableFuture<SaucenaoResponse> searchByImage(String imageUrl) {
-        return imageSearchUtil.searchBySaucenao(imageUrl);
+    public CompletableFuture<List<Illustration>> searchByImage(String imageUrl) {
+        return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r->
+            r.getPixivIdList().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList()));
     }
 
     public String getKeyword(HttpServletRequest request) {

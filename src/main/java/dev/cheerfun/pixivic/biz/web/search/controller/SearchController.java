@@ -1,11 +1,12 @@
 package dev.cheerfun.pixivic.biz.web.search.controller;
 
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
-import dev.cheerfun.pixivic.biz.web.search.domain.Response.PixivSearchCandidatesResponse;
-import dev.cheerfun.pixivic.biz.web.search.domain.Response.SaucenaoResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.SaucenaoResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
+import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
@@ -17,7 +18,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
@@ -100,9 +100,8 @@ public class SearchController {
         return searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 
-    //TODO 存在画作数据时查询并返回画作信息
     @GetMapping("/similarityImages")
-    public CompletableFuture<ResponseEntity<Result<SaucenaoResponse>>> searchByImage(@RequestParam String imageUrl) {
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByImage(@RequestParam String imageUrl) {
         return searchService.searchByImage(imageUrl).thenApply(saucenaoResponse -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", saucenaoResponse)));
 
     }

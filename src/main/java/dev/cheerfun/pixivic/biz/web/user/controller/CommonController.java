@@ -37,7 +37,7 @@ public class CommonController {
     private static final String USER_ID = "userId";
 
     @GetMapping("/usernames/{username}")
-    public ResponseEntity<Result> checkUsername(@Validated @NotBlank @PathVariable("username") @Size(min = 4, max = 10) String username) {
+    public ResponseEntity<Result> checkUsername(@Validated @NotBlank @PathVariable("username") @Size(min = 4, max = 50) String username) {
         if (userService.checkUsername(username)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("用户名已存在"));
         }

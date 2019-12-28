@@ -1,7 +1,10 @@
 package dev.cheerfun.pixivic.biz.web.user.mapper;
 
 import dev.cheerfun.pixivic.biz.web.common.po.User;
+import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 @Mapper
 public interface CommonMapper {
@@ -21,10 +24,16 @@ public interface CommonMapper {
     @Select({
             " SELECT * FROM (SELECT * FROM users WHERE username= #{username} OR email=#{username})  temp where temp.PASSWORD=#{password}",
     })
+    @Results({
+            @Result(property = "id", column = "user_id")
+    })
     User queryUserByusernameAndPassword(String username, String password);
 
     @Select({
             "SELECT * FROM users WHERE user_id= #{userId} ",
+    })
+    @Results({
+            @Result(property = "id", column = "user_id")
     })
     User queryUserByUserId(int userId);
 
@@ -32,6 +41,9 @@ public interface CommonMapper {
             "SELECT *\n" +
                     "FROM users\n" +
                     "WHERE qq_access_token=#{qqAccessToken} ",
+    })
+    @Results({
+            @Result(property = "id", column = "user_id")
     })
     User getUserByQQAccessToken(String qqAccessToken);
 
