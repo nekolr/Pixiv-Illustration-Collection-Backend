@@ -1,9 +1,13 @@
 package dev.cheerfun.pixivic.biz.comment.po;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -21,9 +25,12 @@ public class Comment {
     private Integer replyTo;
     @SensitiveCheck
     private String content;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd\'T\'HH:mm:ss.SSS")
     private LocalDateTime createDate;
     private Integer likedCount;
     private Boolean isLike=false;
+    private List<Comment> subCommentList;
 
     public LocalDateTime getCreateDate() {
         return createDate == null ? LocalDateTime.now() : createDate;
@@ -33,6 +40,8 @@ public class Comment {
         this.appType = commentAppType;
         this.appId = commentAppId;
         this.from = userId;
+        createDate=LocalDateTime.now();
+        likedCount=0;
     }
 
     public String toStringForQueryLike() {
