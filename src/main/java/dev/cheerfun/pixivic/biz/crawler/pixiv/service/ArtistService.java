@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
@@ -72,9 +73,9 @@ public class ArtistService {
             }
             return null;
         }).filter(Objects::nonNull).collect(Collectors.toList());
-        if (artistList.size() != 0)
-            artistMapper.insert(artistList);
-        System.out.println("画师信息入库完毕");
+        if (artistList.size() != 0){
+            CompletableFuture.supplyAsync(()-> artistMapper.insert(artistList)).thenAccept(e-> System.out.println("画师信息入库完毕"));
+        }
         return artistList;
     }
 
