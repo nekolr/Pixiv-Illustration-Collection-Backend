@@ -39,6 +39,7 @@ public class ArtistService {
 
     public Artist pullArtistsInfo(Integer artistId) {
         ArrayList<Integer> artistIds = new ArrayList<>(1);
+        artistIds.add(artistId);
         List<Artist> artists = pullArtistsInfo(artistIds);
         if (artists != null && artistIds.size() > 0)
             return artists.get(0);
