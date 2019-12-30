@@ -38,7 +38,7 @@ public interface IllustrationBizMapper {
     @Results({
             @Result(property = "id", column = "artist_id"),
     })
-    Artist queryArtistById(String artistId);
+    Artist queryArtistById(Integer artistId);
 
     @Select("  SELECT\n" +
             "          * \n" +

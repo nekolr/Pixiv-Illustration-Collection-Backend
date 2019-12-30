@@ -36,7 +36,15 @@ public class ArtistService {
 
     private List<Integer> waitForReDownload = new ArrayList<>();
 
-    public void pullArtistsInfo(List<Integer> artistIds) throws InterruptedException {
+    public Artist pullArtistsInfo(Integer artistId) {
+        ArrayList<Integer> artistIds = new ArrayList<>(1);
+        List<Artist> artists = pullArtistsInfo(artistIds);
+        if (artists != null && artistIds.size() > 0)
+            return artists.get(0);
+        return null;
+    }
+
+    public List<Artist> pullArtistsInfo(List<Integer> artistIds) {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
         List<Artist> artistList = artistIdsToDownload.stream().parallel().distinct().map(i -> {
             try {
@@ -67,6 +75,7 @@ public class ArtistService {
         if (artistList.size() != 0)
             artistMapper.insert(artistList);
         System.out.println("画师信息入库完毕");
+        return artistList;
     }
 
     private void dealReDownload() throws InterruptedException {

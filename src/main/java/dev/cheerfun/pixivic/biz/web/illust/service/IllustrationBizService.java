@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
@@ -42,6 +43,7 @@ public class IllustrationBizService {
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationMapper illustrationMapper;
     private final IllustrationService illustrationService;
+    private final ArtistService artistService;
     private final RequestUtil requestUtil;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
@@ -58,10 +60,14 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "artist")
-    public Artist queryArtistById(String artistId) {
+    public Artist queryArtistById(Integer artistId) {
         Artist artist = illustrationBizMapper.queryArtistById(artistId);
         if (artist == null) {
-            throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
+            artist = artistService.pullArtistsInfo(artistId);
+            if (artist == null) {
+                throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
+            }
+            return artist;
         }
         return artist;
     }
