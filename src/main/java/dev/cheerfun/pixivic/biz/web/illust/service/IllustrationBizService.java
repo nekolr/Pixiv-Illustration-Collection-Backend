@@ -149,7 +149,7 @@ public class IllustrationBizService {
                 return illustrations;
             }).flatMap(Collection::stream).collect(Collectors.toList());
             //先更新画作
-            illustrationMapper.insert(illustrationList);
+            illustrationService.saveToDb(illustrationList);
             //插入联系
             illustrationBizMapper.insertIllustRelated(illustRelatedList);
         }
