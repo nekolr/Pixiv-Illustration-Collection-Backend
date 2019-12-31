@@ -31,14 +31,13 @@ public class BusinessController {
 
     @PostMapping("/bookmarked")
     public ResponseEntity<Result<String>> bookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
-        System.out.println((int) AppContext.get().get(USER_ID));
         businessService.bookmark((int) AppContext.get().get(USER_ID), bookmarkRelation.getIllustId());
         return ResponseEntity.ok().body(new Result<>("收藏成功"));
     }
 
     @DeleteMapping("/bookmarked")
     public ResponseEntity<Result<String>> cancelBookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
-        businessService.cancelBookmark((int) AppContext.get().get(USER_ID), bookmarkRelation.getIllustId());
+        businessService.cancelBookmark((int) AppContext.get().get(USER_ID), bookmarkRelation.getIllustId(),bookmarkRelation.getId());
         return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
     }
 
@@ -79,7 +78,7 @@ public class BusinessController {
     }
 
     @GetMapping("/{userId}/{artistId}/isFollowed")
-    public ResponseEntity<Result<Boolean>> queryIsFollowed(@PathVariable String userId, @PathVariable String artistId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> queryIsFollowed(@PathVariable String userId, @PathVariable Integer artistId, @RequestHeader("Authorization") String token) {
         Boolean isFollowed = businessService.queryIsFollowed((int) AppContext.get().get(USER_ID), artistId);
         return ResponseEntity.ok().body(new Result<>("获取是否follow画师成功", isFollowed));
     }

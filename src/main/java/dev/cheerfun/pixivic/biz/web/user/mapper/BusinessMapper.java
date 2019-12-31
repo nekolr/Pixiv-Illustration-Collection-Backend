@@ -8,6 +8,7 @@ import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 import org.springframework.cache.annotation.Cacheable;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -43,7 +44,7 @@ public interface BusinessMapper {
     @Cacheable(value = "illust")
     List<Illustration> queryBookmarked(@Param("illustIds") List<Integer> illustIds, String type, int currIndex, int pageSize);
 
-    @Select({"<script>",
+    /*@Select({"<script>",
             "select * from artists where artist_id in (",
             "<foreach collection='artistIds' item='artistId' index='index' separator=',' close=')'>",
             "#{artistId}",
@@ -54,7 +55,7 @@ public interface BusinessMapper {
     @Results({
             @Result(property = "id", column = "artist_id"),
     })
-    List<Artist> queryFollowed(List<Integer> artistIds, int currIndex, int pageSize);
+    List<Artist> queryFollowed(List<Integer> artistIds, int currIndex, int pageSize);*/
 
     @Update("update illusts set total_bookmarks=total_bookmarks+#{increment}  where illust_id=#{illustId}")
     int updateIllustBookmark(int illustId, int increment);
@@ -78,4 +79,25 @@ public interface BusinessMapper {
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
     List<Illustration> queryFollowedLatest(List<Integer> artists, String type, int currIndex, int pageSize);
+
+    @Insert("insert into user_artist_followed (user_id, artist_id,create_date) values (#{userId}, #{artistId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    int follow(int userId, int artistId, LocalDateTime now);
+
+    @Delete("delete from user_artist_followed where user_id=#{userId} and artist_id = #{artistId}")
+    int cancelFollow(int userId, int artistId);
+
+    @Select("select a.* from (select artist_id from user_artist_followed where user_id = #{userId}) u left join artists a on u.artist_id = a.artist_id limit #{currIndex} , #{pageSize}")
+    @Results({
+            @Result(property = "id", column = "artist_id"),
+    })
+    List<Artist> queryFollowed(int userId, int currIndex, int pageSize);
+
+    @Select("select  count(id) from user_artist_followed where user_id = #{userId} and artist_id=#{artistId}")
+    int queryIsFollowed(int userId, int artistId);
+
+    @Insert("insert into user_illust_bookmarked (user_id, illust_id,create_date) values (#{userId}, #{illustId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    int bookmark(int userId, int illustId, LocalDateTime now);
+
+    @Delete("delete from user_illust_bookmarked where id=#{relationId} ")
+    int cancelBookmark(int relationId);
 }

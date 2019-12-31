@@ -29,7 +29,6 @@ public class NotifyEventStreamListener implements StreamListener<String, ObjectR
 
     @Override
     public void onMessage(ObjectRecord<String, Object> entries) {
-        System.out.println(entries.getValue());
         //处理成功后ack
         CompletableFuture.supplyAsync(() -> notifyEventService.dealNotifyEvent(objectMapper.convertValue(entries.getValue(), NotifyEvent.class)))
                 .thenAccept(e -> {

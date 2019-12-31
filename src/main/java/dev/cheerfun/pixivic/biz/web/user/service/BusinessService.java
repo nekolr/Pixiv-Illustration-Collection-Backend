@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,15 +38,39 @@ public class BusinessService {
     private final String artistFollowRedisPre = "a:f:";
 
     public void bookmark(int userId, int illustId) {
-        bookmarkOperation(userId, illustId, 1);
+        bookmarkOperation(userId, illustId, 1, 0);
     }
 
-    public void cancelBookmark(int userId, int illustId) {
-        bookmarkOperation(userId, illustId, -1);
+    public void cancelBookmark(int userId, int illustId, int relationId) {
+        bookmarkOperation(userId, illustId, -1,relationId);
     }
 
-    void bookmarkOperation(int userId, int illustId, int increment) {
+    void bookmarkOperation(int userId, int illustId, int increment, int relationId) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
+        Boolean isMember = stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId));
+        if ((increment > 0 && isMember)
+                || (increment < 0 && !isMember)
+        ) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "用户与画作的收藏关系请求错误");
+        }
+        stringRedisTemplate.execute(new SessionCallback<>() {
+            @Override
+            public List<Object> execute(RedisOperations operations) throws DataAccessException {
+                operations.multi();
+                if (increment > 0) {
+                    operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
+                    //异步往mysql中写入
+                    businessMapper.bookmark(userId, illustId, LocalDateTime.now());
+                } else {
+                    operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+                    //异步往mysql中移除
+                    businessMapper.cancelBookmark(relationId);
+                }
+                operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
+                return operations.exec();
+            }
+        });
+       /* //redis修改联系以及修改redis中该画作收藏数(事务)
         if ((increment > 0 && stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, String.valueOf(illustId)) != null)
                 || (increment < 0 && stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, String.valueOf(illustId)) == null)
         ) {
@@ -56,14 +81,14 @@ public class BusinessService {
             public List<Object> execute(RedisOperations operations) throws DataAccessException {
                 operations.multi();
                 if (increment > 0) {
-                    operations.opsForZSet().add(bookmarkRedisPre + userId, String.valueOf(illustId), System.currentTimeMillis());
+                    operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
                 } else {
-                    operations.opsForZSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+                    operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
                 }
                 operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
                 return operations.exec();
             }
-        });
+        });*/
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")
@@ -94,24 +119,26 @@ public class BusinessService {
 
     @Transactional
     public void follow(int userId, int artistId) {
-        stringRedisTemplate.opsForSet().add(userFollowRedisPre + userId, String.valueOf(artistId));
-        stringRedisTemplate.opsForSet().add(artistFollowRedisPre + artistId, String.valueOf(userId));
+        businessMapper.follow(userId, artistId, LocalDateTime.now());
     }
 
     public void cancelFollow(int userId, int artistId) {
-        stringRedisTemplate.opsForSet().remove(userFollowRedisPre + userId, String.valueOf(artistId));
+        int effectRow = businessMapper.cancelFollow(userId, artistId);
+        if (effectRow == 0) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "用户画师关系请求错误");
+        }
     }
 
     public List<Artist> queryFollowed(int userId, int currIndex, int pageSize) {
-        List<Integer> artists = stringRedisTemplate.opsForSet().members(userFollowRedisPre + userId).stream().map(Integer::parseInt).collect(Collectors.toList());
+        List<Artist> artists = businessMapper.queryFollowed(userId, currIndex, pageSize);
         if (artists.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
         }
-        return businessMapper.queryFollowed(artists, currIndex, pageSize);
+        return artists;
     }
 
-    public Boolean queryIsFollowed(int userId, String artistId) {
-        return stringRedisTemplate.opsForSet().isMember(userFollowRedisPre + userId, artistId);
+    public Boolean queryIsFollowed(int userId, Integer artistId) {
+        return businessMapper.queryIsFollowed(userId, artistId) != 0;
     }
 
     @Transactional

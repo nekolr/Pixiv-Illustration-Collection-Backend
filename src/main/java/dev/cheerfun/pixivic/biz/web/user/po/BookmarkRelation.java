@@ -10,6 +10,7 @@ import lombok.Data;
  */
 @Data
 public class BookmarkRelation {
+    private int id;
     private int userId;
     private int illustId;
 }
