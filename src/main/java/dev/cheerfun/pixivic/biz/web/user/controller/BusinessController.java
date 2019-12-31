@@ -48,7 +48,7 @@ public class BusinessController {
     }
 
     @GetMapping("/{userId}/{illustId}/isBookmarked")
-    public ResponseEntity<Result<Boolean>> queryIsBookmarked(@PathVariable String userId, @PathVariable String illustId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> queryIsBookmarked(@PathVariable String userId, @PathVariable Integer illustId, @RequestHeader("Authorization") String token) {
         Boolean isBookmark = businessService.queryIsBookmarked((int) AppContext.get().get(USER_ID), illustId);
         return ResponseEntity.ok().body(new Result<>("获取是否收藏画作成功", isBookmark));
     }

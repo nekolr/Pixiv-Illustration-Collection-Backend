@@ -18,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +41,7 @@ public class BusinessService {
     }
 
     public void cancelBookmark(int userId, int illustId, int relationId) {
-        bookmarkOperation(userId, illustId, -1,relationId);
+        bookmarkOperation(userId, illustId, -1, relationId);
     }
 
     void bookmarkOperation(int userId, int illustId, int increment, int relationId) {
@@ -64,7 +63,7 @@ public class BusinessService {
                 } else {
                     operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
                     //异步往mysql中移除
-                    businessMapper.cancelBookmark(relationId);
+                    businessMapper.cancelBookmark(userId, illustId);
                 }
                 operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
                 return operations.exec();
@@ -105,19 +104,19 @@ public class BusinessService {
     }
 
     public List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize) {
-        Set<String> range = stringRedisTemplate.opsForZSet().range(bookmarkRedisPre + userId, currIndex, currIndex + pageSize);
+/*        Set<String> range = stringRedisTemplate.opsForZSet().range(bookmarkRedisPre + userId, currIndex, currIndex + pageSize);
         if (range == null || range.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
         }
         List<Integer> illustIds = range.stream().map(Integer::parseInt).collect(Collectors.toList());
-        return businessMapper.queryBookmarked(illustIds, type, currIndex, pageSize);
+        return businessMapper.queryBookmarked(illustIds, type, currIndex, pageSize);*/
+        return businessMapper.queryBookmarked(userId, type, currIndex, pageSize);
     }
 
-    public Boolean queryIsBookmarked(int userId, String illustId) {
-        return stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, illustId) != null;
+    public Boolean queryIsBookmarked(int userId, Integer illustId) {
+        return stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId));
     }
 
-    @Transactional
     public void follow(int userId, int artistId) {
         businessMapper.follow(userId, artistId, LocalDateTime.now());
     }
