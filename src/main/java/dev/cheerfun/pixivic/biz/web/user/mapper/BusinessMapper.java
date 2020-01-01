@@ -6,7 +6,6 @@ import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -65,6 +64,7 @@ public interface BusinessMapper {
     @Update("update users set star=star+#{increment}  where user_id=#{userId}")
     int updateUserStar(int userId, int increment);
 
+/*
     @Select({"<script>",
             "select * from illusts where artist_id in (",
             "<foreach collection='artistIds' item='artistId' index='index' separator=',' close=')'>",
@@ -81,6 +81,7 @@ public interface BusinessMapper {
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
     List<Illustration> queryFollowedLatest(List<Integer> artists, String type, int currIndex, int pageSize);
+*/
 
     @Insert("insert into user_artist_followed (user_id, artist_id,create_date) values (#{userId}, #{artistId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     int follow(int userId, int artistId, LocalDateTime now);
@@ -116,5 +117,17 @@ public interface BusinessMapper {
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
     List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize);
+
     int queryIsBookmarked();
+
+    @Select("select i.* from (select artist_id from user_artist_followed where user_id=#{userId}) u left join illusts  i on u.artist_id=i.artist_id  where i.type=#{type} order by i.create_date desc limit #{currIndex} , #{pageSize}")
+    @Results({
+            @Result(property = "id", column = "illust_id"),
+            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
+    })
+    List<Illustration> queryFollowedLatest(int userId, String type, int currIndex, int pageSize);
 }
