@@ -15,7 +15,7 @@ import java.util.stream.Stream;
 @Data
 public class SaucenaoResponse {
     private List<Item> results;
-    public Stream<String> getPixivIdList(){
+    public Stream<Integer> getPixivIdList(){
         return results.stream().filter(e-> e!=null&&e.getData()!=null&&e.getData().getOriginalUrls()!=null&&e.getData().getOriginalUrls().stream().anyMatch(s->s.contains("pixiv"))).map(e->e.getData().getIllustId());
     }
 }
@@ -39,7 +39,7 @@ class Content {
     private List<String> originalUrls;
     private String title;
     @JsonSetter("pixiv_id")
-    private String illustId;
+    private Integer illustId;
     @JsonSetter("member_name")
     private String artistName;
     @JsonSetter("member_id")

@@ -21,7 +21,7 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-    Illustration queryIllustrationByIllustId(String illustId/*, Integer xRestrict*/);
+    Illustration queryIllustrationByIllustId(Integer illustId/*, Integer xRestrict*/);
 
     @Select("select * from illusts where artist_id = #{artistId} and type = #{type} and sanity_level<=#{maxSanityLevel} limit #{currIndex} , #{pageSize}")
     @Results({
@@ -32,7 +32,7 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-    List<Illustration> queryIllustrationsByArtistId(String artistId, String type, int currIndex, int pageSize, int maxSanityLevel);
+    List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize, int maxSanityLevel);
 
     @Select("select * from artists where artist_id =#{artistId}")
     @Results({
@@ -72,7 +72,7 @@ public interface IllustrationBizMapper {
             @Result(property = "type", column = "type"),
             @Result(property = "sum", column = "sum"),
     })
-    List<ArtistSummary> querySummaryByArtistId(String artistId);
+    List<ArtistSummary> querySummaryByArtistId(Integer artistId);
 
     @Insert({
             "<script>",

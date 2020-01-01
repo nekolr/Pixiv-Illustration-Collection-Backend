@@ -54,7 +54,7 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "illust")
-    public List<Illustration> queryIllustrationsByArtistId(String artistId, String type, int currIndex, int pageSize, int maxSanityLevel) {
+    public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize, int maxSanityLevel) {
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize, maxSanityLevel);
         return illustrations;
     }
@@ -73,10 +73,10 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "illust")
-    public Illustration queryIllustrationById(String illustId/*, Integer xRestrict*/) {
+    public Illustration queryIllustrationById(Integer illustId/*, Integer xRestrict*/) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId/*, xRestrict*/);
         if (illustration == null) {
-            illustration = illustrationService.pullIllustrationInfo(Integer.parseInt(illustId));
+            illustration = illustrationService.pullIllustrationInfo(illustId);
             if (illustration == null) {
                 throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
             } else {
@@ -111,7 +111,7 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "artistSummarys")
-    public List<ArtistSummary> querySummaryByArtistId(String artistId) {
+    public List<ArtistSummary> querySummaryByArtistId(Integer artistId) {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
     }
 
@@ -160,5 +160,15 @@ public class IllustrationBizService {
             illustrationBizMapper.insertIllustRelated(illustRelatedList);
         }
 
+    }
+
+    public Boolean queryExistsById(String type, Integer id) {
+        if ("artist".equals(type)) {
+            return queryArtistById(id) != null;
+        }
+        if ("illust".equals(type)) {
+            return queryIllustrationById(id) != null;
+        }
+        return false;
     }
 }

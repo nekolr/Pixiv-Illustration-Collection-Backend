@@ -69,25 +69,6 @@ public class BusinessService {
                 return operations.exec();
             }
         });
-       /* //redis修改联系以及修改redis中该画作收藏数(事务)
-        if ((increment > 0 && stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, String.valueOf(illustId)) != null)
-                || (increment < 0 && stringRedisTemplate.opsForZSet().rank(bookmarkRedisPre + userId, String.valueOf(illustId)) == null)
-        ) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "用户与画作的收藏关系请求错误");
-        }
-        stringRedisTemplate.execute(new SessionCallback<>() {
-            @Override
-            public List<Object> execute(RedisOperations operations) throws DataAccessException {
-                operations.multi();
-                if (increment > 0) {
-                    operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
-                } else {
-                    operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
-                }
-                operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
-                return operations.exec();
-            }
-        });*/
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")
@@ -104,12 +85,6 @@ public class BusinessService {
     }
 
     public List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize) {
-/*        Set<String> range = stringRedisTemplate.opsForZSet().range(bookmarkRedisPre + userId, currIndex, currIndex + pageSize);
-        if (range == null || range.size() == 0) {
-            throw new BusinessException(HttpStatus.NOT_FOUND, "收藏画作列表为空");
-        }
-        List<Integer> illustIds = range.stream().map(Integer::parseInt).collect(Collectors.toList());
-        return businessMapper.queryBookmarked(illustIds, type, currIndex, pageSize);*/
         return businessMapper.queryBookmarked(userId, type, currIndex, pageSize);
     }
 

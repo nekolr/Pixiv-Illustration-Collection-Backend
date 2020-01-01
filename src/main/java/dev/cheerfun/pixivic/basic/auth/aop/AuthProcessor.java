@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.basic.auth.aop;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthBanException;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthLevelException;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
@@ -52,6 +53,14 @@ public class AuthProcessor {
     public Object handleAuthorityBefore(ProceedingJoinPoint joinPoint) throws Throwable {
         MethodSignature signature = ((MethodSignature) joinPoint.getSignature());
         Method method = signature.getMethod();
+        //获取具体权限级别
+        PermissionRequired methodPermissionRequired = AnnotationUtils.findAnnotation(method, PermissionRequired.class);
+        PermissionRequired classPermissionRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), PermissionRequired.class);
+        int authLevel = methodPermissionRequired != null ? methodPermissionRequired.value() : classPermissionRequired.value();
+/*        //如果不是任何人都能访问的
+        if(authLevel!= PermissionLevel.ANONYMOUS){
+
+        }*/
         //取出token
         String token = commonUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestHeader.class, AUTHORIZATION);
         /*进行jwt校验，成功则将返回包含Claim信息的Map（token即将过期则将刷新后的token放入返回值Map）
@@ -60,10 +69,6 @@ public class AuthProcessor {
         if ((Integer) claims.get(IS_BAN) == 0) {
             throw new AuthBanException(HttpStatus.FORBIDDEN, "账户异常");
         }
-        //获取具体权限级别
-        PermissionRequired methodPermissionRequired = AnnotationUtils.findAnnotation(method, PermissionRequired.class);
-        PermissionRequired classPermissionRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), PermissionRequired.class);
-        int authLevel = methodPermissionRequired != null ? methodPermissionRequired.value() : classPermissionRequired.value();
         if ((Integer) claims.get(PERMISSION_LEVEL) < authLevel) {
             throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
         }

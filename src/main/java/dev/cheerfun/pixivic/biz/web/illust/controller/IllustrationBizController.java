@@ -33,13 +33,13 @@ public class IllustrationBizController {
 
     @GetMapping("/artists/{artistId}/illusts/{type}")
     //@PermissionRequired
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable String artistId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestParam(defaultValue = "5") int maxSanityLevel) {
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestParam(defaultValue = "5") int maxSanityLevel) {
         return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize, maxSanityLevel)));
     }
 
     @GetMapping("/artists/{artistId}/summary")
     //@PermissionRequired
-    public ResponseEntity<Result<List<ArtistSummary>>> querySummaryByArtistId(@PathVariable String artistId) {
+    public ResponseEntity<Result<List<ArtistSummary>>> querySummaryByArtistId(@PathVariable Integer artistId) {
         return ResponseEntity.ok().body(new Result<>("获取画师画作汇总成功", illustrationBizService.querySummaryByArtistId(artistId)));
     }
 
@@ -49,15 +49,23 @@ public class IllustrationBizController {
         return ResponseEntity.ok().body(new Result<>("获取画师详情成功", illustrationBizService.queryArtistById(artistId)));
     }
 
+    @GetMapping("/exists/{type}/{id}")
+    //@PermissionRequired
+    public ResponseEntity<Result<Boolean>> queryExistsById(@PathVariable String type,@PathVariable Integer id) {
+        return ResponseEntity.ok().body(new Result<>("获取存在详情成功", illustrationBizService.queryExistsById(type,id)));
+    }
+
+
+
     @GetMapping("/illusts/{illustId}")
     //@PermissionRequired
-    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable String illustId, @RequestParam(defaultValue = "0") Integer xRestrict) {
+    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestParam(defaultValue = "0") Integer xRestrict) {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId/*, xRestrict*/)));
     }
 
     @GetMapping("/illusts/{illustId}/related")
     //@PermissionRequired
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable int illustId, @RequestParam(defaultValue = "1") int page/*, @RequestParam(defaultValue = "30") int pageSize*/) {
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page/*, @RequestParam(defaultValue = "30") int pageSize*/) {
         return illustrationBizService.queryIllustrationRelated(illustId, page).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
     }
 
