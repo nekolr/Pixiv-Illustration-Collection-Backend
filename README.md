@@ -10,6 +10,7 @@
 
 - 基于注解的基础设施模块
 - 基于`ElasticSearch`的近实时搜索
+- 基于`redis`的`stream`作为消息队列构成消息模块
 - 基于`Logstash`的同步
 - 基于`JDK 11`的`Httpclient`
 - `Restful` API
