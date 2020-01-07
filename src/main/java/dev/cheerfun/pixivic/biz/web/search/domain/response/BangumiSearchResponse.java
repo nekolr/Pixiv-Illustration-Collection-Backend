@@ -6,6 +6,7 @@ import lombok.Data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.stream.Collectors;
 
 /**
@@ -25,7 +26,8 @@ public class BangumiSearchResponse {
                 .collect(Collectors.toList()):new ArrayList<>();
     }
     public static double getAvgSum(BangumiSearchResponse bangumiSearchResponse){
-        return bangumiSearchResponse.getResult().stream().filter(b->b.getRating()!=null&&b.getRating().getScore()!=0).mapToInt(resultItem -> resultItem.getRating().getScore()).average().getAsDouble();
+        OptionalDouble average = bangumiSearchResponse.getResult().stream().filter(b -> b.getRating() != null && b.getRating().getScore() != 0).mapToInt(resultItem -> resultItem.getRating().getScore()).average();
+        return average.isPresent()?average.getAsDouble():0;
     }
 }
 
