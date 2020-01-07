@@ -21,7 +21,7 @@ public class BangumiSearchResponse {
     private List<ResultItem> Result;
 
     public static List<SearchSuggestion> castToSearchSuggestionList(BangumiSearchResponse bangumiSearchResponse) {
-        return bangumiSearchResponse!=null?bangumiSearchResponse.getResult().stream()
+        return bangumiSearchResponse!=null&&bangumiSearchResponse.Result!=null?bangumiSearchResponse.getResult().stream()
                 .map(resultItem -> new SearchSuggestion(resultItem.getKeyword(), resultItem.getKeywordTranslated()))
                 .collect(Collectors.toList()):new ArrayList<>();
     }
