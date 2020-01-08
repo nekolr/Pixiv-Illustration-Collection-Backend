@@ -1,0 +1,67 @@
+server:
+  port: 8080
+spring:
+  mail:
+    host: smtp.qq.com
+    username: 403827354@qq.com
+    password: mgysdtrrgxzsbhie
+    protocol: smtp
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+          socketFactory:
+            port: 465
+            class: javax.net.ssl.SSLSocketFactory
+  redis:
+    database: 0
+    host: redis
+    port: 6379
+  datasource:
+    url: jdbc:mysql://mysql:3306/pixivic?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8&useSSL=false
+    username: root
+    password: Cheerfun.dev
+    type: com.alibaba.druid.pool.DruidDataSource
+    batch:
+      job:
+        enabled: false
+  cache:
+    caffeine:
+      spec: maximumSize=788,expireAfterAccess=3600s
+    type: caffeine
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+  endpoint:
+    health:
+      show-details: always
+jjwt:
+  secret: 生蚝QAQ只是一位兴趣使然的面向ACG编程人员(●'◡'●)ﾉ♥♥♥♥♥♥
+  expirationTime: 864000
+  refreshInterval: 1800000
+pixiv:
+  oauth:
+    client_id: KzEZED7aC0vird8jWyHM38mXjNTY
+    client_secret: W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP
+    refresh_token: 07FHA5xA6NkOIxIayqm3tZbJqxbypDJHrXguT7cazLI
+    device_token: fb12e7c1945000850deb5f7001c02745
+    config: D:\Backup\配置文件\user2.json
+saucenao:
+  token:
+    path: D:\Backup\配置文件\saucenao.json
+mybatis:
+  configuration:
+    mapUnderscoreToCamelCase: true
+  type-handlers-package: dev.cheerfun.pixivic.common.util.json
+elasticsearch:
+  ip: elasticsearch
+apiLog:
+  path: D:\log
+sensitiveWordList:
+  path: D:\Backup\配置文件\sensitive
+
