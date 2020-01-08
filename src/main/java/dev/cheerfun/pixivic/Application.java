@@ -24,6 +24,7 @@ public class Application {
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Content-Length");
         System.setProperty("jdk.internal.httpclient.disableHostnameVerification", "true");//取消主机名验证
         System.setProperty("org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "true");
+        System.setProperty("tomcat.util.http.parser.HttpParser.requestTargetAllow", "|{}");
         SpringApplication.run(Application.class, args);
     }
 }
