@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.biz.crawler.news.service.NewService;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
@@ -19,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
-import java.util.Date;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -35,6 +35,7 @@ public class TestController {
     private final OauthUtil oauthUtil;
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustRankService rankDailyService;
+    private final IllustrationMapper illustrationMapper;
     private final NewService newService;
 
     //@PermissionRequired(PermissionLevel.VIP)
@@ -48,7 +49,12 @@ public class TestController {
         System.out.println(signUpDTO);
         return ResponseEntity.ok().body(content);
     }
-
+    @GetMapping("/test")
+    @RateLimit
+    //@PermissionRequired
+    public ResponseEntity<Integer> test() throws InterruptedException, ExecutionException, IOException {
+        return ResponseEntity.ok().body(illustrationMapper.flush());
+    }
     /*@GetMapping("/32")
     public String login() throws InterruptedException {
         oauthUtil.getOauths().forEach(o -> System.out.println(o.getAccess_token()));
