@@ -169,7 +169,7 @@ public class IllustrationService {
         } else {
             System.out.println("标签为null");
         }
-        Lists.partition(illustrations, 15).forEach(illustrationMapper::insert);
+        Lists.partition(illustrations, 30).forEach(illustrationMapper::insert);
         //illustrationMapper.insert(illustrations);
         System.out.println("画作入库完毕");
     }
