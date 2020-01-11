@@ -2,11 +2,12 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.ModeMeta;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDetailDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.ModeMeta;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
@@ -168,7 +169,8 @@ public class IllustrationService {
         } else {
             System.out.println("标签为null");
         }
-        illustrationMapper.insert(illustrations);
+        Lists.partition(illustrations, 15).forEach(illustrationMapper::insert);
+        //illustrationMapper.insert(illustrations);
         System.out.println("画作入库完毕");
     }
 
@@ -180,7 +182,7 @@ public class IllustrationService {
             e.printStackTrace();
         }*/
         IllustrationDetailDTO illustrationDetailDTO = (IllustrationDetailDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/illust/detail?illust_id=" + illustId, IllustrationDetailDTO.class);
-        if(illustrationDetailDTO!=null){
+        if (illustrationDetailDTO != null) {
             return IllustrationDTO.castToIllustration(illustrationDetailDTO.getIllustrationDTO());
         }
         return null;
