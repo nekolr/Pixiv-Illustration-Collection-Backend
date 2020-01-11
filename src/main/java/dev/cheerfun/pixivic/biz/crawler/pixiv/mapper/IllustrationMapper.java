@@ -3,10 +3,7 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.mapper;
 import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Param;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -44,6 +41,9 @@ public interface IllustrationMapper {
             "</foreach>" +
             "</script>")
     int insert(@Param("illustrations") List<Illustration> illustrations);
+
+    @Update("FLUSH TABLES")
+    int flush();
 
     @Insert({
             "<script>",
