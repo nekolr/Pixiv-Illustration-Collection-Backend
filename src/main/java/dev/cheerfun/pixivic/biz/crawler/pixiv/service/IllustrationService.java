@@ -160,7 +160,7 @@ public class IllustrationService {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
         if (tags.size() > 0) {
            // illustrationMapper.insertTag(tags);
-            Lists.partition(tags,20).forEach(illustrationMapper::insertTag);
+            Lists.partition(tags,50).forEach(illustrationMapper::insertTag);
             System.out.println("标签入库完毕");
             //获取标签id
             tags.forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName())));
