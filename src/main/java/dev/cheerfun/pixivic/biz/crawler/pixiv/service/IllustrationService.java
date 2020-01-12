@@ -159,7 +159,8 @@ public class IllustrationService {
     public void saveToDb(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
         if (tags.size() > 0) {
-            illustrationMapper.insertTag(tags);
+           // illustrationMapper.insertTag(tags);
+            Lists.partition(tags,20).forEach(illustrationMapper::insertTag);
             System.out.println("标签入库完毕");
             //获取标签id
             tags.forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName())));
@@ -169,7 +170,7 @@ public class IllustrationService {
         } else {
             System.out.println("标签为null");
         }
-        Lists.partition(illustrations, 30).forEach(illustrationMapper::insert);
+        Lists.partition(illustrations, 50).forEach(illustrationMapper::insert);
         //illustrationMapper.insert(illustrations);
         System.out.println("画作入库完毕");
         //illustrationMapper.flush();
