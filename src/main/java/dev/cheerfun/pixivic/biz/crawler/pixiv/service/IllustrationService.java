@@ -172,7 +172,7 @@ public class IllustrationService {
         Lists.partition(illustrations, 30).forEach(illustrationMapper::insert);
         //illustrationMapper.insert(illustrations);
         System.out.println("画作入库完毕");
-        illustrationMapper.flush();
+        //illustrationMapper.flush();
     }
 
     public Illustration pullIllustrationInfo(Integer illustId) {
