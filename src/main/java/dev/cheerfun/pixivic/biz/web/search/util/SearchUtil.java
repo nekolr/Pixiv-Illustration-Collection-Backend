@@ -164,7 +164,7 @@ public class SearchUtil {
                             elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<ElasticsearchResponse>() {
                             });
                             Hits hits = elasticsearchResponse.getHits();
-                            if(hits.getHits()!=null){
+                            if(hits!=null&&hits.getHits()!=null){
                                 List<Illustration> illustrationList = hits.getHits().stream().map(Hit::getIllustration).collect(Collectors.toList());
                                 return new SearchResult(hits.getTotal().getValue(), illustrationList);
                             }
