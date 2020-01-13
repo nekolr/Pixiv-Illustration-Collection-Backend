@@ -41,7 +41,7 @@ public class ArtistService {
         ArrayList<Integer> artistIds = new ArrayList<>(1);
         artistIds.add(artistId);
         List<Artist> artists = pullArtistsInfo(artistIds);
-        if (artists != null && artistIds.size() > 0)
+        if (artists != null && artists.size() > 0)
             return artists.get(0);
         return null;
     }
