@@ -26,8 +26,11 @@ public class BangumiSearchResponse {
                 .collect(Collectors.toList()):new ArrayList<>();
     }
     public static double getAvgSum(BangumiSearchResponse bangumiSearchResponse){
-        OptionalDouble average = bangumiSearchResponse.getResult().stream().filter(b -> b.getRating() != null && b.getRating().getScore() != 0).mapToInt(resultItem -> resultItem.getRating().getScore()).average();
-        return average.isPresent()?average.getAsDouble():0;
+        if(bangumiSearchResponse.getResult()!=null){
+            OptionalDouble average = bangumiSearchResponse.getResult().stream().filter(b -> b.getRating() != null && b.getRating().getScore() != 0).mapToInt(resultItem -> resultItem.getRating().getScore()).average();
+            return average.isPresent()?average.getAsDouble():0;
+        }
+        return 0;
     }
 }
 
