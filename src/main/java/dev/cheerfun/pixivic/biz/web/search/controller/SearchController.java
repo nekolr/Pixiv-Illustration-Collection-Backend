@@ -65,7 +65,7 @@ public class SearchController {
             @NotBlank
                     String keyword,
             @RequestParam(defaultValue = "30") @Validated
-            @NonNull @Max(60) @Min(1)
+            @NonNull @Max(1000) @Min(1)
                     int pageSize,
             @RequestParam @Validated
             @NonNull @Max(1600) @Min(1)
