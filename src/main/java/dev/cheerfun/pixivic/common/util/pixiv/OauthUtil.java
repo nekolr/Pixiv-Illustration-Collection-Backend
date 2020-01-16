@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.common.util.pixiv;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.Oauth;
+import io.github.bucket4j.ConsumptionProbe;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +53,7 @@ final public class OauthUtil {
         });
         //账号初始化
         oauths.stream().parallel().forEach(this::oauthInit);
-        oauths.forEach(oauth -> System.out.println(oauth.getAccess_token()));
+        oauths.forEach(oauth -> System.out.println(oauth.getAccessToken()));
         length = oauths.size();
 
     }
@@ -62,7 +63,7 @@ final public class OauthUtil {
                 Map.of("client_id", client_id, "client_secret", client_secret, "grant_type", "password"
                         , "username", oauth.getUsername(), "password", oauth.getPassword(), "device_token", device_token
                         , "get_secure_url", "true"));
-        oauth.setAccess_token(refreshToken(RequestUtil.getPostEntity(paramMap)));
+        oauth.setAccessToken(refreshToken(RequestUtil.getPostEntity(paramMap)));
         //paramMap.replace("grant_type", "refresh_token");
         //paramMap.put("refresh_token", refresh_token);
         // oauth.setParam(RequestUtil.getPostEntity(paramMap));
@@ -87,13 +88,27 @@ final public class OauthUtil {
 
     public void refreshAccess_token() {
         oauths.stream().parallel().forEach(oauth -> refreshToken(oauth.getParam()));
-        oauths.forEach(oauth -> System.out.println(oauth.getAccess_token()));
+        oauths.forEach(oauth -> System.out.println(oauth.getAccessToken()));
     }
 
     public int getRandomOauthIndex() {
         while (true) {
             int i = random.nextInt(length);
-            if (oauths.get(i).getIsBan()) {
+            Oauth oauth = oauths.get(i);
+            if (!oauth.getIsBan()) {
+                ConsumptionProbe consumptionProbe = oauth.getBucket().tryConsumeAndReturnRemaining(1);
+                if (consumptionProbe.isConsumed()) {
+                    return i;
+                }
+            }
+            if (oauths.stream().noneMatch(Oauth::getIsBan)) {
+                try {
+                    Thread.sleep(1000 * 60);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+/*            if (oauths.get(i).getBucket().&&oauths.get(i).getIsBan()) {
                 if (oauths.stream().noneMatch(Oauth::getIsBan)) {
                     try {
                         Thread.sleep(1000 * 60);
@@ -101,9 +116,8 @@ final public class OauthUtil {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
+                }*/
             }
-            return i;
         }
     }
 

@@ -57,7 +57,7 @@ public class TestController {
     }
     /*@GetMapping("/32")
     public String login() throws InterruptedException {
-        oauthUtil.getOauths().forEach(o -> System.out.println(o.getAccess_token()));
+        oauthUtil.getOauths().forEach(o -> System.out.println(o.getAccessToken()));
         illustrationPersistentService.dailyPersistentTask();
         User user = new User();
         user.setAvatar("233");

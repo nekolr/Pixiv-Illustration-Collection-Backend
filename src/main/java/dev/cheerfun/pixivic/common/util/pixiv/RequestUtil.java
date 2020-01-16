@@ -45,7 +45,7 @@ final public class RequestUtil {
         int randomOauthIndex = oauthUtil.getRandomOauthIndex();
         Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
         HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + oauth.getAccess_token())
+                .header("Authorization", "Bearer " + oauth.getAccessToken())
                 .GET()
                 .build();
         return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
@@ -66,7 +66,7 @@ final public class RequestUtil {
         int randomOauthIndex = oauthUtil.getRandomOauthIndex();
         Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
         HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + oauth.getAccess_token())
+                .header("Authorization", "Bearer " + oauth.getAccessToken())
                 .GET()
                 .build();
         try {
@@ -85,7 +85,7 @@ final public class RequestUtil {
         int randomOauthIndex = oauthUtil.getRandomOauthIndex();
         Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
         HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + oauth.getAccess_token())
+                .header("Authorization", "Bearer " + oauth.getAccessToken())
                 .GET()
                 .build();
         return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body);
