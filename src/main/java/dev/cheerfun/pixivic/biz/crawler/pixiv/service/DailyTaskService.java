@@ -28,7 +28,7 @@ public class DailyTaskService {
         rankService.pullAllRank();
     }
 
-    @Scheduled(cron = "0 0/20 * * * ?")
+    @Scheduled(cron = "0 0/40 * * * ?")
     public void mainCrawler() throws InterruptedException {
         mainCrawlerService.dailyPersistentTask();
     }
