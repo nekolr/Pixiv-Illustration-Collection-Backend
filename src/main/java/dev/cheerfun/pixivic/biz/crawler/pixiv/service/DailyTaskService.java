@@ -24,7 +24,8 @@ public class DailyTaskService {
     }
 
     @Scheduled(cron = "0 10 1 * * ?")
-    public void rank() throws InterruptedException {
+    public void rank() throws
+            InterruptedException {
         rankService.pullAllRank();
     }
 
