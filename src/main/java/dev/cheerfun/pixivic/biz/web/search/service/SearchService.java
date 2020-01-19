@@ -5,14 +5,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
-import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
+import dev.cheerfun.pixivic.biz.web.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
-import dev.cheerfun.pixivic.biz.web.search.domain.response.BangumiSearchResponse;
-import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
-import dev.cheerfun.pixivic.biz.web.search.domain.response.SaucenaoResponse;
-import dev.cheerfun.pixivic.biz.web.search.domain.response.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.BangumiSearchResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.biz.web.search.dto.PixivSearchSuggestionDTO;
 import dev.cheerfun.pixivic.biz.web.search.dto.SearchSuggestionSyncDTO;
 import dev.cheerfun.pixivic.biz.web.search.dto.TagTranslation;
@@ -20,6 +19,7 @@ import dev.cheerfun.pixivic.biz.web.search.exception.SearchException;
 import dev.cheerfun.pixivic.biz.web.search.mapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.biz.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.biz.web.search.util.SearchUtil;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
@@ -27,6 +27,11 @@ import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -46,6 +51,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -70,6 +76,9 @@ public class SearchService {
     private final IllustrationBizService illustrationBizService;
     private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
+    private static final String USER_ID = "userId";
+    private final StringRedisTemplate stringRedisTemplate;
+    private final String bookmarkRedisPre = "u:b:";
 
     @Cacheable(value = "candidateWords")
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(@SensitiveCheck String keyword) {
@@ -170,7 +179,7 @@ public class SearchService {
                 bangumiSearchResponse = objectMapper.readValue(r.body(), new TypeReference<BangumiSearchResponse>() {
                 });
             } catch (IOException e) {
-               throw new SearchException(HttpStatus.NOT_FOUND,"未找到搜索建议");
+                throw new SearchException(HttpStatus.NOT_FOUND, "未找到搜索建议");
             }
             return bangumiSearchResponse;
         });
@@ -241,13 +250,34 @@ public class SearchService {
             int minTotalBookmarks,
             int minTotalView,
             int maxSanityLevel) {
-        return searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel));
+        CompletableFuture<SearchResult> request = searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel));
+        if (AppContext.get() != null) {
+            request = request.thenApply(e -> {
+                //e.setIllustrations(e.getIllustrations().stream().parallel().map(IllustrationWithLikeInfo::new).collect(Collectors.toList()));
+                List<Object> objects = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+                    e.setIllustrations(e.getIllustrations().stream().map(i -> {
+                        IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(i);
+                        StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+                        illustrationWithLikeInfo.setIsLiked(stringRedisConnection.sIsMember(bookmarkRedisPre + AppContext.get().get(USER_ID), String.valueOf(i.getId())));
+                        return illustrationWithLikeInfo;
+                    }).collect(Collectors.toList()));
+                    return null;
+                });
+              //  Set<Integer> illustIdSet = e.getIllustrations().stream().parallel().map(Illustration::getId).collect(Collectors.toSet());
+                //取出redis中收藏集合的差集
+
+              //  Set<String> members = stringRedisTemplate.opsForSet().members(bookmarkRedisPre + AppContext.get().get(USER_ID));
+               // e.setIllustrations(e.getIllustrations().stream().parallel().map(IllustrationWithLikeInfo::new).collect(Collectors.toList()));
+                return e;
+            });
+        }
+        return request;
     }
 
     @Cacheable(value = "saucenaoResponse")
     public CompletableFuture<List<Illustration>> searchByImage(String imageUrl) {
-        return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r->
-            r.getPixivIdList().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList()));
+        return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r ->
+                r.getPixivIdList().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList()));
     }
 
     public String getKeyword(HttpServletRequest request) {

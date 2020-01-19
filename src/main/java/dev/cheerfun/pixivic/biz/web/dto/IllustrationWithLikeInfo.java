@@ -12,8 +12,30 @@ import lombok.EqualsAndHashCode;
  * @description IllustrationWithLikeInfo
  */
 @EqualsAndHashCode(callSuper = true)
-@AllArgsConstructor
 @Data
 public class IllustrationWithLikeInfo extends Illustration {
     private Boolean isLiked;
+
+    public IllustrationWithLikeInfo(Illustration illustration) {
+        this.id = illustration.getId();
+        this.artistId = illustration.getArtistId();
+        this.title = illustration.getTitle();
+        this.type = illustration.getType();
+        this.caption = illustration.getCaption();
+        this.artistPreView = illustration.getArtistPreView();
+        this.tags = illustration.getTags();
+        this.imageUrls = illustration.getImageUrls();
+        this.tools = illustration.getTools();
+        this.createDate = illustration.getCreateDate();
+        this.pageCount = illustration.getPageCount();
+        this.width = illustration.getWidth();
+        this.height = illustration.getHeight();
+        this.sanityLevel = illustration.getSanityLevel();
+        this.restrict = illustration.getRestrict();
+        this.xRestrict = illustration.getXRestrict();
+        this.totalView = illustration.getTotalView();
+        this.totalBookmarks = illustration.getTotalBookmarks();
+        this.isLiked = false;
+    }
+
 }

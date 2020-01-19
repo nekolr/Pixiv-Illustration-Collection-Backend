@@ -1,11 +1,14 @@
 package dev.cheerfun.pixivic.biz.web.search.controller;
 
+import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
-import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
-import dev.cheerfun.pixivic.biz.web.search.domain.response.SaucenaoResponse;
+import dev.cheerfun.pixivic.biz.web.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
+import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.NonNull;
@@ -14,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -24,7 +28,9 @@ import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CompletableFuture;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -59,6 +65,7 @@ public class SearchController {
     }
 
     @GetMapping("/illustrations")
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
     public CompletableFuture<ResponseEntity<Result<SearchResult>>> searchByKeyword(
             @SensitiveCheck
             @RequestParam
@@ -91,13 +98,24 @@ public class SearchController {
             @RequestParam(defaultValue = "0")
                     int minTotalView,
             @RequestParam(defaultValue = "5")
-                    int maxSanityLevel) {
+                    int maxSanityLevel, @RequestHeader(value = "Authorization", required = false) String token) {
+        System.out.println();
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
             String[] keywords = keyword.split(" ");
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        return searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel).thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
+        CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel);
+        //拼接上是否用户喜欢
+       /* if (AppContext.get() != null) {
+            searchResultCompletableFuture= searchResultCompletableFuture.thenApply(e -> {
+                Set<Integer> illustIdSet = e.getIllustrations().stream().parallel().map(Illustration::getId).collect(Collectors.toSet());
+                //取出redis中收藏集合的差集
+                e.setIllustrations(e.getIllustrations().stream().parallel().map(IllustrationWithLikeInfo::new).collect(Collectors.toList()));
+                return e;
+            });
+        }*/
+        return searchResultCompletableFuture.thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 
     @GetMapping("/similarityImages")

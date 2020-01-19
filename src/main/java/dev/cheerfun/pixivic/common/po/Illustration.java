@@ -18,37 +18,38 @@ import java.util.List;
 @Data
 public class Illustration  {
     @JsonSetter("illust_id")
-    private Integer id;
+    protected Integer id;
     @JsonSetter("artist_id")
-    private Integer artistId;
-    private String title;
-    private String type;
-    private String caption;
+    protected Integer artistId;
+    protected String title;
+    protected String type;
+    protected String caption;
     @JsonSetter("artist")
-    private ArtistPreView artistPreView;
-    private List<Tag> tags;
+    protected ArtistPreView artistPreView;
+    protected List<Tag> tags;
     @JsonSetter("image_urls")
-    private List<ImageUrl> imageUrls;
-    private List<String> tools;
+    protected List<ImageUrl> imageUrls;
+    protected List<String> tools;
     @JsonSetter("create_date")
-    private Date createDate;
+    protected Date createDate;
     @JsonSetter("page_count")
-    private Integer pageCount;
-    private Integer width;
-    private Integer height;
+    protected Integer pageCount;
+    protected Integer width;
+    protected Integer height;
     @JsonSetter("sanity_level")
-    private Integer sanityLevel;
-    private Integer restrict;
+    protected Integer sanityLevel;
+    protected Integer restrict;
     @JsonSetter("x_restrict")
-    private Integer xRestrict;
+    protected Integer xRestrict;
     @JsonSetter("total_view")
-    private Integer totalView;
+    protected Integer totalView;
     @JsonSetter("total_bookmarks")
-    private Integer totalBookmarks;
+    protected Integer totalBookmarks;
 
     public void setArtistPreView(Integer id, String name, String account, String avatar) {
         this.artistPreView = new ArtistPreView(id, name, account, avatar);
     }
+
 }
 
 

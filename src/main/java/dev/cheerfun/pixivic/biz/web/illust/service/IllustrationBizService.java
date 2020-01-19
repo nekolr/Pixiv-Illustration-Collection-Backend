@@ -171,4 +171,7 @@ public class IllustrationBizService {
         }
         return false;
     }
+    public void deal(Map<String,String> map){
+        map=null;
+    }
 }

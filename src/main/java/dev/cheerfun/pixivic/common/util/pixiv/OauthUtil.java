@@ -97,16 +97,6 @@ final public class OauthUtil {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
-/*            if (oauths.get(i).getBucket().&&oauths.get(i).getIsBan()) {
-                if (oauths.stream().noneMatch(Oauth::getIsBan)) {
-                    try {
-                        Thread.sleep(1000 * 60);
-                        continue;
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }*/
             }
         }
     }
