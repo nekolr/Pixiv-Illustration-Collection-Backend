@@ -11,7 +11,6 @@ import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
-import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -42,13 +41,11 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationBizService {
     private final IllustrationBizMapper illustrationBizMapper;
-    private final IllustrationMapper illustrationMapper;
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
     private final RequestUtil requestUtil;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
-
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
@@ -173,7 +170,8 @@ public class IllustrationBizService {
         }
         return false;
     }
-    public void deal(Map<String,String> map){
-        map=null;
+
+    public void deal(Map<String, String> map) {
+        map = null;
     }
 }

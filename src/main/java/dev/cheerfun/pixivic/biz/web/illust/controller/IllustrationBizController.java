@@ -76,7 +76,7 @@ public class IllustrationBizController {
             userId = (int) AppContext.get().get(USER_ID);
         }
         Integer finalUserId = userId;
-        return illustrationBizService.queryIllustrationRelated(illustId, page).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", finalUserId==null?r:businessService.dealIsLikedInfoForIllustList(r, finalUserId))));
+        return illustrationBizService.queryIllustrationRelated(illustId, page).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", finalUserId == null ? r : businessService.dealIsLikedInfoForIllustList(r, finalUserId))));
     }
 
     @GetMapping("/illusts/random")
