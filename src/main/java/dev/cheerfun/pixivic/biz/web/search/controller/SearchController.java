@@ -99,22 +99,12 @@ public class SearchController {
                     int minTotalView,
             @RequestParam(defaultValue = "5")
                     int maxSanityLevel, @RequestHeader(value = "Authorization", required = false) String token) {
-        System.out.println();
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
             String[] keywords = keyword.split(" ");
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
         CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel);
-        //拼接上是否用户喜欢
-       /* if (AppContext.get() != null) {
-            searchResultCompletableFuture= searchResultCompletableFuture.thenApply(e -> {
-                Set<Integer> illustIdSet = e.getIllustrations().stream().parallel().map(Illustration::getId).collect(Collectors.toSet());
-                //取出redis中收藏集合的差集
-                e.setIllustrations(e.getIllustrations().stream().parallel().map(IllustrationWithLikeInfo::new).collect(Collectors.toList()));
-                return e;
-            });
-        }*/
         return searchResultCompletableFuture.thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 

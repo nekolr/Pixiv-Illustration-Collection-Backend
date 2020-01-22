@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.illust.controller;
 
+import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
@@ -64,8 +66,8 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/illusts/{illustId}/related")
-    //@PermissionRequired
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page/*, @RequestParam(defaultValue = "30") int pageSize*/) {
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page,@RequestHeader(value = "Authorization", required = false) String token) {
         return illustrationBizService.queryIllustrationRelated(illustId, page).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
     }
 

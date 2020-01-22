@@ -57,13 +57,12 @@ public class AuthProcessor {
         PermissionRequired methodPermissionRequired = AnnotationUtils.findAnnotation(method, PermissionRequired.class);
         PermissionRequired classPermissionRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), PermissionRequired.class);
         int authLevel = methodPermissionRequired != null ? methodPermissionRequired.value() : classPermissionRequired.value();
-        //如果不是任何人都能访问的
-        if (authLevel != PermissionLevel.ANONYMOUS) {
-            //取出token
-            String token = commonUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestHeader.class, AUTHORIZATION);
+        String token = commonUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestHeader.class, AUTHORIZATION);
         /*进行jwt校验，成功则将返回包含Claim信息的Map（token即将过期则将刷新后的token放入返回值Map）
         过期则抛出自定义未授权过期异常*/
+        if (token != null) {
             Map<String, Object> claims = jwtUtil.validateToken(token);
+            AppContext.set(claims);
             if ((Integer) claims.get(IS_BAN) == 0) {
                 throw new AuthBanException(HttpStatus.FORBIDDEN, "账户异常");
             }
@@ -71,28 +70,26 @@ public class AuthProcessor {
                 throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
             }
             //放入threadlocal
-            AppContext.set(claims);
             Object proceed = joinPoint.proceed();
             //直接修改返回值的token为更新后的token，若之后在业务逻辑中有更改，则在threadlocal中放入NEW_TOKEN就行
-/*        if (AppContext.get().get(NEW_TOKEN) != null) {
-            response = ResponseEntity.status(response.getStatusCode())
-                    .header(AUTHORIZATION, String.valueOf(claims.get(NEW_TOKEN)))
-                    .body(response.getBody());
-        }*/
             if (proceed instanceof CompletableFuture) {
                 CompletableFuture<ResponseEntity> response = (CompletableFuture<ResponseEntity>) joinPoint.proceed();
                 return response.thenApply(e -> dealReturn(e, claims));
             }
             return dealReturn((ResponseEntity) proceed, claims);
         } else {
-            Object proceed = joinPoint.proceed();
-            return proceed;
+            if (authLevel == PermissionLevel.ANONYMOUS) {
+                Object proceed = joinPoint.proceed();
+                return proceed;
+            } else {
+                throw new AuthBanException(HttpStatus.UNAUTHORIZED, "账户未登录");
+            }
         }
 
     }
 
     private ResponseEntity dealReturn(ResponseEntity responseEntity, Map<String, Object> claims) {
-        if (AppContext.get().get(NEW_TOKEN) != null) {
+        if (AppContext.get() != null && AppContext.get().get(NEW_TOKEN) != null) {
             responseEntity = ResponseEntity.status(responseEntity.getStatusCode())
                     .header(AUTHORIZATION, String.valueOf(claims.get(NEW_TOKEN)))
                     .body(responseEntity.getBody());

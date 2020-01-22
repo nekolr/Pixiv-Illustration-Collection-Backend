@@ -16,7 +16,7 @@ import lombok.EqualsAndHashCode;
 public class IllustrationWithLikeInfo extends Illustration {
     private Boolean isLiked;
 
-    public IllustrationWithLikeInfo(Illustration illustration) {
+    public IllustrationWithLikeInfo(Illustration illustration,Boolean isLiked) {
         this.id = illustration.getId();
         this.artistId = illustration.getArtistId();
         this.title = illustration.getTitle();
@@ -35,7 +35,7 @@ public class IllustrationWithLikeInfo extends Illustration {
         this.xRestrict = illustration.getXRestrict();
         this.totalView = illustration.getTotalView();
         this.totalBookmarks = illustration.getTotalBookmarks();
-        this.isLiked = false;
+        this.isLiked = isLiked;
     }
 
 }

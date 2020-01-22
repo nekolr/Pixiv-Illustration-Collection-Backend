@@ -10,6 +10,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -150,6 +151,7 @@ public class SearchUtil {
         return stringBuilder.toString();
     }
 
+    @Cacheable(value = "searchResult")
     public CompletableFuture<SearchResult> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
@@ -164,7 +166,7 @@ public class SearchUtil {
                             elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<ElasticsearchResponse>() {
                             });
                             Hits hits = elasticsearchResponse.getHits();
-                            if(hits!=null&&hits.getHits()!=null){
+                            if (hits != null && hits.getHits() != null) {
                                 List<Illustration> illustrationList = hits.getHits().stream().map(Hit::getIllustration).collect(Collectors.toList());
                                 return new SearchResult(hits.getTotal().getValue(), illustrationList);
                             }

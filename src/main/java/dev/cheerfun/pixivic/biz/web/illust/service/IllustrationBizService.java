@@ -11,6 +11,7 @@ import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
+import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -47,6 +48,7 @@ public class IllustrationBizService {
     private final RequestUtil requestUtil;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
+    private final BusinessService businessService;
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
@@ -127,7 +129,7 @@ public class IllustrationBizService {
                         //保存
                         waitSaveToDb.put(illustId + ":" + page, illustrationList);
                     }
-                    return illustrationList;
+                    return businessService.dealIsLikedInfoForIllustList(illustrationList);
                 }
             } catch (IOException e) {
                 e.printStackTrace();

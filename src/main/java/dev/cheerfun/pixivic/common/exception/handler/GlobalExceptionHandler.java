@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.common.exception.handler;
 
 import dev.cheerfun.pixivic.common.exception.BaseException;
 import dev.cheerfun.pixivic.common.po.Result;
+import io.jsonwebtoken.ExpiredJwtException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -47,6 +48,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("参数错误"));
     }
 
+    @ExceptionHandler(value = ExpiredJwtException.class)
+    public ResponseEntity<Result> handleIllegalExpiredJwtException(ExpiredJwtException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Result("登录信息过期"));
+    }
     /*    @ExceptionHandler(Exception.class)//可以用来找异常类
         public ResponseEntity handleException(Exception ae) {
             System.out.println(ae);

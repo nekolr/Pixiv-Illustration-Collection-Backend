@@ -1,13 +1,17 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
+import dev.cheerfun.pixivic.biz.web.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -16,9 +20,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -35,6 +39,7 @@ public class BusinessService {
     private final String bookmarkCountMapRedisPre = "u:bcm";
     private final String userFollowRedisPre = "u:f:";
     private final String artistFollowRedisPre = "a:f:";
+    private static final String USER_ID = "userId";
 
     public void bookmark(int userId, int illustId) {
         bookmarkOperation(userId, illustId, 1, 0);
@@ -69,6 +74,30 @@ public class BusinessService {
                 return operations.exec();
             }
         });
+    }
+
+    public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
+        if (AppContext.get() != null) {
+            int userId = (int) AppContext.get().get(USER_ID);
+            List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+                illustrationList.forEach(i -> {
+
+                    //   stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + AppContext.get().get(USER_ID),i.getId());
+                    StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+                    stringRedisConnection.sIsMember(bookmarkRedisPre + userId, String.valueOf(i.getId()));
+                });
+                return null;
+            });
+            List<Illustration> illustrationWithLikeInfoList = new ArrayList<>();
+            int size = isLikedList.size();
+            for (int i = 0; i < size; i++) {
+                IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i));
+                illustrationWithLikeInfoList.add(illustrationWithLikeInfo);
+            }
+            return illustrationWithLikeInfoList;
+        }
+        return illustrationList;
+
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")
