@@ -151,7 +151,6 @@ public class SearchUtil {
         return stringBuilder.toString();
     }
 
-    @Cacheable(value = "searchResult")
     public CompletableFuture<SearchResult> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")

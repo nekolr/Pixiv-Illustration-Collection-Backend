@@ -79,25 +79,27 @@ public class BusinessService {
     public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
         if (AppContext.get() != null) {
             int userId = (int) AppContext.get().get(USER_ID);
-            List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-                illustrationList.forEach(i -> {
-
-                    //   stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + AppContext.get().get(USER_ID),i.getId());
-                    StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                    stringRedisConnection.sIsMember(bookmarkRedisPre + userId, String.valueOf(i.getId()));
-                });
-                return null;
-            });
-            List<Illustration> illustrationWithLikeInfoList = new ArrayList<>();
-            int size = isLikedList.size();
-            for (int i = 0; i < size; i++) {
-                IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i));
-                illustrationWithLikeInfoList.add(illustrationWithLikeInfo);
-            }
-            return illustrationWithLikeInfoList;
+            return dealIsLikedInfoForIllustList(illustrationList, userId);
         }
         return illustrationList;
 
+    }
+
+    public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {
+        List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+            for (Illustration illustration : illustrationList) {
+                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+                stringRedisConnection.sIsMember(bookmarkRedisPre + userId, String.valueOf(illustration.getId()));
+            }
+            return null;
+        });
+        List<Illustration> illustrationWithLikeInfoList = new ArrayList<>();
+        int size = isLikedList.size();
+        for (int i = 0; i < size; i++) {
+            IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i));
+            illustrationWithLikeInfoList.add(illustrationWithLikeInfo);
+        }
+        return illustrationWithLikeInfoList;
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")

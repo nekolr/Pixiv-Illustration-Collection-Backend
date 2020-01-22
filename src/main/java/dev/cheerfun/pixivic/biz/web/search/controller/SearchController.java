@@ -3,12 +3,11 @@ package dev.cheerfun.pixivic.biz.web.search.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
-import dev.cheerfun.pixivic.biz.web.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
-import dev.cheerfun.pixivic.common.context.AppContext;
+import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.NonNull;
@@ -28,9 +27,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -43,6 +40,7 @@ import java.util.stream.Collectors;
 //@PermissionRequired
 public class SearchController {
     private final SearchService searchService;
+    private final BusinessService businessService;
 
     @GetMapping("/keywords/**/candidates")
     public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
@@ -105,7 +103,10 @@ public class SearchController {
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
         CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel);
-        return searchResultCompletableFuture.thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
+        return searchResultCompletableFuture.thenApply(illustrations -> {
+            illustrations.setIllustrations(businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations()));
+            return ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations));
+        });
     }
 
     @GetMapping("/similarityImages")

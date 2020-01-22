@@ -228,6 +228,7 @@ public class SearchService {
         return keywordTranslated.get(0);
     }
 
+    @Cacheable(value = "searchResult")
     public CompletableFuture<SearchResult> searchByKeyword(
             String keyword,
             int pageSize,
@@ -244,9 +245,6 @@ public class SearchService {
             int minTotalView,
             int maxSanityLevel) {
         CompletableFuture<SearchResult> request = searchUtil.request(searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel));
-        request = request.whenComplete((e, throwable) ->
-                e.setIllustrations(businessService.dealIsLikedInfoForIllustList(e.getIllustrations()))
-        );
         return request;
     }
 

@@ -48,7 +48,7 @@ public class IllustrationBizService {
     private final RequestUtil requestUtil;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
-    private final BusinessService businessService;
+
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
@@ -129,7 +129,7 @@ public class IllustrationBizService {
                         //保存
                         waitSaveToDb.put(illustId + ":" + page, illustrationList);
                     }
-                    return businessService.dealIsLikedInfoForIllustList(illustrationList);
+                    return illustrationList;
                 }
             } catch (IOException e) {
                 e.printStackTrace();

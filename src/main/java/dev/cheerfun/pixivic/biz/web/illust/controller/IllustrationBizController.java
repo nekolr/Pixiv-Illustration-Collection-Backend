@@ -3,6 +3,8 @@ package dev.cheerfun.pixivic.biz.web.illust.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -27,6 +29,8 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationBizController {
     private final IllustrationBizService illustrationBizService;
+    private final BusinessService businessService;
+    private static final String USER_ID = "userId";
 
     @GetMapping("/tags/{tag}/translation")
     public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag) {
@@ -53,11 +57,9 @@ public class IllustrationBizController {
 
     @GetMapping("/exists/{type}/{id}")
     //@PermissionRequired
-    public ResponseEntity<Result<Boolean>> queryExistsById(@PathVariable String type,@PathVariable Integer id) {
-        return ResponseEntity.ok().body(new Result<>("获取存在详情成功", illustrationBizService.queryExistsById(type,id)));
+    public ResponseEntity<Result<Boolean>> queryExistsById(@PathVariable String type, @PathVariable Integer id) {
+        return ResponseEntity.ok().body(new Result<>("获取存在详情成功", illustrationBizService.queryExistsById(type, id)));
     }
-
-
 
     @GetMapping("/illusts/{illustId}")
     //@PermissionRequired
@@ -67,8 +69,14 @@ public class IllustrationBizController {
 
     @GetMapping("/illusts/{illustId}/related")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page,@RequestHeader(value = "Authorization", required = false) String token) {
-        return illustrationBizService.queryIllustrationRelated(illustId, page).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page, @RequestHeader(value = "Authorization", required = false) String token) {
+        //由于异步请求,线程切换导致取不到threadlocal,所以这里先取一下
+        Integer userId = null;
+        if (AppContext.get() != null) {
+            userId = (int) AppContext.get().get(USER_ID);
+        }
+        Integer finalUserId = userId;
+        return illustrationBizService.queryIllustrationRelated(illustId, page).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", finalUserId==null?r:businessService.dealIsLikedInfoForIllustList(r, finalUserId))));
     }
 
     @GetMapping("/illusts/random")

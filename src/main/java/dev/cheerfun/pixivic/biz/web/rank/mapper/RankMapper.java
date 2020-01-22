@@ -20,9 +20,9 @@ public interface RankMapper {
 
     @Select("select * from ranks where date = #{date} and mode= #{mode} limit 1")
     @Results({
-            @Result(property="date", column="date"),
-            @Result(property="mode", column="mode"),
-            @Result(property="data", column="data", javaType = List.class,typeHandler= JsonTypeHandler.class)
+            @Result(property = "date", column = "date"),
+            @Result(property = "mode", column = "mode"),
+            @Result(property = "data", column = "data", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-     Rank queryByDateAndMode(String date, String mode);
+    Rank queryByDateAndMode(String date, String mode);
 }

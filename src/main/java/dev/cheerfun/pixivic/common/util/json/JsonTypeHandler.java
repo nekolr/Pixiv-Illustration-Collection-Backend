@@ -1,9 +1,12 @@
 package dev.cheerfun.pixivic.common.util.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.ArtistDTO;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.common.po.Artist;
+import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import org.apache.ibatis.type.BaseTypeHandler;
@@ -20,9 +23,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.List;
 
 @MappedJdbcTypes(value = {JdbcType.OTHER}, includeNullJdbcType = true)
-@MappedTypes({ Artist.class , ArrayList.class, Tag.class, ImageUrl.class, SearchSuggestion.class})
+@MappedTypes({Artist.class, ArrayList.class, Tag.class, ImageUrl.class, SearchSuggestion.class, List.class, Illustration.class})
 public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
@@ -98,12 +102,11 @@ public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
         if (StringUtils.isEmpty(jsonText)) {
             return null;
         }
-
         try {
-            T list = objectMapper.readValue(jsonText, type);
-            return  list;
+            T list = objectMapper.readValue(jsonText,type);
+            return list;
         } catch (IOException e) {
-            logger.error("字符串反序列化失败字符串为{}",jsonText,e);
+            logger.error("字符串反序列化失败字符串为{}", jsonText, e);
         }
 
         return null;
