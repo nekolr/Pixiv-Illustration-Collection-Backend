@@ -39,7 +39,7 @@ final public class OauthUtil {
     @Getter
     private volatile List<Oauth> oauths;
 
-    //@PostConstruct
+    @PostConstruct
     private void init() throws IOException {
         //读取账号信息
         File json = new File(path);
