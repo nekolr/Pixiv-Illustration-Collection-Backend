@@ -23,9 +23,10 @@ import java.util.List;
 public class NewsBIZController {
     private final NewsBIZService newsBIZService;
     private final CacheManager cacheManager;
+
     @GetMapping("/{referer}")
-    public ResponseEntity<Result< List<ACGNew>>> queryByDateAndMode(@PathVariable String referer, @RequestParam String date, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {
-        List<ACGNew> acgNewList = newsBIZService.queryByFromAndDate(referer, date, page, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取"+referer+"资讯列表成功", acgNewList));
+    public ResponseEntity<Result<List<ACGNew>>> queryByDateAndMode(@PathVariable String referer, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {
+        List<ACGNew> acgNewList = newsBIZService.queryByFromAndDate(referer, page, pageSize);
+        return ResponseEntity.ok().body(new Result<>("获取" + referer + "资讯列表成功", acgNewList));
     }
 }

@@ -20,7 +20,7 @@ import java.util.List;
 public class NewsBIZService {
     private final NewsBIZMapper newsBIZMapper;
     @Cacheable(value = "new")
-    public List<ACGNew> queryByFromAndDate(String referer, String date, int page, int pageSize) {
-        return newsBIZMapper.queryByFromAndDate(referer,date,pageSize*(page-1),pageSize);
+    public List<ACGNew> queryByFromAndDate(String referer, int page, int pageSize) {
+        return newsBIZMapper.queryByFromAndDate(referer,pageSize*(page-1),pageSize);
     }
 }
