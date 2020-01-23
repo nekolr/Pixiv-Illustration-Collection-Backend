@@ -21,11 +21,11 @@ public interface SpotlightBizMapper {
     int insert(Rank rank);
 
 
-    @Select("select * from spotlights limit #{currIndex} , #{pageSize}")
+    @Select("select * from spotlights order by publish_date desc limit #{currIndex} , #{pageSize}")
     @Results({
             @Result(property="id", column="spotlight_id"),
             @Result(property="pureTitle", column="pure_title"),
-            @Result(property="publishDate", column="publish_date"),
+            @Result(property="publishDate", column="publish_date",typeHandler=org.apache.ibatis.type.LocalDateTypeHandler.class),
             @Result(property="subcategoryLabel", column="subcategory_label"),
             @Result(property="articleUrl", column="article_url")
     })
@@ -35,7 +35,7 @@ public interface SpotlightBizMapper {
     @Results({
             @Result(property="pureTitle", column="pure_title"),
             @Result(property="id", column="spotlight_id"),
-            @Result(property="publishDate", column="publish_date"),
+            @Result(property="publishDate", column="publish_date",typeHandler=org.apache.ibatis.type.LocalDateTypeHandler.class),
             @Result(property="subcategoryLabel", column="subcategory_label"),
             @Result(property="articleUrl", column="article_url")
     })
