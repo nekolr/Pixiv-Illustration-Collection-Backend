@@ -8,7 +8,7 @@ import java.util.List;
 @Mapper
 public interface CommentMapper {
     @Insert("insert into comments (app_type, app_id,parent_id,reply_from,reply_to,content,create_date,liked_count) " +
-            "values (#{appType}, #{appId}, #{parentId}, #{from}, #{replyTo}, #{content}, #{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}, #{likedCount})")
+            "values (#{appType}, #{appId}, #{parentId}, #{replyFrom}, #{replyTo}, #{content}, #{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}, #{likedCount})")
     int pushComment(Comment comment);
 
     @Select("select * from comments where app_type = #{appType} and app_id = #{appId}")
@@ -18,7 +18,7 @@ public interface CommentMapper {
             @Result(property = "appId", column = "app_id"),
             @Result(property = "parentId", column = "parent_id"),
             @Result(property = "replyTo", column = "reply_to"),
-            @Result(property = "from", column = "reply_from"),
+            @Result(property = "replyFrom", column = "reply_from"),
             @Result(property = "createDate", column = "create_Date",typeHandler =org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
             @Result(property = "likedCount", column = "liked_count")
     })

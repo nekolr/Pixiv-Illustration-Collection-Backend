@@ -8,6 +8,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -16,7 +18,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -62,23 +63,29 @@ public class CommentService {
     public List<Comment> pullComment(String appType, Integer appId, int userId) {
         List<Comment> comments = queryCommentList(appType, appId);
         //拼接是否点赞
-        Set<String> commentSet = stringRedisTemplate.opsForSet().members(likeRedisPre + userId);
-
-        Map<Integer, List<Comment>> mayByParentId = null;
         List<Comment> result = new ArrayList<>();
-        if (commentSet != null) {
-            mayByParentId = comments.stream().collect(Collectors.groupingBy(e -> {
-                        if (e.getParentId() == 0) {
-                            result.add(e);
-                        }
-                        e.setIsLike(commentSet.contains(e.toStringForQueryLike()));
-                        return e.getParentId();
-                    }
-            ));
-        }
-        //拼成树形
-        for (Comment comment : result) {
-            comment.setSubCommentList(mayByParentId.get(comment.getId()));
+        Map<Integer, List<Comment>>[] mayByParentId = new Map[]{null};
+        List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+            //上层id分组
+            mayByParentId[0] = comments.stream().collect(Collectors.groupingBy(e -> {
+                //顶级评论引用列表
+                if (e.getParentId() == 0) {
+                    result.add(e);
+                }
+                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+                stringRedisConnection.sIsMember(likeRedisPre + userId, String.valueOf(e.toStringForQueryLike()));
+                return e.getParentId();
+            }));
+            return null;
+        });
+        int index = comments.size();
+        for (int i = 0; i < index; i++) {
+            Comment comment = comments.get(i);
+            comment.setIsLike((Boolean) isLikedList.get(i));
+            //拼成树形
+            if (comment.getParentId() == 0) {
+                comment.setSubCommentList(mayByParentId[0].get(comment.getId()));
+            }
         }
         return result;
     }

@@ -43,12 +43,14 @@ public class CommentController {
     }
 
     @PostMapping("user/likedComments")
+    @PermissionRequired
     public ResponseEntity<Result<String>> like(@RequestBody Like like, @RequestHeader("Authorization") String token) {
         commentService.likeComment(like, (int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("点赞成功"));
     }
 
     @DeleteMapping("user/likedComments/{commentAppType}/{commentAppId}/{commentId}")
+    @PermissionRequired
     public ResponseEntity<Result<String>> cancelLike(@PathVariable String commentAppType, @PathVariable Integer commentAppId, @PathVariable Integer commentId, @RequestHeader("Authorization") String token) {
         commentService.cancelLikeComment((int) AppContext.get().get(USER_ID), new Like(commentAppType, commentAppId, commentId));
         return ResponseEntity.ok().body(new Result<>("取消点赞成功"));

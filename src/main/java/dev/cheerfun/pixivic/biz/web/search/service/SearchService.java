@@ -250,8 +250,12 @@ public class SearchService {
 
     @Cacheable(value = "saucenaoResponse")
     public CompletableFuture<List<Illustration>> searchByImage(String imageUrl) {
-        return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r ->
-                r.getPixivIdList().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList()));
+        return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r -> {
+            if (r != null) {
+                return r.getPixivIdList().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList());
+            }
+            throw new SearchException(HttpStatus.NOT_FOUND, "未找到画作");
+        });
     }
 
     public String getKeyword(HttpServletRequest request) {

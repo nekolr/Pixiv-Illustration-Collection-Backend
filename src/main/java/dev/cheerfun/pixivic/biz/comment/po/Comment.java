@@ -21,7 +21,7 @@ public class Comment {
     private Integer appId;
     private Integer id;
     private Integer parentId;
-    private Integer from;
+    private Integer replyFrom;
     private Integer replyTo;
     @SensitiveCheck
     private String content;
@@ -39,7 +39,7 @@ public class Comment {
     public void init(String commentAppType, int commentAppId, int userId) {
         this.appType = commentAppType;
         this.appId = commentAppId;
-        this.from = userId;
+        this.replyFrom = userId;
         createDate=LocalDateTime.now();
         likedCount=0;
     }
