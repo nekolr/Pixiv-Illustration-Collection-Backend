@@ -63,6 +63,7 @@ public class CommentService {
         List<Comment> comments = queryCommentList(appType, appId);
         //拼接是否点赞
         Set<String> commentSet = stringRedisTemplate.opsForSet().members(likeRedisPre + userId);
+
         Map<Integer, List<Comment>> mayByParentId = null;
         List<Comment> result = new ArrayList<>();
         if (commentSet != null) {
