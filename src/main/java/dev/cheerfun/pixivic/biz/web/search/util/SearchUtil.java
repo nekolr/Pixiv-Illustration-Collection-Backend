@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.HtmlUtils;
 
 import java.io.IOException;
 import java.net.URI;
@@ -101,10 +102,9 @@ public class SearchUtil {
                 .append(pageSize)
                 .append(DOT)
                 .append(QUERY_PRE);
-        String[] keywords = keyword.split(" ");
-
+        String[] keywords = keyword.split("\\|\\|");
         for (String k : keywords) {
-            stringBuilder.append(NESTED_PRE).append(k).append(NESTED_POS).append(DOT);
+            stringBuilder.append(NESTED_PRE).append(HtmlUtils.htmlEscape(k)).append(NESTED_POS).append(DOT);
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         //过滤器

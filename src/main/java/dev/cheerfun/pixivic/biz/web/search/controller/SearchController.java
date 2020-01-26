@@ -99,7 +99,7 @@ public class SearchController {
                     int maxSanityLevel, @RequestHeader(value = "Authorization", required = false) String token) {
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
-            String[] keywords = keyword.split(" ");
+            String[] keywords = keyword.split("\\|\\|");
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
         CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel);
