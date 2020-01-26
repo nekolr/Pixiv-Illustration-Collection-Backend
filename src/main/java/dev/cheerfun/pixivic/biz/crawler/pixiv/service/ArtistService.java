@@ -3,14 +3,18 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.ArtistDTO;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDetailDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.ArtistMapper;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -33,6 +37,7 @@ public class ArtistService {
     private final RequestUtil requestUtil;
     private final ObjectMapper objectMapper;
     private final ArtistMapper artistMapper;
+    private final StringRedisTemplate stringRedisTemplate;
     private ReentrantLock lock = new ReentrantLock();
 
     private List<Integer> waitForReDownload = new ArrayList<>();
@@ -46,11 +51,43 @@ public class ArtistService {
         return null;
     }
 
+    public void pullArtistIllustList() throws IOException, InterruptedException {
+        //初始化,查看记录
+        List<String> strings = Files.readAllLines(Paths.get("/home/PIC/artistId.txt"));
+        String artist = stringRedisTemplate.opsForValue().get("artist");
+        String[] split = artist.split(":");
+        String artistIndex = split[0];
+        int offset = Integer.parseInt(split[1]);
+        //开始抓取
+        for (int i = Integer.parseInt(artistIndex); i < strings.size(); i++) {
+            String s = strings.get(i);
+            boolean flag=true;
+
+            //持久化到本地
+            while (flag){
+                System.out.println("开始抓取第"+i+"个画师的第"+offset+"作品");
+                IllustrationDetailDTO illustrationDetailDTO = (IllustrationDetailDTO) requestUtil.getJsonSync("https://app-api.pixiv.net/v1/user/illusts?user_id=" +s+ "&offset=" + offset, IllustrationDetailDTO.class);
+                Files.write(Paths.get("/home/artist/" + i + ":" + offset + ".json"), objectMapper.writeValueAsString(illustrationDetailDTO).getBytes());
+                if (illustrationDetailDTO.getNextUrl() == null) {
+                    flag=false;
+                    offset = 0;
+                    stringRedisTemplate.opsForValue().set("artist", i + 1 + ":" + "0");
+                } else {
+                    stringRedisTemplate.opsForValue().set("artist", i + 1 + ":" + "0");
+                    offset += 30;
+                }
+                Thread.sleep(500);
+            }
+
+        }
+
+    }
+
     public List<Artist> pullArtistsInfo(List<Integer> artistIds) {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
         List<Artist> artistList = artistIdsToDownload.stream().parallel().distinct().map(i -> {
             try {
-                return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios")
+                return requestUtil.getJson("https://app-api.pixiv.net/v1/user/detail?user_id=" + i + "&filter=for_ios")
                         .thenApply(result -> {
                             if ("false".equals(result)) {
                                 this.addToWaitingList(i);
@@ -74,8 +111,8 @@ public class ArtistService {
             }
             return null;
         }).filter(Objects::nonNull).collect(Collectors.toList());
-        if (artistList.size() != 0){
-            CompletableFuture.supplyAsync(()-> artistMapper.insert(artistList)).thenAccept(e-> System.out.println("画师信息入库完毕"));
+        if (artistList.size() != 0) {
+            CompletableFuture.supplyAsync(() -> artistMapper.insert(artistList)).thenAccept(e -> System.out.println("画师信息入库完毕"));
         }
         return artistList;
     }

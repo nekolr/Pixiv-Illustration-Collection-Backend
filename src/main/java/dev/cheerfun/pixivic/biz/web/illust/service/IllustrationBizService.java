@@ -42,7 +42,6 @@ public class IllustrationBizService {
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
     private final SearchService searchService;
-    private final RequestUtil requestUtil;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
 
@@ -138,11 +137,9 @@ public class IllustrationBizService {
 
     @Cacheable(value = "illust")
     public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
-        System.out.println(new Date());
         Illustration illustration = queryIllustrationById(illustId);
         illustration=objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
         });
-        System.out.println(new Date());
         if (illustration != null && illustration.getTags().size() > 0) {
             String keywords = illustration.getTags().stream().parallel().filter(e->!"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
             return searchService.searchByKeyword(keywords, pageSize, page, "original", "illust", 0, 0, "2008-01-01", "9999-12-31", 0, 0, 0, 0, 6).thenApply(SearchResult::getIllustrations);

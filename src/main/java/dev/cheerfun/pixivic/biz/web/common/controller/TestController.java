@@ -8,6 +8,7 @@ import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.biz.crawler.news.service.NewService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
@@ -35,6 +36,7 @@ public class TestController {
     private final OauthUtil oauthUtil;
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustRankService rankDailyService;
+    private final ArtistService artistService;
     private final IllustrationMapper illustrationMapper;
     private final NewService newService;
 
@@ -43,17 +45,14 @@ public class TestController {
     @RateLimit
     //@PermissionRequired
     public ResponseEntity<String> test(@RequestBody @SensitiveCheck SignUpDTO signUpDTO,/*@RequestHeader("Authorization")  String token,*/@RequestParam @SensitiveCheck String content, @RequestParam @SensitiveCheck String title) throws InterruptedException, ExecutionException, IOException {
-        //rankDailyService.pullAllRank();
-       // newService.dailyPullTask();
-        System.out.println(content+title);
-        System.out.println(signUpDTO);
-        return ResponseEntity.ok().body(content);
+        artistService.pullArtistIllustList();
+        return ResponseEntity.ok().body("");
     }
     @GetMapping("/test")
-    @RateLimit
     //@PermissionRequired
-    public ResponseEntity<Integer> test() throws InterruptedException, ExecutionException, IOException {
-        return ResponseEntity.ok().body(illustrationMapper.flush());
+    public ResponseEntity<String> test(@RequestParam String content) throws InterruptedException, ExecutionException, IOException {
+        artistService.pullArtistIllustList();
+        return ResponseEntity.ok().body(content);
     }
     /*@GetMapping("/32")
     public String login() throws InterruptedException {

@@ -13,4 +13,6 @@ import lombok.Data;
 public class IllustrationDetailDTO {
     @JsonSetter("illust")
     private IllustrationDTO illustrationDTO;
+    @JsonSetter("next_url")
+    private String nextUrl;
 }
