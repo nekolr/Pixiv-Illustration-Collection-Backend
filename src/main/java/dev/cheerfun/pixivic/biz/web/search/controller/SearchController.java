@@ -95,7 +95,7 @@ public class SearchController {
                     int minTotalBookmarks,
             @RequestParam(defaultValue = "0")
                     int minTotalView,
-            @RequestParam(defaultValue = "5")
+            @RequestParam(defaultValue = "6")
                     int maxSanityLevel, @RequestHeader(value = "Authorization", required = false) String token) {
         if ("autoTranslate".equals(searchType)) {
             //自动翻译

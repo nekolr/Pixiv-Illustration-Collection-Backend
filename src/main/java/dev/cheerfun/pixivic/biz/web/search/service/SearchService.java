@@ -245,7 +245,6 @@ public class SearchService {
             int minTotalView,
             int maxSanityLevel) {
         String build = searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel);
-        System.out.println(build);
         CompletableFuture<SearchResult> request = searchUtil.request(build);
         return request;
     }

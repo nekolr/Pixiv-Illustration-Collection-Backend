@@ -49,7 +49,7 @@ public class SearchUtil {
     private final static String QUERY_POS = "}}";
 
     private final static String NESTED_PRE = "{\"nested\":{\"path\":\"tags\",\"query\":{\"boosting\":{\"positive\":{\"match\":{\"tags.name\":{\"query\":\"";
-    private final static String NESTED_POS = "\",\"minimum_should_match\": \"75%\"}}},\"negative\":{\"match\":{\"tags.translated_name.keyword\":\"\"}},\"negative_boost\":0.865}}}}";
+    private final static String NESTED_POS = "\"}}},\"negative\":{\"match\":{\"tags.translated_name.keyword\":\"\"}},\"negative_boost\":0.865}}}}";
 
     private final static String TYPE_PRE = "{\"term\":{\"type\":\"";
     private final static String TYPE_POS = "\"}}";
@@ -101,11 +101,11 @@ public class SearchUtil {
                 .append(pageSize)
                 .append(DOT)
                 .append(QUERY_PRE);
-      //  String[] keywords = keyword.split(" ");
+        String[] keywords = keyword.split(" ");
 
-        //for (String k : keywords) {
-            stringBuilder.append(NESTED_PRE).append(keyword).append(NESTED_POS).append(DOT);
-       // }
+        for (String k : keywords) {
+            stringBuilder.append(NESTED_PRE).append(k).append(NESTED_POS).append(DOT);
+        }
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         //过滤器
         stringBuilder.append(FILTER_PRE)
