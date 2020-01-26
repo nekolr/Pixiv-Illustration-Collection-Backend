@@ -2,15 +2,14 @@ package dev.cheerfun.pixivic.biz.web.illust.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
+import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
+import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -23,7 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.io.IOException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
@@ -43,6 +41,7 @@ public class IllustrationBizService {
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
+    private final SearchService searchService;
     private final RequestUtil requestUtil;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
@@ -114,6 +113,7 @@ public class IllustrationBizService {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
     }
 
+/*
     @Cacheable(value = "illust")
     public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page) {
         return requestUtil.getJson("https://proxy.pixivic.com:23334/v2/illust/related?illust_id=" + illustId + "&offset=" + (page - 1) * 30).thenApply(r -> {
@@ -133,6 +133,19 @@ public class IllustrationBizService {
             }
             return null;
         });
+    }
+*/
+
+    @Cacheable(value = "illust")
+    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
+        Illustration illustration = queryIllustrationById(illustId);
+        illustration=objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
+        });
+        if (illustration != null && illustration.getTags().size() > 0) {
+            String keywords = illustration.getTags().stream().map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
+            return searchService.searchByKeyword(keywords, pageSize, page, "original", "illust", 0, 0, "2008-01-01", "9999-12-31", 0, 0, 0, 0, 6).thenApply(SearchResult::getIllustrations);
+        }
+        throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
     }
 
     @Scheduled(cron = "0 0/5 * * * ? ")

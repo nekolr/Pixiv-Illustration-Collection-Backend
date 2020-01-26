@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
+import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
@@ -67,7 +68,7 @@ public class SearchService {
     private final ImageSearchUtil imageSearchUtil;
     private final PixivSuggestionMapper pixivSuggestionMapper;
     private final IllustrationMapper illustrationMapper;
-    private final IllustrationBizService illustrationBizService;
+    private final IllustrationBizMapper illustrationBizMapper;
     private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
     private static final String USER_ID = "userId";
@@ -254,7 +255,7 @@ public class SearchService {
     public CompletableFuture<List<Illustration>> searchByImage(String imageUrl) {
         return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r -> {
             if (r != null) {
-                return r.getPixivIdList().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList());
+                return r.getPixivIdList().map(illustrationBizMapper::queryIllustrationByIllustId).collect(Collectors.toList());
             }
             throw new SearchException(HttpStatus.NOT_FOUND, "未找到画作");
         });

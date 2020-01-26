@@ -69,14 +69,14 @@ public class IllustrationBizController {
 
     @GetMapping("/illusts/{illustId}/related")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page, @RequestHeader(value = "Authorization", required = false) String token) {
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize,@RequestHeader(value = "Authorization", required = false) String token) {
         //由于异步请求,线程切换导致取不到threadlocal,所以这里先取一下
         Integer userId = null;
         if (AppContext.get() != null) {
             userId = (int) AppContext.get().get(USER_ID);
         }
         Integer finalUserId = userId;
-        return illustrationBizService.queryIllustrationRelated(illustId, page).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", finalUserId == null ? r : businessService.dealIsLikedInfoForIllustList(r, finalUserId))));
+        return illustrationBizService.queryIllustrationRelated(illustId, page,pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", finalUserId == null ? r : businessService.dealIsLikedInfoForIllustList(r, finalUserId))));
     }
 
     @GetMapping("/illusts/random")

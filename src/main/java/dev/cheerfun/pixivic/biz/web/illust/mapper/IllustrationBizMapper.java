@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -21,6 +22,7 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
+    @Cacheable(value = "illust")
     Illustration queryIllustrationByIllustId(Integer illustId/*, Integer xRestrict*/);
 
     @Select("select * from illusts where artist_id = #{artistId} and type = #{type} and sanity_level<=#{maxSanityLevel} limit #{currIndex} , #{pageSize}")
