@@ -47,6 +47,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
@@ -255,7 +256,7 @@ public class SearchService {
     public CompletableFuture<List<Illustration>> searchByImage(String imageUrl) {
         return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r -> {
             if (r != null) {
-                return r.getPixivIdList().map(illustrationBizMapper::queryIllustrationByIllustId).collect(Collectors.toList());
+                return r.getPixivIdList().map(illustrationBizMapper::queryIllustrationByIllustId).filter(Objects::nonNull).collect(Collectors.toList());
             }
             throw new SearchException(HttpStatus.NOT_FOUND, "未找到画作");
         });
