@@ -144,7 +144,7 @@ public class IllustrationBizService {
         });
         System.out.println(new Date());
         if (illustration != null && illustration.getTags().size() > 0) {
-            String keywords = illustration.getTags().stream().parallel().filter(e->"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
+            String keywords = illustration.getTags().stream().parallel().filter(e->!"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
             return searchService.searchByKeyword(keywords, pageSize, page, "original", "illust", 0, 0, "2008-01-01", "9999-12-31", 0, 0, 0, 0, 6).thenApply(SearchResult::getIllustrations);
         }
         throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
