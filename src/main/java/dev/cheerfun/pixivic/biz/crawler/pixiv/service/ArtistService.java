@@ -3,7 +3,7 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.ArtistDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDetailDTO;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.ArtistMapper;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
@@ -57,23 +57,22 @@ public class ArtistService {
         String artist = stringRedisTemplate.opsForValue().get("artist");
         String[] split = artist.split(":");
         String artistIndex = split[0];
-        int offset = Integer.parseInt(split[1]);
+        int offset =0;
         //开始抓取
         for (int i = Integer.parseInt(artistIndex); i < strings.size(); i++) {
             String s = strings.get(i);
-            boolean flag=true;
-
+            boolean flag = true;
             //持久化到本地
-            while (flag){
-                System.out.println("开始抓取第"+i+"个画师的第"+offset+"作品");
-                IllustrationDetailDTO illustrationDetailDTO = (IllustrationDetailDTO) requestUtil.getJsonSync("https://app-api.pixiv.net/v1/user/illusts?user_id=" +s+ "&offset=" + offset, IllustrationDetailDTO.class);
-                Files.write(Paths.get("/home/artist/" + i + ":" + offset + ".json"), objectMapper.writeValueAsString(illustrationDetailDTO).getBytes());
+            while (flag) {
+                System.out.println("开始抓取第" + i + "个画师(id:" + s + ")的第" + offset + "作品");
+                IllustsDTO illustrationDetailDTO = (IllustsDTO) requestUtil.getJsonSync("https://app-api.pixiv.net/v1/user/illusts?user_id=" + s + "&offset=" + offset, IllustsDTO.class);
+                Files.write(Paths.get("/home/artist/" + s + "-" + offset + ".json"), objectMapper.writeValueAsString(illustrationDetailDTO).getBytes());
                 if (illustrationDetailDTO.getNextUrl() == null) {
-                    flag=false;
+                    flag = false;
                     offset = 0;
-                    stringRedisTemplate.opsForValue().set("artist", i + 1 + ":" + "0");
+                    stringRedisTemplate.opsForValue().set("artist", String.valueOf(i));
                 } else {
-                    stringRedisTemplate.opsForValue().set("artist", i + 1 + ":" + "0");
+                    stringRedisTemplate.opsForValue().set("artist", String.valueOf(i));
                     offset += 30;
                 }
                 Thread.sleep(500);

@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.dto;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -17,4 +18,6 @@ import java.util.List;
 @NoArgsConstructor
 public class IllustsDTO {
     private List<IllustrationDTO> illusts;
+    @JsonSetter("next_url")
+    private String nextUrl;
 }

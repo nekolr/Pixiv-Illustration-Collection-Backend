@@ -48,11 +48,12 @@ public class TestController {
         artistService.pullArtistIllustList();
         return ResponseEntity.ok().body("");
     }
+
     @GetMapping("/test")
     //@PermissionRequired
-    public ResponseEntity<String> test(@RequestParam String content) throws InterruptedException, ExecutionException, IOException {
+    public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException {
         artistService.pullArtistIllustList();
-        return ResponseEntity.ok().body(content);
+        return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")
     public String login() throws InterruptedException {
@@ -82,6 +83,6 @@ public class TestController {
     @CheckVerification
     public ResponseEntity<Result> testCode(@RequestParam("vid") String vid, @RequestParam("value") String value, @RequestBody User user) {
         System.out.println(user);
-        return ResponseEntity.ok(new Result<>("测试",null));
+        return ResponseEntity.ok(new Result<>("测试", null));
     }
 }
