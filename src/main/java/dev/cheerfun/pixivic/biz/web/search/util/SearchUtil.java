@@ -37,7 +37,7 @@ public class SearchUtil {
     @Value("${elasticsearch.ip}")
     private String elasticsearch;
 
-    private final static String MIN_SCORE = "\"min_score\": 0.5";
+    private final static String MIN_SCORE = "\"min_score\": 0.6";
     private final static String FROM = "\"from\":";
     private final static String SIZE = "\"size\": ";
 

@@ -91,15 +91,14 @@ public class ArtistService {
 
     public void dealArtistIllustList() throws IOException {
         Path configFilePath = FileSystems.getDefault()
-                .getPath("/home/oysterqaq/文档/home/artist/");
+                .getPath("/home/artist/");
         Integer offset = Integer.valueOf(Objects.requireNonNull(stringRedisTemplate.opsForValue().get("offset")));
         List<Path> fileWithName = Files.walk(configFilePath)
                 .filter(Files::isRegularFile)
                 .sorted().collect(Collectors.toList());
-        fileWithName.forEach(System.out::println);
-
-        for (int i = offset; i < fileWithName.size();i+=100) {
-            List<Illustration> illustrationList = fileWithName.stream().skip(i).limit(100).map(e ->
+        for (int i = offset; i < fileWithName.size();i+=200) {
+            System.out.println("开始处理第"+i+"个到第"+(i+200)+"个文件");
+            List<Illustration> illustrationList = fileWithName.stream().skip(i).limit(200).map(e ->
             {
                 try {
                     return objectMapper.readValue(Files.readString(e), new TypeReference<IllustsDTO>() {
@@ -107,7 +106,7 @@ public class ArtistService {
                 } catch (IOException ex) {
                     return null;
                 }
-            }).flatMap(Collection::stream).map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
+            }).filter(Objects::nonNull).flatMap(Collection::stream).filter(Objects::nonNull).map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
           /*  IllustsDTO illustsDTO = objectMapper.readValue(Files.readString(fileWithName.get(i)), new TypeReference<IllustsDTO>() {
             });
             List<Illustration> illustrationList = illustsDTO.getIllusts().stream().parallel().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());*/
