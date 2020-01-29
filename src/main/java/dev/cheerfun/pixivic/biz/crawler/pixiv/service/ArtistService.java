@@ -3,9 +3,11 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.ArtistDTO;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.ArtistMapper;
 import dev.cheerfun.pixivic.common.po.Artist;
+import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,9 +15,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -24,6 +29,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * @author OysterQAQ
@@ -37,6 +43,7 @@ public class ArtistService {
     private final RequestUtil requestUtil;
     private final ObjectMapper objectMapper;
     private final ArtistMapper artistMapper;
+    private final IllustrationService illustrationService;
     private final StringRedisTemplate stringRedisTemplate;
     private ReentrantLock lock = new ReentrantLock();
 
@@ -57,7 +64,7 @@ public class ArtistService {
         String artist = stringRedisTemplate.opsForValue().get("artist");
         String[] split = artist.split(":");
         String artistIndex = split[0];
-        int offset =0;
+        int offset = 0;
         //开始抓取
         for (int i = Integer.parseInt(artistIndex); i < strings.size(); i++) {
             String s = strings.get(i);
@@ -80,6 +87,33 @@ public class ArtistService {
 
         }
 
+    }
+
+    public void dealArtistIllustList() throws IOException {
+        Path configFilePath = FileSystems.getDefault()
+                .getPath("/home/oysterqaq/文档/home/artist/");
+        Integer offset = Integer.valueOf(Objects.requireNonNull(stringRedisTemplate.opsForValue().get("offset")));
+        List<Path> fileWithName = Files.walk(configFilePath)
+                .filter(Files::isRegularFile)
+                .sorted().collect(Collectors.toList());
+        fileWithName.forEach(System.out::println);
+
+        for (int i = offset; i < fileWithName.size();i+=100) {
+            List<Illustration> illustrationList = fileWithName.stream().skip(i).limit(100).map(e ->
+            {
+                try {
+                    return objectMapper.readValue(Files.readString(e), new TypeReference<IllustsDTO>() {
+                    }).getIllusts();
+                } catch (IOException ex) {
+                    return null;
+                }
+            }).flatMap(Collection::stream).map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
+          /*  IllustsDTO illustsDTO = objectMapper.readValue(Files.readString(fileWithName.get(i)), new TypeReference<IllustsDTO>() {
+            });
+            List<Illustration> illustrationList = illustsDTO.getIllusts().stream().parallel().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());*/
+            illustrationService.saveToDb2(illustrationList);
+            stringRedisTemplate.opsForValue().set("offset", String.valueOf(i));
+        }
     }
 
     public List<Artist> pullArtistsInfo(List<Integer> artistIds) {

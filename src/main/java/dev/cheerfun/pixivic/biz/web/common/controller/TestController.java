@@ -52,7 +52,7 @@ public class TestController {
     @GetMapping("/test")
     //@PermissionRequired
     public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException {
-        artistService.pullArtistIllustList();
+        artistService.dealArtistIllustList();
         return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")
