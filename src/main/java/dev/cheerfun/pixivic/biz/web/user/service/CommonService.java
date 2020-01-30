@@ -35,7 +35,7 @@ public class CommonService {
     private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
 
-    public String signUp(User user) throws MessagingException {
+    public User signUp(User user) throws MessagingException {
         //检测用户名或邮箱是否重复
         if (userMapper.checkUserNameAndEmail(user.getUsername(), user.getEmail()) == 1) {
             throw new UserCommonException(HttpStatus.CONFLICT, "用户名或邮箱已存在");
@@ -47,7 +47,8 @@ public class CommonService {
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
         emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId());
-        return jwtUtil.getToken(user);
+        user = userMapper.queryUserByusernameAndPassword(user.getUsername(), user.getPassword());
+        return user;
     }
 
     public User signIn(String username, String password) {

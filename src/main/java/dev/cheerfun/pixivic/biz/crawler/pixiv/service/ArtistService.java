@@ -96,9 +96,13 @@ public class ArtistService {
         List<Path> fileWithName = Files.walk(configFilePath)
                 .filter(Files::isRegularFile)
                 .sorted().collect(Collectors.toList());
-        for (int i = offset; i < fileWithName.size();i+=200) {
-            System.out.println("开始处理第"+i+"个到第"+(i+200)+"个文件");
-            List<Illustration> illustrationList = fileWithName.stream().skip(i).limit(200).map(e ->
+       /* for(int j=0;j<154800;j++){
+            System.out.println("删除"+fileWithName.get(j));
+            Files.delete(fileWithName.get(j));
+        }*/
+        for (int i = offset; i < fileWithName.size();i+=300) {
+            System.out.println("开始处理第"+i+"个到第"+(i+300)+"个文件");
+            List<Illustration> illustrationList = fileWithName.stream().skip(i).limit(300).map(e ->
             {
                 try {
                     return objectMapper.readValue(Files.readString(e), new TypeReference<IllustsDTO>() {
