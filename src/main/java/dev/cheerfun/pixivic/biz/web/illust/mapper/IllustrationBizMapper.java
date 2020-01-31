@@ -40,6 +40,7 @@ public interface IllustrationBizMapper {
     @Results({
             @Result(property = "id", column = "artist_id"),
     })
+    @Cacheable(value = "artist")
     Artist queryArtistById(Integer artistId);
 
     @Select("  SELECT\n" +

@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
-import dev.cheerfun.pixivic.biz.web.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;

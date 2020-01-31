@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
-import dev.cheerfun.pixivic.biz.web.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.FollowedRelation;

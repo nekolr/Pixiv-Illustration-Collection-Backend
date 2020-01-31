@@ -10,17 +10,18 @@ import lombok.Data;
  */
 @Data
 public class Artist  {
-    private Integer id;
-    private String name;
-    private String account;
-    private String avatar;
-    private String comment;
-    private String gender;
-    private String birthDay;
-    private String region;
-    private String webPage;
-    private String twitterAccount;
-    private String twitterUrl;
-    private String totalFollowUsers;
-    private String totalIllustBookmarksPublic;
+    protected Integer id;
+    protected String name;
+    protected String account;
+    protected String avatar;
+    protected String comment;
+    protected String gender;
+    protected String birthDay;
+    protected String region;
+    protected String webPage;
+    protected String twitterAccount;
+    protected String twitterUrl;
+    protected String totalFollowUsers;
+    protected String totalIllustBookmarksPublic;
+
 }

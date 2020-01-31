@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
+import dev.cheerfun.pixivic.biz.web.common.dto.ArtistPreViewWithFollowedInfo;
+import dev.cheerfun.pixivic.biz.web.common.dto.ArtistWithIsFollowedInfo;
+import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
-import dev.cheerfun.pixivic.biz.web.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
@@ -17,7 +19,6 @@ import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
-import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -61,7 +62,6 @@ public class IllustrationBizService {
         return illustrations;
     }
 
-    @Cacheable(value = "artist")
     public Artist queryArtistById(Integer artistId) {
         Artist artist = illustrationBizMapper.queryArtistById(artistId);
         if (artist == null) {
@@ -69,11 +69,14 @@ public class IllustrationBizService {
             if (artist == null) {
                 throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
             }
-            return artist;
+        }
+        if (AppContext.get() != null) {
+            int userId = (int) AppContext.get().get(USER_ID);
+            Boolean isFollowed = businessService.queryIsFollowed(userId, artist.getId());
+            artist = new ArtistWithIsFollowedInfo(artist, isFollowed);
         }
         return artist;
     }
-
 
     public Illustration queryIllustrationById(Integer illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
@@ -90,7 +93,9 @@ public class IllustrationBizService {
         if (AppContext.get() != null) {
             int userId = (int) AppContext.get().get(USER_ID);
             Boolean isBookmarked = businessService.queryIsBookmarked(userId, illustId);
-            illustration=new IllustrationWithLikeInfo(illustration,isBookmarked);
+            illustration = new IllustrationWithLikeInfo(illustration, isBookmarked);
+            Boolean isFollowed = businessService.queryIsFollowed(userId, illustration.getArtistId());
+            illustration.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustration.getArtistPreView(), isFollowed));
         }
         return illustration;
     }
@@ -148,11 +153,11 @@ public class IllustrationBizService {
     @Cacheable(value = "illust")
     public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
         Illustration illustration = queryIllustrationById(illustId);
-        illustration=objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
+        illustration = objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
         });
         if (illustration != null && illustration.getTags().size() > 0) {
-            String keywords = illustration.getTags().stream().parallel().filter(e->!"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
-            return searchService.searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 6,illustId).thenApply(SearchResult::getIllustrations);
+            String keywords = illustration.getTags().stream().parallel().filter(e -> !"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
+            return searchService.searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 6, illustId).thenApply(SearchResult::getIllustrations);
         }
         throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
     }

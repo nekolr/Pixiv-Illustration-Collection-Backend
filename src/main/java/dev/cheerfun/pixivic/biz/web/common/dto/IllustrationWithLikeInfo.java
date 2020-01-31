@@ -1,7 +1,6 @@
-package dev.cheerfun.pixivic.biz.web.dto;
+package dev.cheerfun.pixivic.biz.web.common.dto;
 
 import dev.cheerfun.pixivic.common.po.Illustration;
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
