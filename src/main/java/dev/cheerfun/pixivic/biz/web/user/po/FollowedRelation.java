@@ -1,6 +1,9 @@
 package dev.cheerfun.pixivic.biz.web.user.po;
 
 import lombok.Data;
+import lombok.NonNull;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author OysterQAQ
@@ -10,6 +13,8 @@ import lombok.Data;
  */
 @Data
 public class FollowedRelation {
-    private int userId;
-    private int artistId;
+    @NonNull
+    private Integer userId;
+    @NonNull
+    private Integer artistId;
 }
