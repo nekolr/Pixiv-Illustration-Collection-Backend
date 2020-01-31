@@ -25,7 +25,7 @@ public interface IllustrationBizMapper {
     @Cacheable(value = "illust")
     Illustration queryIllustrationByIllustId(Integer illustId);
 
-    @Select("select * from illusts where artist_id = #{artistId} and type = #{type} and sanity_level<=#{maxSanityLevel} limit #{currIndex} , #{pageSize}")
+    @Select("select * from illusts where artist_id = #{artistId} and type = #{type}  limit #{currIndex} , #{pageSize}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
@@ -34,7 +34,7 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-    List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize, int maxSanityLevel);
+    List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize);
 
     @Select("select * from artists where artist_id =#{artistId}")
     @Results({

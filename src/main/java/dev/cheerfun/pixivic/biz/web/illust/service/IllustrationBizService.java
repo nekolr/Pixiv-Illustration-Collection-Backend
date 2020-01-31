@@ -56,8 +56,8 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "illust")
-    public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize, int maxSanityLevel) {
-        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize, maxSanityLevel);
+    public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
+        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
     }
 

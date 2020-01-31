@@ -38,9 +38,9 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/artists/{artistId}/illusts/{type}")
-    //@PermissionRequired
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestParam(defaultValue = "5") int maxSanityLevel) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize, maxSanityLevel)));
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize,@RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功",businessService.dealIsLikedInfoForIllustList(illustrationBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize))));
     }
 
     @GetMapping("/artists/{artistId}/summary")
