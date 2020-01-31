@@ -23,7 +23,7 @@ public interface IllustrationBizMapper {
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
     @Cacheable(value = "illust")
-    Illustration queryIllustrationByIllustId(Integer illustId/*, Integer xRestrict*/);
+    Illustration queryIllustrationByIllustId(Integer illustId);
 
     @Select("select * from illusts where artist_id = #{artistId} and type = #{type} and sanity_level<=#{maxSanityLevel} limit #{currIndex} , #{pageSize}")
     @Results({

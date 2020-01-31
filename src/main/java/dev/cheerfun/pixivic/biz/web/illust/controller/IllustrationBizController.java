@@ -62,9 +62,9 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/illusts/{illustId}")
-    //@PermissionRequired
-    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestParam(defaultValue = "0") Integer xRestrict) {
-        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId/*, xRestrict*/)));
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId)));
     }
 
     @GetMapping("/illusts/{illustId}/related")

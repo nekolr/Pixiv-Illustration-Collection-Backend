@@ -6,10 +6,13 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
+import dev.cheerfun.pixivic.biz.web.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
+import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -42,8 +45,10 @@ public class IllustrationBizService {
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
     private final SearchService searchService;
+    private final BusinessService businessService;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
+    private static final String USER_ID = "userId";
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
@@ -69,9 +74,9 @@ public class IllustrationBizService {
         return artist;
     }
 
-    @Cacheable(value = "illust")
-    public Illustration queryIllustrationById(Integer illustId/*, Integer xRestrict*/) {
-        Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId/*, xRestrict*/);
+
+    public Illustration queryIllustrationById(Integer illustId) {
+        Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
             illustration = illustrationService.pullIllustrationInfo(illustId);
             if (illustration == null) {
@@ -81,6 +86,11 @@ public class IllustrationBizService {
                 illustrations.add(illustration);
                 illustrationService.saveToDb(illustrations);
             }
+        }
+        if (AppContext.get() != null) {
+            int userId = (int) AppContext.get().get(USER_ID);
+            Boolean isBookmarked = businessService.queryIsBookmarked(userId, illustId);
+            illustration=new IllustrationWithLikeInfo(illustration,isBookmarked);
         }
         return illustration;
     }
