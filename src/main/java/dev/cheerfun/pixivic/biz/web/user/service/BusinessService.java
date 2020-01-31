@@ -130,6 +130,7 @@ public class BusinessService {
 
     public void cancelFollow(int userId, int artistId) {
         int effectRow = businessMapper.cancelFollow(userId, artistId);
+        stringRedisTemplate.opsForSet().remove(artistFollowRedisPre + artistId, String.valueOf(userId));
         if (effectRow == 0) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "用户画师关系请求错误");
         }
