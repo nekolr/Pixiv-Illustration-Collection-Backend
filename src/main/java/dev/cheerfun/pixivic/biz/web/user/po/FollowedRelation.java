@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.po;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import javax.validation.constraints.NotBlank;
@@ -12,9 +13,11 @@ import javax.validation.constraints.NotBlank;
  * @description FollowedRelation
  */
 @Data
+@NoArgsConstructor
 public class FollowedRelation {
     @NonNull
     private Integer userId;
     @NonNull
     private Integer artistId;
+
 }
