@@ -10,7 +10,6 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 
@@ -44,7 +43,9 @@ public class SearchUtil {
     private final static String PRE = "{";
     private final static String DOT = ",";
     private final static String POS = "}";
-    private final static String QUERY_PRE = /*"query":{"function_score":{*/"\"query\":{\"bool\":{\"should\":[";
+    private final static String QUERY_PRE = /*"query":{"function_score":{*/"\"query\":{\"bool\":{";
+    private final static String QUERY_SHOULD = /*"query":{"function_score":{*/"\"should\":[";
+
     private final static String FILTER_PRE = "],\"filter\":[";
     private final static String FILTER_POS = "]";
     private final static String QUERY_POS = "}}";
@@ -58,8 +59,14 @@ public class SearchUtil {
     private final static String X_RESTRICT_PRE = "{\"term\":{\"x_restrict\":";
     private final static String X_RESTRICT_POS = "}}";
 
+    private final static String ID_PRE = "\"must_not\": {\"term\": {\"_id\":\"";
+    private final static String ID_POS = "\"}}";
+
     private final static String MIN_WIDTH_PRE = "{\"range\":{\"width\":{\"gte\":";
     private final static String MIN_WIDTH_POS = "}}}";
+
+    private final static String MIN_BOOKMARK_PRE = "{\"range\":{\"total_bookmarks\":{\"gte\":";
+    private final static String MIN_BOOKMARK_POS = "}}}";
 
     private final static String MIN_HEIGHT_PRE = "{\"range\":{\"height\":{\"gte\":";
     private final static String MIN_HEIGHT_POS = "}}}";
@@ -80,15 +87,16 @@ public class SearchUtil {
             int page,
             String searchType,
             String illustType,
-            int minWidth,
-            int minHeight,
+            Integer minWidth,
+            Integer minHeight,
             String beginDate,
             String endDate,
-            int xRestrict,
-            int popWeight,
-            int minTotalBookmarks,
-            int minTotalView,
-            int maxSanityLevel
+            Integer xRestrict,
+            Integer popWeight,
+            Integer minTotalBookmarks,
+            Integer minTotalView,
+            Integer maxSanityLevel,
+            Integer exceptId
     ) {
         StringBuilder stringBuilder = new StringBuilder(PRE);
         stringBuilder
@@ -102,21 +110,36 @@ public class SearchUtil {
                 .append(pageSize)
                 .append(DOT)
                 .append(QUERY_PRE);
+        //id
+        if (exceptId != null) {
+            stringBuilder.append(ID_PRE)
+                    .append(exceptId)
+                    .append(ID_POS)
+                    .append(DOT);
+        }
+        stringBuilder.append(QUERY_SHOULD);
         String[] keywords = keyword.split("\\|\\|");
         for (String k : keywords) {
             stringBuilder.append(NESTED_PRE).append(HtmlUtils.htmlEscape(k)).append(NESTED_POS).append(DOT);
         }
         stringBuilder.deleteCharAt(stringBuilder.length() - 1);
         //过滤器
-        stringBuilder.append(FILTER_PRE)
-                .append(TYPE_PRE)
-                .append(illustType)
-                .append(TYPE_POS)
-                .append(DOT)
-                .append(X_RESTRICT_PRE)
-                .append(xRestrict)
-                .append(X_RESTRICT_POS)
-                .append(DOT);
+        stringBuilder.append(FILTER_PRE);
+        //画作类型
+        if (illustType != null) {
+            stringBuilder.append(TYPE_PRE)
+                    .append(illustType)
+                    .append(TYPE_POS)
+                    .append(DOT);
+        }
+        //r18
+        if (xRestrict != null) {
+            stringBuilder.append(X_RESTRICT_PRE)
+                    .append(xRestrict)
+                    .append(X_RESTRICT_POS)
+                    .append(DOT);
+        }
+        //开始日期结束日期
         if (beginDate != null && endDate != null) {
             stringBuilder.append(DATE_RANGE_1)
                     .append(beginDate)
@@ -125,16 +148,25 @@ public class SearchUtil {
                     .append(DATE_RANGE_3)
                     .append(DOT);
         }
-        if (minWidth != 0) {
-            stringBuilder.append(MIN_WIDTH_PRE)
-                    .append(minWidth)
-                    .append(MIN_WIDTH_POS)
+        //最小收藏数
+        if (minTotalBookmarks != null) {
+            stringBuilder.append(MIN_BOOKMARK_PRE)
+                    .append(minTotalBookmarks)
+                    .append(MIN_BOOKMARK_POS)
                     .append(DOT);
         }
-        if (minHeight != 0) {
+        //最小高度
+        if (minHeight != null) {
             stringBuilder.append(MIN_HEIGHT_PRE)
                     .append(minHeight)
                     .append(MIN_HEIGHT_POS)
+                    .append(DOT);
+        }
+        //最小宽度
+        if (minWidth != null) {
+            stringBuilder.append(MIN_WIDTH_PRE)
+                    .append(minWidth)
+                    .append(MIN_WIDTH_POS)
                     .append(DOT);
         }
         stringBuilder.append(MAX_SANITY_LEVEL_PRE)
@@ -150,6 +182,7 @@ public class SearchUtil {
                 .append(POS);
         return stringBuilder.toString();
     }
+
 
     public CompletableFuture<SearchResult> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()

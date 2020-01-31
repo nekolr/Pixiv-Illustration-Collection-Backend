@@ -79,30 +79,30 @@ public class SearchController {
                     String searchType,//搜索类型（原生、自动翻译、自动匹配词条）
             @RequestParam(defaultValue = "illust")
                     String illustType,
-            @RequestParam(defaultValue = "0")
-                    int minWidth,
-            @RequestParam(defaultValue = "0")
-                    int minHeight,
-            @RequestParam(defaultValue = "2008-01-01")
+            @RequestParam(required = false)
+                    Integer minWidth,
+            @RequestParam(required = false)
+                    Integer minHeight,
+            @RequestParam(required = false)
                     String beginDate,
-            @RequestParam(defaultValue = "9999-12-31")
+            @RequestParam(required = false)
                     String endDate,
             @RequestParam(defaultValue = "0")
-                    int xRestrict,
-            @RequestParam(defaultValue = "0")
-                    int popWeight,
-            @RequestParam(defaultValue = "0")
-                    int minTotalBookmarks,
-            @RequestParam(defaultValue = "0")
-                    int minTotalView,
+                    Integer xRestrict,
+            @RequestParam(required = false)
+                    Integer popWeight,
+            @RequestParam(required = false)
+                    Integer minTotalBookmarks,
+            @RequestParam(required = false)
+                    Integer minTotalView,
             @RequestParam(defaultValue = "6")
-                    int maxSanityLevel, @RequestHeader(value = "Authorization", required = false) String token) {
+                    Integer maxSanityLevel, @RequestHeader(value = "Authorization", required = false) String token) {
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
             String[] keywords = keyword.split("\\|\\|");
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel);
+        CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel,null);
         return searchResultCompletableFuture.thenApply(illustrations -> {
             if(illustrations!=null){
                 illustrations.setIllustrations(businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations()));

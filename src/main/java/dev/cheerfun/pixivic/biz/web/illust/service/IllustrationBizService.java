@@ -142,7 +142,7 @@ public class IllustrationBizService {
         });
         if (illustration != null && illustration.getTags().size() > 0) {
             String keywords = illustration.getTags().stream().parallel().filter(e->!"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
-            return searchService.searchByKeyword(keywords, pageSize, page, "original", "illust", 0, 0, "2008-01-01", "9999-12-31", 0, 0, 0, 0, 6).thenApply(SearchResult::getIllustrations);
+            return searchService.searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 6,illustId).thenApply(SearchResult::getIllustrations);
         }
         throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
     }

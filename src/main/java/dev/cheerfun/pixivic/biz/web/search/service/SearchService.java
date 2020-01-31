@@ -237,16 +237,17 @@ public class SearchService {
             int page,
             String searchType,
             String illustType,
-            int minWidth,
-            int minHeight,
+            Integer minWidth,
+            Integer minHeight,
             String beginDate,
             String endDate,
-            int xRestrict,
-            int popWeight,
-            int minTotalBookmarks,
-            int minTotalView,
-            int maxSanityLevel) {
-        String build = searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel);
+            Integer xRestrict,
+            Integer popWeight,
+            Integer minTotalBookmarks,
+            Integer minTotalView,
+            Integer maxSanityLevel,
+            Integer exceptId) {
+        String build = searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel,exceptId);
        // System.out.println(build);
         CompletableFuture<SearchResult> request = searchUtil.request(build);
         return request;
