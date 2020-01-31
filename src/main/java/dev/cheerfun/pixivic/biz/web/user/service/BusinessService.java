@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
-import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
@@ -125,6 +125,7 @@ public class BusinessService {
 
     public void follow(int userId, int artistId) {
         businessMapper.follow(userId, artistId, LocalDateTime.now());
+        stringRedisTemplate.opsForSet().add(artistFollowRedisPre + artistId, String.valueOf(userId));
     }
 
     public void cancelFollow(int userId, int artistId) {
@@ -143,7 +144,7 @@ public class BusinessService {
     }
 
     public Boolean queryIsFollowed(int userId, Integer artistId) {
-        return businessMapper.queryIsFollowed(userId, artistId) != 0;
+        return stringRedisTemplate.opsForSet().isMember(artistFollowRedisPre + artistId, String.valueOf(userId));
     }
 
     @Transactional
