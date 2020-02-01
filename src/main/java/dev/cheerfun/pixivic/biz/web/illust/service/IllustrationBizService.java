@@ -56,7 +56,6 @@ public class IllustrationBizService {
         return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
     }
 
-    @Cacheable(value = "illust")
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
@@ -122,7 +121,6 @@ public class IllustrationBizService {
         return url.toString();
     }
 
-    @Cacheable(value = "artistSummarys")
     public List<ArtistSummary> querySummaryByArtistId(Integer artistId) {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
     }
@@ -150,7 +148,7 @@ public class IllustrationBizService {
     }
 */
 
-    @Cacheable(value = "illust")
+    @Cacheable(value = "related")
     public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
         Illustration illustration = queryIllustrationById(illustId);
         illustration = objectMapper.convertValue(illustration, new TypeReference<Illustration>() {

@@ -34,6 +34,7 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
+    @Cacheable(value = "artist_illusts")
     List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize);
 
     @Select("select * from artists where artist_id =#{artistId}")
@@ -75,6 +76,7 @@ public interface IllustrationBizMapper {
             @Result(property = "type", column = "type"),
             @Result(property = "sum", column = "sum"),
     })
+    @Cacheable(value = "artistSummarys")
     List<ArtistSummary> querySummaryByArtistId(Integer artistId);
 
     @Insert({
