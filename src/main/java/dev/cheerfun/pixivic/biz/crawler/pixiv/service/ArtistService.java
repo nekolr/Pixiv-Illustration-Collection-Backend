@@ -96,7 +96,7 @@ public class ArtistService {
         List<Path> fileWithName = Files.walk(configFilePath)
                 .filter(Files::isRegularFile)
                 .sorted().collect(Collectors.toList());
-       /* for(int j=0;j<154800;j++){
+       /* for(int j=0;j<178200;j++){
             System.out.println("删除"+fileWithName.get(j));
             Files.delete(fileWithName.get(j));
         }*/
