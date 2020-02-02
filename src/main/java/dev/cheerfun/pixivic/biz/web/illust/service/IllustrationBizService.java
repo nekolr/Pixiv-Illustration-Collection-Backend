@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -151,13 +150,13 @@ public class IllustrationBizService {
 */
 
     @Cacheable(value = "related")
-    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
+    public CompletableFuture<SearchResult> queryIllustrationRelated(int illustId, int page, int pageSize) {
         Illustration illustration = queryIllustrationById(illustId);
         illustration = objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
         });
         if (illustration != null && illustration.getTags().size() > 0) {
             String keywords = illustration.getTags().stream().parallel().filter(e -> !"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
-            return searchService.searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 6, illustId).thenApply(SearchResult::getIllustrations);
+            return searchService.searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 6, illustId);
         }
         throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
     }

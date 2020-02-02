@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.illust.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
@@ -40,8 +41,8 @@ public class IllustrationBizController {
 
     @GetMapping("/artists/{artistId}/illusts/{type}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize,@RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功",businessService.dealIsLikedInfoForIllustList(illustrationBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize))));
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", businessService.dealIsLikedInfoForIllustList(illustrationBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize))));
     }
 
     @GetMapping("/artists/{artistId}/summary")
@@ -52,7 +53,7 @@ public class IllustrationBizController {
 
     @GetMapping("/artists/{artistId}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId,@RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("获取画师详情成功", illustrationBizService.queryArtistById(artistId)));
     }
 
@@ -70,15 +71,20 @@ public class IllustrationBizController {
 
     @GetMapping("/illusts/{illustId}/related")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize,@RequestHeader(value = "Authorization", required = false) String token) {
+    public CompletableFuture<ResponseEntity<Result<SearchResult>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         //由于异步请求,线程切换导致取不到threadlocal,所以这里先取一下
         Integer userId = null;
         Map<String, Object> context = AppContext.get();
-        if (context != null&&context.get(USER_ID)!=null) {
+        if (context != null && context.get(USER_ID) != null) {
             userId = (int) context.get(USER_ID);
         }
         Integer finalUserId = userId;
-        return illustrationBizService.queryIllustrationRelated(illustId, page,pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", finalUserId == null ? r : businessService.dealIsLikedInfoForIllustList(r, finalUserId))));
+        return illustrationBizService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> {
+            if( finalUserId != null ){
+                r.setIllustrations(businessService.dealIsLikedInfoForIllustList(r.getIllustrations(), finalUserId));
+            }
+            return ResponseEntity.ok().body(new Result<>("获取关联画作成功",r));
+        });
     }
 
     @GetMapping("/illusts/random")

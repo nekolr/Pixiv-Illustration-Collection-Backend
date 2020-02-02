@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.common.po;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
@@ -37,6 +38,7 @@ public class Illustration {
     protected List<String> tools;
     @JsonSetter("create_date")
     @JsonAlias({"create_date", "createDate"})
+    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
     protected Date createDate;
     @JsonSetter("page_count")
     @JsonAlias({"page_count", "pageCount"})

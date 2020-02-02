@@ -195,7 +195,7 @@ public class SearchUtil {
                     ElasticsearchResponse elasticsearchResponse;
                     try {
                         if (r.body() != null) {
-                            elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<ElasticsearchResponse>() {
+                            elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<>() {
                             });
                             Hits hits = elasticsearchResponse.getHits();
                             if (hits != null && hits.getHits() != null) {
