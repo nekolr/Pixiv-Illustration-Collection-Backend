@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -78,8 +77,8 @@ public class BusinessService {
 
     public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
         Map<String, Object> context = AppContext.get();
-        if (context != null&&context.get(USER_ID)!=null) {
-            int userId = (int)context.get(USER_ID);
+        if (context != null && context.get(USER_ID) != null) {
+            int userId = (int) context.get(USER_ID);
             return dealIsLikedInfoForIllustList(illustrationList, userId);
         }
         return illustrationList;
@@ -94,13 +93,11 @@ public class BusinessService {
             }
             return null;
         });
-        List<Illustration> illustrationWithLikeInfoList = new ArrayList<>();
         int size = isLikedList.size();
         for (int i = 0; i < size; i++) {
-            IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i));
-            illustrationWithLikeInfoList.add(illustrationWithLikeInfo);
+            illustrationList.set(i, new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i)));
         }
-        return illustrationWithLikeInfoList;
+        return illustrationList;
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")

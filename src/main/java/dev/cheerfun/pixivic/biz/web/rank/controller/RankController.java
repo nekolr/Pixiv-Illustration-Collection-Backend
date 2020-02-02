@@ -35,8 +35,10 @@ public class RankController {
     public ResponseEntity<Result<Rank>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         Rank rank = rankService.queryByDateAndMode(date, mode, page, pageSize);
         //由于jackson反序列化如果使用泛型则会将对象反序列化为linkedhashmap,这里重新序列化做一个转换,会降低效率
-        rank.setData(businessService.dealIsLikedInfoForIllustList(objectMapper.convertValue(rank.getData(), new TypeReference<List<Illustration>>() {
-        })));
+        List<Illustration> illustrationList = objectMapper.convertValue(rank.getData(), new TypeReference<List<Illustration>>() {
+        });
+        businessService.dealIsLikedInfoForIllustList(illustrationList);
+        rank.setData(illustrationList);
         return ResponseEntity.ok().body(new Result<>("获取排行成功", rank));
     }
 
