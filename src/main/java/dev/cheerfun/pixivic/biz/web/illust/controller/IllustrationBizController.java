@@ -51,8 +51,8 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/artists/{artistId}")
-    //@PermissionRequired
-    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId) {
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId,@RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("获取画师详情成功", illustrationBizService.queryArtistById(artistId)));
     }
 
