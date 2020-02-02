@@ -69,8 +69,9 @@ public class IllustrationBizService {
                 throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
             }
         }
-        if (AppContext.get() != null) {
-            int userId = (int) AppContext.get().get(USER_ID);
+        Map<String, Object> context = AppContext.get();
+        if (context != null&&context.get(USER_ID)!=null) {
+            int userId = (int) context.get(USER_ID);
             Boolean isFollowed = businessService.queryIsFollowed(userId, artist.getId());
             artist = new ArtistWithIsFollowedInfo(artist, isFollowed);
         }
@@ -89,8 +90,9 @@ public class IllustrationBizService {
                 illustrationService.saveToDb(illustrations);
             }
         }
-        if (AppContext.get() != null) {
-            int userId = (int) AppContext.get().get(USER_ID);
+        Map<String, Object> context = AppContext.get();
+        if (context != null&&context.get(USER_ID)!=null) {
+            int userId = (int) context.get(USER_ID);
             Boolean isBookmarked = businessService.queryIsBookmarked(userId, illustId);
             illustration = new IllustrationWithLikeInfo(illustration, isBookmarked);
             Boolean isFollowed = businessService.queryIsFollowed(userId, illustration.getArtistId());
@@ -160,7 +162,7 @@ public class IllustrationBizService {
         throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
     }
 
-    @Scheduled(cron = "0 0/5 * * * ? ")
+    //@Scheduled(cron = "0 0/5 * * * ? ")
     void saveIllustRelatedToDb() {
         final HashMap<String, List<Illustration>> temp = new HashMap<>(waitSaveToDb);
         waitSaveToDb.clear();
@@ -196,7 +198,4 @@ public class IllustrationBizService {
         return false;
     }
 
-    public void deal(Map<String, String> map) {
-        map = null;
-    }
 }

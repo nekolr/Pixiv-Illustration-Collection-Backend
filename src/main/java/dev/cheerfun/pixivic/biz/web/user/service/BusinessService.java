@@ -67,8 +67,9 @@ public class BusinessService {
     }
 
     public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
-        if (AppContext.get() != null) {
-            int userId = (int) AppContext.get().get(USER_ID);
+        Map<String, Object> context = AppContext.get();
+        if (context != null&&context.get(USER_ID)!=null) {
+            int userId = (int)context.get(USER_ID);
             return dealIsLikedInfoForIllustList(illustrationList, userId);
         }
         return illustrationList;
