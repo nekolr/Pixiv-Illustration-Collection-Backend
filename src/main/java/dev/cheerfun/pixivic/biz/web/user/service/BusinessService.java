@@ -9,11 +9,8 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -57,23 +54,16 @@ public class BusinessService {
         ) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "用户与画作的收藏关系请求错误");
         }
-        stringRedisTemplate.execute(new SessionCallback<>() {
-            @Override
-            public List<Object> execute(RedisOperations operations) throws DataAccessException {
-                operations.multi();
-                if (increment > 0) {
-                    operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
-                    //异步往mysql中写入
-                    businessMapper.bookmark(userId, illustId, LocalDateTime.now());
-                } else {
-                    operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
-                    //异步往mysql中移除
-                    businessMapper.cancelBookmark(userId, illustId);
-                }
-                operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
-                return operations.exec();
-            }
-        });
+        if (increment > 0) {
+            stringRedisTemplate.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
+            //异步往mysql中写入
+            businessMapper.bookmark(userId, illustId, LocalDateTime.now());
+        } else {
+            stringRedisTemplate.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+            //异步往mysql中移除
+            businessMapper.cancelBookmark(userId, illustId);
+        }
+        stringRedisTemplate.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
     }
 
     public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {

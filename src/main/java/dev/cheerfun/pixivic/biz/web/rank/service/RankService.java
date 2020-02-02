@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 public class RankService {
     private final RankMapper rankMapper;
 
-    @Cacheable(value = "rank")
     public Rank queryByDateAndMode(String date, String mode, int page, int pageSize) {
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
         if (rank != null) {

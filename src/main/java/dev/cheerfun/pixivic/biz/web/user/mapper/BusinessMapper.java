@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
+import org.springframework.scheduling.annotation.Async;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -99,12 +100,14 @@ public interface BusinessMapper {
     int queryIsFollowed(int userId, int artistId);
 
     @Insert("insert into user_illust_bookmarked (user_id, illust_id,create_date) values (#{userId}, #{illustId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Async
     int bookmark(int userId, int illustId, LocalDateTime now);
 
     @Delete("delete from user_illust_bookmarked where id=#{relationId} ")
     int cancelBookmarkByid(int relationId);
 
     @Delete("delete from user_illust_bookmarked where user_id=#{userId} and illust_id=#{illustId} ")
+    @Async
     int cancelBookmark(int userId, int illustId);
 
     @Select("select i.* from (select illust_id from user_illust_bookmarked where user_id=#{userId} order by create_date limit #{currIndex} , #{pageSize}) u left join illusts i on  u.illust_id=i.illust_id where type=#{type}")
