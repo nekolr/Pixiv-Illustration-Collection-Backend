@@ -73,7 +73,7 @@ public class IllustrationBizService {
         if (context != null&&context.get(USER_ID)!=null) {
             int userId = (int) context.get(USER_ID);
             Boolean isFollowed = businessService.queryIsFollowed(userId, artist.getId());
-            artist = new ArtistWithIsFollowedInfo(artist, isFollowed);
+           return new ArtistWithIsFollowedInfo(artist, isFollowed);
         }
         return artist;
     }
