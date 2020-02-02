@@ -105,7 +105,7 @@ public class SearchController {
         CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel,null);
         return searchResultCompletableFuture.thenApply(illustrations -> {
             if(illustrations!=null){
-                illustrations.setIllustrations(businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations()));
+               businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations());
             }
             return ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations));
         });
