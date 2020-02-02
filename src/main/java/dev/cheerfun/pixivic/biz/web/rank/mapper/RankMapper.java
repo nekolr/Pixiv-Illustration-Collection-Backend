@@ -25,6 +25,5 @@ public interface RankMapper {
             @Result(property = "mode", column = "mode"),
             @Result(property = "data", column = "data", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-    @Cacheable(value = "rank")
     Rank queryByDateAndMode(String date, String mode);
 }
