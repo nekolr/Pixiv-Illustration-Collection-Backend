@@ -90,7 +90,7 @@ public interface BusinessMapper {
     @Delete("delete from user_artist_followed where user_id=#{userId} and artist_id = #{artistId}")
     int cancelFollow(int userId, int artistId);
 
-    @Select("select a.* from (select artist_id from user_artist_followed where user_id = #{userId} order by create_date   limit #{currIndex} , #{pageSize}) u left join artists a on u.artist_id = a.artist_id")
+    @Select("select a.* from (select artist_id from user_artist_followed where user_id = #{userId} order by create_date desc  limit #{currIndex} , #{pageSize}) u left join artists a on u.artist_id = a.artist_id")
     @Results({
             @Result(property = "id", column = "artist_id"),
     })
@@ -108,7 +108,7 @@ public interface BusinessMapper {
     @Delete("delete from user_illust_bookmarked where user_id=#{userId} and illust_id=#{illustId} ")
     int cancelBookmark(int userId, int illustId);
 
-    @Select("select i.* from (select illust_id from user_illust_bookmarked where user_id=#{userId} order by create_date limit #{currIndex} , #{pageSize}) u left join illusts i on  u.illust_id=i.illust_id where type=#{type}")
+    @Select("select i.* from (select illust_id from user_illust_bookmarked where user_id=#{userId} order by create_date desc limit #{currIndex} , #{pageSize}) u left join illusts i on  u.illust_id=i.illust_id where type=#{type}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
