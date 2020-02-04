@@ -123,7 +123,7 @@ public class ArtistService {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
         List<Artist> artistList = artistIdsToDownload.stream().parallel().distinct().map(i -> {
             try {
-                return requestUtil.getJson("https://app-api.pixiv.net/v1/user/detail?user_id=" + i + "&filter=for_ios")
+                CompletableFuture<Artist> artistCompletableFuture = requestUtil.getJson("https://app-api.pixiv.net/v1/user/detail?user_id=" + i + "&filter=for_ios")
                         .thenApply(result -> {
                             if ("false".equals(result)) {
                                 this.addToWaitingList(i);
@@ -133,15 +133,13 @@ public class ArtistService {
                             try {
                                 artist = ArtistDTO.castToArtist(objectMapper.readValue(result, new TypeReference<ArtistDTO>() {
                                 }));
-                                //System.out.println(artist);
 
-                                //  System.out.println(artists[i]);
                             } catch (IOException e) {
-                                e.printStackTrace();
+                                return null;
                             }
-                            // cd.countDown();
                             return artist;
-                        }).get();
+                        });
+                return artistCompletableFuture.get();
             } catch (InterruptedException | ExecutionException e) {
                 e.printStackTrace();
             }

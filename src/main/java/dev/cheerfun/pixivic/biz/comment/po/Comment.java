@@ -22,7 +22,9 @@ public class Comment {
     private Integer id;
     private Integer parentId;
     private Integer replyFrom;
+    private String replyFromName;
     private Integer replyTo;
+    private String replyToName;
     @SensitiveCheck
     private String content;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
