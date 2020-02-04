@@ -6,7 +6,6 @@ import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
-import org.springframework.scheduling.annotation.Async;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -121,7 +120,7 @@ public interface BusinessMapper {
 
     int queryIsBookmarked();
 
-    @Select("select i.* from (select artist_id from user_artist_followed where user_id=#{userId}) u left join illusts  i on u.artist_id=i.artist_id  where i.type=#{type} order by i.create_date desc limit #{currIndex} , #{pageSize}")
+    @Select("select i.* from  (select  * from illusts order by illust_id desc)  i join (select artist_id from user_artist_followed where user_id=#{userId} )u on i.artist_id=u.artist_id  where i.type=#{type}  limit #{currIndex} , #{pageSize}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
