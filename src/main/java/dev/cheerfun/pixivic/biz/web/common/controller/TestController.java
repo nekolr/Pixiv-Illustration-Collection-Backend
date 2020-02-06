@@ -10,6 +10,7 @@ import dev.cheerfun.pixivic.biz.crawler.news.service.NewService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.service.SpotlightService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.common.po.Result;
@@ -36,6 +37,7 @@ public class TestController {
     private final OauthUtil oauthUtil;
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustRankService rankDailyService;
+    private final SpotlightService spotlightService;
     private final ArtistService artistService;
     private final IllustrationMapper illustrationMapper;
     private final NewService newService;
@@ -52,7 +54,7 @@ public class TestController {
     @GetMapping("/test")
     //@PermissionRequired
     public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException {
-        artistService.dealArtistIllustList();
+        spotlightService.deal();
         return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")

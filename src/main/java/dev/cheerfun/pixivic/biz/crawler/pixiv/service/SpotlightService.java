@@ -15,10 +15,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.regex.MatchResult;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -35,7 +33,7 @@ public class SpotlightService {
     private final IllustrationService illustrationService;
     private final SpotlightMapper spotlightMapper;
     private final HttpClient httpClient;
-    private Pattern illustIdPattern = Pattern.compile("(?<=(?:id=))\\d+?(?=\" class=\"author)");
+    private Pattern illustIdPattern = Pattern.compile("(?<=(?:id=\"illust-))\\d+");
     private Pattern imageUrlPattern = Pattern.compile("(?<=(?:src\" content=\")).+?(?=\"><meta property=\"og:title\")");
 
     @CacheEvict(cacheNames = "spotlight", allEntries = true)
@@ -48,6 +46,11 @@ public class SpotlightService {
         }
         List<Spotlight> spotlights = spotlightsList.stream().flatMap(Collection::stream).collect(Collectors.toList());
         dealRelationWithIllustration(spotlights);
+    }
+
+    public void deal(){
+
+        dealRelationWithIllustration(spotlightMapper.queryAll());
     }
 
     private List<Spotlight> getSpotlightInfo(int index) {
@@ -64,7 +67,8 @@ public class SpotlightService {
             HttpRequest getArticle = uri.GET().build();
             try {
                 String body = httpClient.send(getArticle, HttpResponse.BodyHandlers.ofString()).body();
-                s.setThumbnail(imageUrlPattern.matcher(body).results().findFirst().get().group());
+                Optional<MatchResult> first = imageUrlPattern.matcher(body).results().findFirst();
+                first.ifPresent(matchResult -> s.setThumbnail(matchResult.group()));
                 List<Integer> illustIds = illustIdPattern.matcher(body).results().map(m -> Integer.parseInt(m.group())).collect(Collectors.toList());
                 //联系入库
                 if (illustIds.size() > 0) {
