@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -87,6 +88,8 @@ public class CommentService {
                 comment.setSubCommentList(mayByParentId[0].get(comment.getId()));
             }
         }
+        //最新消息逆序
+        result.sort(Comparator.comparingInt(Comment::getId));
         return result;
     }
 
