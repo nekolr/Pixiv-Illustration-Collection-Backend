@@ -48,10 +48,10 @@ public class SpotlightService {
         dealRelationWithIllustration(spotlights);
     }
 
-    public void deal(){
+/*    public void deal(){
 
         dealRelationWithIllustration(spotlightMapper.queryAll());
-    }
+    }*/
 
     private List<Spotlight> getSpotlightInfo(int index) {
         SpotlightDTO spotlightDTO = (SpotlightDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/spotlight/articles?category=all&offset=" + "&offset=" + index * 10, SpotlightDTO.class);
