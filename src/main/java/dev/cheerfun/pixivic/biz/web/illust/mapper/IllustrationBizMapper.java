@@ -25,7 +25,7 @@ public interface IllustrationBizMapper {
     @Cacheable(value = "illust")
     Illustration queryIllustrationByIllustId(Integer illustId);
 
-    @Select("select * from illusts where artist_id = #{artistId} and type = #{type}  limit #{currIndex} , #{pageSize}")
+    @Select("select * from illusts where artist_id = #{artistId} and type = #{type} order by create_date desc  limit #{currIndex} , #{pageSize}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
