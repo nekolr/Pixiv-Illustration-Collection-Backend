@@ -54,7 +54,7 @@ public class TestController {
     @GetMapping("/test")
     //@PermissionRequired
     public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException {
-        spotlightService.deal();
+        //spotlightService.deal();
         return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")
