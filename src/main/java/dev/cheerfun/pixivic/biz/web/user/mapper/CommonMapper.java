@@ -17,7 +17,7 @@ public interface CommonMapper {
     })
     int checkUserNameAndEmail(String username, String email);
 
-    @Insert("insert into users (email, username,password,permission_level,is_ban) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan})")
+    @Insert("insert into users (email, username,password,permission_level,is_ban,star) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan},#{star})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "user_id")
     int insertUser(User user);
 
@@ -25,7 +25,12 @@ public interface CommonMapper {
             " SELECT * FROM (SELECT * FROM users WHERE username= #{username} OR email=#{username})  temp where temp.PASSWORD=#{password}",
     })
     @Results({
-            @Result(property = "id", column = "user_id")
+            @Result(property = "id", column = "user_id"),
+            @Result(property = "isBan", column = "is_ban"),
+            @Result(property = "permissionLevel", column = "permission_level"),
+            @Result(property = "pixivAccount", column = "pixiv_account"),
+            @Result(property = "pixivPassword", column = "pixiv_password"),
+            @Result(property = "qqAccessToken", column = "qq_access_token")
     })
     User queryUserByusernameAndPassword(String username, String password);
 
@@ -33,7 +38,12 @@ public interface CommonMapper {
             "SELECT * FROM users WHERE user_id= #{userId} ",
     })
     @Results({
-            @Result(property = "id", column = "user_id")
+            @Result(property = "id", column = "user_id"),
+            @Result(property = "isBan", column = "is_ban"),
+            @Result(property = "permissionLevel", column = "permission_level"),
+            @Result(property = "pixivAccount", column = "pixiv_account"),
+            @Result(property = "pixivPassword", column = "pixiv_password"),
+            @Result(property = "qqAccessToken", column = "qq_access_token")
     })
     User queryUserByUserId(int userId);
 
@@ -43,7 +53,12 @@ public interface CommonMapper {
                     "WHERE qq_access_token=#{qqAccessToken} ",
     })
     @Results({
-            @Result(property = "id", column = "user_id")
+            @Result(property = "id", column = "user_id"),
+            @Result(property = "isBan", column = "is_ban"),
+            @Result(property = "permissionLevel", column = "permission_level"),
+            @Result(property = "pixivAccount", column = "pixiv_account"),
+            @Result(property = "pixivPassword", column = "pixiv_password"),
+            @Result(property = "qqAccessToken", column = "qq_access_token")
     })
     User getUserByQQAccessToken(String qqAccessToken);
 
