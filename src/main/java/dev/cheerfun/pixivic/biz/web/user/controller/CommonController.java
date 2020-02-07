@@ -56,7 +56,8 @@ public class CommonController {
     @CheckVerification
     public ResponseEntity<Result<User>> signUp(@Validated @RequestBody SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
         User user = userInfo.castToUser();
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", userService.signUp(user)));
+        user=userService.signUp(user);
+        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
     }
 
     @PostMapping("/token")
