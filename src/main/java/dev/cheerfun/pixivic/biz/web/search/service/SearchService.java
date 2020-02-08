@@ -256,7 +256,7 @@ public class SearchService {
     @Cacheable(value = "saucenaoResponse")
     public CompletableFuture<List<Illustration>> searchByImage(String imageUrl) {
         return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r -> {
-            if (r != null) {
+            if (r != null&&r.getPixivIdList()!=null) {
                 return r.getPixivIdList().map(illustrationBizMapper::queryIllustrationByIllustId).filter(Objects::nonNull).collect(Collectors.toList());
             }
             throw new SearchException(HttpStatus.NOT_FOUND, "未找到画作");
