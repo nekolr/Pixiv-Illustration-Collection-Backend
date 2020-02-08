@@ -11,6 +11,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 import javax.validation.ConstraintViolationException;
 
@@ -58,6 +59,11 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Result> handleIllegalDecodingException(DecodingException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("登录信息异常"));
     }
+
+    /*@ExceptionHandler(value = MessagingException.class)
+    public ResponseEntity<Result> handleIllegalMessagingException(MessagingException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("登录信息异常"));
+    }*/
     /*    @ExceptionHandler(Exception.class)//可以用来找异常类
         public ResponseEntity handleException(Exception ae) {
             System.out.println(ae);

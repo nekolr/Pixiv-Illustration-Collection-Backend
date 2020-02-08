@@ -46,7 +46,11 @@ public class CommonService {
         //签发token
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
-        emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId());
+        try {
+            emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId());
+        } catch (MessagingException m) {
+            System.out.println(user.getEmail() + "验证邮件发送失败");
+        }
         user = userMapper.queryUserByusernameAndPassword(user.getUsername(), user.getPassword());
         return user;
     }
@@ -104,13 +108,13 @@ public class CommonService {
         }
     }
 
-    public void getCheckEmail(String email,int userId) throws MessagingException {
+    public void getCheckEmail(String email, int userId) throws MessagingException {
         User user = userMapper.queryUserByUserId(userId);
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
         emailUtil.sendEmail(email, user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + userId);
     }
 
-    public String getEmail(HttpServletRequest request){
+    public String getEmail(HttpServletRequest request) {
         final String path =
                 request.getAttribute(HandlerMapping.PATH_WITHIN_HANDLER_MAPPING_ATTRIBUTE).toString();
         final String bestMatchingPattern =
