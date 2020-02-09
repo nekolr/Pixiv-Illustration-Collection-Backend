@@ -506,13 +506,14 @@ public class EmailUtil {
                 "  </body>\n" +
                 "</html>";
     }
-@Async
+
+    @Async
     public void sendEmail(String emailAddr, String to, String from, String content, String link) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
         helper.setFrom("Pixivic.com<403827354@qq.com>");
         helper.setTo(emailAddr);
-        helper.setSubject("来自Pixivic.com的回复提醒");
+        helper.setSubject("来自Pixivic.com的信息");
         helper.setText(p1 + to + p2 + from + p3 + content + p4 + link + p5, true);
         mailSender.send(message);
     }

@@ -46,11 +46,7 @@ public class CommonService {
         //签发token
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
-        try {
-            emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId());
-        } catch (MessagingException m) {
-            System.out.println(user.getEmail() + "验证邮件发送失败");
-        }
+        emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId());
         user = userMapper.queryUserByusernameAndPassword(user.getUsername(), user.getPassword());
         return user;
     }
