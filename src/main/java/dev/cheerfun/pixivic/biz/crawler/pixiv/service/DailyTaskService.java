@@ -18,12 +18,12 @@ public class DailyTaskService {
     private final IllustRankService rankService;
     private final MainCrawlerService mainCrawlerService;
 
-    @Scheduled(cron = "0 30 3 * * ?")
+    @Scheduled(cron = "0 30 5 * * ?")
     public void spotlight() {
         spotlightService.pullAllSpotlight();
     }
 
-    @Scheduled(cron = "0 10 1 * * ?")
+    @Scheduled(cron = "0 10 5 * * ?")
     public void rank() throws
             InterruptedException {
         rankService.pullAllRank();
