@@ -21,6 +21,7 @@ import javax.mail.MessagingException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import java.io.IOException;
 
 /**
  * @author OysterQAQ
@@ -56,7 +57,7 @@ public class CommonController {
     @CheckVerification
     public ResponseEntity<Result<User>> signUp(@Validated @RequestBody SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
         User user = userInfo.castToUser();
-        user=userService.signUp(user);
+        user = userService.signUp(user);
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
     }
 
@@ -68,21 +69,22 @@ public class CommonController {
     }
 
     @PostMapping("/tokenWithQQ")
-    public ResponseEntity<Result<User>> signInByQQ(@RequestBody String qqAccessToken) {
-        return ResponseEntity.ok().body(new Result<>("登录成功", userService.signIn(qqAccessToken)));
+    public ResponseEntity<Result<User>> signInByQQ(@RequestBody String qqAccessToken) throws IOException, InterruptedException {
+        User user = userService.signIn(qqAccessToken);
+        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
     }
 
     @PutMapping("/{userId}/qqAccessToken")
     @PermissionRequired
-    public ResponseEntity<Result> bindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
-        userService.bindQQ(qqAccessToken, userId, token);
+    public ResponseEntity<Result> bindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) throws IOException, InterruptedException {
+        userService.bindQQ(qqAccessToken, (int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("绑定QQ成功"));
     }
 
     @PutMapping("/{userId}/avatar")
     @PermissionRequired
     public ResponseEntity<Result<String>> setAvatar(@RequestParam String avatar, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
-        userService.setAvatar(avatar, userId, token);
+        userService.setAvatar(avatar, (int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("修改头像成功", avatar));
     }
 

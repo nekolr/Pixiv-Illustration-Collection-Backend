@@ -30,7 +30,7 @@ public interface CommonMapper {
             @Result(property = "permissionLevel", column = "permission_level"),
             @Result(property = "pixivAccount", column = "pixiv_account"),
             @Result(property = "pixivPassword", column = "pixiv_password"),
-            @Result(property = "qqAccessToken", column = "qq_access_token")
+            @Result(property = "qqOpenId", column = "qq_open_id")
     })
     User queryUserByusernameAndPassword(String username, String password);
 
@@ -43,14 +43,14 @@ public interface CommonMapper {
             @Result(property = "permissionLevel", column = "permission_level"),
             @Result(property = "pixivAccount", column = "pixiv_account"),
             @Result(property = "pixivPassword", column = "pixiv_password"),
-            @Result(property = "qqAccessToken", column = "qq_access_token")
+            @Result(property = "qqOpenId", column = "qq_open_id")
     })
     User queryUserByUserId(int userId);
 
     @Select({
             "SELECT *\n" +
                     "FROM users\n" +
-                    "WHERE qq_access_token=#{qqAccessToken} ",
+                    "WHERE qq_open_id=#{qqOpenId} ",
     })
     @Results({
             @Result(property = "id", column = "user_id"),
@@ -58,12 +58,12 @@ public interface CommonMapper {
             @Result(property = "permissionLevel", column = "permission_level"),
             @Result(property = "pixivAccount", column = "pixiv_account"),
             @Result(property = "pixivPassword", column = "pixiv_password"),
-            @Result(property = "qqAccessToken", column = "qq_access_token")
+            @Result(property = "qqOpenId", column = "qq_open_id")
     })
-    User getUserByQQAccessToken(String qqAccessToken);
+    User getUserByQQOpenId(String qqOpenId);
 
-    @Update("update users set qq_access_token=#{qqAccessToken} where user_id=#{userId}")
-    int setQqAccessToken(String qqAccessToken, int userId);
+    @Update("update users set qq_open_id=#{qqOpenId} where user_id=#{userId}")
+    int setQQOpenId(String qqOpenId, int userId);
 
     @Update("update users set avatar=#{avatar} where user_id=#{userId}")
     int setAvatar(String avatar, int userId);

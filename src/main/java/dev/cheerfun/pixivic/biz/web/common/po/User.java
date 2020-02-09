@@ -36,7 +36,7 @@ public class User implements Authable {
     @JsonIgnore
     private String pixivPassword;
     @JsonIgnore
-    private String qqAccessToken;
+    private String qqOpenId;
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -51,7 +51,7 @@ public class User implements Authable {
         avatar=null;
         pixivAccount=null;
         pixivPassword=null;
-        qqAccessToken=null;
+        qqOpenId=null;
     }
 
     @Override

@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.user.service;
 
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.domain.EmailBindingVerificationCode;
+import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.mapper.CommonMapper;
@@ -16,6 +17,11 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 
 /**
  * @author OysterQAQ
@@ -27,6 +33,7 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonService {
     private final CommonMapper userMapper;
+    private final HttpClient httpClient;
     private final JWTUtil jwtUtil;
     private final PasswordUtil passwordUtil;
     private final EmailUtil emailUtil;
@@ -34,6 +41,7 @@ public class CommonService {
     private final static String PIXIVIC = "Pixivic酱";
     private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
+    private final static String QQ_BIND_URL_PRE = "https://graph.qq.com/oauth2.0/me?access_token=";
 
     public User signUp(User user) throws MessagingException {
         //检测用户名或邮箱是否重复
@@ -67,24 +75,17 @@ public class CommonService {
         return userMapper.checkUserNameAndEmail("", email) == 1;
     }
 
-    public User signIn(String qqAccessToken) {
-        return userMapper.getUserByQQAccessToken(qqAccessToken);
+    public User signIn(String qqAccessToken) throws IOException, InterruptedException {
+        return userMapper.getUserByQQOpenId(getQQOpenId(qqAccessToken));
     }
 
-    public int bindQQ(String qqAccessToken, int userId, String token) {
-        checkUser(userId, token);
-        return userMapper.setQqAccessToken(qqAccessToken, userId);
+    public int bindQQ(String qqAccessToken, int userId) throws IOException, InterruptedException {
+        String qqOpenId = getQQOpenId(qqAccessToken);
+        return userMapper.setQQOpenId(qqOpenId, userId);
     }
 
-    public int setAvatar(String avatar, int userId, String token) {
-        checkUser(userId, token);
+    public int setAvatar(String avatar, int userId) {
         return userMapper.setAvatar(avatar, userId);
-    }
-
-    private void checkUser(int userId, String token) {
-        if (userId != (int) jwtUtil.getAllClaimsFromToken(token).get("userId")) {
-            throw new UserCommonException(HttpStatus.UNAUTHORIZED, "token与操作对象不匹配");
-        }
     }
 
     public int setEmail(String email, int userId) {
@@ -128,5 +129,17 @@ public class CommonService {
 
     public int setPasswordById(String password, int userId) {
         return userMapper.setPasswordById(passwordUtil.encrypt(password), userId);
+    }
+
+    public String getQQOpenId(String qqAccessToken) throws IOException, InterruptedException {
+        HttpRequest build = HttpRequest.newBuilder()
+                .uri(URI.create(QQ_BIND_URL_PRE + qqAccessToken)).GET()
+                .build();
+        String body = httpClient.send(build, HttpResponse.BodyHandlers.ofString()).body();
+        if (body != null && body.contains("openid")) {
+            int i = body.indexOf("\"openid\":\"");
+            return body.substring(i + 10, i + 42);
+        }
+        throw new BusinessException(HttpStatus.BAD_REQUEST, "access_token不正确");
     }
 }
