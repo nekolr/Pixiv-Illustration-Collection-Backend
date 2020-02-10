@@ -123,13 +123,13 @@ public class BusinessService {
         return stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId));
     }
 
-    @CacheEvict("followed_latest")
+   // @CacheEvict("followed_latest")
     public void follow(int userId, int artistId) {
         businessMapper.follow(userId, artistId, LocalDateTime.now());
         stringRedisTemplate.opsForSet().add(artistFollowRedisPre + artistId, String.valueOf(userId));
     }
 
-    @CacheEvict("followed_latest")
+    //@CacheEvict("followed_latest")
     public void cancelFollow(int userId, int artistId) {
         int effectRow = businessMapper.cancelFollow(userId, artistId);
         stringRedisTemplate.opsForSet().remove(artistFollowRedisPre + artistId, String.valueOf(userId));
@@ -159,7 +159,8 @@ public class BusinessService {
         int starIncrement = 10;
         businessMapper.updateUserStar(userId, starIncrement);
     }
-    @Cacheable("followed_latest")
+
+    //@Cacheable("followed_latest")
     public List<Illustration> queryFollowedLatest(int userId, String type, int currIndex, int pageSize) {
         List<Illustration> illustrations = businessMapper.queryFollowedLatest(userId, type, currIndex, pageSize);
         if (illustrations.size() == 0) {
