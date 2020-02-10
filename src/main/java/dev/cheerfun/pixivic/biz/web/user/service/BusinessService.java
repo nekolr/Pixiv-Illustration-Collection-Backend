@@ -166,6 +166,7 @@ public class BusinessService {
         if (illustrations.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
         }
+        dealIsLikedInfoForIllustList(illustrations);
         return illustrations;
     }
 }
