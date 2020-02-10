@@ -10,6 +10,7 @@ import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -158,7 +159,7 @@ public class BusinessService {
         int starIncrement = 10;
         businessMapper.updateUserStar(userId, starIncrement);
     }
-
+    @Cacheable("followed_latest")
     public List<Illustration> queryFollowedLatest(int userId, String type, int currIndex, int pageSize) {
         List<Illustration> illustrations = businessMapper.queryFollowedLatest(userId, type, currIndex, pageSize);
         if (illustrations.size() == 0) {

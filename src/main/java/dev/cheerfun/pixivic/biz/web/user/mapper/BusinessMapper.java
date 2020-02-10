@@ -86,11 +86,9 @@ public interface BusinessMapper {
 */
 
     @Insert("insert into user_artist_followed (user_id, artist_id,create_date) values (#{userId}, #{artistId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
-    @CacheEvict("followed_latest")
     int follow(int userId, int artistId, LocalDateTime now);
 
     @Delete("delete from user_artist_followed where user_id=#{userId} and artist_id = #{artistId}")
-    @CacheEvict("followed_latest")
     int cancelFollow(int userId, int artistId);
 
     @Select("select a.* from (select artist_id from user_artist_followed where user_id = #{userId} order by create_date desc  limit #{currIndex} , #{pageSize}) u left join artists a on u.artist_id = a.artist_id")
@@ -135,6 +133,5 @@ public interface BusinessMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-    @Cacheable("followed_latest")
     List<Illustration> queryFollowedLatest(int userId, String type, int currIndex, int pageSize);
 }
