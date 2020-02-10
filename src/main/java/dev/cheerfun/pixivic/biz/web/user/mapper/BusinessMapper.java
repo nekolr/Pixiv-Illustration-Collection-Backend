@@ -124,7 +124,9 @@ public interface BusinessMapper {
 
     int queryIsBookmarked();
 
-    @Select("select * from illusts where  artist_id in (@t:=(select group_concat(artist_id) FROM user_artist_followed where user_id=#{userId})) and type=#{type}  order by create_date desc limit #{currIndex},#{pageSize};")
+    //@Select("select * from illusts where  artist_id in (@t:=(select group_concat(artist_id) FROM user_artist_followed where user_id=#{userId})) and type=#{type}  order by create_date desc limit #{currIndex},#{pageSize};")
+    @Select("select * from illusts where  illust_id in\n" +
+            "(select a.illust_id from(select i.illust_id from (select    artist_id from user_artist_followed where user_id=#{userId}) u  join illusts  i   on i.artist_id=u.artist_id   where i.type=#{type} and create_date >= (SELECT DATE_ADD(now(),INTERVAL -1 MONTH)) order by create_date desc limit #{currIndex},#{pageSize}) as a)")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
