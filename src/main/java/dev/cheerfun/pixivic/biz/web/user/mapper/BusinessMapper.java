@@ -124,7 +124,7 @@ public interface BusinessMapper {
 
     int queryIsBookmarked();
 
-    @Select("select i.* from illusts  i force index(illusts_type_create_date_index) join (select artist_id from user_artist_followed where user_id=53 )u on i.artist_id=u.artist_id   where  i.type=#{type} order by i.create_date desc  limit #{currIndex} , #{pageSize}")
+    @Select("select i.* from illusts  i force index(illusts_type_create_date_index) join (select artist_id from user_artist_followed where user_id=#{userId} )u on i.artist_id=u.artist_id   where  i.type=#{type} order by i.create_date desc  limit #{currIndex} , #{pageSize}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
