@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -121,11 +122,13 @@ public class BusinessService {
         return stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId));
     }
 
+    @CacheEvict("followed_latest")
     public void follow(int userId, int artistId) {
         businessMapper.follow(userId, artistId, LocalDateTime.now());
         stringRedisTemplate.opsForSet().add(artistFollowRedisPre + artistId, String.valueOf(userId));
     }
 
+    @CacheEvict("followed_latest")
     public void cancelFollow(int userId, int artistId) {
         int effectRow = businessMapper.cancelFollow(userId, artistId);
         stringRedisTemplate.opsForSet().remove(artistFollowRedisPre + artistId, String.valueOf(userId));
