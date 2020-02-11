@@ -9,6 +9,7 @@ package dev.cheerfun.pixivic.basic.auth.constant;
 public final class PermissionLevel {
     public static final int ANONYMOUS = 0;
     public static final int LOGGED = 1;
-    public static final int VIP = 2;
-    public static final int ADMIN = 3;
+    public static final int EMAIL_CHECKED = 2;
+    public static final int VIP = 3;
+    public static final int ADMIN = 4;
 }

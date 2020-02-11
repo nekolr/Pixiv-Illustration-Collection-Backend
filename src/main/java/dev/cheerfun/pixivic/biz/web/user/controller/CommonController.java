@@ -90,9 +90,9 @@ public class CommonController {
 
     @PutMapping("/{userId}/email")
     @CheckVerification
-    public ResponseEntity<Result> checkEmail(@RequestParam @Email @Validated String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        userService.setEmail(email, userId);
-        return ResponseEntity.ok().body(new Result<>("完成验证邮箱"));
+    public ResponseEntity<Result<User>> checkEmail(@RequestParam @Email @Validated String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+        User user = userService.setEmail(email, userId);
+        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
     }
 
     @PutMapping("/password")

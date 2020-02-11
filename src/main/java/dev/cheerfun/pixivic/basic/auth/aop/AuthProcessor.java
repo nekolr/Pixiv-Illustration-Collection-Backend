@@ -63,9 +63,9 @@ public class AuthProcessor {
         if (token != null) {
             Map<String, Object> claims = jwtUtil.validateToken(token);
             AppContext.set(claims);
-          /*  if ((Integer) claims.get(IS_BAN) == 0) {
+            if ((Integer) claims.get(IS_BAN) == 0) {
                 throw new AuthBanException(HttpStatus.FORBIDDEN, "账户异常");
-            }*/
+            }
             if ((Integer) claims.get(PERMISSION_LEVEL) < authLevel) {
                 throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
             }
