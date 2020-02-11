@@ -14,6 +14,7 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.service.SpotlightService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.common.po.Result;
+import dev.cheerfun.pixivic.common.util.EmailUtil;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +22,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
 
@@ -37,6 +39,7 @@ public class TestController {
     private final OauthUtil oauthUtil;
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustRankService rankDailyService;
+    private final EmailUtil emailUtil;
     private final SpotlightService spotlightService;
     private final ArtistService artistService;
     private final IllustrationMapper illustrationMapper;
@@ -53,8 +56,9 @@ public class TestController {
 
     @GetMapping("/test")
     //@PermissionRequired
-    public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException {
+    public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException, MessagingException {
         //spotlightService.deal();
+        emailUtil.sendEmail("392822872@qq.com","sasa","sasa","sas0","");
         return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")

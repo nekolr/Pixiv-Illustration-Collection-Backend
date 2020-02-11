@@ -6,8 +6,6 @@ import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -134,4 +132,7 @@ public interface BusinessMapper {
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
     List<Illustration> queryFollowedLatest(int userId, String type, int currIndex, int pageSize);
+
+    @Select("select  illust_id from (select    artist_id from user_artist_followed where user_id=#{userId}) u  join illusts  i   on i.artist_id=u.artist_id   where i.type=#{type} and create_date >= (SELECT DATE_ADD(now(),INTERVAL -1 MONTH))")
+    List<Integer> queryFollowedLatestIllustId(int userId, String type);
 }
