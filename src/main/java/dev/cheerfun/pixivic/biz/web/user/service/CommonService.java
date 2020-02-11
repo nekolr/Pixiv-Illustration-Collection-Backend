@@ -145,4 +145,9 @@ public class CommonService {
         }
         throw new BusinessException(HttpStatus.BAD_REQUEST, "access_token不正确");
     }
+
+    public Boolean queryEmailIsCheck(int usrId) {
+        User user = userMapper.queryUserByUserId(usrId);
+        return user.getPermissionLevel() > 1;
+    }
 }

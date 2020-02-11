@@ -95,6 +95,13 @@ public class CommonController {
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
     }
 
+    @GetMapping("/{userId}/email/isCheck")
+    @PermissionRequired
+    public ResponseEntity<Result<Boolean>> queryEmailIsCheck(@RequestHeader("Authorization") String token) {
+        Boolean isCheck = userService.queryEmailIsCheck((int) AppContext.get().get(USER_ID));
+        return ResponseEntity.ok().body(new Result<>("获取邮箱验证状态成功", isCheck));
+    }
+
     @PutMapping("/password")
     @CheckVerification
     public ResponseEntity<Result> resetPassword(@RequestBody ResetPasswordDTO item, @RequestParam("vid") String vid, @RequestParam("value") String value) {

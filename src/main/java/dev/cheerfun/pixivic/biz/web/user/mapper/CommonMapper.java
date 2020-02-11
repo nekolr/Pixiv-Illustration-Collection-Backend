@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.user.mapper;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -45,6 +46,7 @@ public interface CommonMapper {
             @Result(property = "pixivPassword", column = "pixiv_password"),
             @Result(property = "qqOpenId", column = "qq_open_id")
     })
+    //@Cacheable(value = "user", key = "#userId")
     User queryUserByUserId(int userId);
 
     @Select({
@@ -72,7 +74,8 @@ public interface CommonMapper {
     int setEmail(String email, int userId);
 
     @Update("update users set password=#{password} where email=#{email}")
-    int setPasswordByEmail(String password,String email);
+    int setPasswordByEmail(String password, String email);
+
     @Update("update users set password=#{password} where user_id=#{userId}")
-    int setPasswordById(String password,int userId);
+    int setPasswordById(String password, int userId);
 }
