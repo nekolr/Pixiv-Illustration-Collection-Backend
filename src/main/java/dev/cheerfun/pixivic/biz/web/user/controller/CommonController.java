@@ -97,7 +97,7 @@ public class CommonController {
 
     @GetMapping("/{userId}/email/isCheck")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> queryEmailIsCheck(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> queryEmailIsCheck(@PathVariable("userId") int userId,@RequestHeader("Authorization") String token) {
         Boolean isCheck = userService.queryEmailIsCheck((int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("获取邮箱验证状态成功", isCheck));
     }

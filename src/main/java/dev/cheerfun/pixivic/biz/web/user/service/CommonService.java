@@ -148,6 +148,9 @@ public class CommonService {
 
     public Boolean queryEmailIsCheck(int usrId) {
         User user = userMapper.queryUserByUserId(usrId);
-        return user.getPermissionLevel() > 1;
+        if (user != null) {
+            return user.getPermissionLevel() > 1;
+        }
+        throw new UserCommonException(HttpStatus.BAD_REQUEST, "用户不存在");
     }
 }
