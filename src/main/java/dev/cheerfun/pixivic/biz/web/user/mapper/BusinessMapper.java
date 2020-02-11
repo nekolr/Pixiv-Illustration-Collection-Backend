@@ -91,7 +91,7 @@ public interface BusinessMapper {
     @Delete("delete from user_artist_followed where user_id=#{userId} and artist_id = #{artistId}")
     int cancelFollow(int userId, int artistId);
 
-    @Select("select a.* from (select artist_id from user_artist_followed where user_id = #{userId} order by create_date desc  limit #{currIndex} , #{pageSize}) u left join artists a on u.artist_id = a.artist_id")
+    @Select("select a.* from (select artist_id from user_artist_followed where user_id = #{userId} order by create_date desc  limit #{currIndex} , #{pageSize}) u  join artists a on u.artist_id = a.artist_id")
     @Results({
             @Result(property = "id", column = "artist_id"),
     })
