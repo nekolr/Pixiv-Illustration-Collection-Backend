@@ -13,6 +13,7 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.SpotlightService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
+import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.EmailUtil;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
@@ -43,6 +44,7 @@ public class TestController {
     private final SpotlightService spotlightService;
     private final ArtistService artistService;
     private final IllustrationMapper illustrationMapper;
+    private final BusinessService businessService;
     private final NewService newService;
 
     //@PermissionRequired(PermissionLevel.VIP)
@@ -58,7 +60,8 @@ public class TestController {
     //@PermissionRequired
     public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException, MessagingException {
         //spotlightService.deal();
-        emailUtil.sendEmail("392822872@qq.com","sasa","sasa","sas0","");
+        businessService.follow(53,123);
+        //emailUtil.sendEmail("392822872@qq.com","sasa","sasa","sas0","");
         return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")

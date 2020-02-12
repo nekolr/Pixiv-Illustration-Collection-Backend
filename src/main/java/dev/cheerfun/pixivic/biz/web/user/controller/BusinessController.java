@@ -83,7 +83,7 @@ public class BusinessController {
 
     @GetMapping("/{userId}/followed/latest/{type}")
     public ResponseEntity<Result<List<Illustration>>> queryFollowedLatest(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
-        List<Illustration> illustrationList = businessService.queryFollowedLatest((int) AppContext.get().get(USER_ID), type, (page - 1) * pageSize, pageSize);
+        List<Illustration> illustrationList = businessService.queryFollowedLatest((int) AppContext.get().get(USER_ID), type, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师最新画作成功", illustrationList));
     }
 

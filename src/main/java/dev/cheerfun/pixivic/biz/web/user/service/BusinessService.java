@@ -1,7 +1,10 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
+import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
@@ -9,6 +12,8 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
@@ -20,7 +25,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -33,6 +40,9 @@ import java.util.*;
 public class BusinessService {
     private final StringRedisTemplate stringRedisTemplate;
     private final BusinessMapper businessMapper;
+    private final ObjectMapper objectMapper;
+    private final IllustrationBizMapper illustrationBizMapper;
+    private final FollowLatestService followLatestService;
     private final String bookmarkRedisPre = "u:b:";
     private final String bookmarkCountMapRedisPre = "u:bcm";
     private final String userFollowRedisPre = "u:f:";
@@ -120,13 +130,17 @@ public class BusinessService {
         return stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId));
     }
 
-    // @CacheEvict("followed_latest")
+    @Caching(evict = {
+            @CacheEvict(value = "followedLatest", key = "#userId + 'illust'"),
+            @CacheEvict(value = "followedLatest", key = "#userId + 'manga'")})
     public void follow(int userId, int artistId) {
         businessMapper.follow(userId, artistId, LocalDateTime.now());
         stringRedisTemplate.opsForSet().add(artistFollowRedisPre + artistId, String.valueOf(userId));
     }
 
-    //@CacheEvict("followed_latest")
+    @Caching(evict = {
+            @CacheEvict(value = "followedLatest", key = "#userId + 'illust'"),
+            @CacheEvict(value = "followedLatest", key = "#userId + 'manga'")})
     public void cancelFollow(int userId, int artistId) {
         int effectRow = businessMapper.cancelFollow(userId, artistId);
         stringRedisTemplate.opsForSet().remove(artistFollowRedisPre + artistId, String.valueOf(userId));
@@ -157,76 +171,19 @@ public class BusinessService {
         businessMapper.updateUserStar(userId, starIncrement);
     }
 
-    //@Cacheable("followed_latest")
-    public List<Illustration> queryFollowedLatest(int userId, String type, int currIndex, int pageSize) {
-        List<Illustration> illustrations = businessMapper.queryFollowedLatest(userId, type, currIndex, pageSize);
-
-        if (illustrations.size() == 0) {
-            throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
+    public List<Illustration> queryFollowedLatest(int userId, String type, int page, int pageSize) {
+        List<Integer> illustIdList = followLatestService.queryFollowedLatestSortedIllustId(userId, type).stream().skip(pageSize * (page - 1))
+                .limit(pageSize).collect(Collectors.toList());
+        //  List<Illustration> illustrations = businessMapper.queryFollowedLatest(userId, type, currIndex, pageSize);
+        List<Illustration> illustrations = null;
+        if (illustIdList.size() != 0) {
+            illustrations = illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
+            illustrations = objectMapper.convertValue(illustrations, new TypeReference<List<Illustration>>() {
+            });
+            dealIsLikedInfoForIllustList(illustrations, userId);
         }
-        dealIsLikedInfoForIllustList(illustrations, userId);
+
         return illustrations;
     }
 
-    public List<Integer> queryFollowedLatestSortedIllustId(int userId, String type) {
-        //取出最近一个月关注画师的画作id
-        List<Integer> illustrationIdList = businessMapper.queryFollowedLatestIllustId(userId, type);
-        //遍历切割出k个升序数组
-
-        //用大根堆进行合并得到TOP3000(最多3000,多了业务上没有意义)
-        return null;
-    }
-
-    private List<List<Integer>> split(List<Integer> illustrationIdList) {
-        List<List<Integer>> result = new ArrayList<>();
-        int size = illustrationIdList.size();
-        if (size > 1) {
-            int from = size - 1;
-            int to = 0;
-            for (; from < illustrationIdList.size(); to++) {
-                if (illustrationIdList.get(from) > illustrationIdList.get(to)) {
-                    continue;
-                } else {
-
-                }
-            }
-        }
-        return result;
-    }
-
-    private class NewInteger {
-        int value, row, col;
-
-        public NewInteger(int value, int row, int col) {
-            this.value = value;
-            this.row = row;
-            this.col = col;
-        }
-    }
-
-    public List<Integer> mergekSortedArrays(Integer[][] arrays) {
-        ArrayList<Integer> list = new ArrayList<Integer>();
-        if (arrays == null || arrays.length == 0 || arrays[0].length == 0) {
-            return list;
-        }
-        PriorityQueue<NewInteger> pq = new PriorityQueue<>(arrays.length, new Comparator<NewInteger>() {
-            @Override
-            public int compare(NewInteger o1, NewInteger o2) {
-                return o1.value > o2.value ? -1 : 1;
-            }
-        });
-
-        for (int i = 0; i < arrays.length; i++) {
-            pq.offer(new NewInteger(arrays[i][0], i, 0));
-        }
-        while (!pq.isEmpty()) {
-            NewInteger min = pq.poll();
-            if (min.col + 1 < arrays[min.row].length) {
-                pq.offer(new NewInteger(arrays[min.row][min.col + 1], min.row, min.col + 1));
-            }
-            list.add(min.value);
-        }
-
-        return list;
-    }
 }

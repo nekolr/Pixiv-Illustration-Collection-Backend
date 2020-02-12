@@ -89,4 +89,23 @@ public interface IllustrationBizMapper {
     })
     int insertIllustRelated(@Param("illustRelatedList") List<IllustRelated> illustRelatedList);
 
+    @Select({
+            "<script>",
+            "select *from illusts where illust_id in( ",
+            "<foreach collection='illustIdList' item='illustId' index='index' separator=','>",
+            "#{illustId}",
+            "</foreach>",
+            ") order by illust_id desc",
+            "</script>"
+    })
+    @Results({
+            @Result(property = "id", column = "illust_id"),
+            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
+    })
+    @Cacheable("illustList")
+    List<Illustration> queryIllustrationByIllustIdList(@Param("illustIdList")List<Integer> illustIdList);
 }
