@@ -30,6 +30,7 @@ import java.io.IOException;
  * @description UserController
  */
 @RestController
+@Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @RequestMapping("/users")
 public class CommonController {
@@ -38,7 +39,7 @@ public class CommonController {
     private static final String USER_ID = "userId";
 
     @GetMapping("/usernames/{username}")
-    public ResponseEntity<Result> checkUsername(@Validated @NotBlank @PathVariable("username") @Size(min = 2, max = 50) String username) {
+    public ResponseEntity<Result> checkUsername(@NotBlank @PathVariable("username") @Size(min = 2, max = 50) String username) {
         if (userService.checkUsername(username)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("用户名已存在"));
         }
@@ -46,7 +47,7 @@ public class CommonController {
     }
 
     @GetMapping("/emails/{email:.+}")
-    public ResponseEntity<Result<Boolean>> checkEmail(@Validated @Email @NotBlank @PathVariable("email") String email) {
+    public ResponseEntity<Result<Boolean>> checkEmail(@Email @NotBlank @PathVariable("email") String email) {
         if (userService.checkEmail(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("邮箱已存在"));
         }
@@ -55,7 +56,7 @@ public class CommonController {
 
     @PostMapping
     @CheckVerification
-    public ResponseEntity<Result<User>> signUp(@Validated @RequestBody SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
+    public ResponseEntity<Result<User>> signUp(@RequestBody SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
         User user = userInfo.castToUser();
         user = userService.signUp(user);
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
@@ -63,7 +64,7 @@ public class CommonController {
 
     @PostMapping("/token")
     @CheckVerification
-    public ResponseEntity<Result<User>> signIn(@Validated @RequestBody SignInDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result<User>> signIn(@RequestBody SignInDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userService.signIn(userInfo.getUsername(), userInfo.getPassword());
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
     }
@@ -90,14 +91,14 @@ public class CommonController {
 
     @PutMapping("/{userId}/email")
     @CheckVerification
-    public ResponseEntity<Result<User>> checkEmail(@RequestParam @Email @Validated String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result<User>> checkEmail(@RequestParam @Email String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userService.setEmail(email, userId);
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
     }
 
     @GetMapping("/{userId}/email/isCheck")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> queryEmailIsCheck(@PathVariable("userId") int userId,@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> queryEmailIsCheck(@PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
         Boolean isCheck = userService.queryEmailIsCheck((int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("获取邮箱验证状态成功", isCheck));
     }
@@ -117,14 +118,14 @@ public class CommonController {
     }
 
     @GetMapping("/emails/{email:.+}/resetPasswordEmail")
-    public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email") @Email @Validated String email) throws MessagingException {
+    public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email") @Email String email) throws MessagingException {
         userService.getResetPasswordEmail(email);
         return ResponseEntity.ok().body(new Result<>("发送密码重置邮件成功"));
     }
 
     @GetMapping("/emails/{email:.+}/checkEmail")
     @PermissionRequired
-    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") @Email @Validated String email, @RequestHeader("Authorization") String token) throws MessagingException {
+    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") @Email String email, @RequestHeader("Authorization") String token) throws MessagingException {
         userService.checkEmail(email);
         userService.getCheckEmail(email, (int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("发送邮箱验证邮件成功"));

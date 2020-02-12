@@ -7,8 +7,10 @@ import dev.cheerfun.pixivic.common.po.Spotlight;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 /**
@@ -19,23 +21,24 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/spotlights")
+@Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SpotlightBizController {
     private final SpotlightBizService spotlightBizService;
 
     @GetMapping
-    public ResponseEntity<Result<List<Spotlight>>> query(@RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "15") int pageSize) {
-        return ResponseEntity.ok().body(new Result<>("获取Spotlight列表成功",spotlightBizService.query(page,pageSize)));
+    public ResponseEntity<Result<List<Spotlight>>> query(@RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "15") @Max(30) int pageSize) {
+        return ResponseEntity.ok().body(new Result<>("获取Spotlight列表成功", spotlightBizService.query(page, pageSize)));
     }
 
     @GetMapping("/{spotlightId}")
     public ResponseEntity<Result<Spotlight>> queryDetail(@PathVariable int spotlightId) {
-        return ResponseEntity.ok().body(new Result<>("获取Spotlight详情成功",spotlightBizService.queryDetail(spotlightId)));
+        return ResponseEntity.ok().body(new Result<>("获取Spotlight详情成功", spotlightBizService.queryDetail(spotlightId)));
     }
 
     @GetMapping("/{spotlightId}/illustrations")
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrations(@PathVariable int spotlightId ) {
-        return ResponseEntity.ok().body(new Result<>("获取该spotlight下画作列表成功",spotlightBizService.queryIllustrations(spotlightId)));
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrations(@PathVariable int spotlightId) {
+        return ResponseEntity.ok().body(new Result<>("获取该spotlight下画作列表成功", spotlightBizService.queryIllustrations(spotlightId)));
     }
 
 }

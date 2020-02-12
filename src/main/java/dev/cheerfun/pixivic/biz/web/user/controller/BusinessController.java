@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @PermissionRequired
+@Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class BusinessController {
     private final BusinessService businessService;
@@ -47,13 +48,13 @@ public class BusinessController {
 
     @DeleteMapping("/bookmarked")
     public ResponseEntity<Result<String>> cancelBookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
-        businessService.cancelBookmark((int) AppContext.get().get(USER_ID), bookmarkRelation.getIllustId(),bookmarkRelation.getId());
+        businessService.cancelBookmark((int) AppContext.get().get(USER_ID), bookmarkRelation.getIllustId(), bookmarkRelation.getId());
         return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
     }
 
     @GetMapping("/{userId}/bookmarked/{type}")
-    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
-        List<Illustration> illustrations = businessService.queryBookmarked((int) AppContext.get().get(USER_ID), type, (page - 1) * pageSize, pageSize).stream().map(e-> new IllustrationWithLikeInfo(e,true)).collect(Collectors.toList());
+    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
+        List<Illustration> illustrations = businessService.queryBookmarked((int) AppContext.get().get(USER_ID), type, (page - 1) * pageSize, pageSize).stream().map(e -> new IllustrationWithLikeInfo(e, true)).collect(Collectors.toList());
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
 
@@ -76,13 +77,13 @@ public class BusinessController {
     }
 
     @GetMapping("/{userId}/followed")
-    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
         List<Artist> artists = businessService.queryFollowed((int) AppContext.get().get(USER_ID), (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师列表成功", artists));
     }
 
     @GetMapping("/{userId}/followed/latest/{type}")
-    public ResponseEntity<Result<List<Illustration>>> queryFollowedLatest(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryFollowedLatest(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(150) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
         List<Illustration> illustrationList = businessService.queryFollowedLatest((int) AppContext.get().get(USER_ID), type, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师最新画作成功", illustrationList));
     }
@@ -105,7 +106,6 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
     }
 
-
     @GetMapping(value = "/illustrationsTest")
     @PermissionRequired()
     public CompletableFuture<ResponseEntity<Result<SearchResult>>> searchByKeywordWithAuth(
@@ -113,11 +113,11 @@ public class BusinessController {
             @RequestParam
             @NotBlank
                     String keyword,
-            @RequestParam(defaultValue = "30") @Validated
+            @RequestParam(defaultValue = "30")
             @NonNull @Max(60) @Min(1)
                     int pageSize,
-            @RequestParam @Validated
-            @NonNull @Max(1600) @Min(1)
+            @RequestParam
+            @NonNull @Max(400) @Min(1)
                     int page,
             @RequestParam(defaultValue = "original")
                     String searchType,//搜索类型（原生、自动翻译、自动匹配词条）

@@ -10,7 +10,6 @@ import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +35,7 @@ import java.util.concurrent.CompletableFuture;
  * @description SearchController
  */
 @RestController
+@Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 //@PermissionRequired
 public class SearchController {
@@ -69,11 +69,11 @@ public class SearchController {
             @RequestParam
             @NotBlank
                     String keyword,
-            @RequestParam(defaultValue = "30") @Validated
-            @NonNull @Max(1000) @Min(1)
+            @RequestParam(defaultValue = "30")
+            @Max(30) @Min(1)
                     int pageSize,
-            @RequestParam @Validated
-            @NonNull @Max(1600) @Min(1)
+            @RequestParam
+            @Max(330) @Min(1)
                     int page,
             @RequestParam(defaultValue = "original")
                     String searchType,//搜索类型（原生、自动翻译、自动匹配词条）
@@ -102,10 +102,10 @@ public class SearchController {
             String[] keywords = keyword.split("\\|\\|");
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel,null);
+        CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null);
         return searchResultCompletableFuture.thenApply(illustrations -> {
-            if(illustrations!=null){
-               businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations());
+            if (illustrations != null) {
+                businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations());
             }
             return ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations));
         });

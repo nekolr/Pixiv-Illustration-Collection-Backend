@@ -12,8 +12,10 @@ import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 /**
@@ -24,6 +26,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/ranks")
+@Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RankController {
     private final RankService rankService;
@@ -32,7 +35,7 @@ public class RankController {
 
     @GetMapping
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<Rank>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<Rank>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         Rank rank = rankService.queryByDateAndMode(date, mode, page, pageSize);
         //由于jackson反序列化如果使用泛型则会将对象反序列化为linkedhashmap,这里重新序列化做一个转换,会降低效率
         List<Illustration> illustrationList = objectMapper.convertValue(rank.getData(), new TypeReference<List<Illustration>>() {

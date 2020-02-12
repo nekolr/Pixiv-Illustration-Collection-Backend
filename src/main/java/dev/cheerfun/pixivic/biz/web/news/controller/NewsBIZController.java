@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,10 +20,10 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/news")
+@Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NewsBIZController {
     private final NewsBIZService newsBIZService;
-    private final CacheManager cacheManager;
 
     @GetMapping("/{referer}")
     public ResponseEntity<Result<List<ACGNew>>> queryByDateAndMode(@PathVariable String referer, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize) {

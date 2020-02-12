@@ -14,8 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -27,6 +29,7 @@ import java.util.concurrent.CompletableFuture;
  * @description IllustrationController
  */
 @RestController
+@Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationBizController {
     private final IllustrationBizService illustrationBizService;
@@ -40,10 +43,10 @@ public class IllustrationBizController {
 
     @GetMapping("/artists/{artistId}/illusts/{type}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize,@RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         List<Illustration> illustrationList = illustrationBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize);
         businessService.dealIsLikedInfoForIllustList(illustrationList);
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功",illustrationList));
+        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationList));
     }
 
     @GetMapping("/artists/{artistId}/summary")
@@ -54,7 +57,7 @@ public class IllustrationBizController {
 
     @GetMapping("/artists/{artistId}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId,@RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("获取画师详情成功", illustrationBizService.queryArtistById(artistId)));
     }
 
@@ -72,19 +75,19 @@ public class IllustrationBizController {
 
     @GetMapping("/illusts/{illustId}/related")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "30") int pageSize,@RequestHeader(value = "Authorization", required = false) String token) {
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         //由于异步请求,线程切换导致取不到threadlocal,所以这里先取一下
         Integer userId = null;
         Map<String, Object> context = AppContext.get();
-        if (context != null&&context.get(USER_ID)!=null) {
+        if (context != null && context.get(USER_ID) != null) {
             userId = (int) context.get(USER_ID);
         }
         Integer finalUserId = userId;
-        return illustrationBizService.queryIllustrationRelated(illustId, page,pageSize).thenApply(r -> {
-            if(finalUserId!=null){
+        return illustrationBizService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> {
+            if (finalUserId != null) {
                 businessService.dealIsLikedInfoForIllustList(r, finalUserId);
             }
-            return ResponseEntity.ok().body(new Result<>("获取关联画作成功", r ));
+            return ResponseEntity.ok().body(new Result<>("获取关联画作成功", r));
         });
     }
 
