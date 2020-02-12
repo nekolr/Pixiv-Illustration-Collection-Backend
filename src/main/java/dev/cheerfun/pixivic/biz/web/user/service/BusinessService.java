@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.user.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.biz.web.common.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
@@ -102,9 +103,21 @@ public class BusinessService {
             }
             return null;
         });
+        List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+            for (Illustration illustration : illustrationList) {
+                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+                stringRedisConnection.sIsMember(artistFollowRedisPre + illustration.getArtistId(), String.valueOf(userId));
+            }
+            return null;
+        });
+     /*   Boolean isFollowed = businessService.queryIsFollowed(userId, illustration.getArtistId());
+        illustration.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustration.getArtistPreView(), isFollowed));*/
         int size = isLikedList.size();
         for (int i = 0; i < size; i++) {
-            illustrationList.set(i, new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i)));
+            IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i));
+            illustrationWithLikeInfo.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustrationWithLikeInfo.getArtistPreView(), (Boolean) isFollowedList.get(i)));
+            illustrationList.set(i, illustrationWithLikeInfo);
+            // illustrationList.set(i, new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i)));
         }
         return illustrationList;
     }
