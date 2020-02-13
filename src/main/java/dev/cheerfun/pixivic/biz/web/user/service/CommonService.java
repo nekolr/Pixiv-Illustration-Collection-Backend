@@ -39,6 +39,8 @@ public class CommonService {
     private final PasswordUtil passwordUtil;
     private final EmailUtil emailUtil;
     private final VerificationCodeService verificationCodeService;
+    private final static String AVATAR_PRE = "https://pic.pixivic.com/";
+    private final static String AVATAR_POS = ".png";
     private final static String PIXIVIC = "Pixivic酱";
     private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
@@ -57,6 +59,8 @@ public class CommonService {
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
         emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId() + "&email=" + user.getEmail());
         user = userMapper.queryUserByusernameAndPassword(user.getUsername(), user.getPassword());
+        userMapper.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS, user.getId());
+        user.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS);
         return user;
     }
 
