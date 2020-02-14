@@ -54,7 +54,9 @@ public class BusinessController {
 
     @GetMapping("/{userId}/bookmarked/{type}")
     public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
-        List<Illustration> illustrations = businessService.queryBookmarked((int) AppContext.get().get(USER_ID), type, (page - 1) * pageSize, pageSize).stream().map(e -> new IllustrationWithLikeInfo(e, true)).collect(Collectors.toList());
+        int userIdFromAppContext=(int) AppContext.get().get(USER_ID);
+        List<Illustration> illustrations = businessService.queryBookmarked(userIdFromAppContext, type, (page - 1) * pageSize, pageSize);
+        businessService.dealIfFollowedInfo(illustrations,userIdFromAppContext);
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
 
