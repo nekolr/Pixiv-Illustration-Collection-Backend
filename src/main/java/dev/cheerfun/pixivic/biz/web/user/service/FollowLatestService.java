@@ -8,6 +8,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.PriorityQueue;
 
@@ -24,10 +25,14 @@ public class FollowLatestService {
 
     @Cacheable(value = "followedLatest", key = "#userId+#type")
     public List<Integer> queryFollowedLatestSortedIllustId(int userId, String type) {
+        System.out.println(new Date()+": 开始找查询id列表");
         //取出最近一个月关注画师的画作id
         List<Integer> illustrationIdList = businessMapper.queryFollowedLatestIllustId(userId, type);
         //遍历切割出k个升序数组,用大根堆进行合并得到TOP3000(最多3000,多了业务上没有意义)
-        return mergekSortedArrays(split(illustrationIdList));
+        System.out.println(new Date()+": 开始切割排序");
+        List<Integer> sortedIdList = mergekSortedArrays(split(illustrationIdList));
+        System.out.println(new Date()+": 排序结束");
+        return sortedIdList;
     }
 
     private static List<List<Integer>> split(List<Integer> illustrationIdList) {
