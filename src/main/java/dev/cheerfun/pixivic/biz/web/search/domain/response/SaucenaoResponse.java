@@ -19,14 +19,8 @@ public class SaucenaoResponse {
     private List<Item> results;
 
     public Stream<Integer> getPixivIdList() {
-        return results.stream().filter(e -> e != null && e.getData() != null && e.getData().getOriginalUrls() != null && e.getData().getIllustId() != null && e.getData().getOriginalUrls().stream().anyMatch(s -> s.contains("pixiv"))).map(e ->
-        {
-            if (e.getData() != null && e.getData().getIllustId() != null) {
-                return e.getData().getIllustId();
-            }
-            throw new SearchException(HttpStatus.NOT_FOUND, "未找到搜索建议");
-        });
-    }
+        return results.stream().filter(e -> e != null && e.getData() != null && e.getData().getOriginalUrls() != null && e.getData().getIllustId() != null && e.getData().getOriginalUrls().stream().anyMatch(s -> s!=null&&s.contains("pixiv"))).map(e ->
+                e.getData().getIllustId());
 }
 
 @Data
