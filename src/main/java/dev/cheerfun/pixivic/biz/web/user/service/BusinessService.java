@@ -163,7 +163,11 @@ public class BusinessService {
             @CacheEvict(value = "followedLatest", key = "#userId + 'illust'"),
             @CacheEvict(value = "followedLatest", key = "#userId + 'manga'")})
     public void follow(int userId, int artistId) {
-        businessMapper.follow(userId, artistId, LocalDateTime.now());
+        try {
+            businessMapper.follow(userId, artistId, LocalDateTime.now());
+        } catch (Exception e) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "重复收藏");
+        }
         stringRedisTemplate.opsForSet().add(artistFollowRedisPre + artistId, String.valueOf(userId));
     }
 
