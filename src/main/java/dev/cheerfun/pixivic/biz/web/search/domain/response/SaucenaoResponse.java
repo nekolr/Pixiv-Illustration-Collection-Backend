@@ -1,7 +1,9 @@
 package dev.cheerfun.pixivic.biz.web.search.domain.response;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import dev.cheerfun.pixivic.biz.web.search.exception.SearchException;
 import lombok.Data;
+import org.springframework.http.HttpStatus;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -15,8 +17,15 @@ import java.util.stream.Stream;
 @Data
 public class SaucenaoResponse {
     private List<Item> results;
-    public Stream<Integer> getPixivIdList(){
-        return results.stream().filter(e-> e!=null&&e.getData()!=null&&e.getData().getOriginalUrls()!=null&&e.getData().getIllustId()!=null&&e.getData().getOriginalUrls().stream().anyMatch(s->s.contains("pixiv"))).map(e->e.getData().getIllustId());
+
+    public Stream<Integer> getPixivIdList() {
+        return results.stream().filter(e -> e != null && e.getData() != null && e.getData().getOriginalUrls() != null && e.getData().getIllustId() != null && e.getData().getOriginalUrls().stream().anyMatch(s -> s.contains("pixiv"))).map(e ->
+        {
+            if (e.getData() != null && e.getData().getIllustId() != null) {
+                return e.getData().getIllustId();
+            }
+            throw new SearchException(HttpStatus.NOT_FOUND, "未找到搜索建议");
+        });
     }
 }
 
