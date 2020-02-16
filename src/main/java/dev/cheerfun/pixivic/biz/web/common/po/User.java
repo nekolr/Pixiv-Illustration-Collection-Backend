@@ -81,4 +81,8 @@ public class User implements Authable {
         return qqOpenId != null;
     }
 
+    public boolean getIsCheckEmail() {
+        return permissionLevel > 1;
+    }
+
 }
