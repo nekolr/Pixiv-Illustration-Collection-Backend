@@ -49,11 +49,7 @@ public interface CommonMapper {
     //@Cacheable(value = "user", key = "#userId")
     User queryUserByUserId(int userId);
 
-    @Select({
-            "SELECT *\n" +
-                    "FROM users\n" +
-                    "WHERE qq_open_id=#{qqOpenId} ",
-    })
+    @Select("SELECT * FROM users WHERE qq_open_id=#{qqOpenId}\n")
     @Results({
             @Result(property = "id", column = "user_id"),
             @Result(property = "isBan", column = "is_ban"),

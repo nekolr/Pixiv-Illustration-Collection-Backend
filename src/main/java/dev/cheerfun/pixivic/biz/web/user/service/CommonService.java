@@ -81,7 +81,8 @@ public class CommonService {
     }
 
     public User signIn(String qqAccessToken) throws IOException, InterruptedException {
-        return userMapper.getUserByQQOpenId(getQQOpenId(qqAccessToken));
+        String qqOpenId = getQQOpenId(qqAccessToken);
+        return userMapper.getUserByQQOpenId(qqOpenId);
     }
 
     public int bindQQ(String qqAccessToken, int userId) throws IOException, InterruptedException {
