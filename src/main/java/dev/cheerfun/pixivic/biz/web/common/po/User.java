@@ -45,13 +45,13 @@ public class User implements Authable {
     }
 
     public void init() {
-        star=0;
-        isBan=1;
-        permissionLevel= PermissionLevel.LOGGED;
-        avatar=null;
-        pixivAccount=null;
-        pixivPassword=null;
-        qqOpenId=null;
+        star = 0;
+        isBan = 1;
+        permissionLevel = PermissionLevel.LOGGED;
+        avatar = null;
+        pixivAccount = null;
+        pixivPassword = null;
+        qqOpenId = null;
     }
 
     @Override
@@ -74,7 +74,11 @@ public class User implements Authable {
     @Override
     @JsonIgnore
     public boolean isEnabled() {
-        return isBan==0;
+        return isBan == 0;
+    }
+
+    public boolean getIsBindQQ() {
+        return qqOpenId != null;
     }
 
 }
