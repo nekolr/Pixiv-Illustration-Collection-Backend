@@ -157,4 +157,9 @@ public class CommonService {
         }
         throw new UserCommonException(HttpStatus.BAD_REQUEST, "用户不存在");
     }
+
+    public Boolean queryIsBindQQ(int userId) {
+        User user = userMapper.queryUserByUserId(userId);
+        return user.getIsBindQQ();
+    }
 }

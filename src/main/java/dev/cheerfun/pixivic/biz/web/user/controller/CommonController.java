@@ -102,6 +102,12 @@ public class CommonController {
         Boolean isCheck = userService.queryEmailIsCheck((int) AppContext.get().get(USER_ID));
         return ResponseEntity.ok().body(new Result<>("获取邮箱验证状态成功", isCheck));
     }
+    @GetMapping("/{userId}/isBindQQ")
+    @PermissionRequired
+    public ResponseEntity<Result<Boolean>> queryIsBindQQ(@PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
+        Boolean isBind = userService.queryIsBindQQ((int) AppContext.get().get(USER_ID));
+        return ResponseEntity.ok().body(new Result<>("获取QQ绑定状态成功", isBind));
+    }
 
     @PutMapping("/password")
     @CheckVerification
