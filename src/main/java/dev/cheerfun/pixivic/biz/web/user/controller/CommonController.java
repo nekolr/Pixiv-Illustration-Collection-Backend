@@ -69,8 +69,8 @@ public class CommonController {
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
     }
 
-    @PostMapping("/tokenWithQQ")
-    public ResponseEntity<Result<User>> signInByQQ(@RequestBody String qqAccessToken) throws IOException, InterruptedException {
+    @GetMapping("/tokenWithQQ")
+    public ResponseEntity<Result<User>> signInByQQ(@RequestParam String qqAccessToken) throws IOException, InterruptedException {
         User user = userService.signIn(qqAccessToken);
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
     }
