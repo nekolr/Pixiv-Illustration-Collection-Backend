@@ -8,6 +8,7 @@ import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -41,6 +43,7 @@ import java.util.concurrent.CompletableFuture;
 public class SearchController {
     private final SearchService searchService;
     private final BusinessService businessService;
+    private final static String USER_ID="userId";
 
     @GetMapping("/keywords/**/candidates")
     public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
@@ -103,9 +106,15 @@ public class SearchController {
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
         CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null);
+        Integer userId = null;
+        Map<String, Object> context = AppContext.get();
+        if (context != null && context.get(USER_ID) != null) {
+            userId = (int) context.get(USER_ID);
+        }
+        Integer finalUserId = userId;
         return searchResultCompletableFuture.thenApply(illustrations -> {
             if (illustrations != null) {
-                businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations());
+                businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations(),finalUserId);
             }
             return ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations));
         });
