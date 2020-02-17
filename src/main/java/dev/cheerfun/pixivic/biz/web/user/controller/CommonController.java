@@ -77,9 +77,9 @@ public class CommonController {
 
     @PutMapping("/{userId}/qqAccessToken")
     @PermissionRequired
-    public ResponseEntity<Result> bindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) throws IOException, InterruptedException {
-        userService.bindQQ(qqAccessToken, (int) AppContext.get().get(USER_ID));
-        return ResponseEntity.ok().body(new Result<>("绑定QQ成功"));
+    public ResponseEntity<Result<User>> bindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) throws IOException, InterruptedException {
+        User user = userService.bindQQ(qqAccessToken, (int) AppContext.get().get(USER_ID));
+        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("绑定QQ成功",user));
     }
 
     @PutMapping("/{userId}/avatar")

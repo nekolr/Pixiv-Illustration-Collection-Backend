@@ -108,43 +108,4 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
     }
 
-    @GetMapping(value = "/illustrationsTest")
-    @PermissionRequired()
-    public CompletableFuture<ResponseEntity<Result<SearchResult>>> searchByKeywordWithAuth(
-            @SensitiveCheck
-            @RequestParam
-            @NotBlank
-                    String keyword,
-            @RequestParam(defaultValue = "30")
-            @NonNull @Max(60) @Min(1)
-                    int pageSize,
-            @RequestParam
-            @NonNull @Max(400) @Min(1)
-                    int page,
-            @RequestParam(defaultValue = "original")
-                    String searchType,//搜索类型（原生、自动翻译、自动匹配词条）
-            @RequestParam(defaultValue = "illust")
-                    String illustType,
-            @RequestParam(defaultValue = "0")
-                    int minWidth,
-            @RequestParam(defaultValue = "0")
-                    int minHeight,
-            @RequestParam(defaultValue = "2008-01-01")
-                    String beginDate,
-            @RequestParam(defaultValue = "9999-12-31")
-                    String endDate,
-            @RequestParam(defaultValue = "0")
-                    int xRestrict,
-            @RequestParam(defaultValue = "0")
-                    int popWeight,
-            @RequestParam(defaultValue = "0")
-                    int minTotalBookmarks,
-            @RequestParam(defaultValue = "0")
-                    int minTotalView,
-            @RequestParam(defaultValue = "5")
-                    int maxSanityLevel,
-            @RequestHeader("Authorization") String token) {
-        return null;
-    }
-
 }

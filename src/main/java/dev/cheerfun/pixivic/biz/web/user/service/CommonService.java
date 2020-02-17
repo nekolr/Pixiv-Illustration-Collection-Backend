@@ -85,9 +85,10 @@ public class CommonService {
         return userMapper.getUserByQQOpenId(qqOpenId);
     }
 
-    public int bindQQ(String qqAccessToken, int userId) throws IOException, InterruptedException {
+    public User bindQQ(String qqAccessToken, int userId) throws IOException, InterruptedException {
         String qqOpenId = getQQOpenId(qqAccessToken);
-        return userMapper.setQQOpenId(qqOpenId, userId);
+        userMapper.setQQOpenId(qqOpenId, userId);
+        return userMapper.queryUserByUserId(userId);
     }
 
     public int setAvatar(String avatar, int userId) {
