@@ -6,7 +6,6 @@ import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
-import org.springframework.scheduling.annotation.Async;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -85,11 +84,9 @@ public interface BusinessMapper {
 */
 
     @Insert("insert into user_artist_followed (user_id, artist_id,create_date) values (#{userId}, #{artistId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
-    @Async
     int follow(int userId, int artistId, LocalDateTime now);
 
     @Delete("delete from user_artist_followed where user_id=#{userId} and artist_id = #{artistId}")
-    @Async
     int cancelFollow(int userId, int artistId);
 
     @Select("select a.* from (select artist_id from user_artist_followed where user_id = #{userId} order by create_date desc  limit #{currIndex} , #{pageSize}) u  join artists a on u.artist_id = a.artist_id")
@@ -102,14 +99,12 @@ public interface BusinessMapper {
     int queryIsFollowed(int userId, int artistId);
 
     @Insert("insert into user_illust_bookmarked (user_id, illust_id,create_date) values (#{userId}, #{illustId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
-    @Async
     int bookmark(int userId, int illustId, LocalDateTime now);
 
     @Delete("delete from user_illust_bookmarked where id=#{relationId} ")
     int cancelBookmarkByid(int relationId);
 
     @Delete("delete from user_illust_bookmarked where user_id=#{userId} and illust_id=#{illustId} ")
-    @Async
     int cancelBookmark(int userId, int illustId);
 
     @Select("select i.* from (select illust_id from user_illust_bookmarked where user_id=#{userId} order by create_date desc limit #{currIndex} , #{pageSize}) u left join illusts i on  u.illust_id=i.illust_id where type=#{type}")
