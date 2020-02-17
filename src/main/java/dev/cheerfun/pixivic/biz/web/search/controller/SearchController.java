@@ -113,7 +113,7 @@ public class SearchController {
         }
         Integer finalUserId = userId;
         return searchResultCompletableFuture.thenApply(illustrations -> {
-            if (illustrations != null) {
+            if (illustrations != null&&finalUserId!=null) {
                 businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations(),finalUserId);
             }
             return ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations));
