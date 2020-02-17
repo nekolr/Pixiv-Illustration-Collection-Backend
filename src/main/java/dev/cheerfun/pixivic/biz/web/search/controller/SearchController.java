@@ -105,13 +105,13 @@ public class SearchController {
             String[] keywords = keyword.split("\\|\\|");
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null);
         Integer userId = null;
         Map<String, Object> context = AppContext.get();
         if (context != null && context.get(USER_ID) != null) {
             userId = (int) context.get(USER_ID);
         }
         Integer finalUserId = userId;
+        CompletableFuture<SearchResult> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null);
         return searchResultCompletableFuture.thenApply(illustrations -> {
             if (illustrations != null&&finalUserId!=null) {
                 businessService.dealIsLikedInfoForIllustList(illustrations.getIllustrations(),finalUserId);
