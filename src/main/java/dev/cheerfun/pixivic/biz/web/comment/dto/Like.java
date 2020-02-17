@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.comment.dto;
+package dev.cheerfun.pixivic.biz.web.comment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

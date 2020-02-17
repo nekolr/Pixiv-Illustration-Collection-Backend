@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.comment.constant;
+package dev.cheerfun.pixivic.biz.web.comment.constant;
 
 /**
  * @author OysterQAQ

@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.comment.po;
+package dev.cheerfun.pixivic.biz.web.comment.po;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

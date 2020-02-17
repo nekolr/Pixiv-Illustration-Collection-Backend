@@ -1,6 +1,6 @@
-package dev.cheerfun.pixivic.biz.comment.mapper;
+package dev.cheerfun.pixivic.biz.web.comment.mapper;
 
-import dev.cheerfun.pixivic.biz.comment.po.Comment;
+import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

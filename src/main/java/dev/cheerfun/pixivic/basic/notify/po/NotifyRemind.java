@@ -23,6 +23,6 @@ public class NotifyRemind {
     private Integer recipientId;
     private String message;
     private LocalDateTime createDate;
-    private String status;
+    private Integer status;
     private LocalDateTime readAt;
 }

@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.basic.notify.po;
 
 import lombok.Data;
 
-import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -11,10 +11,9 @@ import java.time.LocalDateTime;
  * @description NotifySetting
  */
 @Data
-public class NotifySetting {
+public class NotifyBanSetting {
     private Integer id;
     private Integer userId;
-    private String email;
-    private Integer settingId;
-    private LocalDateTime createDate;
+    private List<String> banNotifyActionType;//屏蔽通知事件类型
+    private Integer isBanEmail;
 }

@@ -1,9 +1,9 @@
-package dev.cheerfun.pixivic.biz.comment.service;
+package dev.cheerfun.pixivic.biz.web.comment.service;
 
-import dev.cheerfun.pixivic.biz.comment.dto.Like;
-import dev.cheerfun.pixivic.biz.comment.exception.CommentException;
-import dev.cheerfun.pixivic.biz.comment.mapper.CommentMapper;
-import dev.cheerfun.pixivic.biz.comment.po.Comment;
+import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
+import dev.cheerfun.pixivic.biz.web.comment.exception.CommentException;
+import dev.cheerfun.pixivic.biz.web.comment.mapper.CommentMapper;
+import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -38,6 +38,7 @@ public class CommentService {
     @CacheEvict(value = "comments", allEntries = true)
     public void pushComment(Comment comment) {
         commentMapper.pushComment(comment);
+        //
     }
 
     @Transactional

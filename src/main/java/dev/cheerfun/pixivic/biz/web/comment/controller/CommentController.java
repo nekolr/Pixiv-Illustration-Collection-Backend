@@ -1,11 +1,15 @@
-package dev.cheerfun.pixivic.biz.comment.controller;
+package dev.cheerfun.pixivic.biz.web.comment.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.basic.notify.constant.NotifyActionType;
+import dev.cheerfun.pixivic.basic.notify.constant.NotifyObjectType;
+import dev.cheerfun.pixivic.basic.notify.po.NotifyEvent;
+import dev.cheerfun.pixivic.basic.notify.service.NotifyEventService;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
-import dev.cheerfun.pixivic.biz.comment.dto.Like;
-import dev.cheerfun.pixivic.biz.comment.po.Comment;
-import dev.cheerfun.pixivic.biz.comment.service.CommentService;
+import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
+import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
+import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -26,13 +31,19 @@ import java.util.List;
 
 public class CommentController {
     private final CommentService commentService;
+    private final NotifyEventService notifyEventService;
     private static final String USER_ID = "userId";
 
     @PostMapping("/{commentAppType}/{commentAppId}/comments")
     @PermissionRequired
     public ResponseEntity<Result<String>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @SensitiveCheck Comment comment, @RequestHeader("Authorization") String token) {
-        comment.init(commentAppType, commentAppId, (int) AppContext.get().get(USER_ID));
+        int userId = (int) AppContext.get().get(USER_ID);
+        comment.init(commentAppType, commentAppId, userId);
         commentService.pushComment(comment);
+        //如果不是顶层(即存在被回复人)产生通知事件
+        if (comment.getReplyTo() != 0) {
+            notifyEventService.pushNotifyEvent(new NotifyEvent(userId, NotifyActionType.REPLIED, comment.getParentId(), NotifyObjectType.COMMENT, LocalDateTime.now()));
+        }
         return ResponseEntity.ok().body(new Result<>("评论成功"));
     }
 
@@ -45,7 +56,10 @@ public class CommentController {
     @PostMapping("user/likedComments")
     @PermissionRequired
     public ResponseEntity<Result<String>> like(@RequestBody Like like, @RequestHeader("Authorization") String token) {
-        commentService.likeComment(like, (int) AppContext.get().get(USER_ID));
+        int userId = (int) AppContext.get().get(USER_ID);
+        commentService.likeComment(like, userId);
+        //产生通知事件
+        notifyEventService.pushNotifyEvent(new NotifyEvent(userId, NotifyActionType.REPLIED, like.getCommentId(), NotifyObjectType.COMMENT, LocalDateTime.now()));
         return ResponseEntity.ok().body(new Result<>("点赞成功"));
     }
 
