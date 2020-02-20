@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class IllustrationWithLikeInfo extends Illustration {
-    private Boolean isLiked;
+    protected Boolean isLiked;
 
     public IllustrationWithLikeInfo(Illustration illustration, Boolean isLiked) {
         this.id = illustration.getId();

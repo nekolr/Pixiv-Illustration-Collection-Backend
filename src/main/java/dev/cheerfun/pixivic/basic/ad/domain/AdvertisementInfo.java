@@ -17,7 +17,9 @@ public class AdvertisementInfo {
     private Integer imageHeight;
     private Integer imageWidth;
     private String advertiserName;
+    private String advertiserAvatar;
     private String link;
-    private String weight;
+    private Integer weight;
     private Integer useFlag;
+
 }
