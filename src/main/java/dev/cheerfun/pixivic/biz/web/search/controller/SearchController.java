@@ -3,10 +3,10 @@ package dev.cheerfun.pixivic.biz.web.search.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
+import dev.cheerfun.pixivic.basic.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
-import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -39,10 +39,8 @@ import java.util.concurrent.CompletableFuture;
 @RestController
 @Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-//@PermissionRequired
 public class SearchController {
     private final SearchService searchService;
-    private final BusinessService businessService;
 
     @GetMapping("/keywords/**/candidates")
     public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
@@ -65,6 +63,7 @@ public class SearchController {
     }
 
     @GetMapping("/illustrations")
+    @WithUserInfo
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
             @SensitiveCheck
@@ -104,19 +103,8 @@ public class SearchController {
             String[] keywords = keyword.split("\\|\\|");
             keyword = Arrays.stream(keywords).map(searchService::translatedByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        Integer userId = null;
-        Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            userId = (int) context.get(AuthConstant.USER_ID);
-        }
-        Integer finalUserId = userId;
         CompletableFuture<List<Illustration>> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null);
-        return searchResultCompletableFuture.thenApply(illustrations -> {
-            if (illustrations != null && finalUserId != null) {
-                businessService.dealIsLikedInfoForIllustList(illustrations, finalUserId);
-            }
-            return ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations));
-        });
+        return searchResultCompletableFuture.thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 
     @GetMapping("/similarityImages")

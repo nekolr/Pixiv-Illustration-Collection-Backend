@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.illust.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.basic.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
@@ -43,9 +44,9 @@ public class IllustrationBizController {
 
     @GetMapping("/artists/{artistId}/illusts/{type}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
+    @WithUserInfo
     public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         List<Illustration> illustrationList = illustrationBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize);
-        businessService.dealIsLikedInfoForIllustList(illustrationList);
         return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationList));
     }
 
@@ -74,21 +75,10 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/illusts/{illustId}/related")
+    @WithUserInfo
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
-        //由于异步请求,线程切换导致取不到threadlocal,所以这里先取一下
-        Integer userId = null;
-        Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            userId = (int) context.get(AuthConstant.USER_ID);
-        }
-        Integer finalUserId = userId;
-        return illustrationBizService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> {
-            if (finalUserId != null) {
-                businessService.dealIsLikedInfoForIllustList(r, finalUserId);
-            }
-            return ResponseEntity.ok().body(new Result<>("获取关联画作成功", r));
-        });
+        return illustrationBizService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
     }
 
     @GetMapping("/illusts/random")

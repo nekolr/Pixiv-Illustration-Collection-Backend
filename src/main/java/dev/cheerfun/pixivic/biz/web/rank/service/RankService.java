@@ -23,16 +23,14 @@ import java.util.stream.Collectors;
 public class RankService {
     private final RankMapper rankMapper;
     @Cacheable(value = "rank")
-    public Rank queryByDateAndMode(String date, String mode, int page, int pageSize) {
+    public List<Illustration> queryByDateAndMode(String date, String mode, int page, int pageSize) {
+        List<Illustration> illustrationList=new ArrayList<>();
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
         if (rank != null) {
-            List<Illustration> illustrations = rank.getData().stream().skip(pageSize * (page - 1))
+            illustrationList= rank.getData().stream().skip(pageSize * (page - 1))
                     .limit(pageSize).collect(Collectors.toList());
-            rank.setData(illustrations);
-        } else {
-            rank = new Rank(new ArrayList<>(), mode, date);
         }
-        return rank;
+        return illustrationList;
     }
 
 }

@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.FollowedRelation;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
@@ -77,6 +78,7 @@ public class BusinessController {
     }
 
     @GetMapping("/{userId}/followed/latest/{type}")
+    @WithUserInfo
     public ResponseEntity<Result<List<Illustration>>> queryFollowedLatest(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(150) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
         List<Illustration> illustrationList = businessService.queryFollowedLatest((int) AppContext.get().get(AuthConstant.USER_ID), type, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师最新画作成功", illustrationList));

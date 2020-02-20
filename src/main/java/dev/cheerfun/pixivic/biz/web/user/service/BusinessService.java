@@ -206,15 +206,10 @@ public class BusinessService {
     public List<Illustration> queryFollowedLatest(int userId, String type, int page, int pageSize) {
         List<Integer> illustIdList = followLatestService.queryFollowedLatestSortedIllustId(userId, type).stream().skip(pageSize * (page - 1))
                 .limit(pageSize).collect(Collectors.toList());
-        //  List<Illustration> illustrations = businessMapper.queryFollowedLatest(userId, type, currIndex, pageSize);
         List<Illustration> illustrations = null;
         if (illustIdList.size() != 0) {
             illustrations = illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
-            illustrations = objectMapper.convertValue(illustrations, new TypeReference<List<Illustration>>() {
-            });
-            dealIsLikedInfoForIllustList(illustrations, userId);
         }
-
         return illustrations;
     }
 
