@@ -13,7 +13,6 @@ import java.time.LocalDateTime;
 @Data
 public class NotifyRemind {
     private Integer id;
-    private Integer remindId;
     private Integer senderId;
     private String senderName;
     private String senderAction;

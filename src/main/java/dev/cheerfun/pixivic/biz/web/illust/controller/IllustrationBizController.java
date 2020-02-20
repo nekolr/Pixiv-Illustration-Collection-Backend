@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
@@ -34,7 +35,6 @@ import java.util.concurrent.CompletableFuture;
 public class IllustrationBizController {
     private final IllustrationBizService illustrationBizService;
     private final BusinessService businessService;
-    private static final String USER_ID = "userId";
 
     @GetMapping("/tags/{tag}/translation")
     public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag) {
@@ -79,8 +79,8 @@ public class IllustrationBizController {
         //由于异步请求,线程切换导致取不到threadlocal,所以这里先取一下
         Integer userId = null;
         Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(USER_ID) != null) {
-            userId = (int) context.get(USER_ID);
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            userId = (int) context.get(AuthConstant.USER_ID);
         }
         Integer finalUserId = userId;
         return illustrationBizService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> {

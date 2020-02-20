@@ -7,6 +7,8 @@ import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -44,11 +46,6 @@ public class BusinessService {
     private final ObjectMapper objectMapper;
     private final IllustrationBizMapper illustrationBizMapper;
     private final FollowLatestService followLatestService;
-    private final String bookmarkRedisPre = "u:b:";
-    private final String bookmarkCountMapRedisPre = "u:bcm";
-    private final String userFollowRedisPre = "u:f:";
-    private final String artistFollowRedisPre = "a:f:";
-    private static final String USER_ID = "userId";
 
     public void bookmark(int userId, int illustId) {
         bookmarkOperation(userId, illustId, 1, 0);
@@ -61,7 +58,7 @@ public class BusinessService {
     @Transactional
     void bookmarkOperation(int userId, int illustId, int increment, int relationId) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
-        Boolean isMember = stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId));
+        Boolean isMember = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
         if ((increment > 0 && isMember)
                 || (increment < 0 && !isMember)
         ) {
@@ -72,15 +69,15 @@ public class BusinessService {
             public List<Object> execute(RedisOperations operations) throws DataAccessException {
                 operations.multi();
                 if (increment > 0) {
-                    operations.opsForSet().add(bookmarkRedisPre + userId, String.valueOf(illustId));
+                    operations.opsForSet().add(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
                     //异步往mysql中写入
                     businessMapper.bookmark(userId, illustId, LocalDateTime.now());
                 } else {
-                    operations.opsForSet().remove(bookmarkRedisPre + userId, String.valueOf(illustId));
+                    operations.opsForSet().remove(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
                     //异步往mysql中移除
                     businessMapper.cancelBookmark(userId, illustId);
                 }
-                operations.opsForHash().increment(bookmarkCountMapRedisPre, String.valueOf(illustId), increment);
+                operations.opsForHash().increment(RedisKeyConstant.BOOKMARK_COUNT_MAP_REDIS_PRE, String.valueOf(illustId), increment);
                 return operations.exec();
             }
         });
@@ -88,8 +85,8 @@ public class BusinessService {
 
     public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
         Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(USER_ID) != null) {
-            int userId = (int) context.get(USER_ID);
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            int userId = (int) context.get(AuthConstant.USER_ID);
             return dealIsLikedInfoForIllustList(illustrationList, userId);
         }
         return illustrationList;
@@ -100,14 +97,14 @@ public class BusinessService {
         List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
             for (Illustration illustration : illustrationList) {
                 StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(bookmarkRedisPre + userId, String.valueOf(illustration.getId()));
+                stringRedisConnection.sIsMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustration.getId()));
             }
             return null;
         });
         List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
             for (Illustration illustration : illustrationList) {
                 StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(artistFollowRedisPre + illustration.getArtistId(), String.valueOf(userId));
+                stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
             }
             return null;
         });
@@ -127,7 +124,7 @@ public class BusinessService {
         List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
             for (Illustration illustration : illustrationList) {
                 StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(artistFollowRedisPre + illustration.getArtistId(), String.valueOf(userId));
+                stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
             }
             return null;
         });
@@ -143,13 +140,13 @@ public class BusinessService {
     @Transactional
     public void flushBookmarkCountToDb() {
         //半夜三点往mysql更新收藏数
-        Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(bookmarkCountMapRedisPre);
+        Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(RedisKeyConstant.BOOKMARK_COUNT_MAP_REDIS_PRE);
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
             int illustId = Integer.parseInt(entry.getKey().toString());
             int increment = Integer.parseInt(entry.getValue().toString());
             businessMapper.updateIllustBookmark(illustId, increment);
         }
-        stringRedisTemplate.delete(bookmarkCountMapRedisPre);
+        stringRedisTemplate.delete(RedisKeyConstant.BOOKMARK_COUNT_MAP_REDIS_PRE);
     }
 
     public List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize) {
@@ -157,7 +154,7 @@ public class BusinessService {
     }
 
     public Boolean queryIsBookmarked(int userId, Integer illustId) {
-        return stringRedisTemplate.opsForSet().isMember(bookmarkRedisPre + userId, String.valueOf(illustId));
+        return stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
     }
 
     @Caching(evict = {
@@ -170,7 +167,7 @@ public class BusinessService {
         } catch (Exception e) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "重复收藏");
         }
-        stringRedisTemplate.opsForSet().add(artistFollowRedisPre + artistId, String.valueOf(userId));
+        stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
     }
 
     @Caching(evict = {
@@ -178,7 +175,7 @@ public class BusinessService {
             @CacheEvict(value = "followedLatest", key = "#userId + 'manga'")})
     public void cancelFollow(int userId, int artistId) {
         int effectRow = businessMapper.cancelFollow(userId, artistId);
-        stringRedisTemplate.opsForSet().remove(artistFollowRedisPre + artistId, String.valueOf(userId));
+        stringRedisTemplate.opsForSet().remove(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
         if (effectRow == 0) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "用户画师关系请求错误");
         }
@@ -193,7 +190,7 @@ public class BusinessService {
     }
 
     public Boolean queryIsFollowed(int userId, Integer artistId) {
-        return stringRedisTemplate.opsForSet().isMember(artistFollowRedisPre + artistId, String.valueOf(userId));
+        return stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
     }
 
     @Transactional

@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.basic.ratelimit.aop;
 
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.ratelimit.exception.RateLimitException;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import io.github.bucket4j.*;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +33,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Order(1)
 public class RateLimitProcessor implements HandlerInterceptor {
-    private static final String USER_ID = "userId";
-    private final static String PERMISSION_LEVEL = "permissionLevel";
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
     //未登录用户
     private final Bucket freeBucket = Bucket4j.builder()
@@ -48,8 +47,8 @@ public class RateLimitProcessor implements HandlerInterceptor {
     public Object handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
         Bucket requestBucket;
         if (AppContext.get() != null) {
-            Integer userId = (Integer) AppContext.get().get(USER_ID);
-            Integer permissionLevel = (Integer) AppContext.get().get(PERMISSION_LEVEL);
+            Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+            Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
             if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
                 requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
             }else

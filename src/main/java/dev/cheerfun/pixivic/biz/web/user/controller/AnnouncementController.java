@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.user.po.Announcement;
 import dev.cheerfun.pixivic.biz.web.user.service.AnnouncementService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +25,6 @@ import java.util.List;
 @RequestMapping("/announcement")
 public class AnnouncementController {
     private final AnnouncementService announcementService;
-    private static final String USER_ID = "userId";
 
     @PostMapping
     @PermissionRequired(PermissionLevel.ADMIN)
@@ -36,7 +36,7 @@ public class AnnouncementController {
     @GetMapping
     @PermissionRequired
     public ResponseEntity<Result<List<Announcement>>> query(@RequestHeader("Authorization") String token, @RequestParam String date) {
-        return ResponseEntity.ok().body(new Result<>("获取系统公告成功", announcementService.query((int) AppContext.get().get(USER_ID), date)));
+        return ResponseEntity.ok().body(new Result<>("获取系统公告成功", announcementService.query((int) AppContext.get().get(AuthConstant.USER_ID), date)));
     }
 
 }

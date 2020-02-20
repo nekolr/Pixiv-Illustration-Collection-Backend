@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.basic.auth.util;
 import dev.cheerfun.pixivic.basic.auth.config.AuthProperties;
 import dev.cheerfun.pixivic.basic.auth.domain.Authable;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthExpirationException;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
@@ -26,7 +27,6 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class JWTUtil implements Serializable {
     private final AuthProperties authProperties;
-    private static final String REFRESH_COUNT = "refreshCount";
 
     public Claims getAllClaimsFromToken(String token) {
         JwtParser jwtParser = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(authProperties.getSecret().getBytes()));
@@ -42,8 +42,8 @@ public class JWTUtil implements Serializable {
     }
 
     private String generateToken(String issuer, Map<String, Object> claims) {
-        claims.merge(REFRESH_COUNT, 0, (value, newValue) -> (Integer) value < 3 ? (Integer) value + 1 : value);
-        Integer refreshCount = (Integer) claims.get(REFRESH_COUNT);
+        claims.merge(AuthConstant.REFRESH_COUNT, 0, (value, newValue) -> (Integer) value < 3 ? (Integer) value + 1 : value);
+        Integer refreshCount = (Integer) claims.get(AuthConstant.REFRESH_COUNT);
         long expirationTimeLong = Long.parseLong(authProperties.getExpirationTime());
         final Date createdDate = new Date();
         final Date expirationDate = new Date(createdDate.getTime() + (refreshCount + 1) * expirationTimeLong * 1000);

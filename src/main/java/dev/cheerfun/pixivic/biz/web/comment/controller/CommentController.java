@@ -10,6 +10,7 @@ import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
@@ -32,12 +33,11 @@ import java.util.List;
 public class CommentController {
     private final CommentService commentService;
     private final NotifyEventService notifyEventService;
-    private static final String USER_ID = "userId";
 
     @PostMapping("/{commentAppType}/{commentAppId}/comments")
     @PermissionRequired
     public ResponseEntity<Result<String>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @SensitiveCheck Comment comment, @RequestHeader("Authorization") String token) {
-        int userId = (int) AppContext.get().get(USER_ID);
+        int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         comment.init(commentAppType, commentAppId, userId);
         commentService.pushComment(comment);
         //如果不是顶层(即存在被回复人)产生通知事件
@@ -50,13 +50,13 @@ public class CommentController {
     @GetMapping("/{commentAppType}/{commentAppId}/comments")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<List<Comment>>> pullComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("拉取评论成功", commentService.pullComment(commentAppType, commentAppId, (int) AppContext.get().get(USER_ID))));
+        return ResponseEntity.ok().body(new Result<>("拉取评论成功", commentService.pullComment(commentAppType, commentAppId, (int) AppContext.get().get(AuthConstant.USER_ID))));
     }
 
     @PostMapping("user/likedComments")
     @PermissionRequired
     public ResponseEntity<Result<String>> like(@RequestBody Like like, @RequestHeader("Authorization") String token) {
-        int userId = (int) AppContext.get().get(USER_ID);
+        int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         commentService.likeComment(like, userId);
         //产生通知事件
         notifyEventService.pushNotifyEvent(new NotifyEvent(userId, NotifyActionType.REPLIED, like.getCommentId(), NotifyObjectType.COMMENT, LocalDateTime.now()));
@@ -66,7 +66,7 @@ public class CommentController {
     @DeleteMapping("user/likedComments/{commentAppType}/{commentAppId}/{commentId}")
     @PermissionRequired
     public ResponseEntity<Result<String>> cancelLike(@PathVariable String commentAppType, @PathVariable Integer commentAppId, @PathVariable Integer commentId, @RequestHeader("Authorization") String token) {
-        commentService.cancelLikeComment((int) AppContext.get().get(USER_ID), new Like(commentAppType, commentAppId, commentId));
+        commentService.cancelLikeComment((int) AppContext.get().get(AuthConstant.USER_ID), new Like(commentAppType, commentAppId, commentId));
         return ResponseEntity.ok().body(new Result<>("取消点赞成功"));
     }
 }

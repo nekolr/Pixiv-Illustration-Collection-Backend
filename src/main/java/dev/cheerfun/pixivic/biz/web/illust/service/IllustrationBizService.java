@@ -11,9 +11,9 @@ import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
-import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
@@ -23,7 +23,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
@@ -49,7 +48,6 @@ public class IllustrationBizService {
     private final BusinessService businessService;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final ObjectMapper objectMapper;
-    private static final String USER_ID = "userId";
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
@@ -70,10 +68,10 @@ public class IllustrationBizService {
             }
         }
         Map<String, Object> context = AppContext.get();
-        if (context != null&&context.get(USER_ID)!=null) {
-            int userId = (int) context.get(USER_ID);
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            int userId = (int) context.get(AuthConstant.USER_ID);
             Boolean isFollowed = businessService.queryIsFollowed(userId, artist.getId());
-           return new ArtistWithIsFollowedInfo(artist, isFollowed);
+            return new ArtistWithIsFollowedInfo(artist, isFollowed);
         }
         return artist;
     }
@@ -91,8 +89,8 @@ public class IllustrationBizService {
             }
         }
         Map<String, Object> context = AppContext.get();
-        if (context != null&&context.get(USER_ID)!=null) {
-            int userId = (int) context.get(USER_ID);
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            int userId = (int) context.get(AuthConstant.USER_ID);
             Boolean isBookmarked = businessService.queryIsBookmarked(userId, illustId);
             illustration = new IllustrationWithLikeInfo(illustration, isBookmarked);
             Boolean isFollowed = businessService.queryIsFollowed(userId, illustration.getArtistId());
@@ -127,29 +125,6 @@ public class IllustrationBizService {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
     }
 
-/*
-    @Cacheable(value = "illust")
-    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page) {
-        return requestUtil.getJson("https://proxy.pixivic.com:23334/v2/illust/related?illust_id=" + illustId + "&offset=" + (page - 1) * 30).thenApply(r -> {
-            try {
-                IllustsDTO illustsDTO = objectMapper.readValue(r, new TypeReference<IllustsDTO>() {
-                });
-                if (illustsDTO.getIllusts() != null) {
-                    List<Illustration> illustrationList = illustsDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
-                    if (illustrationList.size() > 0) {
-                        //保存
-                        waitSaveToDb.put(illustId + ":" + page, illustrationList);
-                    }
-                    return illustrationList;
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        });
-    }
-*/
-
     @Cacheable(value = "related")
     public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
         Illustration illustration = queryIllustrationById(illustId);
@@ -157,7 +132,7 @@ public class IllustrationBizService {
         });
         if (illustration != null && illustration.getTags().size() > 0) {
             String keywords = illustration.getTags().stream().filter(e -> !"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
-            return searchService.searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 5, illustId).thenApply(SearchResult::getIllustrations);
+            return searchService.searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 5, illustId);
         }
         throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
     }

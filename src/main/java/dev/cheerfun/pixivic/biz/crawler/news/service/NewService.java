@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.crawler.news.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.biz.crawler.news.constant.NewsCrawlerConstant;
 import dev.cheerfun.pixivic.biz.crawler.news.dto.DMZJNewDTO;
 import dev.cheerfun.pixivic.biz.crawler.news.mapper.NewMapper;
 import dev.cheerfun.pixivic.common.po.ACGNew;
@@ -38,11 +39,7 @@ public class NewService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final NewMapper newMapper;
-    private static final String DMZJ = "动漫之家";
-    private static final String ACGMH = "ACG门户";
-    private static final String ACG17 = "ACG在一起";
-    private static final String LOLIHY = "萝莉花园";
-    private static final String FUTA404 = "扶她404";
+
     //DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
     DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
@@ -81,7 +78,7 @@ public class NewService {
             String title = es.text();
             String refererUrl = es.get(0).getElementsByTag("a").get(0).attr("href");
             String intro = e.getElementsByClass("mar10-b post-ex mar10-t mobile-hide").text();
-            return new ACGNew(title, intro, author, cover, refererUrl, LocalDate.parse(createDate.substring(0, 10)), ACGMH);
+            return new ACGNew(title, intro, author, cover, refererUrl, LocalDate.parse(createDate.substring(0, 10)), NewsCrawlerConstant.ACGMH);
         }).collect(Collectors.toList());
         process(acgNewList, "id", "content-innerText");
     }
@@ -100,7 +97,7 @@ public class NewService {
             String intro = e.getElementsByClass("entry").get(0).child(0).text();
             String title = t.text();
             String rerfererUrl = t.attr("href");
-            return new ACGNew(title, intro, ACG17, cover, rerfererUrl, createDate, ACG17);
+            return new ACGNew(title, intro, NewsCrawlerConstant.ACG17, cover, rerfererUrl, createDate, NewsCrawlerConstant.ACG17);
         }).collect(Collectors.toList());
         process(acgNewList, "class", "entry");
     }
@@ -124,7 +121,7 @@ public class NewService {
                 createDate = LocalDate.now();
             }
             String intro = e.getElementsByClass("text-l2 font-md-12 text-secondary").get(0).text();
-            return new ACGNew(title, intro, FUTA404, cover, rerfererUrl, createDate, FUTA404);
+            return new ACGNew(title, intro, NewsCrawlerConstant.FUTA404, cover, rerfererUrl, createDate, NewsCrawlerConstant.FUTA404);
         }).collect(Collectors.toList());
         process(acgNewList, "class", "post-content suxing-popup-gallery");
     }

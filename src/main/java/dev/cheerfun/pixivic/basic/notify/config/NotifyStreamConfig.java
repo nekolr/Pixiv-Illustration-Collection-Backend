@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.basic.notify.config;
 
 import dev.cheerfun.pixivic.basic.notify.po.NotifyEvent;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
@@ -29,10 +30,8 @@ public class NotifyStreamConfig {
     private final StreamListener streamListener;
     private final RedisConnectionFactory redisConnectionFactory;
     private final StringRedisTemplate stringRedisTemplate;
-    private final static String NOTIFYEVENTSTREAMKEY = "n:e";
-    private final static String NOTIFYEVENTSTREAMEMAILGROUP = "common";
 
-   @PostConstruct
+    @PostConstruct
     public void init() {
         //stringRedisTemplate.opsForStream().createGroup(NOTIFYEVENTSTREAMKEY,NOTIFYEVENTSTREAMEMAILGROUP);
         initNotifySetting();
@@ -44,7 +43,7 @@ public class NotifyStreamConfig {
                 .builder()/*.objectMapper(new Jackson2HashMapper(false))*/.targetType(NotifyEvent.class).pollTimeout(Duration.ofMillis(100)).build();
         StreamMessageListenerContainer<String, ObjectRecord<String, NotifyEvent>> container = StreamMessageListenerContainer.create(redisConnectionFactory,
                 containerOptions);
-        Subscription receive = container.receive(Consumer.from(NOTIFYEVENTSTREAMEMAILGROUP, NOTIFYEVENTSTREAMEMAILGROUP), StreamOffset.create(NOTIFYEVENTSTREAMKEY, ReadOffset.lastConsumed()), streamListener);
+        Subscription receive = container.receive(Consumer.from(RedisKeyConstant.NOTIFY_EVENT_STREAM_GROUP, RedisKeyConstant.NOTIFY_EVENT_STREAM_GROUP), StreamOffset.create(RedisKeyConstant.NOTIFY_EVENT_STREAM_KEY, ReadOffset.lastConsumed()), streamListener);
         container.start();
     }
 

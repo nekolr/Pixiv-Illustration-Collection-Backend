@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthBanException;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthLevelException;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.util.JoinPointArgUtil;
 import lombok.RequiredArgsConstructor;
@@ -40,10 +41,6 @@ import java.util.concurrent.CompletableFuture;
 public class AuthProcessor {
     private final JWTUtil jwtUtil;
     private final JoinPointArgUtil commonUtil;
-    private final static String IS_BAN = "isBan";
-    private final static String AUTHORIZATION = "Authorization";
-    private final static String PERMISSION_LEVEL = "permissionLevel";
-    private final static String NEW_TOKEN = "newToken";
 
     @Pointcut(value = "@annotation(dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired)||@within(dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired)")
     public void pointCut() {
@@ -57,16 +54,16 @@ public class AuthProcessor {
         PermissionRequired methodPermissionRequired = AnnotationUtils.findAnnotation(method, PermissionRequired.class);
         PermissionRequired classPermissionRequired = AnnotationUtils.findAnnotation(method.getDeclaringClass(), PermissionRequired.class);
         int authLevel = methodPermissionRequired != null ? methodPermissionRequired.value() : classPermissionRequired.value();
-        String token = commonUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestHeader.class, AUTHORIZATION);
+        String token = commonUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestHeader.class, AuthConstant.AUTHORIZATION);
         /*进行jwt校验，成功则将返回包含Claim信息的Map（token即将过期则将刷新后的token放入返回值Map）
         过期则抛出自定义未授权过期异常*/
         if (token != null) {
             Map<String, Object> claims = jwtUtil.validateToken(token);
             AppContext.set(claims);
-            if ((Integer) claims.get(IS_BAN) == 0) {
+            if ((Integer) claims.get(AuthConstant.IS_BAN) == 0) {
                 throw new AuthBanException(HttpStatus.FORBIDDEN, "账户异常");
             }
-            if ((Integer) claims.get(PERMISSION_LEVEL) < authLevel) {
+            if ((Integer) claims.get(AuthConstant.PERMISSION_LEVEL) < authLevel) {
                 throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
             }
             //放入threadlocal
@@ -91,9 +88,9 @@ public class AuthProcessor {
     }
 
     private ResponseEntity dealReturn(ResponseEntity responseEntity, Map<String, Object> claims) {
-        if (AppContext.get() != null && AppContext.get().get(NEW_TOKEN) != null) {
+        if (AppContext.get() != null && AppContext.get().get(AuthConstant.NEW_TOKEN) != null) {
             responseEntity = ResponseEntity.status(responseEntity.getStatusCode())
-                    .header(AUTHORIZATION, String.valueOf(claims.get(NEW_TOKEN)))
+                    .header(AuthConstant.AUTHORIZATION, String.valueOf(claims.get(AuthConstant.NEW_TOKEN)))
                     .body(responseEntity.getBody());
         }
         return responseEntity;

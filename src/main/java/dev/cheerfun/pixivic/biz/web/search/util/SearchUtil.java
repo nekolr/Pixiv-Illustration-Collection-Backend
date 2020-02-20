@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.biz.web.search.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.domain.elasticsearch.ElasticsearchResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.elasticsearch.Hit;
 import dev.cheerfun.pixivic.biz.web.search.domain.elasticsearch.Hits;
@@ -184,7 +183,7 @@ public class SearchUtil {
     }
 
 
-    public CompletableFuture<SearchResult> request(String body) {
+    public CompletableFuture<List<Illustration>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .uri(URI.create("http://" + elasticsearch + ":9200/illust/_search"))
@@ -199,8 +198,8 @@ public class SearchUtil {
                             });
                             Hits hits = elasticsearchResponse.getHits();
                             if (hits != null && hits.getHits() != null) {
-                                List<Illustration> illustrationList = hits.getHits().stream().map(Hit::getIllustration).collect(Collectors.toList());
-                                return new SearchResult(hits.getTotal().getValue(), illustrationList);
+                               return hits.getHits().stream().map(Hit::getIllustration).collect(Collectors.toList());
+                                //return new SearchResult(hits.getTotal().getValue(), illustrationList);
                             }
                         }
                     } catch (IOException e) {

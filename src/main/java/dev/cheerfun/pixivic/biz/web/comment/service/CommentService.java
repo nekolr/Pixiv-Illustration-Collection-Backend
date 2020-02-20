@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
 import dev.cheerfun.pixivic.biz.web.comment.exception.CommentException;
 import dev.cheerfun.pixivic.biz.web.comment.mapper.CommentMapper;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -32,8 +33,6 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final StringRedisTemplate stringRedisTemplate;
     private final CommentMapper commentMapper;
-    private final String likeRedisPre = "u:l:c:";
-    private final String likeCountMapRedisPre = "c:lcm";//+appType:appId
 
     @CacheEvict(value = "comments", allEntries = true)
     public void pushComment(Comment comment) {
@@ -43,9 +42,9 @@ public class CommentService {
 
     @Transactional
     public void likeComment(Like like, int userId) {
-        Long add = stringRedisTemplate.opsForSet().add(likeRedisPre + userId, like.toString());
+        Long add = stringRedisTemplate.opsForSet().add(RedisKeyConstant.LIKE_REDIS_PRE + userId, like.toString());
         if (add != null && add != 0L) {
-            stringRedisTemplate.opsForHash().increment(likeCountMapRedisPre, like.toString(), 1);
+            stringRedisTemplate.opsForHash().increment(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, like.toString(), 1);
         } else {
             throw new CommentException(HttpStatus.BAD_REQUEST, "用户评论点赞关系请求错误");
         }
@@ -54,9 +53,9 @@ public class CommentService {
 
     @Transactional
     public void cancelLikeComment(int userId, Like like) {
-        Long remove = stringRedisTemplate.opsForSet().remove(likeRedisPre + userId, like.toString());
+        Long remove = stringRedisTemplate.opsForSet().remove(RedisKeyConstant.LIKE_REDIS_PRE + userId, like.toString());
         if (remove != null && remove != 0L) {
-            stringRedisTemplate.opsForHash().increment(likeCountMapRedisPre, like.toString(), -1);
+            stringRedisTemplate.opsForHash().increment(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, like.toString(), -1);
         } else {
             throw new CommentException(HttpStatus.BAD_REQUEST, "用户评论点赞关系请求错误");
         }
@@ -75,7 +74,7 @@ public class CommentService {
                     result.add(e);
                 }
                 StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(likeRedisPre + userId, String.valueOf(e.toStringForQueryLike()));
+                stringRedisConnection.sIsMember(RedisKeyConstant.LIKE_REDIS_PRE + userId, String.valueOf(e.toStringForQueryLike()));
                 return e.getParentId();
             }));
             return null;

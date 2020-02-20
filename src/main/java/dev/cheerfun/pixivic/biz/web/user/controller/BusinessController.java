@@ -1,18 +1,15 @@
 package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
-import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
-import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
-import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.FollowedRelation;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
-import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -38,61 +31,60 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class BusinessController {
     private final BusinessService businessService;
-    private static final String USER_ID = "userId";
 
     @PostMapping("/bookmarked")
     public ResponseEntity<Result<String>> bookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
-        businessService.bookmark((int) AppContext.get().get(USER_ID), bookmarkRelation.getIllustId());
+        businessService.bookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getIllustId());
         return ResponseEntity.ok().body(new Result<>("收藏成功"));
     }
 
     @DeleteMapping("/bookmarked")
     public ResponseEntity<Result<String>> cancelBookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
-        businessService.cancelBookmark((int) AppContext.get().get(USER_ID), bookmarkRelation.getIllustId(), bookmarkRelation.getId());
+        businessService.cancelBookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getIllustId(), bookmarkRelation.getId());
         return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
     }
 
     @GetMapping("/{userId}/bookmarked/{type}")
     public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
-        int userIdFromAppContext=(int) AppContext.get().get(USER_ID);
+        int userIdFromAppContext = (int) AppContext.get().get(AuthConstant.USER_ID);
         List<Illustration> illustrations = businessService.queryBookmarked(userIdFromAppContext, type, (page - 1) * pageSize, pageSize);
-        businessService.dealIfFollowedInfo(illustrations,userIdFromAppContext);
+        businessService.dealIfFollowedInfo(illustrations, userIdFromAppContext);
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
 
     @GetMapping("/{userId}/{illustId}/isBookmarked")
     public ResponseEntity<Result<Boolean>> queryIsBookmarked(@PathVariable String userId, @PathVariable Integer illustId, @RequestHeader("Authorization") String token) {
-        Boolean isBookmark = businessService.queryIsBookmarked((int) AppContext.get().get(USER_ID), illustId);
+        Boolean isBookmark = businessService.queryIsBookmarked((int) AppContext.get().get(AuthConstant.USER_ID), illustId);
         return ResponseEntity.ok().body(new Result<>("获取是否收藏画作成功", isBookmark));
     }
 
     @PostMapping("/followed")
     public ResponseEntity<Result<String>> follow(@RequestBody FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
-        businessService.follow((int) AppContext.get().get(USER_ID), followedRelation.getArtistId());
+        businessService.follow((int) AppContext.get().get(AuthConstant.USER_ID), followedRelation.getArtistId());
         return ResponseEntity.ok().body(new Result<>("follow成功"));
     }
 
     @DeleteMapping("/followed")
     public ResponseEntity<Result<String>> cancelFollow(@RequestBody FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
-        businessService.cancelFollow((int) AppContext.get().get(USER_ID), followedRelation.getArtistId());
+        businessService.cancelFollow((int) AppContext.get().get(AuthConstant.USER_ID), followedRelation.getArtistId());
         return ResponseEntity.ok().body(new Result<>("取消follow成功"));
     }
 
     @GetMapping("/{userId}/followed")
     public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
-        List<Artist> artists = businessService.queryFollowed((int) AppContext.get().get(USER_ID), (page - 1) * pageSize, pageSize);
+        List<Artist> artists = businessService.queryFollowed((int) AppContext.get().get(AuthConstant.USER_ID), (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师列表成功", artists));
     }
 
     @GetMapping("/{userId}/followed/latest/{type}")
     public ResponseEntity<Result<List<Illustration>>> queryFollowedLatest(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(150) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
-        List<Illustration> illustrationList = businessService.queryFollowedLatest((int) AppContext.get().get(USER_ID), type, page, pageSize);
+        List<Illustration> illustrationList = businessService.queryFollowedLatest((int) AppContext.get().get(AuthConstant.USER_ID), type, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师最新画作成功", illustrationList));
     }
 
     @GetMapping("/{userId}/{artistId}/isFollowed")
     public ResponseEntity<Result<Boolean>> queryIsFollowed(@PathVariable String userId, @PathVariable Integer artistId, @RequestHeader("Authorization") String token) {
-        Boolean isFollowed = businessService.queryIsFollowed((int) AppContext.get().get(USER_ID), artistId);
+        Boolean isFollowed = businessService.queryIsFollowed((int) AppContext.get().get(AuthConstant.USER_ID), artistId);
         return ResponseEntity.ok().body(new Result<>("获取是否follow画师成功", isFollowed));
     }
 
@@ -104,7 +96,7 @@ public class BusinessController {
 
     @PostMapping("/{illustId}/tags")
     public ResponseEntity<Result<String>> addTag(@PathVariable String illustId, @RequestHeader("Authorization") String token, @RequestBody List<Tag> tags) {
-        businessService.addTag((int) AppContext.get().get(USER_ID), illustId, tags);
+        businessService.addTag((int) AppContext.get().get(AuthConstant.USER_ID), illustId, tags);
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
     }
 

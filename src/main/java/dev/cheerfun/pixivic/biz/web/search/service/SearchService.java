@@ -6,8 +6,6 @@ import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
-import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
-import dev.cheerfun.pixivic.biz.web.search.domain.SearchResult;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
@@ -19,7 +17,6 @@ import dev.cheerfun.pixivic.biz.web.search.exception.SearchException;
 import dev.cheerfun.pixivic.biz.web.search.mapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.biz.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.biz.web.search.util.SearchUtil;
-import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
@@ -27,7 +24,6 @@ import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -72,9 +68,6 @@ public class SearchService {
     private final IllustrationBizMapper illustrationBizMapper;
     private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
-    private static final String USER_ID = "userId";
-    private final StringRedisTemplate stringRedisTemplate;
-    private final BusinessService businessService;
 
     @Cacheable(value = "candidateWords")
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(@SensitiveCheck String keyword) {
@@ -231,7 +224,7 @@ public class SearchService {
     }
 
     @Cacheable(value = "searchResult")
-    public CompletableFuture<SearchResult> searchByKeyword(
+    public CompletableFuture<List<Illustration>> searchByKeyword(
             String keyword,
             int pageSize,
             int page,
@@ -247,16 +240,15 @@ public class SearchService {
             Integer minTotalView,
             Integer maxSanityLevel,
             Integer exceptId) {
-        String build = searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel,exceptId);
-       // System.out.println(build);
-        CompletableFuture<SearchResult> request = searchUtil.request(build);
+        String build = searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, exceptId);
+        CompletableFuture<List<Illustration>> request = searchUtil.request(build);
         return request;
     }
 
     @Cacheable(value = "saucenaoResponse")
     public CompletableFuture<List<Illustration>> searchByImage(String imageUrl) {
         return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r -> {
-            if (r != null&&r.getPixivIdList()!=null) {
+            if (r != null && r.getPixivIdList() != null) {
                 return r.getPixivIdList().map(illustrationBizMapper::queryIllustrationByIllustId).filter(Objects::nonNull).collect(Collectors.toList());
             }
             throw new SearchException(HttpStatus.NOT_FOUND, "未找到画作");
