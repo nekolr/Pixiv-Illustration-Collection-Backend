@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.common.dto;
+package dev.cheerfun.pixivic.basic.userInfo.dto;
 
 import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import lombok.Data;

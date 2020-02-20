@@ -2,8 +2,8 @@ package dev.cheerfun.pixivic.basic.userInfo.aop;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.web.common.dto.ArtistPreViewWithFollowedInfo;
-import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistPreViewWithFollowedInfo;
+import dev.cheerfun.pixivic.basic.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -105,22 +105,6 @@ public class UserInfoProcessor {
             illustrationList.set(i, illustrationWithLikeInfo);
         }
         return illustrationList;
-    }
-
-    public void dealIfFollowedInfo(List<Illustration> illustrationList, int userId) {
-        List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-            for (Illustration illustration : illustrationList) {
-                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
-            }
-            return null;
-        });
-        int size = isFollowedList.size();
-        for (int i = 0; i < size; i++) {
-            IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), true);
-            illustrationWithLikeInfo.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustrationWithLikeInfo.getArtistPreView(), (Boolean) isFollowedList.get(i)));
-            illustrationList.set(i, illustrationWithLikeInfo);
-        }
     }
 
 }

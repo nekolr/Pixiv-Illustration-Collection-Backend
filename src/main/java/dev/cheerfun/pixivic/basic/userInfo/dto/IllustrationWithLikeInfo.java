@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.common.dto;
+package dev.cheerfun.pixivic.basic.userInfo.dto;
 
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.Data;
@@ -15,7 +15,7 @@ import lombok.EqualsAndHashCode;
 public class IllustrationWithLikeInfo extends Illustration {
     private Boolean isLiked;
 
-    public IllustrationWithLikeInfo(Illustration illustration,Boolean isLiked) {
+    public IllustrationWithLikeInfo(Illustration illustration, Boolean isLiked) {
         this.id = illustration.getId();
         this.artistId = illustration.getArtistId();
         this.title = illustration.getTitle();

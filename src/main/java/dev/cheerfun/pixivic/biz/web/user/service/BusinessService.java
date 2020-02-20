@@ -1,9 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.web.common.dto.ArtistPreViewWithFollowedInfo;
-import dev.cheerfun.pixivic.biz.web.common.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistPreViewWithFollowedInfo;
+import dev.cheerfun.pixivic.basic.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
@@ -81,43 +80,6 @@ public class BusinessService {
                 return operations.exec();
             }
         });
-    }
-
-    public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
-        Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            int userId = (int) context.get(AuthConstant.USER_ID);
-            return dealIsLikedInfoForIllustList(illustrationList, userId);
-        }
-        return illustrationList;
-
-    }
-
-    public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {
-        List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-            for (Illustration illustration : illustrationList) {
-                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustration.getId()));
-            }
-            return null;
-        });
-        List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-            for (Illustration illustration : illustrationList) {
-                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
-            }
-            return null;
-        });
-     /*   Boolean isFollowed = businessService.queryIsFollowed(userId, illustration.getArtistId());
-        illustration.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustration.getArtistPreView(), isFollowed));*/
-        int size = isLikedList.size();
-        for (int i = 0; i < size; i++) {
-            IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i));
-            illustrationWithLikeInfo.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustrationWithLikeInfo.getArtistPreView(), (Boolean) isFollowedList.get(i)));
-            illustrationList.set(i, illustrationWithLikeInfo);
-            // illustrationList.set(i, new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i)));
-        }
-        return illustrationList;
     }
 
     public void dealIfFollowedInfo(List<Illustration> illustrationList, int userId) {
