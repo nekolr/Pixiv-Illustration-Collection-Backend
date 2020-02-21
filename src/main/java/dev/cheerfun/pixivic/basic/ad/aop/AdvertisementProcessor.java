@@ -3,18 +3,21 @@ package dev.cheerfun.pixivic.basic.ad.aop;
 import dev.cheerfun.pixivic.basic.ad.domain.Advertisement;
 import dev.cheerfun.pixivic.basic.ad.domain.AdvertisementInfo;
 import dev.cheerfun.pixivic.basic.ad.mapper.AdvertisementMapper;
+import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -34,9 +37,14 @@ public class AdvertisementProcessor {
     private static Map<Integer, List<Advertisement>> advertisementMap;
     Random random;
 
+    @Pointcut(value = "@annotation(dev.cheerfun.pixivic.basic.ad.annotation.WithAdvertisement)||@within(dev.cheerfun.pixivic.basic.ad.annotation.WithAdvertisement)")
+    public void pointCut() {
+    }
+
     @PostConstruct
     public void init() {
         random = new Random(21);
+        randomList=new ArrayList<>();
         List<AdvertisementInfo> advertisementInfos = advertisementMapper.queryAllEnableAdvertisementInfo();
         //构造randomList
         advertisementInfos.forEach(e -> {
@@ -47,6 +55,27 @@ public class AdvertisementProcessor {
         Collections.shuffle(randomList);
         //转换成Advertisement分组构造advertisementMap
         advertisementMap = advertisementInfos.stream().map(Advertisement::new).collect(Collectors.groupingBy(Advertisement::getAdId));
+    }
+
+    @AfterReturning(value = "pointCut()", returning = "result")
+    public void withAD(Object result) {
+        if (result instanceof ResponseEntity) {
+            insertAD(result);
+        } else if (result instanceof CompletableFuture) {
+            ((CompletableFuture) result).thenAccept(e -> {
+                insertAD(e);
+            });
+        }
+    }
+
+    public void insertAD(Object responseEntity) {
+        Result<List> body = (Result<List>) ((ResponseEntity) responseEntity).getBody();
+        List data = body.getData();
+        //随机决定是否插入
+        //如果插入则根据权重选一个广告插入
+        int i = random.nextInt(randomList.size());
+        Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
+        data.add(advertisement);
     }
 
 }

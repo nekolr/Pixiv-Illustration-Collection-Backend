@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.rank.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.basic.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.userInfo.annotation.WithUserInfo;
@@ -32,6 +33,7 @@ public class RankController {
 
     @GetMapping
     @WithUserInfo
+    @WithAdvertisement
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<List<Illustration>>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         List<Illustration> rank = rankService.queryByDateAndMode(date, mode, page, pageSize);

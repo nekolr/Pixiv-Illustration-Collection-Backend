@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.basic.userInfo.dto;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.NoArgsConstructor;
 
 /**
  * @author OysterQAQ
@@ -12,6 +13,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
+@NoArgsConstructor
 public class IllustrationWithLikeInfo extends Illustration {
     protected Boolean isLiked;
 
@@ -36,5 +38,6 @@ public class IllustrationWithLikeInfo extends Illustration {
         this.totalBookmarks = illustration.getTotalBookmarks();
         this.isLiked = isLiked;
     }
+
 
 }
