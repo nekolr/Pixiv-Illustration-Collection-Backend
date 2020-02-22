@@ -47,14 +47,13 @@ public class IllustRankService {
     }
 
     private Rank getIllustrations(String mode, String date) throws InterruptedException {
-        ArrayList<Illustration> illustrations = new ArrayList<>(300);
+        ArrayList<Illustration> illustrations = new ArrayList<>();
         final CountDownLatch cd = new CountDownLatch(10);
         IntStream.range(0, 10).parallel().forEach(i -> getIllustrationsJson(mode, date, i).thenAccept(illustration -> {
             illustrations.addAll(illustration);
             cd.countDown();
         }));
         cd.await();
-        illustrations.trimToSize();
         String rankMode;
         switch (mode) {
             case "day_female":
