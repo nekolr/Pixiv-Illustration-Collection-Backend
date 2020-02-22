@@ -2,11 +2,11 @@ package dev.cheerfun.pixivic.biz.web.illust.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.basic.userInfo.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
@@ -44,21 +44,21 @@ public class IllustrationBizService {
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
-    private final SearchService searchService;
     private final BusinessService businessService;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
-    private final ObjectMapper objectMapper;
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
         return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
     }
 
+    @Cacheable(value = "artist_illusts")
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
     }
 
+    @Cacheable(value = "artist")
     public Artist queryArtistById(Integer artistId) {
         Artist artist = illustrationBizMapper.queryArtistById(artistId);
         if (artist == null) {
@@ -76,7 +76,9 @@ public class IllustrationBizService {
         return artist;
     }
 
+    @Cacheable(value = "illust")
     public Illustration queryIllustrationById(Integer illustId) {
+        System.out.println("sasa");
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
             illustration = illustrationService.pullIllustrationInfo(illustId);
@@ -121,20 +123,9 @@ public class IllustrationBizService {
         return url.toString();
     }
 
+    @Cacheable(value = "artistSummarys")
     public List<ArtistSummary> querySummaryByArtistId(Integer artistId) {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
-    }
-
-    @Cacheable(value = "related")
-    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
-        Illustration illustration = queryIllustrationById(illustId);
-        illustration = objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
-        });
-        if (illustration != null && illustration.getTags().size() > 0) {
-            String keywords = illustration.getTags().stream().filter(e -> !"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
-            return searchService.searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 5, illustId);
-        }
-        throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
     }
 
     //@Scheduled(cron = "0 0/5 * * * ? ")
@@ -171,6 +162,10 @@ public class IllustrationBizService {
             return queryIllustrationById(id) != null;
         }
         return false;
+    }
+
+    public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {
+        return illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
     }
 
 }

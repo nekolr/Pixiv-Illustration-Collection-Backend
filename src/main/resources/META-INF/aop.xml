@@ -1,0 +1,5 @@
+<aspectj>
+    <weaver options="-verbose -showWeaveInfo">
+        <include within="dev.cheerfun.pixivic..*"/>
+    </weaver>
+</aspectj>

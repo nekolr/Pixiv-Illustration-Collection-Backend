@@ -4,8 +4,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
+import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
+import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
@@ -65,7 +67,7 @@ public class SearchService {
     private final ImageSearchUtil imageSearchUtil;
     private final PixivSuggestionMapper pixivSuggestionMapper;
     private final IllustrationMapper illustrationMapper;
-    private final IllustrationBizMapper illustrationBizMapper;
+    private final IllustrationBizService illustrationBizService;
     private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
@@ -249,10 +251,21 @@ public class SearchService {
     public CompletableFuture<List<Illustration>> searchByImage(String imageUrl) {
         return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r -> {
             if (r != null && r.getPixivIdList() != null) {
-                return r.getPixivIdList().map(illustrationBizMapper::queryIllustrationByIllustId).filter(Objects::nonNull).collect(Collectors.toList());
+                return r.getPixivIdList().map(illustrationBizService::queryIllustrationById).filter(Objects::nonNull).collect(Collectors.toList());
             }
             throw new SearchException(HttpStatus.NOT_FOUND, "未找到画作");
         });
+    }
+    @Cacheable(value = "related")
+    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
+        Illustration illustration = illustrationBizService.queryIllustrationById(illustId);
+        illustration = objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
+        });
+        if (illustration != null && illustration.getTags().size() > 0) {
+            String keywords = illustration.getTags().stream().filter(e -> !"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
+            return searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 5, illustId);
+        }
+        throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
     }
 
     public String getKeyword(HttpServletRequest request) {

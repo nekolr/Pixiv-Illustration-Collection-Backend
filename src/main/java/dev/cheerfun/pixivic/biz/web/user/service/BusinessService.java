@@ -1,20 +1,19 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.collect.Lists;
 import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.basic.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
-import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
-import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.connection.StringRedisConnection;
@@ -27,8 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,9 +40,7 @@ import java.util.stream.Collectors;
 public class BusinessService {
     private final StringRedisTemplate stringRedisTemplate;
     private final BusinessMapper businessMapper;
-    private final ObjectMapper objectMapper;
     private final IllustrationBizMapper illustrationBizMapper;
-    private final FollowLatestService followLatestService;
 
     public void bookmark(int userId, int illustId) {
         bookmarkOperation(userId, illustId, 1, 0);
@@ -166,13 +162,73 @@ public class BusinessService {
     }
 
     public List<Illustration> queryFollowedLatest(int userId, String type, int page, int pageSize) {
-        List<Integer> illustIdList = followLatestService.queryFollowedLatestSortedIllustId(userId, type).stream().skip(pageSize * (page - 1))
+        List<Integer> illustIdList = queryFollowedLatestSortedIllustId(userId, type).stream().skip(pageSize * (page - 1))
                 .limit(pageSize).collect(Collectors.toList());
         List<Illustration> illustrations = null;
         if (illustIdList.size() != 0) {
             illustrations = illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
         }
         return illustrations;
+    }
+
+    @Cacheable(value = "followedLatest", key = "#userId+#type")
+    public List<Integer> queryFollowedLatestSortedIllustId(int userId, String type) {
+        System.out.println(new Date() + ": 开始找查询id列表");
+        //取出最近一个月关注画师的画作id
+        List<Integer> illustrationIdList = businessMapper.queryFollowedLatestIllustId(userId, type);
+        //遍历切割出k个升序数组,用大根堆进行合并得到TOP3000(最多3000,多了业务上没有意义)
+        System.out.println(new Date() + ": 开始切割排序");
+        List<Integer> sortedIdList = mergekSortedArrays(split(illustrationIdList));
+        System.out.println(new Date() + ": 排序结束");
+        return sortedIdList;
+    }
+
+    private static List<List<Integer>> split(List<Integer> illustrationIdList) {
+        List<List<Integer>> result = new ArrayList<>();
+        int size = illustrationIdList.size();
+        if (size > 1) {
+            int from = 0;
+            int to = 1;
+            for (; to < size; to++) {
+                if (to == size - 1) {
+                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
+                    break;
+                } else if (to != size - 1 && illustrationIdList.get(to) > illustrationIdList.get(to + 1)) {
+                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
+                    from = to + 1;
+                }
+            }
+        }
+        return result;
+    }
+
+    private static class NewInteger {
+        int value, row, col;
+
+        public NewInteger(int value, int row, int col) {
+            this.value = value;
+            this.row = row;
+            this.col = col;
+        }
+    }
+
+    public static List<Integer> mergekSortedArrays(List<List<Integer>> arrays) {
+        ArrayList<Integer> list = new ArrayList<>();
+        if (arrays == null || arrays.size() == 0 || arrays.get(0).size() == 0) {
+            return list;
+        }
+        PriorityQueue<NewInteger> pq = new PriorityQueue<>(arrays.size(), (x, y) -> x.value > y.value ? -1 : 1);
+        for (int i = 0; i < arrays.size(); i++) {
+            pq.offer(new NewInteger(arrays.get(i).get(0), i, 0));
+        }
+        while (list.size() < 3000 && !pq.isEmpty()) {
+            NewInteger min = pq.poll();
+            if (min.col + 1 < arrays.get(min.row).size()) {
+                pq.offer(new NewInteger(arrays.get(min.row).get(min.col + 1), min.row, min.col + 1));
+            }
+            list.add(min.value);
+        }
+        return list;
     }
 
 }

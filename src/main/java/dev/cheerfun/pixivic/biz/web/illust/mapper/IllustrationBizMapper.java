@@ -22,7 +22,6 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-    @Cacheable(value = "illust")
     Illustration queryIllustrationByIllustId(Integer illustId);
 
     @Select("select * from illusts where artist_id = #{artistId} and type = #{type} order by create_date desc  limit #{currIndex} , #{pageSize}")
@@ -34,14 +33,12 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-    @Cacheable(value = "artist_illusts")
     List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize);
 
     @Select("select * from artists where artist_id =#{artistId}")
     @Results({
             @Result(property = "id", column = "artist_id"),
     })
-    @Cacheable(value = "artist")
     Artist queryArtistById(Integer artistId);
 
     @Select("  SELECT\n" +
@@ -76,7 +73,6 @@ public interface IllustrationBizMapper {
             @Result(property = "type", column = "type"),
             @Result(property = "sum", column = "sum"),
     })
-    @Cacheable(value = "artistSummarys")
     List<ArtistSummary> querySummaryByArtistId(Integer artistId);
 
     @Insert({
@@ -106,6 +102,5 @@ public interface IllustrationBizMapper {
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
-    @Cacheable("illustList")
     List<Illustration> queryIllustrationByIllustIdList(@Param("illustIdList")List<Integer> illustIdList);
 }

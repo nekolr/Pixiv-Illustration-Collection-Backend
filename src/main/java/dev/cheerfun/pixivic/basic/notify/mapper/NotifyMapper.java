@@ -22,7 +22,6 @@ public interface NotifyMapper {
             @Result(property = "banNotifyActionType", column = "ban_notify_action_type", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "isBanEmail", column = "is_ban_email")
     })
-    @Cacheable("userNotifySetting")
     NotifyBanSetting queryUserBanSetting(Integer userId);
 
     @Select("select * from notify_setting_config")

@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -35,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationBizController {
     private final IllustrationBizService illustrationBizService;
-    private final BusinessService businessService;
+    private final SearchService searchService;
 
     @GetMapping("/tags/{tag}/translation")
     public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag) {
@@ -78,7 +79,7 @@ public class IllustrationBizController {
     @WithUserInfo
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
-        return illustrationBizService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
+        return searchService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
     }
 
     @GetMapping("/illusts/random")

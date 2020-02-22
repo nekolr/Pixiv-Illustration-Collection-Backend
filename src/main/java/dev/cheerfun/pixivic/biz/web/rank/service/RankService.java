@@ -22,12 +22,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RankService {
     private final RankMapper rankMapper;
+
     @Cacheable(value = "rank")
     public List<Illustration> queryByDateAndMode(String date, String mode, int page, int pageSize) {
-        List<Illustration> illustrationList=new ArrayList<>();
+        List<Illustration> illustrationList = new ArrayList<>();
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
         if (rank != null) {
-            illustrationList= rank.getData().stream().skip(pageSize * (page - 1))
+            illustrationList = rank.getData().stream().skip(pageSize * (page - 1))
                     .limit(pageSize).collect(Collectors.toList());
         }
         return illustrationList;

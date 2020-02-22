@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.basic.notify.po.NotifyEvent;
 import dev.cheerfun.pixivic.basic.notify.po.NotifySettingConfig;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.connection.stream.ObjectRecord;
 import org.springframework.data.redis.connection.stream.StreamRecords;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -64,8 +65,8 @@ public class NotifyEventService {
 
         return true;
     }
-
-    private Boolean checkUserSetting(Integer ownerId, String objectType) {
+    @Cacheable("userNotifySetting")
+    public Boolean checkUserSetting(Integer ownerId, String objectType) {
         NotifyBanSetting notifyBanSetting = notifyMapper.queryUserBanSetting(ownerId);
         return notifyBanSetting == null || !notifyBanSetting.getBanNotifyActionType().contains(objectType);
     }
