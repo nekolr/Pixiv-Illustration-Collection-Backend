@@ -1,7 +1,5 @@
 package dev.cheerfun.pixivic.biz.web.illust.service;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.basic.userInfo.dto.IllustrationWithLikeInfo;
@@ -11,9 +9,8 @@ import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
-import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
-import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
@@ -22,13 +19,13 @@ import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -44,7 +41,7 @@ public class IllustrationBizService {
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
-    private final BusinessService businessService;
+    private final StringRedisTemplate stringRedisTemplate;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
 
     @Cacheable(value = "tagTranslation")
@@ -70,7 +67,8 @@ public class IllustrationBizService {
         Map<String, Object> context = AppContext.get();
         if (context != null && context.get(AuthConstant.USER_ID) != null) {
             int userId = (int) context.get(AuthConstant.USER_ID);
-            Boolean isFollowed = businessService.queryIsFollowed(userId, artist.getId());
+            Boolean isFollowed = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
+            //businessService.queryIsFollowed(userId, artist.getId());
             return new ArtistWithIsFollowedInfo(artist, isFollowed);
         }
         return artist;
@@ -78,7 +76,6 @@ public class IllustrationBizService {
 
     @Cacheable(value = "illust")
     public Illustration queryIllustrationById(Integer illustId) {
-        System.out.println("sasa");
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
             illustration = illustrationService.pullIllustrationInfo(illustId);
@@ -93,9 +90,11 @@ public class IllustrationBizService {
         Map<String, Object> context = AppContext.get();
         if (context != null && context.get(AuthConstant.USER_ID) != null) {
             int userId = (int) context.get(AuthConstant.USER_ID);
-            Boolean isBookmarked = businessService.queryIsBookmarked(userId, illustId);
+            Boolean isBookmarked = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
+            //businessService.queryIsBookmarked(userId, illustId);
             illustration = new IllustrationWithLikeInfo(illustration, isBookmarked);
-            Boolean isFollowed = businessService.queryIsFollowed(userId, illustration.getArtistId());
+            Boolean isFollowed = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
+            //businessService.queryIsFollowed(userId, illustration.getArtistId());
             illustration.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustration.getArtistPreView(), isFollowed));
         }
         return illustration;

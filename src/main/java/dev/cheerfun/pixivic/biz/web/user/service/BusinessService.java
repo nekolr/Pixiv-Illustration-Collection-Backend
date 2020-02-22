@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.basic.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
-import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
+import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Artist;
@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 public class BusinessService {
     private final StringRedisTemplate stringRedisTemplate;
     private final BusinessMapper businessMapper;
-    private final IllustrationBizMapper illustrationBizMapper;
+    private final IllustrationBizService illustrationBizService;
 
     public void bookmark(int userId, int illustId) {
         bookmarkOperation(userId, illustId, 1, 0);
@@ -166,9 +166,13 @@ public class BusinessService {
                 .limit(pageSize).collect(Collectors.toList());
         List<Illustration> illustrations = null;
         if (illustIdList.size() != 0) {
-            illustrations = illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
+            illustrations = queryIllustrationByIllustIdList(illustIdList);
         }
         return illustrations;
+    }
+
+    public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {
+        return illustIdList.stream().parallel().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList());
     }
 
     @Cacheable(value = "followedLatest", key = "#userId+#type")
