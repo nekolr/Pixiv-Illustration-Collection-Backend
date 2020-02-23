@@ -2,12 +2,9 @@ package dev.cheerfun.pixivic.biz.web.illust.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
-import dev.cheerfun.pixivic.basic.userInfo.annotation.WithUserInfo;
+import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
-import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
-import dev.cheerfun.pixivic.common.constant.AuthConstant;
-import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -60,7 +56,7 @@ public class IllustrationBizController {
     @GetMapping("/artists/{artistId}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("获取画师详情成功", illustrationBizService.queryArtistById(artistId)));
+        return ResponseEntity.ok().body(new Result<>("获取画师详情成功", illustrationBizService.queryArtistDetail(artistId)));
     }
 
     @GetMapping("/exists/{type}/{id}")

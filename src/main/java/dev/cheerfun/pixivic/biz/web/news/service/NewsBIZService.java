@@ -19,8 +19,14 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NewsBIZService {
     private final NewsBIZMapper newsBIZMapper;
-    @Cacheable(value = "new")
+
+    @Cacheable(value = "newList")
     public List<ACGNew> queryByFromAndDate(String referer, int page, int pageSize) {
-        return newsBIZMapper.queryByFromAndDate(referer,pageSize*(page-1),pageSize);
+        return newsBIZMapper.queryByFromAndDate(referer, pageSize * (page - 1), pageSize);
+    }
+
+    @Cacheable(value = "new")
+    public ACGNew queryNewById(Integer newId) {
+        return newsBIZMapper.queryNewById(newId);
     }
 }

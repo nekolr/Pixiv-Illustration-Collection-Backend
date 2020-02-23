@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
-import dev.cheerfun.pixivic.basic.userInfo.annotation.WithUserInfo;
+import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.FollowedRelation;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;

@@ -30,4 +30,10 @@ public class NewsBIZController {
         List<ACGNew> acgNewList = newsBIZService.queryByFromAndDate(referer, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取" + referer + "资讯列表成功", acgNewList));
     }
+
+    @GetMapping("/{newId}")
+    public ResponseEntity<Result<ACGNew>> queryByDateAndMode(@PathVariable Integer newId) {
+        ACGNew acgNewList = newsBIZService.queryNewById(newId);
+        return ResponseEntity.ok().body(new Result<>("获取资讯详情成功", acgNewList));
+    }
 }

@@ -1,8 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import com.google.common.collect.Lists;
-import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistPreViewWithFollowedInfo;
-import dev.cheerfun.pixivic.basic.userInfo.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
+import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;

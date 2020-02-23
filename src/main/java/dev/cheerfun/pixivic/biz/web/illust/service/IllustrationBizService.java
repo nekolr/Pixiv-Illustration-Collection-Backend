@@ -1,10 +1,10 @@
 package dev.cheerfun.pixivic.biz.web.illust.service;
 
-import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistPreViewWithFollowedInfo;
-import dev.cheerfun.pixivic.basic.userInfo.dto.ArtistWithIsFollowedInfo;
-import dev.cheerfun.pixivic.basic.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
+import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
+import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
+import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
@@ -55,6 +55,18 @@ public class IllustrationBizService {
         return illustrations;
     }
 
+    public Artist queryArtistDetail(Integer artistId) {
+        Artist artist = queryArtistById(artistId);
+        Map<String, Object> context = AppContext.get();
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            int userId = (int) context.get(AuthConstant.USER_ID);
+            Boolean isFollowed = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
+            //businessService.queryIsFollowed(userId, artist.getId());
+            return new ArtistWithIsFollowedInfo(artist, isFollowed);
+        }
+        return artist;
+    }
+
     @Cacheable(value = "artist")
     public Artist queryArtistById(Integer artistId) {
         Artist artist = illustrationBizMapper.queryArtistById(artistId);
@@ -64,13 +76,7 @@ public class IllustrationBizService {
                 throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
             }
         }
-        Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            int userId = (int) context.get(AuthConstant.USER_ID);
-            Boolean isFollowed = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
-            //businessService.queryIsFollowed(userId, artist.getId());
-            return new ArtistWithIsFollowedInfo(artist, isFollowed);
-        }
+
         return artist;
     }
 

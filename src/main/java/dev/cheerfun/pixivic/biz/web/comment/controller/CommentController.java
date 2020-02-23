@@ -2,10 +2,10 @@ package dev.cheerfun.pixivic.biz.web.comment.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
-import dev.cheerfun.pixivic.basic.notify.constant.NotifyActionType;
-import dev.cheerfun.pixivic.basic.notify.constant.NotifyObjectType;
-import dev.cheerfun.pixivic.basic.notify.po.NotifyEvent;
-import dev.cheerfun.pixivic.basic.notify.service.NotifyEventService;
+import dev.cheerfun.pixivic.biz.notify.constant.NotifyActionType;
+import dev.cheerfun.pixivic.biz.notify.constant.NotifyObjectType;
+import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
+import dev.cheerfun.pixivic.biz.notify.service.NotifyEventService;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
