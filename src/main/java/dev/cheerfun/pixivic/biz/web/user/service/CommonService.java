@@ -82,7 +82,11 @@ public class CommonService {
 
     public User signIn(String qqAccessToken) throws IOException, InterruptedException {
         String qqOpenId = getQQOpenId(qqAccessToken);
-        return userMapper.getUserByQQOpenId(qqOpenId);
+        User user = userMapper.getUserByQQOpenId(qqOpenId);
+        if(user==null){
+            throw new UserCommonException(HttpStatus.BAD_REQUEST,"不存在此QQ绑定的帐号");
+        }
+        return user;
     }
 
     public User bindQQ(String qqAccessToken, int userId) throws IOException, InterruptedException {
