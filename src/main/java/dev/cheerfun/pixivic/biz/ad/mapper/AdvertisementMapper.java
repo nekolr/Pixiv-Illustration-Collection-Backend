@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.ad.mapper;
 
-import dev.cheerfun.pixivic.biz.ad.domain.AdvertisementInfo;
+import dev.cheerfun.pixivic.biz.ad.po.AdvertisementInfo;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;

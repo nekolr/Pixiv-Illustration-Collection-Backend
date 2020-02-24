@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.ad.domain;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import dev.cheerfun.pixivic.biz.ad.po.AdvertisementInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.common.po.illust.ImageUrl;

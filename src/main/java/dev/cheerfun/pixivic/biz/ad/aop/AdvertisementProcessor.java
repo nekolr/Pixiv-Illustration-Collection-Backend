@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.ad.aop;
 
 import dev.cheerfun.pixivic.biz.ad.domain.Advertisement;
-import dev.cheerfun.pixivic.biz.ad.domain.AdvertisementInfo;
+import dev.cheerfun.pixivic.biz.ad.po.AdvertisementInfo;
 import dev.cheerfun.pixivic.biz.ad.mapper.AdvertisementMapper;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;

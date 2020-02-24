@@ -1,6 +1,6 @@
-package dev.cheerfun.pixivic.basic.track.mapper;
+package dev.cheerfun.pixivic.biz.track.mapper;
 
-import dev.cheerfun.pixivic.basic.track.domain.Track;
+import dev.cheerfun.pixivic.biz.track.domain.Track;
 import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
