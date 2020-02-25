@@ -19,8 +19,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -37,7 +36,7 @@ public class IllustRankService {
     private final IllustrationMapper illustrationMapper;
     private final IllustrationService illustrationService;
     private final RequestUtil requestUtil;
-    private final static String[] MODES = {"day", "week", "month", "day_female", "day_male","day_manga","week_manga","month_manga","week_rookie_manga"};
+    private final static String[] MODES = {"day", "week", "month", "day_female", "day_male", "day_manga", "week_manga", "month_manga", "week_rookie_manga"};
 
     public void pullAllRank() throws InterruptedException {
         LocalDate date = LocalDate.now().plusDays(-2);
@@ -46,14 +45,15 @@ public class IllustRankService {
         }
     }
 
-    private Rank getIllustrations(String mode, String date) throws InterruptedException {
+    private Rank getIllustrations(String mode, String date) {
         ArrayList<Illustration> illustrations = new ArrayList<>(100);
-        final CountDownLatch cd = new CountDownLatch(10);
-        IntStream.range(0, 10).forEach(i -> getIllustrationsJson(mode, date, i).thenAccept(illustration -> {
-            illustrations.addAll(illustration);
-            cd.countDown();
-        }));
-        cd.await();
+        IntStream.range(0, 10).forEach(i -> {
+            try {
+                illustrations.addAll(getIllustrationsJson(mode, date, i));
+            } catch (ExecutionException | InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
         String rankMode;
         switch (mode) {
             case "day_female":
@@ -63,13 +63,13 @@ public class IllustRankService {
                 rankMode = "male";
                 break;
             default:
-                rankMode=mode;
+                rankMode = mode;
                 break;
         }
         return new Rank(illustrations, rankMode, date);
     }
 
-    private CompletableFuture<List<Illustration>> getIllustrationsJson(String mode, String date, Integer index) {
+    private List<Illustration> getIllustrationsJson(String mode, String date, Integer index) throws ExecutionException, InterruptedException {
         return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/illust/ranking?mode=" + mode + "&offset=" + index * 30 + "&date=" + date)
                 .thenApply(result -> {
                     if ("false".equals(result)) {
@@ -84,7 +84,7 @@ public class IllustRankService {
                         e.printStackTrace();
                     }
                     return null;
-                });
+                }).get();
     }
 
     public void deal() throws IOException, InterruptedException {
