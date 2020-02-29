@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.search.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
+import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
@@ -61,6 +62,7 @@ public class SearchController {
 
     @GetMapping("/illustrations")
     @WithUserInfo
+    @WithAdvertisement
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
             @SensitiveCheck

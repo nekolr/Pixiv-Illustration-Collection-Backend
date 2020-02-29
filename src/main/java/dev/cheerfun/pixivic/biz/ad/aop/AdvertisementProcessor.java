@@ -69,14 +69,18 @@ public class AdvertisementProcessor {
 
     public void insertAD(Object responseEntity) {
         Result<List> body = (Result<List>) ((ResponseEntity) responseEntity).getBody();
-        List data = new ArrayList();
-        Collections.copy(body.getData(),data);;
+        List bodyData = body.getData();
+        List data = new ArrayList(bodyData.size()+1);
+        data.addAll(bodyData);
         //随机决定是否插入
-        //如果插入则根据权重选一个广告插入
-        int i = random.nextInt(randomList.size());
-        Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
-        data.add(advertisement);
-        body.setData(data);
+        int isAdd = random.nextInt(10);
+        if(isAdd>7){
+            //如果插入则根据权重选一个广告插入
+            int i = random.nextInt(randomList.size());
+            Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
+            data.add(advertisement);
+            body.setData(data);
+        }
     }
 
 }
