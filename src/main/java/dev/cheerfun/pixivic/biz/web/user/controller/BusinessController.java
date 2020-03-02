@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.FollowedRelation;
@@ -27,29 +28,34 @@ import java.util.List;
  * @description BizController
  */
 @RestController
-@PermissionRequired
 @Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class BusinessController {
     private final BusinessService businessService;
 
     @PostMapping("/bookmarked")
+    @PermissionRequired
     public ResponseEntity<Result<String>> bookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
         businessService.bookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getIllustId());
         return ResponseEntity.ok().body(new Result<>("收藏成功"));
     }
 
     @DeleteMapping("/bookmarked")
+    @PermissionRequired
     public ResponseEntity<Result<String>> cancelBookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
         businessService.cancelBookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getIllustId(), bookmarkRelation.getId());
         return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
     }
 
     @GetMapping("/{userId}/bookmarked/{type}")
-    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
-        int userIdFromAppContext = (int) AppContext.get().get(AuthConstant.USER_ID);
-        List<Illustration> illustrations = businessService.queryBookmarked(userIdFromAppContext, type, (page - 1) * pageSize, pageSize);
-        businessService.dealIfFollowedInfo(illustrations, userIdFromAppContext);
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable Integer userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = "Authorization",required = false) String token) {
+        List<Illustration> illustrations = businessService.queryBookmarked(userId, type, (page - 1) * pageSize, pageSize);
+        int userIdFromAppContext ;
+        if(token!=null){
+            userIdFromAppContext = (int) AppContext.get().get(AuthConstant.USER_ID);
+            businessService.dealIfFollowedInfo(illustrations, userIdFromAppContext);
+        }
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
 
