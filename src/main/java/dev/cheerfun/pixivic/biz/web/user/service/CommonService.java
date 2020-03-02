@@ -83,8 +83,8 @@ public class CommonService {
     public User signIn(String qqAccessToken) throws IOException, InterruptedException {
         String qqOpenId = getQQOpenId(qqAccessToken);
         User user = userMapper.getUserByQQOpenId(qqOpenId);
-        if(user==null){
-            throw new UserCommonException(HttpStatus.BAD_REQUEST,"不存在此QQ绑定的帐号");
+        if (user == null) {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "不存在此QQ绑定的帐号");
         }
         return user;
     }
@@ -167,5 +167,14 @@ public class CommonService {
     public Boolean queryIsBindQQ(int userId) {
         User user = userMapper.queryUserByUserId(userId);
         return user.getIsBindQQ();
+    }
+
+    public User queryUser(Integer userId) {
+        User user = userMapper.queryUserByUserId(userId);
+        if (user == null) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "用户不存在");
+        }
+        return
+                user;
     }
 }

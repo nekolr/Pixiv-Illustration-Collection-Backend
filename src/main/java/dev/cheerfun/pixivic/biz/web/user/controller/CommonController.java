@@ -38,6 +38,12 @@ public class CommonController {
     private final CommonService userService;
     private final JWTUtil jwtUtil;
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<Result<User>> queryUser(@PathVariable("userId") Integer userId) {
+        User user = userService.queryUser(userId);
+        return ResponseEntity.ok().body(new Result<>("获取用户信息成功", user));
+    }
+
     @GetMapping("/usernames/{username}")
     public ResponseEntity<Result> checkUsername(@NotBlank @PathVariable("username") @Size(min = 2, max = 50) String username) {
         if (userService.checkUsername(username)) {
