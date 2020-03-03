@@ -30,18 +30,17 @@ import java.util.List;
 @RestController
 @Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@PermissionRequired
 public class BusinessController {
     private final BusinessService businessService;
 
     @PostMapping("/bookmarked")
-    @PermissionRequired
     public ResponseEntity<Result<String>> bookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
         businessService.bookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getIllustId());
         return ResponseEntity.ok().body(new Result<>("收藏成功"));
     }
 
     @DeleteMapping("/bookmarked")
-    @PermissionRequired
     public ResponseEntity<Result<String>> cancelBookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
         businessService.cancelBookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getIllustId(), bookmarkRelation.getId());
         return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
@@ -79,6 +78,7 @@ public class BusinessController {
 
     @GetMapping("/{userId}/followed")
     public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
+      //  System.out.println(businessService.getClass().getDeclaredMethods());
         List<Artist> artists = businessService.queryFollowed((int) AppContext.get().get(AuthConstant.USER_ID), (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师列表成功", artists));
     }

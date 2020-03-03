@@ -6,17 +6,17 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.4.RELEASE</version>
+        <version>2.2.5.RELEASE</version>
         <relativePath/>
     </parent>
     <groupId>dev.cheerfun.pixivic</groupId>
     <artifactId>pixiv-illustration-collection</artifactId>
-    <version>3.0</version>
+    <version>3.1</version>
     <description>pixivic.com 后端</description>
     <packaging>jar</packaging>
 
     <properties>
-        <spring.version>5.2.3.RELEASE</spring.version>
+        <spring.version>5.2.4.RELEASE</spring.version>
         <boot.version>2.2.4.RELEASE</boot.version>
         <java.version>12</java.version>
         <lombok.version>1.18.8</lombok.version>
