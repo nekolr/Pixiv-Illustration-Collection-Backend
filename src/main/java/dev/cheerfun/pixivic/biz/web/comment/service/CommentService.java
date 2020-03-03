@@ -96,7 +96,7 @@ public class CommentService {
             comment.setIsLike((Boolean) isLikedList.get(i));
             //拼成树形
             if (comment.getParentId() == 0) {
-                comment.setSubCommentList(mayByParentId[0].get(comment.getId()));
+                comment.setSubCommentList(mayByParentId[0] != null ? mayByParentId[0].get(comment.getId()) : null);
             }
         }
         //最新消息逆序
