@@ -78,7 +78,7 @@ public class BusinessController {
 
     @GetMapping("/{userId}/followed")
     public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
-      //  System.out.println(businessService.getClass().getDeclaredMethods());
+      System.out.println("233");
         List<Artist> artists = businessService.queryFollowed((int) AppContext.get().get(AuthConstant.USER_ID), (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师列表成功", artists));
     }
