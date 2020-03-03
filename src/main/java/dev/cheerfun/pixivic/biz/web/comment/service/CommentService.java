@@ -65,6 +65,9 @@ public class CommentService {
 
     public List<Comment> pullComment(String appType, Integer appId) {
         List<Comment> comments = queryCommentList(appType, appId);
+        if(comments.size()==0){
+            return comments;
+        }
         //拼接是否点赞
         List<Comment> result = new ArrayList<>();
         Map<Integer, List<Comment>>[] mayByParentId = new Map[]{null};
