@@ -2,11 +2,11 @@ package dev.cheerfun.pixivic.biz.web.comment.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyActionType;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyObjectType;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
 import dev.cheerfun.pixivic.biz.notify.service.NotifyEventService;
-import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
@@ -50,7 +50,7 @@ public class CommentController {
     @GetMapping("/{commentAppType}/{commentAppId}/comments")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<List<Comment>>> pullComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("拉取评论成功", commentService.pullComment(commentAppType, commentAppId, (int) AppContext.get().get(AuthConstant.USER_ID))));
+        return ResponseEntity.ok().body(new Result<>("拉取评论成功", commentService.pullComment(commentAppType, commentAppId)));
     }
 
     @PostMapping("user/likedComments")

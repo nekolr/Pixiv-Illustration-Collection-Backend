@@ -4,7 +4,9 @@ import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
 import dev.cheerfun.pixivic.biz.web.comment.exception.CommentException;
 import dev.cheerfun.pixivic.biz.web.comment.mapper.CommentMapper;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -61,24 +63,30 @@ public class CommentService {
         }
     }
 
-    public List<Comment> pullComment(String appType, Integer appId, int userId) {
+    public List<Comment> pullComment(String appType, Integer appId) {
         List<Comment> comments = queryCommentList(appType, appId);
         //拼接是否点赞
         List<Comment> result = new ArrayList<>();
         Map<Integer, List<Comment>>[] mayByParentId = new Map[]{null};
-        List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-            //上层id分组
-            mayByParentId[0] = comments.stream().collect(Collectors.groupingBy(e -> {
-                //顶级评论引用列表
-                if (e.getParentId() == 0) {
-                    result.add(e);
-                }
-                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(RedisKeyConstant.LIKE_REDIS_PRE + userId, String.valueOf(e.toStringForQueryLike()));
-                return e.getParentId();
-            }));
-            return null;
-        });
+        List<Object> isLikedList;
+        if(AppContext.get()!=null&&AppContext.get().get(AuthConstant.USER_ID)!=null){
+            isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+                //上层id分组
+                mayByParentId[0] = comments.stream().collect(Collectors.groupingBy(e -> {
+                    //顶级评论引用列表
+                    if (e.getParentId() == 0) {
+                        result.add(e);
+                    }
+                    StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+                    stringRedisConnection.sIsMember(RedisKeyConstant.LIKE_REDIS_PRE + AppContext.get().get(AuthConstant.USER_ID), String.valueOf(e.toStringForQueryLike()));
+                    return e.getParentId();
+                }));
+                return null;
+            });
+        }else {
+            isLikedList= comments.stream().map(e->false).collect(Collectors.toList());
+        }
+
         int index = comments.size();
         for (int i = 0; i < index; i++) {
             Comment comment = comments.get(i);
