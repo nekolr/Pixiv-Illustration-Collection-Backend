@@ -78,7 +78,10 @@ public class AdvertisementProcessor {
             //如果插入则根据权重选一个广告插入
             int i = random.nextInt(randomList.size());
             Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
+        for (int j = 0; j <10 ; j++) {
             data.add(advertisement);
+        }
+
             body.setData(data);
      //   }
     }
