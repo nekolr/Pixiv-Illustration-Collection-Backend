@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Order(4)
+@Order(3)
 public class AdvertisementProcessor {
     private final AdvertisementMapper advertisementMapper;
     private static List<Integer> randomList;

@@ -36,7 +36,7 @@ import java.util.concurrent.CompletableFuture;
 @Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Order(3)
+@Order(4)
 public class UserInfoProcessor {
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
