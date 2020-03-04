@@ -1,13 +1,12 @@
 package dev.cheerfun.pixivic.biz.ad.aop;
 
 import dev.cheerfun.pixivic.biz.ad.domain.Advertisement;
-import dev.cheerfun.pixivic.biz.ad.po.AdvertisementInfo;
 import dev.cheerfun.pixivic.biz.ad.mapper.AdvertisementMapper;
+import dev.cheerfun.pixivic.biz.ad.po.AdvertisementInfo;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
-import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
@@ -46,7 +45,7 @@ public class AdvertisementProcessor {
     @PostConstruct
     public void init() {
         random = new Random(21);
-        randomList=new ArrayList<>();
+        randomList = new ArrayList<>();
         List<AdvertisementInfo> advertisementInfos = advertisementMapper.queryAllEnableAdvertisementInfo();
         //构造randomList
         advertisementInfos.forEach(e -> {
@@ -75,20 +74,17 @@ public class AdvertisementProcessor {
     public void insertAD(Object responseEntity) {
         Result<List> body = (Result<List>) ((ResponseEntity) responseEntity).getBody();
         List bodyData = body.getData();
-        List data = new ArrayList(bodyData.size()+1);
+        List data = new ArrayList(bodyData.size() + 1);
         data.addAll(bodyData);
         //随机决定是否插入
         int isAdd = random.nextInt(10);
-       // if(isAdd>7){
+        if (isAdd > 7) {
             //如果插入则根据权重选一个广告插入
             int i = random.nextInt(randomList.size());
             Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
-        for (int j = 0; j <10 ; j++) {
             data.add(advertisement);
-        }
-
             body.setData(data);
-     //   }
+        }
     }
 
 }
