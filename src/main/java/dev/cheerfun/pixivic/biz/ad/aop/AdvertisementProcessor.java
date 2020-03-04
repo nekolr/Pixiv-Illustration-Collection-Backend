@@ -6,7 +6,9 @@ import dev.cheerfun.pixivic.biz.ad.mapper.AdvertisementMapper;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +38,8 @@ public class AdvertisementProcessor {
     private static Map<Integer, List<Advertisement>> advertisementMap;
     Random random;
 
-    @Pointcut(value = "@annotation(dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement)||@within(dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement)")
+    @Pointcut(value = "@annotation(dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement)||@within(dev.cheerfun.pix" +
+            "ivic.biz.ad.annotation.WithAdvertisement)")
     public void pointCut() {
     }
 
@@ -56,8 +59,9 @@ public class AdvertisementProcessor {
         advertisementMap = advertisementInfos.stream().map(Advertisement::new).collect(Collectors.groupingBy(Advertisement::getAdId));
     }
 
-    @AfterReturning(value = "pointCut()", returning = "result")
-    public void withAD(Object result) {
+    @Around(value = "pointCut()")
+    public Object withAD(ProceedingJoinPoint joinPoint) throws Throwable {
+        Object result = joinPoint.proceed();
         if (result instanceof ResponseEntity) {
             insertAD(result);
         } else if (result instanceof CompletableFuture) {
@@ -65,6 +69,7 @@ public class AdvertisementProcessor {
                 insertAD(e);
             });
         }
+        return result;
     }
 
     public void insertAD(Object responseEntity) {
