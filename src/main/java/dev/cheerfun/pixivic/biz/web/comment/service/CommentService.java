@@ -36,7 +36,7 @@ public class CommentService {
     private final StringRedisTemplate stringRedisTemplate;
     private final CommentMapper commentMapper;
 
-    @CacheEvict(value = "comments", allEntries = true)
+    @CacheEvict(value = "comments",key = "#comment.appType+#comment.appId")
     public void pushComment(Comment comment) {
         commentMapper.pushComment(comment);
         //
@@ -69,7 +69,7 @@ public class CommentService {
                 .limit(pageSize).collect(Collectors.toList());
     }
 
-    @Cacheable(value = "comments")
+    @Cacheable(value = "comments",key = "#appType+#appId")
     public List<Comment> pullComment(String appType, Integer appId) {
         List<Comment> comments = queryCommentList(appType, appId);
         if (comments.size() == 0) {
