@@ -48,10 +48,10 @@ public class BusinessController {
 
     @GetMapping("/{userId}/bookmarked/{type}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable Integer userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = "Authorization",required = false) String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable Integer userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         List<Illustration> illustrations = businessService.queryBookmarked(userId, type, (page - 1) * pageSize, pageSize);
-        int userIdFromAppContext ;
-        if(token!=null){
+        int userIdFromAppContext;
+        if (token != null) {
             userIdFromAppContext = (int) AppContext.get().get(AuthConstant.USER_ID);
             businessService.dealIfFollowedInfo(illustrations, userIdFromAppContext);
         }
@@ -77,8 +77,8 @@ public class BusinessController {
     }
 
     @GetMapping("/{userId}/followed")
-    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable String userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
-        List<Artist> artists = businessService.queryFollowed((int) AppContext.get().get(AuthConstant.USER_ID), (page - 1) * pageSize, pageSize);
+    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
+        List<Artist> artists = businessService.queryFollowed(userId, (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师列表成功", artists));
     }
 

@@ -2,11 +2,14 @@ package dev.cheerfun.pixivic.biz.web.user.service;
 
 import com.google.common.collect.Lists;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
+import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
@@ -143,6 +146,25 @@ public class BusinessService {
         List<Artist> artists = businessMapper.queryFollowed(userId, currIndex, pageSize);
         if (artists.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
+        } else {
+            if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
+                int user = (int) AppContext.get().get(AuthConstant.USER_ID);
+                List<Object> isFollowedList;
+                if (user == userId) {
+                    isFollowedList = artists.stream().map(e -> true).collect(Collectors.toList());
+                } else {
+                    isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+                        for (Artist artist : artists) {
+                            StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+                            stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artist.getId(), String.valueOf(userId));
+                        }
+                        return null;
+                    });
+                }
+                for (int i = 0; i < artists.size(); i++) {
+                    artists.set(i, new ArtistWithIsFollowedInfo(artists.get(i), (Boolean) isFollowedList.get(i)));
+                }
+            }
         }
         return artists;
     }
