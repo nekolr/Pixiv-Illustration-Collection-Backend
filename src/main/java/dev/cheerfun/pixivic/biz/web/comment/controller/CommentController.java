@@ -49,8 +49,8 @@ public class CommentController {
 
     @GetMapping("/{commentAppType}/{commentAppId}/comments")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Comment>>> pullComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("拉取评论成功", commentService.pullComment(commentAppType, commentAppId)));
+    public ResponseEntity<Result<List<Comment>>> pullComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResponseEntity.ok().body(new Result<>("拉取评论成功", commentService.pullComment(commentAppType, commentAppId,page,pageSize)));
     }
 
     @PostMapping("user/likedComments")

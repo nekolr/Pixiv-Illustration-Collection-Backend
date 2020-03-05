@@ -63,16 +63,23 @@ public class CommentService {
         }
     }
 
+    public List<Comment> pullComment(String appType, Integer appId, Integer page, Integer pageSize) {
+        List<Comment> comments = pullComment(appType, appId);
+        return comments.stream().skip(pageSize * (page - 1))
+                .limit(pageSize).collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "comments")
     public List<Comment> pullComment(String appType, Integer appId) {
         List<Comment> comments = queryCommentList(appType, appId);
-        if(comments.size()==0){
+        if (comments.size() == 0) {
             return comments;
         }
         //拼接是否点赞
         List<Comment> result = new ArrayList<>();
         Map<Integer, List<Comment>>[] mayByParentId = new Map[]{null};
         List<Object> isLikedList;
-        if(AppContext.get()!=null&&AppContext.get().get(AuthConstant.USER_ID)!=null){
+        if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
             isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
                 //上层id分组
                 mayByParentId[0] = comments.stream().collect(Collectors.groupingBy(e -> {
@@ -86,8 +93,8 @@ public class CommentService {
                 }));
                 return null;
             });
-        }else {
-            isLikedList= comments.stream().map(e->false).collect(Collectors.toList());
+        } else {
+            isLikedList = comments.stream().map(e -> false).collect(Collectors.toList());
         }
 
         int index = comments.size();
@@ -104,7 +111,6 @@ public class CommentService {
         return result;
     }
 
-    @Cacheable(value = "comments")
     public List<Comment> queryCommentList(String appType, Integer appId) {
         return commentMapper.pullComment(appType, appId);
     }
