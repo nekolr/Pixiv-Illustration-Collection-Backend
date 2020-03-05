@@ -41,9 +41,9 @@ public class CommentController {
         comment.init(commentAppType, commentAppId, userId);
         commentService.pushComment(comment);
         //如果不是顶层(即存在被回复人)产生通知事件
-        if (comment.getReplyTo() != 0) {
+      /*  if (comment.getReplyTo() != 0) {
             notifyEventService.pushNotifyEvent(new NotifyEvent(userId, NotifyActionType.REPLIED, comment.getParentId(), NotifyObjectType.COMMENT, LocalDateTime.now()));
-        }
+        }*/
         return ResponseEntity.ok().body(new Result<>("评论成功"));
     }
 
@@ -59,7 +59,7 @@ public class CommentController {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         commentService.likeComment(like, userId);
         //产生通知事件
-        notifyEventService.pushNotifyEvent(new NotifyEvent(userId, NotifyActionType.REPLIED, like.getCommentId(), NotifyObjectType.COMMENT, LocalDateTime.now()));
+        //notifyEventService.pushNotifyEvent(new NotifyEvent(userId, NotifyActionType.REPLIED, like.getCommentId(), NotifyObjectType.COMMENT, LocalDateTime.now()));
         return ResponseEntity.ok().body(new Result<>("点赞成功"));
     }
 
