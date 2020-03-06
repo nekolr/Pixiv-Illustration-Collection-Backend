@@ -75,27 +75,29 @@ public class CommentService {
         if (comments.size() == 0) {
             return comments;
         }
-        //拼接是否点赞
         List<Comment> result = new ArrayList<>();
         Map<Integer, List<Comment>>[] mayByParentId = new Map[]{null};
+        //拼接是否点赞
         List<Object> isLikedList;
         if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
             isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-                //上层id分组
-                mayByParentId[0] = comments.stream().collect(Collectors.groupingBy(e -> {
-                    //顶级评论引用列表
-                    if (e.getParentId() == 0) {
-                        result.add(e);
-                    }
+                comments.forEach(e->{
                     StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
                     stringRedisConnection.sIsMember(RedisKeyConstant.LIKE_REDIS_PRE + AppContext.get().get(AuthConstant.USER_ID), String.valueOf(e.toStringForQueryLike()));
-                    return e.getParentId();
-                }));
+                });
                 return null;
             });
         } else {
             isLikedList = comments.stream().map(e -> false).collect(Collectors.toList());
         }
+        //顶级评论
+        mayByParentId[0] = comments.stream().collect(Collectors.groupingBy(e -> {
+            //顶级评论引用列表
+            if (e.getParentId() == 0) {
+                result.add(e);
+            }
+            return e.getParentId();
+        }));
 
         int index = comments.size();
         for (int i = 0; i < index; i++) {
