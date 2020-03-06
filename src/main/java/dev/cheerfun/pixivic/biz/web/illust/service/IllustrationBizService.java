@@ -173,4 +173,8 @@ public class IllustrationBizService {
         return illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
     }
 
+    @Cacheable("illust_follow")
+    public List<Integer> queryUserListBookmarkedIllust(Integer illustId, Integer page, Integer pageSize) {
+        return illustrationBizMapper.queryUserListBookmarkedIllust(illustId, (page - 1) * pageSize, pageSize);
+    }
 }

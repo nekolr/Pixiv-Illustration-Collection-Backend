@@ -91,6 +91,16 @@ public class IllustrationBizController {
         return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header("Location", url).header("Cache-Control", "no-cache").body(null);
     }
 
+    @GetMapping("/illusts/{illustId}/bookmarkedUsers")
+    public ResponseEntity<Result<List<Integer>>> queryUserListBookmarkedIllust(
+            @PathVariable Integer illustId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "30") Integer pageSize
+    ) {
+        List<Integer> userIdList = illustrationBizService.queryUserListBookmarkedIllust(illustId,page,pageSize);
+        return ResponseEntity.ok().body(new Result<>("获取收藏该画作的用户列表成功",userIdList));
+    }
+
     @GetMapping("/tags/{tag}/candidates")
     public ResponseEntity<Result<List<Tag>>> autoCompleteTag(@PathVariable String tag, @RequestBody List<String> tagList) {
         return ResponseEntity.ok().body(new Result<>("获取标签候选成功", null));

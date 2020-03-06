@@ -120,7 +120,9 @@ public class BusinessService {
 
     @Caching(evict = {
             @CacheEvict(value = "followedLatest", key = "#userId + 'illust'"),
-            @CacheEvict(value = "followedLatest", key = "#userId + 'manga'")})
+            @CacheEvict(value = "followedLatest", key = "#userId + 'manga'"),
+            @CacheEvict(value = "illust_follow", allEntries = true)})
+
     @Transactional
     public void follow(int userId, int artistId) {
         try {
