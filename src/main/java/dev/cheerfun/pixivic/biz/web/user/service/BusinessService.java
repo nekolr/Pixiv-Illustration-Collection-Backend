@@ -146,9 +146,7 @@ public class BusinessService {
 
     public List<Artist> queryFollowed(int userId, int currIndex, int pageSize) {
         List<Artist> artists = businessMapper.queryFollowed(userId, currIndex, pageSize);
-        if (artists.size() == 0) {
-            throw new BusinessException(HttpStatus.NOT_FOUND, "跟随画师列表为空");
-        } else {
+        if (artists.size() != 0) {
             if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
                 int user = (int) AppContext.get().get(AuthConstant.USER_ID);
                 List<Object> isFollowedList;
@@ -158,12 +156,13 @@ public class BusinessService {
                     isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
                         for (Artist artist : artists) {
                             StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                            stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artist.getId(), String.valueOf(userId));
+                            stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artist.getId(), String.valueOf(user));
                         }
                         return null;
                     });
                 }
                 for (int i = 0; i < artists.size(); i++) {
+                    System.out.println(isFollowedList.get(i));
                     artists.set(i, new ArtistWithIsFollowedInfo(artists.get(i), (Boolean) isFollowedList.get(i)));
                 }
             }
