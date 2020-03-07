@@ -58,14 +58,15 @@ public class IllustrationBizService {
 
     public Artist queryArtistDetail(Integer artistId) {
         Artist artist = queryArtistById(artistId);
+        dealArtist(artist);
         Map<String, Object> context = AppContext.get();
         if (context != null && context.get(AuthConstant.USER_ID) != null) {
             int userId = (int) context.get(AuthConstant.USER_ID);
             Boolean isFollowed = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
             //businessService.queryIsFollowed(userId, artist.getId());
+
             return new ArtistWithIsFollowedInfo(artist, isFollowed);
         }
-        dealArtist(artist);
         return artist;
     }
 
