@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.user.po;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 /**
@@ -11,6 +12,7 @@ import lombok.NonNull;
  * @description Bookmark
  */
 @Data
+@NoArgsConstructor
 public class BookmarkRelation {
     private int id;
     @NonNull
