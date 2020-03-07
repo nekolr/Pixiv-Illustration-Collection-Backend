@@ -115,7 +115,7 @@ public class IllustrationBizController {
             @RequestParam(defaultValue = "30") Integer pageSize
     ) {
         List<UserListDTO> userList = illustrationBizService.queryUserListFollowedArtist(artistId, page, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取收藏该画作的用户列表成功", userList));
+        return ResponseEntity.ok().body(new Result<>("获取关注该画师的用户列表成功", userList));
     }
 
 }
