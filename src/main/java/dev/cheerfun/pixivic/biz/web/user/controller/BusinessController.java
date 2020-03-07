@@ -36,7 +36,7 @@ public class BusinessController {
 
     @PostMapping("/bookmarked")
     public ResponseEntity<Result<String>> bookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
-        businessService.bookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getIllustId());
+        businessService.bookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getUsername(), bookmarkRelation.getIllustId());
         return ResponseEntity.ok().body(new Result<>("收藏成功"));
     }
 
@@ -67,7 +67,7 @@ public class BusinessController {
 
     @PostMapping("/followed")
     public ResponseEntity<Result<String>> follow(@RequestBody FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
-        businessService.follow((int) AppContext.get().get(AuthConstant.USER_ID), followedRelation.getArtistId());
+        businessService.follow((int) AppContext.get().get(AuthConstant.USER_ID), followedRelation.getArtistId(), followedRelation.getUsername());
         return ResponseEntity.ok().body(new Result<>("follow成功"));
     }
 

@@ -18,6 +18,8 @@ public class FollowedRelation {
     @NonNull
     private Integer userId;
     @NonNull
+    private String username;
+    @NonNull
     private Integer artistId;
 
 }

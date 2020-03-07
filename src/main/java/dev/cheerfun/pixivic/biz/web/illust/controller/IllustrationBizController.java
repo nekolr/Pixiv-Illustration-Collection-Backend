@@ -5,6 +5,8 @@ import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
+import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
+import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -92,18 +94,28 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/illusts/{illustId}/bookmarkedUsers")
-    public ResponseEntity<Result<List<Integer>>> queryUserListBookmarkedIllust(
+    public ResponseEntity<Result<List<UserListDTO>>> queryUserListBookmarkedIllust(
             @PathVariable Integer illustId,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "30") Integer pageSize
     ) {
-        List<Integer> userIdList = illustrationBizService.queryUserListBookmarkedIllust(illustId,page,pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取收藏该画作的用户列表成功",userIdList));
+        List<UserListDTO> userList = illustrationBizService.queryUserListBookmarkedIllust(illustId, page, pageSize);
+        return ResponseEntity.ok().body(new Result<>("获取收藏该画作的用户列表成功", userList));
     }
 
     @GetMapping("/tags/{tag}/candidates")
     public ResponseEntity<Result<List<Tag>>> autoCompleteTag(@PathVariable String tag, @RequestBody List<String> tagList) {
         return ResponseEntity.ok().body(new Result<>("获取标签候选成功", null));
+    }
+
+    @GetMapping("/artists/{artistId}/followedUsers")
+    public ResponseEntity<Result<List<UserListDTO>>> queryUserListFollowedArtist(
+            @PathVariable Integer artistId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "30") Integer pageSize
+    ) {
+        List<UserListDTO> userList = illustrationBizService.queryUserListFollowedArtist(artistId, page, pageSize);
+        return ResponseEntity.ok().body(new Result<>("获取收藏该画作的用户列表成功", userList));
     }
 
 }

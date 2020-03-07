@@ -45,16 +45,16 @@ public class BusinessService {
     private final BusinessMapper businessMapper;
     private final IllustrationBizService illustrationBizService;
 
-    public void bookmark(int userId, int illustId) {
-        bookmarkOperation(userId, illustId, 1, 0);
+    public void bookmark(int userId, String username, int illustId) {
+        bookmarkOperation(userId, username, illustId, 1, 0);
     }
 
     public void cancelBookmark(int userId, int illustId, int relationId) {
-        bookmarkOperation(userId, illustId, -1, relationId);
+        bookmarkOperation(userId, null, illustId, -1, relationId);
     }
 
     @Transactional
-    void bookmarkOperation(int userId, int illustId, int increment, int relationId) {
+    void bookmarkOperation(int userId, String username, int illustId, int increment, int relationId) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
         Boolean isMember = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
         if ((increment > 0 && isMember)
@@ -69,7 +69,7 @@ public class BusinessService {
                 if (increment > 0) {
                     operations.opsForSet().add(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
                     //异步往mysql中写入
-                    businessMapper.bookmark(userId, illustId, LocalDateTime.now());
+                    businessMapper.bookmark(userId, illustId, username, LocalDateTime.now());
                 } else {
                     operations.opsForSet().remove(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
                     //异步往mysql中移除
@@ -124,9 +124,9 @@ public class BusinessService {
             @CacheEvict(value = "illust_follow", allEntries = true)})
 
     @Transactional
-    public void follow(int userId, int artistId) {
+    public void follow(int userId, int artistId, String username) {
         try {
-            businessMapper.follow(userId, artistId, LocalDateTime.now());
+            businessMapper.follow(userId, artistId, username, LocalDateTime.now());
         } catch (Exception e) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "重复收藏");
         }

@@ -60,7 +60,7 @@ public class TestController {
     //@PermissionRequired
     public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException, MessagingException {
         //spotlightService.deal();
-        businessService.follow(53,123);
+        //businessService.follow(53,123);
         //emailUtil.sendEmail("392822872@qq.com","sasa","sasa","sas0","");
         return ResponseEntity.ok().body("content");
     }

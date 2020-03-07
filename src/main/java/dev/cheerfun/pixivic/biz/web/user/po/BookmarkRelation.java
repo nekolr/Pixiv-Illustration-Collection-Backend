@@ -1,6 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.user.po;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.NonNull;
 
 /**
  * @author OysterQAQ
@@ -11,6 +13,10 @@ import lombok.Data;
 @Data
 public class BookmarkRelation {
     private int id;
+    @NonNull
+    private String username;
+    @NonNull
     private int userId;
+    @NonNull
     private int illustId;
 }

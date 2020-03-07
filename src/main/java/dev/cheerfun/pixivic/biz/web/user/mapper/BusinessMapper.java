@@ -83,8 +83,8 @@ public interface BusinessMapper {
     List<Illustration> queryFollowedLatest(List<Integer> artists, String type, int currIndex, int pageSize);
 */
 
-    @Insert("insert into user_artist_followed (user_id, artist_id,create_date) values (#{userId}, #{artistId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
-    int follow(int userId, int artistId, LocalDateTime now);
+    @Insert("insert into user_artist_followed (user_id,username, artist_id,create_date) values (#{userId},#{username}, #{artistId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    int follow(int userId, int artistId, String username, LocalDateTime now);
 
     @Delete("delete from user_artist_followed where user_id=#{userId} and artist_id = #{artistId}")
     int cancelFollow(int userId, int artistId);
@@ -98,8 +98,8 @@ public interface BusinessMapper {
     @Select("select  count(id) from user_artist_followed where user_id = #{userId} and artist_id=#{artistId}")
     int queryIsFollowed(int userId, int artistId);
 
-    @Insert("insert into user_illust_bookmarked (user_id, illust_id,create_date) values (#{userId}, #{illustId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
-    int bookmark(int userId, int illustId, LocalDateTime now);
+    @Insert("insert into user_illust_bookmarked (user_id, illust_id,username,create_date) values (#{userId}, #{illustId},#{username}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    int bookmark(int userId, int illustId, String username, LocalDateTime now);
 
     @Delete("delete from user_illust_bookmarked where id=#{relationId} ")
     int cancelBookmarkByid(int relationId);

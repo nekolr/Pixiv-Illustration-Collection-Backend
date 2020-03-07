@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
+import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -173,8 +174,13 @@ public class IllustrationBizService {
         return illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
     }
 
-    @Cacheable("illust_follow")
-    public List<Integer> queryUserListBookmarkedIllust(Integer illustId, Integer page, Integer pageSize) {
+    @Cacheable("illust_bookmarked")
+    public List<UserListDTO> queryUserListBookmarkedIllust(Integer illustId, Integer page, Integer pageSize) {
         return illustrationBizMapper.queryUserListBookmarkedIllust(illustId, (page - 1) * pageSize, pageSize);
+    }
+
+    @Cacheable("artist_followed")
+    public List<UserListDTO> queryUserListFollowedArtist(Integer artistId, Integer page, Integer pageSize) {
+        return illustrationBizMapper.queryUserListFollowedArtist(artistId, (page - 1) * pageSize, pageSize);
     }
 }

@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.illust.mapper;
 
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
+import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -103,6 +104,19 @@ public interface IllustrationBizMapper {
     })
     List<Illustration> queryIllustrationByIllustIdList(@Param("illustIdList") List<Integer> illustIdList);
 
-    @Select("select user_id from user_illust_bookmarked where illust_id=#{illustId} order by create_date desc  limit #{currIndex} , #{pageSize}")
-    List<Integer> queryUserListBookmarkedIllust(Integer illustId, int currIndex, int pageSize);
+    @Select("select user_id,username,create_date from user_illust_bookmarked where illust_id=#{illustId} order by id desc  limit #{currIndex} , #{pageSize}")
+    @Results({
+            @Result(property = "illustId", column = "illust_id"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "createDate", column = "create_Date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+    })
+    List<UserListDTO> queryUserListBookmarkedIllust(Integer illustId, int currIndex, int pageSize);
+
+    @Select("select user_id,username,create_date from user_artist_followed where artist_id=#{artistId} order by id desc  limit #{currIndex} , #{pageSize}")
+    @Results({
+            @Result(property = "illustId", column = "illust_id"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "createDate", column = "create_Date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+    })
+    List<UserListDTO> queryUserListFollowedArtist(Integer artistId, int currIndex, Integer pageSize);
 }
