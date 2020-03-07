@@ -65,9 +65,14 @@ public class IllustrationBizService {
             //businessService.queryIsFollowed(userId, artist.getId());
             return new ArtistWithIsFollowedInfo(artist, isFollowed);
         }
-        //更改关注数
-        artist.setTotalFollowUsers(String.valueOf(stringRedisTemplate.opsForSet().size(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId)));
+        dealArtist(artist);
         return artist;
+    }
+
+    public void dealArtist(Artist artist) {
+        //更改关注数
+        artist.setTotalFollowUsers(String.valueOf(stringRedisTemplate.opsForSet().size(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artist.getId())));
+
     }
 
     @Cacheable(value = "artist")

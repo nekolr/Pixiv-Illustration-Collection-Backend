@@ -162,7 +162,7 @@ public class BusinessService {
                     });
                 }
                 for (int i = 0; i < artists.size(); i++) {
-                    System.out.println(isFollowedList.get(i));
+                    illustrationBizService.dealArtist(artists.get(i));
                     artists.set(i, new ArtistWithIsFollowedInfo(artists.get(i), (Boolean) isFollowedList.get(i)));
                 }
             }
