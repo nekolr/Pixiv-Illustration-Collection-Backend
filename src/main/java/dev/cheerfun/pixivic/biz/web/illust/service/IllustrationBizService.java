@@ -65,6 +65,8 @@ public class IllustrationBizService {
             //businessService.queryIsFollowed(userId, artist.getId());
             return new ArtistWithIsFollowedInfo(artist, isFollowed);
         }
+        //更改关注数
+        artist.setTotalFollowUsers(String.valueOf(stringRedisTemplate.opsForSet().size(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId)));
         return artist;
     }
 
