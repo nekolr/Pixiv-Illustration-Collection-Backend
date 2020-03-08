@@ -107,7 +107,7 @@ public interface BusinessMapper {
     @Delete("delete from user_illust_bookmarked where user_id=#{userId} and illust_id=#{illustId} ")
     int cancelBookmark(int userId, int illustId);
 
-    @Select("select i.* from (select illust_id from user_illust_bookmarked where user_id=#{userId} order by create_date desc limit #{currIndex} , #{pageSize}) u left join illusts i on  u.illust_id=i.illust_id where type=#{type}")
+    @Select("select i.* from (select illust_id from user_illust_bookmarked where user_id=#{userId} order by id desc limit #{currIndex} , #{pageSize}) u left join illusts i on  u.illust_id=i.illust_id where type=#{type}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
