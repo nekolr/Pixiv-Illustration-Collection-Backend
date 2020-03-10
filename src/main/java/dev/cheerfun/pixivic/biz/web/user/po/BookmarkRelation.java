@@ -1,9 +1,9 @@
 package dev.cheerfun.pixivic.biz.web.user.po;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.NonNull;
+
+import javax.validation.constraints.NotBlank;
 
 /**
  * @author OysterQAQ
@@ -15,10 +15,10 @@ import lombok.NonNull;
 @NoArgsConstructor
 public class BookmarkRelation {
     private int id;
-    @NonNull
+    @NotBlank
     private String username;
-    @NonNull
+    @NotBlank
     private int userId;
-    @NonNull
+    @NotBlank
     private int illustId;
 }
