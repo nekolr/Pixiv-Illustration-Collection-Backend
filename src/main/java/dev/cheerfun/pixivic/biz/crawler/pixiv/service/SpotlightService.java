@@ -54,7 +54,7 @@ public class SpotlightService {
     }*/
 
     private List<Spotlight> getSpotlightInfo(int index) {
-        SpotlightDTO spotlightDTO = (SpotlightDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/spotlight/articles?category=all&offset=" + "&offset=" + index * 10, SpotlightDTO.class);
+        SpotlightDTO spotlightDTO = (SpotlightDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/spotlight/articles?category=all&offset=" + index * 10, SpotlightDTO.class);
         assert spotlightDTO != null;
         return spotlightDTO.getSpotlightAticles();
     }
