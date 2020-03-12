@@ -179,7 +179,8 @@ public class IllustrationBizService {
     }
 
     public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {
-        return illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
+        return illustIdList.stream().map(this::queryIllustrationById).collect(Collectors.toList());
+        //return illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
     }
 
     @Cacheable("illust_bookmarked")
