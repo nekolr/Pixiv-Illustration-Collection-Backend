@@ -15,4 +15,8 @@ public class IllustHistory {
     private Integer userId;
     private Integer illustId;
     private LocalDateTime createAt;
+
+    public IllustHistory() {
+        createAt = LocalDateTime.now();
+    }
 }

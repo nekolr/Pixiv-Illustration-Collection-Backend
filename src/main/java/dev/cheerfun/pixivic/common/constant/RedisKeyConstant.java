@@ -15,5 +15,5 @@ public class RedisKeyConstant {
     public final static String NOTIFY_EVENT_STREAM_GROUP = "common";
     public final static String LIKE_REDIS_PRE = "u:l:c:";
     public final static String LIKE_COUNT_MAP_REDIS_PRE = "c:lcm";//+appType:appId
-    public final static String ILLUST_LOG_REDIS_PRE = "u:l:i:";//+appType:appId
+    public final static String ILLUST_BROWSING_HISTORY_REDIS_PRE = "u:h:i:";//+appType:appId
 }

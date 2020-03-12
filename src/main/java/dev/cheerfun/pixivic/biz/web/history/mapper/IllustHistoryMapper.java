@@ -4,13 +4,15 @@ import dev.cheerfun.pixivic.biz.web.history.domain.IllustHistory;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.scheduling.annotation.Async;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
 public interface IllustHistoryMapper {
-    @Insert("insert into illust_history_temp (user_id,illust_id,create_at) value (#{illustHistory.userId},#{illustHistory.illustId},#{illustHistory.createAt,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Insert("insert into illust_history_temp (user_id,illust_id,create_at) value (#{userId},#{illustId},#{createAt,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Async
     Integer insertToTemp(IllustHistory illustHistory);
 
     @Select("delete from illust_history where create_at < (SELECT DATE_ADD(now(),INTERVAL -3 MONTH));\n" +

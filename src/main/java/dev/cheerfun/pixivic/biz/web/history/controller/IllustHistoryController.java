@@ -38,7 +38,7 @@ public class IllustHistoryController {
     @GetMapping("/users/{userId}/illustHistory")
     public ResponseEntity<Result<List<Illustration>>> queryIllustHistory(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         List<Illustration> illustrations = illustHistoryService.pullFromRedis((int) AppContext.get().get(AuthConstant.USER_ID), page, pageSize);
-        return ResponseEntity.ok(new Result<>("获取历史记录成功", illustrations));
+        return ResponseEntity.ok(new Result<>("获取近期历史记录成功", illustrations));
     }
 
     @PermissionRequired

@@ -37,13 +37,13 @@ public class IllustHistoryService {
     private final IllustHistoryMapper illustHistoryMapper;
 
     public void push(IllustHistory illustHistory) {
-        stringRedisTemplate.opsForZSet().add(RedisKeyConstant.ILLUST_LOG_REDIS_PRE + illustHistory.getUserId(), String.valueOf(illustHistory.getIllustId()), illustHistory.getCreateAt().toEpochSecond(ZoneOffset.of("+8")));
+        stringRedisTemplate.opsForZSet().add(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + illustHistory.getUserId(), String.valueOf(illustHistory.getIllustId()), illustHistory.getCreateAt().toEpochSecond(ZoneOffset.of("+8")));
         //异步入临时表
-        CompletableFuture.runAsync(() -> illustHistoryMapper.insertToTemp(illustHistory));
+        illustHistoryMapper.insertToTemp(illustHistory);
     }
 
     public List<Illustration> pullFromRedis(int userId, int page, int pageSize) {
-        Set<String> illustIdList = stringRedisTemplate.opsForZSet().range(RedisKeyConstant.ILLUST_LOG_REDIS_PRE + userId, (page - 1) * pageSize, (page) * pageSize);
+        Set<String> illustIdList = stringRedisTemplate.opsForZSet().reverseRange(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, (page - 1) * pageSize, (page) * pageSize);
         if (illustIdList != null && illustIdList.size() > 0) {
             return illustrationBizService.queryIllustrationByIllustIdList(illustIdList.stream().map(Integer::valueOf).collect(Collectors.toList()));
         }
@@ -52,10 +52,10 @@ public class IllustHistoryService {
 
     public List<Illustration> pullFromMysql(int userId, int page, int pageSize) {
         //取最小分数即时间戳
-        Set<String> illustIdList = stringRedisTemplate.opsForZSet().rangeByScore(RedisKeyConstant.ILLUST_LOG_REDIS_PRE + userId, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1);
+        Set<String> illustIdList = stringRedisTemplate.opsForZSet().rangeByScore(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1);
         LocalDateTime localDateTime;
         if (illustIdList != null && illustIdList.size() > 0) {
-            Double timestamp = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.ILLUST_LOG_REDIS_PRE + userId, illustIdList.iterator().next());
+            Double timestamp = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, illustIdList.iterator().next());
             assert timestamp != null;
             Instant instant = Instant.ofEpochMilli(timestamp.longValue());
             ZoneId zone = ZoneId.systemDefault();
@@ -71,7 +71,7 @@ public class IllustHistoryService {
     @Transactional
     public void clear() {
         //获取keylist
-        Set<String> keys = stringRedisTemplate.keys(RedisKeyConstant.ILLUST_LOG_REDIS_PRE + "*");
+        Set<String> keys = stringRedisTemplate.keys(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + "*");
         //每个用户维持在1000个，超过一千从数据库取
         stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
             for (String key : keys) {
