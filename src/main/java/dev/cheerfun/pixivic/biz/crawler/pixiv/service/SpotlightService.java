@@ -36,7 +36,7 @@ public class SpotlightService {
     private Pattern illustIdPattern = Pattern.compile("(?<=(?:id=\"illust-))\\d+");
     private Pattern imageUrlPattern = Pattern.compile("(?<=(?:src\" content=\")).+?(?=\"><meta property=\"og:title\")");
 
-    @CacheEvict(cacheNames = "spotlight", allEntries = true)
+    //@CacheEvict(cacheNames = "spotlight", allEntries = true)
     public void pullAllSpotlight() {
         int index = 0;
         List<List<Spotlight>> spotlightsList = new ArrayList<>();

@@ -62,6 +62,7 @@ public class TestController {
         //spotlightService.deal();
         //businessService.follow(53,123);
         //emailUtil.sendEmail("392822872@qq.com","sasa","sasa","sas0","");
+        spotlightService.pullAllSpotlight();
         return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")

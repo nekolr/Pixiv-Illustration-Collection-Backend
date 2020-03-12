@@ -1,12 +1,15 @@
 package dev.cheerfun.pixivic.common.po;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.databind.ser.std.DateSerializer;
 import dev.cheerfun.pixivic.common.util.json.LocalDateSerializer;
 import lombok.Data;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 /**
@@ -30,4 +33,13 @@ public class Spotlight {
     private String category;
     @JsonSetter("subcategory_label")
     private String subcategoryLabel;
+
+    public void setPublishDate(String publishDate) {
+        LocalDateTime parse = LocalDateTime.parse(publishDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX"));
+        this.publishDate = parse.toLocalDate();
+    }
+
+    public void setPublishDate(LocalDate publishDate) {
+        this.publishDate = publishDate;
+    }
 }
