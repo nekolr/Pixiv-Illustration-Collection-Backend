@@ -40,7 +40,32 @@ public interface IllustrationMapper {
             "#{illustration.artistId})" +
             "</foreach>" +
             "</script>")
-    int insert(@Param("illustrations") List<Illustration> illustrations);
+    int batchInsert(@Param("illustrations") List<Illustration> illustrations);
+
+    @Insert("<script>" +
+            "REPLACE  INTO " +
+            "illusts (`illust_id`, `title`, `type`, `caption`, `restrict`, `artist`, `tools`, `tags`, `create_date`, `page_count`, `width`, `height`, `sanity_level`, `x_restrict`, `total_bookmarks`, `total_view`, `image_urls`, `artist_id`)" +
+            "VALUES" +
+            "(#{id}," +
+            "#{title}," +
+            "#{type}," +
+            "#{caption}," +
+            "#{restrict}," +
+            "#{artistPreView,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}," +
+            "#{tools,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}," +
+            "#{tags,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}," +
+            "#{createDate}," +
+            "#{pageCount}," +
+            "#{width}," +
+            "#{height}," +
+            "#{sanityLevel}," +
+            "#{xRestrict}," +
+            "#{totalBookmarks}," +
+            "#{totalView}," +
+            "#{imageUrls,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}," +
+            "#{artistId})" +
+            "</script>")
+    int simpleInsert(Illustration illustration);
 
     @Update("FLUSH TABLES")
     int flush();

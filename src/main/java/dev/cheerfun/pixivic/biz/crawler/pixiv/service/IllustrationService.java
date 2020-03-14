@@ -171,7 +171,7 @@ public class IllustrationService {
             System.out.println("标签为null");
         }
         //Lists.partition(illustrations, 50).forEach(illustrationMapper::insert);
-        illustrationMapper.insert(illustrations);
+        illustrationMapper.batchInsert(illustrations);
         System.out.println("画作入库完毕");
         illustrationMapper.flush();
     }
@@ -191,7 +191,7 @@ public class IllustrationService {
             System.out.println("标签为null");
         }
         //Lists.partition(illustrations, 50).forEach(illustrationMapper::insert);
-        illustrationMapper.insert(illustrations);
+        illustrationMapper.batchInsert(illustrations);
         System.out.println("画作入库完毕");
         illustrationMapper.flush();
     }

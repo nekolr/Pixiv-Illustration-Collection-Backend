@@ -6,11 +6,11 @@ import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
+import dev.cheerfun.pixivic.biz.analysis.tag.service.TrendingTagsService;
 import dev.cheerfun.pixivic.biz.crawler.news.service.NewService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.service.SpotlightService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
@@ -41,7 +41,8 @@ public class TestController {
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustRankService rankDailyService;
     private final EmailUtil emailUtil;
-    private final SpotlightService spotlightService;
+
+    private final TrendingTagsService trendingTagsService;
     private final ArtistService artistService;
     private final IllustrationMapper illustrationMapper;
     private final BusinessService businessService;
@@ -52,7 +53,7 @@ public class TestController {
     @RateLimit
     //@PermissionRequired
     public ResponseEntity<String> test(@RequestBody @SensitiveCheck SignUpDTO signUpDTO,/*@RequestHeader("Authorization")  String token,*/@RequestParam @SensitiveCheck String content, @RequestParam @SensitiveCheck String title) throws InterruptedException, ExecutionException, IOException {
-        artistService.pullArtistIllustList();
+        trendingTagsService.dailyTask();
         return ResponseEntity.ok().body("");
     }
 
@@ -62,7 +63,7 @@ public class TestController {
         //spotlightService.deal();
         //businessService.follow(53,123);
         //emailUtil.sendEmail("392822872@qq.com","sasa","sasa","sas0","");
-        spotlightService.pullAllSpotlight();
+        trendingTagsService.dailyTask();
         return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")

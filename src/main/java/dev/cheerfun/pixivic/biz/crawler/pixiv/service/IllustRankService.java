@@ -100,7 +100,7 @@ public class IllustRankService {
                 System.out.println(split[i] + "存在");
                 List<Illustration> illustrations = new ArrayList<>();
                 illustrations.add(illustration);
-                illustrationMapper.insert(illustrations);
+                illustrationMapper.batchInsert(illustrations);
             }
             Thread.sleep(1000);
         }

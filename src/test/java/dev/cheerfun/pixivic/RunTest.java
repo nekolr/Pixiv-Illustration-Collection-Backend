@@ -1,13 +1,23 @@
 package dev.cheerfun.pixivic;
 
 import com.google.common.collect.Lists;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.concurrent.CompletableFuture;
+import java.io.IOException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Executors;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.counting;
+import static java.util.stream.Collectors.groupingBy;
 
 /**
  * @author echo huang
@@ -17,28 +27,54 @@ import java.util.concurrent.Executors;
  */
 public class RunTest {
     //构造Interger数
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-        Integer age = 1;
+    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
+        LocalDate yesterday = LocalDate.now().plusDays(-1);
+        //读取日志
+        try (Stream<String> stream = Files.lines(Paths.get("/Users/oysterqaq/Desktop/" + "2020-03-12" + ".log"), StandardCharsets.ISO_8859_1)) {
+            //逐行处理
+            stream.map(line -> {
+                //搜索api
+                if (line.contains("\"request\": \"GET /illustrations?")) {
+                    //提取参数并且过滤
+                    String params = line.substring(line.indexOf("GET ") + 4, line.indexOf(" HTTP"));
+                    MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(params).build().getQueryParams();
+                    String keyword = queryParams.getFirst("keyword");
+                    return URLDecoder.decode(keyword.replaceAll("%(?![0-9a-fA-F]{2})", "%25"));
+                }
+                return null;
+            }).filter(e -> {
+                //  System.out.println(e);
+                return e != null && !"".equals(e) && !e.contains("*");
+            }).forEach(System.out::println);
+        }
 
-        CompletableFuture<Boolean> maturityFuture = CompletableFuture.supplyAsync(() -> {
-            if (age < 0) {
-                throw new IllegalArgumentException("Age can not be negative");
-            }
-            if (age > 18) {
-                return true;
-            } else {
-                return true;
-            }
-        }, Executors.newFixedThreadPool(5)).handle((res, ex) -> {
-            System.out.println("处理异常");
-            if (ex != null) {
-                System.out.println("Oops! We have an exception - " + ex.getMessage());
-                return false;
-            }
-            return true;
-        });
+        Map<String, Long> sortedWCList = Files
+                .lines(Paths.get("/Users/oysterqaq/Desktop/" + yesterday + ".log"), StandardCharsets.UTF_8)
+                .map(line -> {
+                    if (line.contains("\"request\": \"GET /illustrations?")) {
+                        String params = line.substring(line.indexOf("GET ") + 4, line.indexOf(" HTTP"));
+                        MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(params).build().getQueryParams();
+                        String keyword = queryParams.getFirst("keyword");
+                        return URLDecoder.decode(keyword);
+                    }
+                    return null;
+                }).filter(e -> {
+                    System.out.println(e);
+                    return e != null && !"null".equals(e) && !e.contains("*");
+                }).collect(groupingBy(Function.identity(), counting()))
+                .entrySet()
+                .stream()
+                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey,
+                        Map.Entry::getValue,
+                        (v1, v2) -> {
+                            throw new IllegalStateException();
+                        },
+                        LinkedHashMap::new
+                ));
+        System.out.println(sortedWCList);
 
-        System.out.println("Maturity : " + maturityFuture.get());
     }
 
     private static List<List<Integer>> split(List<Integer> illustrationIdList) {

@@ -6,7 +6,6 @@ import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
-import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.BangumiSearchResponse;
@@ -48,6 +47,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutionException;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -225,6 +225,14 @@ public class SearchService {
         return keywordTranslated.get(0);
     }
 
+    public Illustration queryFirstSearchResult(String keyword) throws ExecutionException, InterruptedException {
+        List<Illustration> illustrations = searchByKeyword(keyword, 1, 0, "original", "illust", null, null, null, null, 0, null, null, null, 5, null).get();
+        if (illustrations != null && illustrations.size() > 0) {
+            return illustrations.get(0);
+        }
+        return null;
+    }
+
     @Cacheable(value = "searchResult")
     public CompletableFuture<List<Illustration>> searchByKeyword(
             String keyword,
@@ -256,6 +264,7 @@ public class SearchService {
             throw new SearchException(HttpStatus.NOT_FOUND, "未找到画作");
         });
     }
+
     @Cacheable(value = "related")
     public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
         Illustration illustration = illustrationBizService.queryIllustrationById(illustId);

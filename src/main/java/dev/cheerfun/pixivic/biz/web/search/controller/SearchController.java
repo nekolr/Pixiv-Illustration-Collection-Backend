@@ -1,9 +1,12 @@
 package dev.cheerfun.pixivic.biz.web.search.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
+import dev.cheerfun.pixivic.biz.analysis.tag.po.TrendingTags;
+import dev.cheerfun.pixivic.biz.analysis.tag.service.TrendingTagsService;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
@@ -39,6 +42,12 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SearchController {
     private final SearchService searchService;
+    private final TrendingTagsService trendingTagsService;
+
+    @GetMapping("/trendingTags")
+    public ResponseEntity<Result<List<TrendingTags>>> getTrendingTags(@RequestParam String date) throws JsonProcessingException {
+        return ResponseEntity.ok().body(new Result<>("搜索热门标签成功", trendingTagsService.queryByDate(date)));
+    }
 
     @GetMapping("/keywords/**/candidates")
     public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
