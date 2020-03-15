@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
+import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.FollowedRelation;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
@@ -31,6 +32,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @PermissionRequired
+@RequestMapping("/users")
 public class BusinessController {
     private final BusinessService businessService;
 
@@ -83,6 +85,12 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("获取follow画师列表成功", artists));
     }
 
+    @GetMapping("/{userId}/followedWithRecentlyIllusts")
+    public ResponseEntity<Result<List<ArtistWithRecentlyIllusts>>> queryFollowedWithRecentlyIllusts(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
+        List<ArtistWithRecentlyIllusts> artists = businessService.queryFollowedWithRecentlyIllusts(userId, (page - 1) * pageSize, pageSize);
+        return ResponseEntity.ok().body(new Result<>("获取带有近期画作的follow画师列表成功", artists));
+    }
+
     @GetMapping("/{userId}/followed/latest/{type}")
     @WithUserInfo
     public ResponseEntity<Result<List<Illustration>>> queryFollowedLatest(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(150) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
@@ -96,7 +104,7 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("获取是否follow画师成功", isFollowed));
     }
 
-    @GetMapping("/users/{userId}/actionHistory")
+    @GetMapping("/{userId}/actionHistory")
     public ResponseEntity<Result<String>> queryActionHistory(@PathVariable String userId, @RequestHeader("Authorization") String token) {
         //查看行为历史
         return ResponseEntity.ok().body(new Result<>("获取行为历史成功"));

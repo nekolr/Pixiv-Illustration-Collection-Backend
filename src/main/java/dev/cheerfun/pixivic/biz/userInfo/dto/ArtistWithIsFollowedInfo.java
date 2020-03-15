@@ -13,7 +13,7 @@ import lombok.EqualsAndHashCode;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class ArtistWithIsFollowedInfo extends Artist {
-    private Boolean isFollowed;
+    protected Boolean isFollowed;
 
     public ArtistWithIsFollowedInfo(Artist artist, Boolean isFollowed) {
         this.isFollowed = isFollowed;

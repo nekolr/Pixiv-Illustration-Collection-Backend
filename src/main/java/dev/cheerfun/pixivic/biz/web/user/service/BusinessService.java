@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
@@ -29,7 +30,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -81,7 +85,15 @@ public class BusinessService {
         });
     }
 
-    public void dealIfFollowedInfo(List<Illustration> illustrationList, int userId) {
+    public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
+        Map<String, Object> context = AppContext.get();
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            int userId = (int) context.get(AuthConstant.USER_ID);
+            dealIsLikedInfoForIllustList(illustrationList, userId);
+        }
+    }
+
+    public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {
         List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
             for (Illustration illustration : illustrationList) {
                 StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
@@ -224,6 +236,15 @@ public class BusinessService {
             }
         }
         return result;
+    }
+
+    public List<ArtistWithRecentlyIllusts> queryFollowedWithRecentlyIllusts(Integer userId, int currIndex, int pageSize) {
+        List<Artist> artists = queryFollowed(userId, currIndex, pageSize);
+        return artists.stream().map(e -> {
+            List<Illustration> illustrations = illustrationBizService.queryIllustrationsByArtistId(e.getId(), "illust", 0, 3);
+            dealIsLikedInfoForIllustList(illustrations);
+            return new ArtistWithRecentlyIllusts(e, illustrations);
+        }).collect(Collectors.toList());
     }
 
     private static class NewInteger {
