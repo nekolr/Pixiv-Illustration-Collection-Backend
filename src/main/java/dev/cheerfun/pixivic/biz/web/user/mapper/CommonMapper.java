@@ -1,11 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.mapper;
 
 import dev.cheerfun.pixivic.biz.web.common.po.User;
-import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
-import org.springframework.cache.annotation.Cacheable;
-
-import java.util.List;
 
 @Mapper
 public interface CommonMapper {
@@ -20,7 +16,7 @@ public interface CommonMapper {
 
     @Insert("insert into users (email, username,password,permission_level,is_ban,star) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan},#{star})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "user_id")
-    int insertUser(User user);
+    Integer insertUser(User user);
 
     @Select({
             " SELECT * FROM (SELECT * FROM users WHERE username= #{username} OR email=#{username})  temp where temp.PASSWORD=#{password}",
@@ -31,7 +27,8 @@ public interface CommonMapper {
             @Result(property = "permissionLevel", column = "permission_level"),
             @Result(property = "pixivAccount", column = "pixiv_account"),
             @Result(property = "pixivPassword", column = "pixiv_password"),
-            @Result(property = "qqOpenId", column = "qq_open_id")
+            @Result(property = "qqOpenId", column = "qq_open_id"),
+            @Result(property = "isCheckEmail", column = "is_check_email")
     })
     User queryUserByusernameAndPassword(String username, String password);
 
@@ -44,9 +41,10 @@ public interface CommonMapper {
             @Result(property = "permissionLevel", column = "permission_level"),
             @Result(property = "pixivAccount", column = "pixiv_account"),
             @Result(property = "pixivPassword", column = "pixiv_password"),
-            @Result(property = "qqOpenId", column = "qq_open_id")
+            @Result(property = "qqOpenId", column = "qq_open_id"),
+            @Result(property = "isCheckEmail", column = "is_check_email")
     })
-    //@Cacheable(value = "user", key = "#userId")
+        //@Cacheable(value = "user", key = "#userId")
     User queryUserByUserId(int userId);
 
     @Select("SELECT * FROM users WHERE qq_open_id=#{qqOpenId}\n")
@@ -56,22 +54,26 @@ public interface CommonMapper {
             @Result(property = "permissionLevel", column = "permission_level"),
             @Result(property = "pixivAccount", column = "pixiv_account"),
             @Result(property = "pixivPassword", column = "pixiv_password"),
-            @Result(property = "qqOpenId", column = "qq_open_id")
+            @Result(property = "qqOpenId", column = "qq_open_id"),
+            @Result(property = "isCheckEmail", column = "is_check_email")
     })
     User getUserByQQOpenId(String qqOpenId);
 
     @Update("update users set qq_open_id=#{qqOpenId} where user_id=#{userId}")
-    int setQQOpenId(String qqOpenId, int userId);
+    Integer setQQOpenId(String qqOpenId, int userId);
 
     @Update("update users set avatar=#{avatar} where user_id=#{userId}")
-    int setAvatar(String avatar, int userId);
+    Integer setAvatar(String avatar, int userId);
 
-    @Update("update users set email=#{email} , permission_level=2 where user_id=#{userId}")
-    int setEmail(String email, int userId);
+    @Update("update users set email=#{email} , is_check_email=1 where user_id=#{userId}")
+    Integer setEmail(String email, int userId);
 
     @Update("update users set password=#{password} where email=#{email}")
-    int setPasswordByEmail(String password, String email);
+    Integer setPasswordByEmail(String password, String email);
 
     @Update("update users set password=#{password} where user_id=#{userId}")
-    int setPasswordById(String password, int userId);
+    Integer setPasswordById(String password, int userId);
+
+    @Update("update users set gender=#{gender} ,signature=#{signature},location=#{location}  where user_id=#{userId}")
+    Integer updateUserInfo(int userId, Integer gender, String signature, String location);
 }

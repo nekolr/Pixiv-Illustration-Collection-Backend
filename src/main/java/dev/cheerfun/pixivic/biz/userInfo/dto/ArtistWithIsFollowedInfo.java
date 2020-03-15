@@ -31,4 +31,20 @@ public class ArtistWithIsFollowedInfo extends Artist {
         this.totalFollowUsers = artist.getTotalFollowUsers();
         this.totalIllustBookmarksPublic = artist.getTotalIllustBookmarksPublic();
     }
+
+    public ArtistWithIsFollowedInfo(Artist artist) {
+        this.id = artist.getId();
+        this.name = artist.getName();
+        this.account = artist.getAccount();
+        this.avatar = artist.getAvatar();
+        this.comment = artist.getComment();
+        this.gender = artist.getGender();
+        this.birthDay = artist.getBirthDay();
+        this.region = artist.getRegion();
+        this.webPage = artist.getWebPage();
+        this.twitterAccount = artist.getTwitterAccount();
+        this.twitterUrl = artist.getTwitterUrl();
+        this.totalFollowUsers = artist.getTotalFollowUsers();
+        this.totalIllustBookmarksPublic = artist.getTotalIllustBookmarksPublic();
+    }
 }

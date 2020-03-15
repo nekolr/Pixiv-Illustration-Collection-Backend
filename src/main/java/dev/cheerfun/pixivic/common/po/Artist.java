@@ -9,7 +9,7 @@ import lombok.Data;
  * @description Artist
  */
 @Data
-public class Artist  {
+public class Artist {
     protected Integer id;
     protected String name;
     protected String account;

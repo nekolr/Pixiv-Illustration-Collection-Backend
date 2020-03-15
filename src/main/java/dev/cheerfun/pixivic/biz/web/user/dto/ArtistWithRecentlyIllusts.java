@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.user.dto;
 
+import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.AllArgsConstructor;
@@ -15,9 +16,16 @@ import java.util.List;
  * @description AtristWithRecentlyIllusts
  */
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
-public class ArtistWithRecentlyIllusts {
-    private Artist artist;
-    private List<Illustration> illustrations;
+public class ArtistWithRecentlyIllusts extends ArtistWithIsFollowedInfo {
+    private List<Illustration> recentlyIllustrations;
+
+    public ArtistWithRecentlyIllusts(Artist artist, List<Illustration> illustrations) {
+        super(artist);
+        if (artist instanceof ArtistWithIsFollowedInfo) {
+            Boolean isFollowed = ((ArtistWithIsFollowedInfo) artist).getIsFollowed();
+            this.isFollowed = isFollowed;
+        }
+        this.recentlyIllustrations = illustrations;
+    }
+
 }
