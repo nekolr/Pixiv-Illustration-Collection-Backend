@@ -91,7 +91,7 @@ public class User implements Authable {
     }
 
     public boolean getIsCheckEmail() {
-        return isCheckEmail == 1;
+        return isCheckEmail != null && isCheckEmail == 1;
     }
 
 }
