@@ -93,10 +93,15 @@ public class ArtistService {
         IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
         List<Illustration> illustrationListPage1 = illustrationDetailDTOPage1.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
         CompletableFuture.runAsync(() -> {
-            illustrationService.saveToDb(illustrationDetailDTOPage2.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList()));
+            List<Illustration> illustrationList = illustrationDetailDTOPage2.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
+            if (illustrationList.size() > 0) {
+                illustrationService.saveToDb(illustrationList);
+            }
         });
-        illustrationService.saveToDb(illustrationListPage1);
-        return illustrationListPage1;
+        if (illustrationListPage1.size() > 0) {
+            illustrationService.saveToDb(illustrationListPage1);
+        }
+        return new ArrayList<>(illustrationListPage1);
     }
 
     public void dealArtistIllustList() throws IOException {

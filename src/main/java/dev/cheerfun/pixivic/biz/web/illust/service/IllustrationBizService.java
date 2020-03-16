@@ -62,7 +62,7 @@ public class IllustrationBizService {
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
         //如果是当日首次则进行拉取
         String key = today + ":" + artistId + ":" + type;
-        if (currIndex == 0 && !artistLatestIllusts.containsKey(key)) {
+        if (currIndex == 0 && pageSize == 30 && !artistLatestIllusts.containsKey(key)) {
             System.out.println("本日首次，将从Pixiv拉取");
             artistLatestIllusts.put(key, "");
             return artistService.pullArtistLatestIllust(artistId, type);
