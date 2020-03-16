@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 import javax.validation.ConstraintViolationException;
+import java.util.concurrent.CompletionException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -65,6 +66,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<Result> handleExecutionException(ExecutionException e) {
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("请求超时"));
     }
+
 
     /*@ExceptionHandler(value = MessagingException.class)
     public ResponseEntity<Result> handleIllegalMessagingException(MessagingException e) {
