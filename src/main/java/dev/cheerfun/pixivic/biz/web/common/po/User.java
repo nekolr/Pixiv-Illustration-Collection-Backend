@@ -26,6 +26,9 @@ public class User implements Authable {
     @JsonIgnore
     private String password;
     private String avatar;
+    private Integer gender;
+    private String signature;
+    private String location;
     @JsonIgnore
     private int permissionLevel;
     @JsonIgnore
@@ -37,6 +40,8 @@ public class User implements Authable {
     private String pixivPassword;
     @JsonIgnore
     private String qqOpenId;
+    @JsonIgnore
+    private Integer isCheckEmail;
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -52,6 +57,10 @@ public class User implements Authable {
         pixivAccount = null;
         pixivPassword = null;
         qqOpenId = null;
+        gender = null;
+        signature = null;
+        location = null;
+        isCheckEmail = 0;
     }
 
     @Override
@@ -82,7 +91,7 @@ public class User implements Authable {
     }
 
     public boolean getIsCheckEmail() {
-        return permissionLevel > 1;
+        return isCheckEmail == 1;
     }
 
 }

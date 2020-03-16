@@ -102,6 +102,13 @@ public class CommonController {
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
     }
 
+    @PutMapping("/{userId}")
+    @PermissionRequired
+    public ResponseEntity<Result<User>> updateUserInfo(@PathVariable("userId") Integer userId, @RequestBody User user, @RequestHeader("Authorization") String token) {
+        userService.updateUserInfo((int) AppContext.get().get(AuthConstant.USER_ID), user);
+        return ResponseEntity.ok().body(new Result<>("获取用户信息成功", user));
+    }
+
     @GetMapping("/{userId}/email/isCheck")
     @PermissionRequired
     public ResponseEntity<Result<Boolean>> queryEmailIsCheck(@PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
