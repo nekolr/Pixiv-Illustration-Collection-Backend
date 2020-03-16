@@ -29,7 +29,6 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * @author OysterQAQ
@@ -89,6 +88,17 @@ public class ArtistService {
 
     }
 
+    public List<Illustration> pullArtistLatestIllust(Integer artistId, String type) {
+        IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
+        IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
+        List<Illustration> illustrationListPage1 = illustrationDetailDTOPage1.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
+        CompletableFuture.runAsync(() -> {
+            illustrationService.saveToDb(illustrationDetailDTOPage2.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList()));
+        });
+        illustrationService.saveToDb(illustrationListPage1);
+        return illustrationListPage1;
+    }
+
     public void dealArtistIllustList() throws IOException {
         Path configFilePath = FileSystems.getDefault()
                 .getPath("/home/artist/");
@@ -100,8 +110,8 @@ public class ArtistService {
             System.out.println("删除"+fileWithName.get(j));
             Files.delete(fileWithName.get(j));
         }*/
-        for (int i = offset; i < fileWithName.size();i+=300) {
-            System.out.println("开始处理第"+i+"个到第"+(i+300)+"个文件");
+        for (int i = offset; i < fileWithName.size(); i += 300) {
+            System.out.println("开始处理第" + i + "个到第" + (i + 300) + "个文件");
             List<Illustration> illustrationList = fileWithName.stream().skip(i).limit(300).map(e ->
             {
                 try {

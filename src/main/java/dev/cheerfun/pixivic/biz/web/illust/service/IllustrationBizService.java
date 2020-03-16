@@ -22,10 +22,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -44,6 +46,12 @@ public class IllustrationBizService {
     private final ArtistService artistService;
     private final StringRedisTemplate stringRedisTemplate;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
+    private static volatile ConcurrentHashMap<String, String> artistLatestIllusts = new ConcurrentHashMap(10000);
+    private String today;
+
+    {
+        today = LocalDate.now().toString();
+    }
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
@@ -52,8 +60,21 @@ public class IllustrationBizService {
 
     @Cacheable(value = "artist_illusts")
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
+        //如果是当日首次则进行拉取
+        String key = today + ":" + artistId + ":" + type;
+        if (currIndex == 0 && !artistLatestIllusts.containsKey(key)) {
+            System.out.println("本日首次，将从Pixiv拉取");
+            artistLatestIllusts.put(key, "");
+            return artistService.pullArtistLatestIllust(artistId, type);
+        }
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
+    }
+
+    @Scheduled(cron = "0 1 0 * * ?")
+    public void clearArtistLatestIllustsMap() {
+        artistLatestIllusts.clear();
+        today = LocalDate.now().toString();
     }
 
     public Artist queryArtistDetail(Integer artistId) {
