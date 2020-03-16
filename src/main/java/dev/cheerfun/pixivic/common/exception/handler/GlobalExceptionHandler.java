@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import javax.mail.MessagingException;
 import javax.mail.SendFailedException;
 import javax.validation.ConstraintViolationException;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author OysterQAQ
@@ -58,6 +59,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = DecodingException.class)
     public ResponseEntity<Result> handleIllegalDecodingException(DecodingException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("登录信息异常"));
+    }
+
+    @ExceptionHandler(value = ExecutionException.class)
+    public ResponseEntity<Result> handleExecutionException(ExecutionException e) {
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("请求超时"));
     }
 
     /*@ExceptionHandler(value = MessagingException.class)
