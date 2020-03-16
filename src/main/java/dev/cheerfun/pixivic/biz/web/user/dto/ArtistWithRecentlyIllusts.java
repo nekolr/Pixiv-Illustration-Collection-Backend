@@ -3,9 +3,7 @@ package dev.cheerfun.pixivic.biz.web.user.dto;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -24,6 +22,8 @@ public class ArtistWithRecentlyIllusts extends ArtistWithIsFollowedInfo {
         if (artist instanceof ArtistWithIsFollowedInfo) {
             Boolean isFollowed = ((ArtistWithIsFollowedInfo) artist).getIsFollowed();
             this.isFollowed = isFollowed;
+        } else {
+            this.isFollowed = null;
         }
         this.recentlyIllustrations = illustrations;
     }
