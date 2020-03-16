@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
 #  profiles:
-  #    active: mac
+#      active: mac
   mail:
     host: smtp.qq.com
     username: 403827354@qq.com

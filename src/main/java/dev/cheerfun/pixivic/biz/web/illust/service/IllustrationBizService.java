@@ -46,7 +46,6 @@ public class IllustrationBizService {
     private final ArtistService artistService;
     private final StringRedisTemplate stringRedisTemplate;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
-    private static volatile ConcurrentHashMap<String, String> artistLatestIllusts = new ConcurrentHashMap(10000);
     private String today;
 
     {
@@ -61,10 +60,10 @@ public class IllustrationBizService {
     @Cacheable(value = "artist_illusts")
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
         //如果是当日首次则进行拉取
-        String key = today + ":" + artistId + ":" + type;
-        if (currIndex == 0 && pageSize == 30 && !artistLatestIllusts.containsKey(key)) {
+        String key = artistId + ":" + type;
+        if (currIndex == 0 && pageSize == 30 && !stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key)) {
             System.out.println("本日首次，将从Pixiv拉取");
-            artistLatestIllusts.put(key, "");
+            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
             return artistService.pullArtistLatestIllust(artistId, type);
         }
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
@@ -73,7 +72,7 @@ public class IllustrationBizService {
 
     @Scheduled(cron = "0 1 0 * * ?")
     public void clearArtistLatestIllustsMap() {
-        artistLatestIllusts.clear();
+        stringRedisTemplate.delete(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today);
         today = LocalDate.now().toString();
     }
 
