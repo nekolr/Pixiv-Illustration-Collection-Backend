@@ -1,12 +1,15 @@
 package dev.cheerfun.pixivic.common.util.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.ArtistDTO;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import org.apache.ibatis.type.BaseTypeHandler;
@@ -26,12 +29,22 @@ import java.util.ArrayList;
 import java.util.List;
 
 @MappedJdbcTypes(value = {JdbcType.OTHER}, includeNullJdbcType = true)
-@MappedTypes({Artist.class, ArrayList.class, Tag.class, ImageUrl.class, SearchSuggestion.class, List.class, Illustration.class})
+@MappedTypes({ArtistPreView.class, Artist.class, ArrayList.class, Tag.class, ImageUrl.class, SearchSuggestion.class, List.class, Illustration.class})
 public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
     private static ObjectMapper objectMapper = new ObjectMapper();
+
+    static {
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        objectMapper.registerModule(new Jdk8Module());
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+    }
 
     private Class<T> type;
 
@@ -103,7 +116,7 @@ public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
             return null;
         }
         try {
-            T list = objectMapper.readValue(jsonText,type);
+            T list = objectMapper.readValue(jsonText, type);
             return list;
         } catch (IOException e) {
             logger.error("字符串反序列化失败字符串为{}", jsonText, e);
