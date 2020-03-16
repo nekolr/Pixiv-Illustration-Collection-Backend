@@ -40,7 +40,7 @@ public class User implements Authable {
     private String pixivPassword;
     @JsonIgnore
     private String qqOpenId;
-    @JsonIgnore
+
     private Integer isCheckEmail;
 
     public User(String username, String email, String password) {
