@@ -92,7 +92,7 @@ public class ArtistService {
     @Async
     public void pullArtistLatestIllust(Integer artistId, String type) {
         IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
-       // IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
+        // IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
 
         List<Illustration> illustrationListPage1 = illustrationDetailDTOPage1.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
         if (illustrationListPage1.size() > 0) {
@@ -162,9 +162,17 @@ public class ArtistService {
             return null;
         }).filter(Objects::nonNull).collect(Collectors.toList());
         if (artistList.size() != 0) {
-            CompletableFuture.supplyAsync(() -> artistMapper.insert(artistList)).thenAccept(e -> System.out.println("画师信息入库完毕"));
+            CompletableFuture.supplyAsync(() -> {
+                //更新画师汇总
+                updateArtistSummary(artistIds);
+                return artistMapper.insert(artistList);
+            }).thenAccept(e -> System.out.println("画师信息入库完毕"));
         }
         return artistList;
+    }
+
+    private void updateArtistSummary(List<Integer> artistIdList) {
+        artistIdList.forEach(artistMapper::updateArtistSummary);
     }
 
     private void dealReDownload() throws InterruptedException {

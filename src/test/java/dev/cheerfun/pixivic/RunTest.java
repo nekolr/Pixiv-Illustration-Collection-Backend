@@ -1,23 +1,17 @@
 package dev.cheerfun.pixivic;
 
 import com.google.common.collect.Lists;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.util.UriComponentsBuilder;
+import com.rabbitmq.client.Channel;
+import com.rabbitmq.client.Connection;
+import com.rabbitmq.client.ConnectionFactory;
+import com.rabbitmq.client.MessageProperties;
 
 import java.io.IOException;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.PriorityQueue;
 import java.util.concurrent.ExecutionException;
-import java.util.function.Function;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static java.util.stream.Collectors.counting;
-import static java.util.stream.Collectors.groupingBy;
+import java.util.concurrent.TimeoutException;
 
 /**
  * @author echo huang
@@ -27,54 +21,28 @@ import static java.util.stream.Collectors.groupingBy;
  */
 public class RunTest {
     //构造Interger数
-    public static void main(String[] args) throws ExecutionException, InterruptedException, IOException {
-        LocalDate yesterday = LocalDate.now().plusDays(-1);
-        //读取日志
-        try (Stream<String> stream = Files.lines(Paths.get("/Users/oysterqaq/Desktop/" + "2020-03-12" + ".log"), StandardCharsets.ISO_8859_1)) {
-            //逐行处理
-            stream.map(line -> {
-                //搜索api
-                if (line.contains("\"request\": \"GET /illustrations?")) {
-                    //提取参数并且过滤
-                    String params = line.substring(line.indexOf("GET ") + 4, line.indexOf(" HTTP"));
-                    MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(params).build().getQueryParams();
-                    String keyword = queryParams.getFirst("keyword");
-                    return URLDecoder.decode(keyword.replaceAll("%(?![0-9a-fA-F]{2})", "%25"));
-                }
-                return null;
-            }).filter(e -> {
-                //  System.out.println(e);
-                return e != null && !"".equals(e) && !e.contains("*");
-            }).forEach(System.out::println);
-        }
-
-        Map<String, Long> sortedWCList = Files
-                .lines(Paths.get("/Users/oysterqaq/Desktop/" + yesterday + ".log"), StandardCharsets.UTF_8)
-                .map(line -> {
-                    if (line.contains("\"request\": \"GET /illustrations?")) {
-                        String params = line.substring(line.indexOf("GET ") + 4, line.indexOf(" HTTP"));
-                        MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(params).build().getQueryParams();
-                        String keyword = queryParams.getFirst("keyword");
-                        return URLDecoder.decode(keyword);
-                    }
-                    return null;
-                }).filter(e -> {
-                    System.out.println(e);
-                    return e != null && !"null".equals(e) && !e.contains("*");
-                }).collect(groupingBy(Function.identity(), counting()))
-                .entrySet()
-                .stream()
-                .sorted(Map.Entry.comparingByValue(Comparator.reverseOrder()))
-                .collect(Collectors.toMap(
-                        Map.Entry::getKey,
-                        Map.Entry::getValue,
-                        (v1, v2) -> {
-                            throw new IllegalStateException();
-                        },
-                        LinkedHashMap::new
-                ));
-        System.out.println(sortedWCList);
-
+    public static void main(String[] args) throws IOException, TimeoutException {
+        String a = "";
+        int i = a.indexOf("");
+        ConnectionFactory factory = new ConnectionFactory();
+        factory.setHost("47.93.4.88");
+        factory.setPort(5672);
+        factory.setUsername("root");
+        factory.setPassword("root");
+        Connection connection = factory.newConnection();
+        //创建连接
+        Channel channel = connection.createChannel();
+        //创建信道//创建一个type="direct"、持久化的、非自动删除的交换器
+        channel.exchangeDeclare("EXCHANGE_DEMO", "direct", true, false, null);
+        //创建一个持久化、非排他的、非自动删除的队列
+        channel.queueDeclare("QUEUE_DEMO", true, false, false, null);
+        //将交换器与队列通过路由键绑定
+        channel.queueBind("QUEUE_DEMO", "EXCHANGE_DEMO", "ROUTING_KEY_DEMO");
+        //发送一条持久化的消息:hello world!
+        String message = "Hello World!";
+        channel.basicPublish("EXCHANGE_DEMO", "ROUTING_KEY_DEMO", MessageProperties.PERSISTENT_TEXT_PLAIN, message.getBytes());
+        channel.close();
+        connection.close();
     }
 
     private static List<List<Integer>> split(List<Integer> illustrationIdList) {
