@@ -12,6 +12,7 @@ import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -88,20 +89,20 @@ public class ArtistService {
 
     }
 
+    @Async
     public void pullArtistLatestIllust(Integer artistId, String type) {
         IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
         IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
 
-        CompletableFuture.runAsync(() -> {
-            List<Illustration> illustrationListPage1 = illustrationDetailDTOPage1.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
-            if (illustrationListPage1.size() > 0) {
-                illustrationService.saveToDb(illustrationListPage1);
-            }
-            List<Illustration> illustrationList = illustrationDetailDTOPage2.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
-            if (illustrationList.size() > 0) {
-                illustrationService.saveToDb(illustrationList);
-            }
-        });
+        List<Illustration> illustrationListPage1 = illustrationDetailDTOPage1.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
+        if (illustrationListPage1.size() > 0) {
+            illustrationService.saveToDb(illustrationListPage1);
+        }
+        List<Illustration> illustrationList = illustrationDetailDTOPage2.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
+        if (illustrationList.size() > 0) {
+            illustrationService.saveToDb(illustrationList);
+        }
+
     }
 
     public void dealArtistIllustList() throws IOException {

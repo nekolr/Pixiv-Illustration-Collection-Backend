@@ -64,6 +64,7 @@ public class IllustrationBizService {
         if (currIndex == 0 && pageSize == 30 && !stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key)) {
             System.out.println("本日首次，将从Pixiv拉取");
             stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
+            artistService.pullArtistLatestIllust(artistId, type);
         }
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
