@@ -68,12 +68,12 @@ public interface IllustrationBizMapper {
     })
     List<Illustration> queryRandomIllustration();
 
-    @Select("select count(type) sum,type from illusts where artist_id=#{artistId} group by type")
+    @Select("select illust_sum,manga_sum from artist_summary where artist_id=#{artistId}")
     @Results({
-            @Result(property = "type", column = "type"),
-            @Result(property = "sum", column = "sum"),
+            @Result(property = "illustSum", column = "illust_sum"),
+            @Result(property = "mangaSum", column = "manga_sum"),
     })
-    List<ArtistSummary> querySummaryByArtistId(Integer artistId);
+    ArtistSummary querySummaryByArtistId(Integer artistId);
 
     @Insert({
             "<script>",

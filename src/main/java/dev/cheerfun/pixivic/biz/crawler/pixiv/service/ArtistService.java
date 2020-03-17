@@ -11,6 +11,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -172,7 +173,12 @@ public class ArtistService {
     }
 
     private void updateArtistSummary(List<Integer> artistIdList) {
-        artistIdList.forEach(artistMapper::updateArtistSummary);
+        artistIdList.forEach(this::updateArtistSummary);
+    }
+
+    @CacheEvict(value = "artistSummarys", key = "#artistId")
+    public void updateArtistSummary(Integer artistId) {
+        artistMapper.updateArtistSummary(artistId);
     }
 
     private void dealReDownload() throws InterruptedException {

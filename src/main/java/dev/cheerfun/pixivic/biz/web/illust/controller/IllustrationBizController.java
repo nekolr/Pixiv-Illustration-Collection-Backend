@@ -50,8 +50,7 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/artists/{artistId}/summary")
-    //@PermissionRequired
-    public ResponseEntity<Result<List<ArtistSummary>>> querySummaryByArtistId(@PathVariable Integer artistId) {
+    public ResponseEntity<Result<ArtistSummary>> querySummaryByArtistId(@PathVariable Integer artistId) {
         return ResponseEntity.ok().body(new Result<>("获取画师画作汇总成功", illustrationBizService.querySummaryByArtistId(artistId)));
     }
 

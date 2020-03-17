@@ -158,7 +158,7 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "artistSummarys")
-    public List<ArtistSummary> querySummaryByArtistId(Integer artistId) {
+    public ArtistSummary querySummaryByArtistId(Integer artistId) {
         return illustrationBizMapper.querySummaryByArtistId(artistId);
     }
 
