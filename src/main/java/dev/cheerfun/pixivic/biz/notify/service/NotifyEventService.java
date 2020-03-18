@@ -39,7 +39,8 @@ public class NotifyEventService {
     @PostConstruct
     public void init() {
         //初始化的时候初始化notify_setting_config
-        Map<String, List<NotifySettingConfig>> notifySettingMap = notifyMapper.queryNotifySettingConfig().stream().collect(Collectors.groupingBy(e -> e.getObjectType() + ":" + e.getAction()));
+        notifySettingMap = notifyMapper.queryNotifySettingConfig().stream().collect(Collectors.groupingBy(e -> e.getObjectType() + ":" + e.getAction()));
+
     }
 
     public void pushNotifyEvent(NotifyEvent notifyEvent) {
@@ -65,7 +66,6 @@ public class NotifyEventService {
 
         //取出notify_setting_config形成对应的notifyRemind存入数据库或进行其他操作（根据相应的channel来判断）
         System.out.println(notifyEvent);
-
         return true;
     }
 

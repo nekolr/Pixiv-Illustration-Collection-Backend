@@ -8,6 +8,8 @@ package dev.cheerfun.pixivic.biz.notify.constant;
  */
 public class MessageTemplate {
     public final static String REPLIED="叮叮叮～～收到一条回复";
-    public final static String LIKED="被点赞";
-    public final static String RELEASED="发布了新作品";
+    public final static String LIKED = "被点赞";
+    public final static String FOLLOWED = "有用户关注了你";
+    public final static String RELEASED = "发布了新作品";
+
 }

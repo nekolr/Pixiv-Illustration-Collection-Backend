@@ -9,6 +9,6 @@ package dev.cheerfun.pixivic.biz.notify.constant;
 
 public class NotifyObjectType {
     public final static String COMMENT="comment";
-    public final static String ILLUST="illust";
-
+    public final static String ILLUST = "illust";
+    public final static String COLLECTION = "collection";
 }
