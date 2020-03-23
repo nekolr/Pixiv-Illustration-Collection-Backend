@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 @Component(NotifyObjectType.COLLECTION)
 @RabbitListener(queues = NotifyObjectType.COLLECTION)
 public class CollectionNotifyEventCustomer extends NotifyEventCustomer {
+
     @Override
     @RabbitHandler()
     public void process(NotifyEvent notifyEvent) {

@@ -15,7 +15,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class Consumer {
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        Address[] addresses = new Address[]{new Address("47.93.4.88", 5672)};
+        Address[] addresses = new Address[]{new Address("114.67.107.177", 5672)};
         ConnectionFactory factory = new ConnectionFactory();
         factory.setUsername("root");
         factory.setPassword("root");

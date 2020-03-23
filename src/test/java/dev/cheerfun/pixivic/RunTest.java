@@ -25,7 +25,7 @@ public class RunTest {
         String a = "";
         int i = a.indexOf("");
         ConnectionFactory factory = new ConnectionFactory();
-        factory.setHost("47.93.4.88");
+        factory.setHost("114.67.107.177");
         factory.setPort(5672);
         factory.setUsername("root");
         factory.setPassword("root");
