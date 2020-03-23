@@ -22,7 +22,7 @@ public class NotifyEventSender {
         this.rabbitTemplate.convertAndSend(notifyEvent.getObjectType(), notifyEvent);
     }
 
-    @Scheduled(cron = "0/10 * * * * ?")
+    //@Scheduled(cron = "0/10 * * * * ?")
     public void send() {
         this.rabbitTemplate.convertAndSend(NotifyObjectType.COMMENT, new NotifyEvent());
     }
