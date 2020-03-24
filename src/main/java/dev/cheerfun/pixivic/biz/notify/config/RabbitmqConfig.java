@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Configuration;
  * @description MessagingRabbitmqConfig
  */
 @Configuration
-public class MessagingRabbitmqConfig {
+public class RabbitmqConfig {
     @Bean("commentQueue")
     public Queue commentQueue() {
         return new Queue(NotifyObjectType.COMMENT);

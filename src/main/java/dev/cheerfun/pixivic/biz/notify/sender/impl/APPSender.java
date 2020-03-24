@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.biz.notify.sender.impl;
 
+import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
+import dev.cheerfun.pixivic.biz.notify.sender.NotifySender;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,5 +11,10 @@ import org.springframework.stereotype.Component;
  * @description APPSender
  */
 @Component("app")
-public class APPSender {
+public class APPSender implements NotifySender {
+    @Override
+    public Boolean send(NotifyRemind notifyRemind) {
+        //推送
+        return null;
+    }
 }

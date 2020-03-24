@@ -6,8 +6,8 @@ package dev.cheerfun.pixivic.biz.notify.constant;
  * @date 19-12-14 下午2:02
  * @description NotifyActionType
  */
-public class NotifyActionType {
-    public final static String REPLIED="replied";
+public class ActionType {
+    public final static String REPLIED = "replied";
     public final static String LIKED = "liked";
     public final static String FOLLOWED = "followed";
     public final static String RELEASED = "released";

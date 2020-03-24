@@ -50,4 +50,5 @@ public interface NotifyMapper {
             @Result(property = "likedCount", column = "liked_count")
     })
     Comment queryCommentById(Integer commentId);
+
 }

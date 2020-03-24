@@ -1,10 +1,9 @@
-package dev.cheerfun.pixivic.biz.notify.sender;
+package dev.cheerfun.pixivic.biz.notify.publisher;
 
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyObjectType;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 /**
@@ -14,16 +13,17 @@ import org.springframework.stereotype.Component;
  * @description NotifyEventSender
  */
 @Component
-public class NotifyEventSender {
+public class NotifyEventPublisher {
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
-    public void send(NotifyEvent notifyEvent) {
+    public void publish(NotifyEvent notifyEvent) {
+        //更具事件主体类型分发不同的queue
         this.rabbitTemplate.convertAndSend(notifyEvent.getObjectType(), notifyEvent);
     }
 
     //@Scheduled(cron = "0/10 * * * * ?")
-    public void send() {
+    public void publish() {
         this.rabbitTemplate.convertAndSend(NotifyObjectType.COMMENT, new NotifyEvent());
     }
 }

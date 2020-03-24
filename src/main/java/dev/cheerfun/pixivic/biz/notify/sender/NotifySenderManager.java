@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.notify.sender;
 
+import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -17,8 +18,15 @@ import java.util.Map;
 public class NotifySenderManager {
     private final Map<String, NotifySender> notifySenderMap;
 
-    NotifySender getNotifySender(String notifySenderName) {
-        return notifySenderMap.get(notifySenderName);
+    public Boolean send(NotifyRemind notifyRemind, String notifySender) {
+        return notifySenderMap.get(notifySender).send(notifyRemind);
+    }
+
+    public Boolean send(NotifyRemind notifyRemind, String... notifySenders) {
+        for (String notifySender : notifySenders) {
+            send(notifyRemind, notifySender);
+        }
+        return true;
     }
 
 }

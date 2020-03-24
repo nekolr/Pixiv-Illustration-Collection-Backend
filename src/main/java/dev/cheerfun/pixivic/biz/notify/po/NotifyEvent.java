@@ -21,9 +21,10 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class NotifyEvent implements Serializable {
     private Integer userId;
+    private String userName;
     private String action;
-    private Integer objectId;
     private String objectType;
+    private Integer objectId;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime createDate;

@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.biz.notify.sender;
 
+import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
+
 public interface NotifySender {
-    Comparable<Boolean> send();
+    Boolean send(NotifyRemind notifyRemind);
 }

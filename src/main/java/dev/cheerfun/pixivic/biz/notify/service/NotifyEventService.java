@@ -49,51 +49,9 @@ public class NotifyEventService {
         stringRedisTemplate.opsForStream().add(objectRecord);
     }
 
-    public void pushNotifyEvent() {
-        ObjectRecord<String, NotifyEvent> objectRecord = StreamRecords.newRecord()
-                .ofObject(new NotifyEvent(1, "a", 1, "a", LocalDateTime.now())).withStreamKey(NOTIFYEVENTSTREAMKEY);
-        stringRedisTemplate.opsForStream().add(objectRecord);
-    }
 
-    public boolean dealNotifyEvent(NotifyEvent notifyEvent) {
-        String objectType = notifyEvent.getObjectType();
-        if (NotifyObjectType.COMMENT.equals(objectType)) {
-            dealCommentEvent(notifyEvent);
-        } else if (NotifyObjectType.ILLUST.equals(objectType)) {
-            dealIllustEvent(notifyEvent);
-        }
-        //notifyEvent进来，先取用户设定（是否不发送），若发送则取对应事件的notify_setting_config
 
-        //取出notify_setting_config形成对应的notifyRemind存入数据库或进行其他操作（根据相应的channel来判断）
-        System.out.println(notifyEvent);
-        return true;
-    }
 
-    @Cacheable("userNotifySetting")
-    public Boolean checkUserSetting(Integer ownerId, String objectType) {
-        NotifyBanSetting notifyBanSetting = notifyMapper.queryUserBanSetting(ownerId);
-        return notifyBanSetting == null || !notifyBanSetting.getBanNotifyActionType().contains(objectType);
-    }
 
-    private void dealCommentEvent(NotifyEvent notifyEvent) {
-        //找到事件对象所有者
-        Comment comment = notifyMapper.queryCommentById(notifyEvent.getObjectId());
-        Integer ownerId = comment.getReplyTo();
-        //校验是否接受通知
-        if (checkUserSetting(ownerId, NotifyObjectType.COMMENT)) {
-            //拼接通知入库
-            String action = notifyEvent.getAction();
-            String objectType = notifyEvent.getObjectType();
-            NotifySettingConfig notifySettingConfig = notifySettingMap.get(objectType + ":" + action).get(0);
-            //查出对应comment对象的评论主体并生成提醒
-            new NotifyRemind(null, comment.getReplyFrom(), comment.getReplyFromName(), action, comment.getAppId(), comment.getAppType(), comment.getReplyTo(), notifySettingConfig.getMessageTemplate(), LocalDateTime.now(), NotifyStatus.UNREAD, null);
-
-        }
-
-    }
-
-    private void dealIllustEvent(NotifyEvent notifyEvent) {
-
-    }
 
 }

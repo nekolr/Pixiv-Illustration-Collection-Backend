@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.biz.notify.sender.impl;
 
+import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
+import dev.cheerfun.pixivic.biz.notify.sender.NotifySender;
 import org.springframework.stereotype.Component;
 
 /**
@@ -9,5 +11,10 @@ import org.springframework.stereotype.Component;
  * @description WebMessageSender
  */
 @Component("web")
-public class WebMessageSender {
+public class WebMessageSender implements NotifySender {
+    @Override
+    public Boolean send(NotifyRemind notifyRemind) {
+        //直接持久化到数据库
+        return null;
+    }
 }
