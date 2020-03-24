@@ -20,7 +20,7 @@ public class UserListDTO {
     private String username;
     private Integer userId;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXXZ")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
     private LocalDateTime createDate;
 
 }
