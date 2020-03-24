@@ -22,6 +22,7 @@ import java.net.http.HttpRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.locks.ReentrantLock;
 
 @Component
@@ -47,7 +48,7 @@ final public class OauthUtil {
         });
         //账号初始化
         System.out.println("开始初始化帐号池");
-        oauths.stream().parallel().forEach(this::oauthInit);
+        CompletableFuture.runAsync(() -> oauths.stream().parallel().forEach(this::oauthInit));
         System.out.println("帐号池初始化完毕");
         length = oauths.size();
     }
