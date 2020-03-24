@@ -28,7 +28,7 @@ public class Comment {
     @SensitiveCheck
     private String content;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ssXXX")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS")
     private LocalDateTime createDate;
     private Integer likedCount;
     private Boolean isLike=false;
