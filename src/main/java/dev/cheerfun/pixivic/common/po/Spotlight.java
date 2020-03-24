@@ -35,7 +35,7 @@ public class Spotlight {
     private String subcategoryLabel;
 
     public void setPublishDate(String publishDate) {
-        LocalDateTime parse = LocalDateTime.parse(publishDate, DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ssXXX"));
+        LocalDateTime parse = LocalDateTime.parse(publishDate, DateTimeFormatter.ISO_INSTANT);
         this.publishDate = parse.toLocalDate();
     }
 
