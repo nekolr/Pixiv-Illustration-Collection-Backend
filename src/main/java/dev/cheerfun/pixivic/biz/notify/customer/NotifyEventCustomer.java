@@ -33,8 +33,7 @@ public abstract class NotifyEventCustomer {
         notifySettingMap = notifyMapper.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + e.getObjectRelationship() + e.getAction(), e -> e));
     }
 
-    //消费流程
-    protected boolean process(NotifyEvent notifyEvent) {
+    protected void process(NotifyEvent notifyEvent) {
         //查找出所有收件方
         Object sendTo = querySendTo(notifyEvent);
         //生成remind
@@ -54,10 +53,8 @@ public abstract class NotifyEventCustomer {
             send(generateRemind(notifyEvent, (int) sendTo));
         }
 
-        return true;
     }
 
-    //根据不同实现，消费各类型事件
     protected abstract void consume(NotifyEvent notifyEvent);
 
     protected abstract Object querySendTo(NotifyEvent notifyEvent);
