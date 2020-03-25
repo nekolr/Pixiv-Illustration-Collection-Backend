@@ -36,6 +36,9 @@ public abstract class NotifyEventCustomer {
     protected void process(NotifyEvent notifyEvent) {
         //查找出所有收件方
         Object sendTo = querySendTo(notifyEvent);
+        if (sendTo == null) {
+            return;
+        }
         //生成remind
         List<NotifyRemind> notifyReminds = new ArrayList<>();
         if (sendTo instanceof List) {
