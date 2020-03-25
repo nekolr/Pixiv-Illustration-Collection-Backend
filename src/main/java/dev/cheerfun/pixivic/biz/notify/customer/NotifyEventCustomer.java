@@ -54,7 +54,8 @@ public abstract class NotifyEventCustomer {
                 send(generateRemind(notifyEvent, (int) sendTo));
             }
         } catch (Exception e) {
-            System.err.println("消息消费出错");
+            System.err.println("消息消费出错，详情:");
+            e.printStackTrace();
         }
 
     }
