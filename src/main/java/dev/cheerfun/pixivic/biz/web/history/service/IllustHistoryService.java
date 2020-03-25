@@ -43,7 +43,7 @@ public class IllustHistoryService {
     }
 
     public List<Illustration> pullFromRedis(int userId, int page, int pageSize) {
-        Set<String> illustIdList = stringRedisTemplate.opsForZSet().reverseRange(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, (page - 1) * pageSize, (page) * pageSize);
+        Set<String> illustIdList = stringRedisTemplate.opsForZSet().reverseRange(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, (page - 1) * pageSize + 1, (page) * pageSize);
         if (illustIdList != null && illustIdList.size() > 0) {
             return illustrationBizService.queryIllustrationByIllustIdList(illustIdList.stream().map(Integer::valueOf).collect(Collectors.toList()));
         }
