@@ -1,18 +1,20 @@
 package dev.cheerfun.pixivic.biz.notify.mapper;
 
 import dev.cheerfun.pixivic.biz.notify.po.NotifyBanSetting;
+import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.biz.notify.po.NotifySettingConfig;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Result;
-import org.apache.ibatis.annotations.Results;
-import org.apache.ibatis.annotations.Select;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
 @Mapper
 public interface NotifyMapper {
+
+    @Insert("insert into notify_remind (sender_id,sender_name,sender_action,object_id,object_type,recipient_id,create_date) value (#{senderId},#{senderName},#{senderAction},#{objectId},#{objectType},#{recipientId},#{createDate})")
+    Integer insertNotifyRemind(NotifyRemind notifyRemind);
+
     @Select("select reply_from from comments where comment_id=#{objectId}")
     Integer queryCommentOwner(Integer objectId);
 
@@ -36,6 +38,7 @@ public interface NotifyMapper {
             @Result(property = "settingType", column = "setting_type")
     })
     List<NotifySettingConfig> queryNotifySettingConfig();
+
     @Select("select * from comments where comment_id = #{commentId} ")
     @Results({
             @Result(property = "id", column = "comment_id"),
@@ -46,7 +49,7 @@ public interface NotifyMapper {
             @Result(property = "replyToName", column = "reply_to_name"),
             @Result(property = "replyFrom", column = "reply_from"),
             @Result(property = "replyFromName", column = "reply_from_name"),
-            @Result(property = "createDate", column = "create_Date",typeHandler =org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "createDate", column = "create_Date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
             @Result(property = "likedCount", column = "liked_count")
     })
     Comment queryCommentById(Integer commentId);

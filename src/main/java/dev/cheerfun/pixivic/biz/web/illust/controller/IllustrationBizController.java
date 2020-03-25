@@ -69,7 +69,7 @@ public class IllustrationBizController {
     @GetMapping("/illusts/{illustId}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationById(illustId)));
+        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationByIdWithUserInfo(illustId)));
     }
 
     @GetMapping("/illusts/{illustId}/related")

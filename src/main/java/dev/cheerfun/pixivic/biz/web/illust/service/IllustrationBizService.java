@@ -109,6 +109,21 @@ public class IllustrationBizService {
         return artist;
     }
 
+    public Illustration queryIllustrationByIdWithUserInfo(Integer illustId) {
+        Illustration illustration = queryIllustrationById(illustId);
+        Map<String, Object> context = AppContext.get();
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            int userId = (int) context.get(AuthConstant.USER_ID);
+            Boolean isBookmarked = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
+            //businessService.queryIsBookmarked(userId, illustId);
+            illustration = new IllustrationWithLikeInfo(illustration, isBookmarked);
+            Boolean isFollowed = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
+            //businessService.queryIsFollowed(userId, illustration.getArtistId());
+            illustration.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustration.getArtistPreView(), isFollowed));
+        }
+        return illustration;
+    }
+
     @Cacheable(value = "illust")
     public Illustration queryIllustrationById(Integer illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
@@ -121,16 +136,6 @@ public class IllustrationBizService {
                 illustrations.add(illustration);
                 illustrationService.saveToDb(illustrations);
             }
-        }
-        Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            int userId = (int) context.get(AuthConstant.USER_ID);
-            Boolean isBookmarked = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
-            //businessService.queryIsBookmarked(userId, illustId);
-            illustration = new IllustrationWithLikeInfo(illustration, isBookmarked);
-            Boolean isFollowed = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
-            //businessService.queryIsFollowed(userId, illustration.getArtistId());
-            illustration.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustration.getArtistPreView(), isFollowed));
         }
         return illustration;
     }

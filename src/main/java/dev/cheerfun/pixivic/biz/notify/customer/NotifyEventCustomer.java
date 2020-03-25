@@ -30,7 +30,7 @@ public abstract class NotifyEventCustomer {
 
     @PostConstruct
     void init() {
-        notifySettingMap = notifyMapper.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + e.getObjectRelationship() + e.getAction(), e -> e));
+        notifySettingMap = notifyMapper.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
     }
 
     protected void process(NotifyEvent notifyEvent) {
@@ -64,7 +64,7 @@ public abstract class NotifyEventCustomer {
     protected abstract Boolean send(NotifyRemind notifyRemind);
 
     protected String queryTemplate(NotifyEvent notifyEvent) {
-        NotifySettingConfig notifySettingConfig = notifySettingMap.get(notifyEvent.getObjectType() + ":" + notifyEvent.getObjectId());
+        NotifySettingConfig notifySettingConfig = notifySettingMap.get(notifyEvent.getObjectType() + ":" + notifyEvent.getAction());
         return notifySettingConfig.getMessageTemplate();
     }
 

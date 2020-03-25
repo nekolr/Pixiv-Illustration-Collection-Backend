@@ -29,7 +29,6 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-
 public class CommentController {
     private final CommentService commentService;
     private final NotifyEventPublisher notifyEventPublisher;

@@ -47,7 +47,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
     protected NotifyRemind generateRemind(NotifyEvent notifyEvent, Integer sendTo) {
         Comment comment = queryCommentById(notifyEvent);
         //查出对应comment对象的评论主体并生成提醒
-        return new NotifyRemind(null, comment.getReplyFrom(), comment.getReplyFromName(), notifyEvent.getAction(), comment.getAppId(), comment.getAppType(), comment.getReplyTo(), queryTemplate(notifyEvent), LocalDateTime.now(), NotifyStatus.UNREAD, null);
+        return new NotifyRemind(null, notifyEvent.getUserId(), notifyEvent.getUserName(), notifyEvent.getAction(), comment.getAppId(), comment.getAppType(), comment.getReplyFrom(), queryTemplate(notifyEvent), LocalDateTime.now(), NotifyStatus.UNREAD, null);
     }
 
     @Override
