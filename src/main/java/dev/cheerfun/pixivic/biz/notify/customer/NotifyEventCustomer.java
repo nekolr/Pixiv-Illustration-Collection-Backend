@@ -35,25 +35,26 @@ public abstract class NotifyEventCustomer {
 
     protected void process(NotifyEvent notifyEvent) {
         //查找出所有收件方
-        Object sendTo = querySendTo(notifyEvent);
-        if (sendTo == null) {
-            return;
-        }
-        //生成remind
-        List<NotifyRemind> notifyReminds = new ArrayList<>();
-        if (sendTo instanceof List) {
-            for (Integer userId : (List<Integer>) sendTo) {
-                //校验是否接收消息
-                if (userSettingUtil.checkUserSetting(userId, notifyEvent.getObjectType())) {
-                    notifyReminds.add(generateRemind(notifyEvent, userId));
+        try {
+            Object sendTo = querySendTo(notifyEvent);
+            //生成remind
+            List<NotifyRemind> notifyReminds = new ArrayList<>();
+            if (sendTo instanceof List) {
+                for (Integer userId : (List<Integer>) sendTo) {
+                    //校验是否接收消息
+                    if (userSettingUtil.checkUserSetting(userId, notifyEvent.getObjectType())) {
+                        notifyReminds.add(generateRemind(notifyEvent, userId));
+                    }
                 }
+                //发送
+                for (NotifyRemind notifyRemind : notifyReminds) {
+                    send(notifyRemind);
+                }
+            } else {
+                send(generateRemind(notifyEvent, (int) sendTo));
             }
-            //发送
-            for (NotifyRemind notifyRemind : notifyReminds) {
-                send(notifyRemind);
-            }
-        } else {
-            send(generateRemind(notifyEvent, (int) sendTo));
+        } catch (Exception e) {
+            System.err.println("消息消费出错");
         }
 
     }
