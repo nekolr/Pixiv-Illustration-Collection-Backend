@@ -28,6 +28,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
     @Override
     @RabbitHandler()
     public void consume(NotifyEvent notifyEvent) {
+        System.out.println(notifyEvent);
         super.process(notifyEvent);
     }
 
