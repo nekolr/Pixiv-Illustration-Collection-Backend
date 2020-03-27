@@ -60,12 +60,12 @@ public class BusinessService {
     @Transactional
     void bookmarkOperation(int userId, String username, int illustId, int increment, int relationId) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
-        Boolean isMember = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
-        if ((increment > 0 && isMember)
-                || (increment < 0 && !isMember)
-        ) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "用户与画作的收藏关系请求错误");
-        }
+//        Boolean isMember = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
+//        if ((increment > 0 && isMember)
+//                || (increment < 0 && !isMember)
+//        ) {
+//            throw new BusinessException(HttpStatus.BAD_REQUEST, "用户与画作的收藏关系请求错误");
+//        }
         stringRedisTemplate.execute(new SessionCallback<>() {
             @Override
             public List<Object> execute(RedisOperations operations) throws DataAccessException {
