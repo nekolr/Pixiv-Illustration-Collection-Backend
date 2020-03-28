@@ -28,7 +28,9 @@ public interface CommonMapper {
             @Result(property = "pixivAccount", column = "pixiv_account"),
             @Result(property = "pixivPassword", column = "pixiv_password"),
             @Result(property = "qqOpenId", column = "qq_open_id"),
-            @Result(property = "isCheckEmail", column = "is_check_email")
+            @Result(property = "isCheckEmail", column = "is_check_email"),
+            @Result(property = "createDate", column = "create_date"),
+            @Result(property = "updateDate", column = "update_date")
     })
     User queryUserByusernameAndPassword(String username, String password);
 
@@ -42,7 +44,10 @@ public interface CommonMapper {
             @Result(property = "pixivAccount", column = "pixiv_account"),
             @Result(property = "pixivPassword", column = "pixiv_password"),
             @Result(property = "qqOpenId", column = "qq_open_id"),
-            @Result(property = "isCheckEmail", column = "is_check_email")
+            @Result(property = "isCheckEmail", column = "is_check_email"),
+            @Result(property = "createDate", column = "create_date"),
+            @Result(property = "updateDate", column = "update_date")
+
     })
         //@Cacheable(value = "user", key = "#userId")
     User queryUserByUserId(int userId);
@@ -55,7 +60,9 @@ public interface CommonMapper {
             @Result(property = "pixivAccount", column = "pixiv_account"),
             @Result(property = "pixivPassword", column = "pixiv_password"),
             @Result(property = "qqOpenId", column = "qq_open_id"),
-            @Result(property = "isCheckEmail", column = "is_check_email")
+            @Result(property = "isCheckEmail", column = "is_check_email"),
+            @Result(property = "createDate", column = "create_date"),
+            @Result(property = "updateDate", column = "update_date")
     })
     User getUserByQQOpenId(String qqOpenId);
 
