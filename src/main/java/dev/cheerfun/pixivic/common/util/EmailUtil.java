@@ -519,7 +519,7 @@ public class EmailUtil {
             helper.setText(p1 + to + p2 + from + p3 + content + p4 + link + p5, true);
             mailSender.send(message);
         } catch (MessagingException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             System.out.println("邮件发送失败" + emailAddr);
         }
 
