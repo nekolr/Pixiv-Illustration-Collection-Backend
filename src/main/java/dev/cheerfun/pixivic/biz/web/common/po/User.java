@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -40,8 +41,9 @@ public class User implements Authable {
     private String pixivPassword;
     @JsonIgnore
     private String qqOpenId;
-
     private Integer isCheckEmail;
+    private LocalDateTime createDate;
+    private LocalDateTime updateDate;
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -61,6 +63,8 @@ public class User implements Authable {
         signature = null;
         location = null;
         isCheckEmail = 0;
+        createDate = LocalDateTime.now();
+        updateDate = null;
     }
 
     @Override

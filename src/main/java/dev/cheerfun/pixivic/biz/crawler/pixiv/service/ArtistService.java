@@ -99,11 +99,6 @@ public class ArtistService {
         if (illustrationListPage1.size() > 0) {
             illustrationService.saveToDb(illustrationListPage1);
         }
-      /*  List<Illustration> illustrationList = illustrationDetailDTOPage2.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
-        if (illustrationList.size() > 0) {
-            illustrationService.saveToDb(illustrationList);
-        }*/
-
     }
 
     public void dealArtistIllustList() throws IOException {
