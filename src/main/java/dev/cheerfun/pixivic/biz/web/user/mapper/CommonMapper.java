@@ -14,7 +14,7 @@ public interface CommonMapper {
     })
     int checkUserNameAndEmail(String username, String email);
 
-    @Insert("insert into users (email, username,password,permission_level,is_ban,star) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan},#{star})")
+    @Insert("insert into users (email, username,password,permission_level,is_ban,star,create_date) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan},#{star}.#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "user_id")
     Integer insertUser(User user);
 
@@ -29,8 +29,8 @@ public interface CommonMapper {
             @Result(property = "pixivPassword", column = "pixiv_password"),
             @Result(property = "qqOpenId", column = "qq_open_id"),
             @Result(property = "isCheckEmail", column = "is_check_email"),
-            @Result(property = "createDate", column = "create_date"),
-            @Result(property = "updateDate", column = "update_date")
+            @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
     })
     User queryUserByusernameAndPassword(String username, String password);
 
@@ -45,8 +45,8 @@ public interface CommonMapper {
             @Result(property = "pixivPassword", column = "pixiv_password"),
             @Result(property = "qqOpenId", column = "qq_open_id"),
             @Result(property = "isCheckEmail", column = "is_check_email"),
-            @Result(property = "createDate", column = "create_date"),
-            @Result(property = "updateDate", column = "update_date")
+            @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
 
     })
         //@Cacheable(value = "user", key = "#userId")
@@ -61,8 +61,8 @@ public interface CommonMapper {
             @Result(property = "pixivPassword", column = "pixiv_password"),
             @Result(property = "qqOpenId", column = "qq_open_id"),
             @Result(property = "isCheckEmail", column = "is_check_email"),
-            @Result(property = "createDate", column = "create_date"),
-            @Result(property = "updateDate", column = "update_date")
+            @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
     })
     User getUserByQQOpenId(String qqOpenId);
 
