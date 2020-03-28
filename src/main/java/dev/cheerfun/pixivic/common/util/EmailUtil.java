@@ -508,14 +508,21 @@ public class EmailUtil {
     }
 
     @Async
-    public void sendEmail(String emailAddr, String to, String from, String content, String link) throws MessagingException {
+    public void sendEmail(String emailAddr, String to, String from, String content, String link) {
         MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = new MimeMessageHelper(message, true);
-        helper.setFrom("Pixivic.com<admin@mail.cheerfun.dev>");
-        helper.setTo(emailAddr);
-        helper.setSubject("来自Pixivic.com的信息");
-        helper.setText(p1 + to + p2 + from + p3 + content + p4 + link + p5, true);
-        mailSender.send(message);
+        MimeMessageHelper helper = null;
+        try {
+            helper = new MimeMessageHelper(message, true);
+            helper.setFrom("Pixivic.com<admin@cheerfun.dev>");
+            helper.setTo(emailAddr);
+            helper.setSubject("来自Pixivic.com的信息");
+            helper.setText(p1 + to + p2 + from + p3 + content + p4 + link + p5, true);
+            mailSender.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+            System.out.println("邮件发送失败" + emailAddr);
+        }
+
     }
 
 }
