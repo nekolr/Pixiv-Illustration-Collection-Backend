@@ -14,7 +14,7 @@ public interface CommonMapper {
     })
     int checkUserNameAndEmail(String username, String email);
 
-    @Insert("insert into users (email, username,password,permission_level,is_ban,star,create_date) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan},#{star}.#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Insert("insert into users (email, username,password,permission_level,is_ban,star,create_date) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan},#{star},#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "user_id")
     Integer insertUser(User user);
 
