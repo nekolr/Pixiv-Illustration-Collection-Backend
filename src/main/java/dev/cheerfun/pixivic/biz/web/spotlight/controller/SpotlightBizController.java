@@ -1,5 +1,9 @@
 package dev.cheerfun.pixivic.biz.web.spotlight.controller;
 
+import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
+import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.spotlight.service.SpotlightBizService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
@@ -37,7 +41,10 @@ public class SpotlightBizController {
     }
 
     @GetMapping("/{spotlightId}/illustrations")
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrations(@PathVariable int spotlightId) {
+    @WithUserInfo
+    @WithAdvertisement
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrations(@PathVariable int spotlightId, @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("获取该spotlight下画作列表成功", spotlightBizService.queryIllustrations(spotlightId)));
     }
 
