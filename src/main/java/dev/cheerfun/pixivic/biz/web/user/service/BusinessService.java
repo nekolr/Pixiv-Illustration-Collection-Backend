@@ -58,7 +58,8 @@ public class BusinessService {
     }
 
     @Transactional
-    void bookmarkOperation(int userId, String username, int illustId, int increment, int relationId) {
+    @CacheEvict(value = "illust_bookmarked", key = "#illustId+'1'+'30'")
+    public void bookmarkOperation(int userId, String username, int illustId, int increment, int relationId) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
 //        Boolean isMember = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
 //        if ((increment > 0 && isMember)
@@ -133,8 +134,7 @@ public class BusinessService {
     @Caching(evict = {
             @CacheEvict(value = "followedLatest", key = "#userId + 'illust'"),
             @CacheEvict(value = "followedLatest", key = "#userId + 'manga'"),
-            @CacheEvict(value = "illust_follow", allEntries = true)})
-
+            @CacheEvict(value = "artist_followed", key = "#artistId+'1'+'30'")})
     @Transactional
     public void follow(int userId, int artistId, String username) {
         try {
