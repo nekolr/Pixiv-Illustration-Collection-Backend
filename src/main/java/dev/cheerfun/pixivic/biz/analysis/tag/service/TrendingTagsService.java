@@ -70,7 +70,7 @@ public class TrendingTagsService {
         Set<String> tagNameSet = tagList.stream().collect(groupingBy(Tag::getName)).keySet();
         //读取日志
         LocalDate yesterday = LocalDate.now().plusDays(-1);
-        try (Stream<String> stream = Files.lines(Paths.get(logPath, "2020-03-12" + LOG_POS), StandardCharsets.ISO_8859_1)) {
+        try (Stream<String> stream = Files.lines(Paths.get(logPath, yesterday + LOG_POS), StandardCharsets.ISO_8859_1)) {
             //逐行处理
             tagList.addAll(stream.map(line -> {
                 //搜索api
