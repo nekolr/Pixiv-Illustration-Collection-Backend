@@ -1,14 +1,12 @@
 package dev.cheerfun.pixivic.biz.analysis.tag.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.biz.analysis.tag.dto.PixivTrendingTagResponse;
 import dev.cheerfun.pixivic.biz.analysis.tag.mapper.TrendingTagsMapper;
 import dev.cheerfun.pixivic.biz.analysis.tag.po.TrendingTags;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -112,6 +110,8 @@ public class TrendingTagsService {
             Collections.shuffle(tagList);
             //持久化
             trendingTagsMapper.insert(LocalDate.now().plusDays(1).toString(), tagList);
+            //删除日志
+            Files.delete(Paths.get(logPath, yesterday + LOG_POS));
         }
 
     }
