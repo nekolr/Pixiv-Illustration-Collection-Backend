@@ -10,6 +10,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -38,6 +39,7 @@ public class IllustRankService {
     private final RequestUtil requestUtil;
     private final static String[] MODES = {"day", "week", "month", "day_female", "day_male", "day_manga", "week_manga", "month_manga", "week_rookie_manga"};
 
+    @CacheEvict(value = "rank", allEntries = true)
     public void pullAllRank() {
         LocalDate date = LocalDate.now().plusDays(-2);
         pullAllRank(date.toString());

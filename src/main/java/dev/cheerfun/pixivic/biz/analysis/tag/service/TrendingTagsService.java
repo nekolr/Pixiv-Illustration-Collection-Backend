@@ -15,6 +15,7 @@ import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -62,6 +63,7 @@ public class TrendingTagsService {
     }
 
     @Scheduled(cron = "0 30 0 * * ?")
+    @CacheEvict(value = "trending_tags", allEntries = true)
     public void dailyTask() throws IOException {
         //获取pixiv原生热度标签
         List<Tag> tagList = queryPixivTrendingTag();
