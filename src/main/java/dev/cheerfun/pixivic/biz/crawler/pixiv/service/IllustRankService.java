@@ -38,7 +38,7 @@ public class IllustRankService {
     private final RequestUtil requestUtil;
     private final static String[] MODES = {"day", "week", "month", "day_female", "day_male", "day_manga", "week_manga", "month_manga", "week_rookie_manga"};
 
-    public void pullAllRank() throws InterruptedException {
+    public void pullAllRank() {
         LocalDate date = LocalDate.now().plusDays(-2);
         pullAllRank(date.toString());
     }
