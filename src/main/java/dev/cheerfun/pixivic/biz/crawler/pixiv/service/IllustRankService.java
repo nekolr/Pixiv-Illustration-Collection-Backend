@@ -47,6 +47,7 @@ public class IllustRankService {
         for (String mode : MODES) {
             illustrationMapper.insertRank(getIllustrations(mode, date));
         }
+        System.out.println(date + "排行爬取完毕");
     }
 
     private Rank getIllustrations(String mode, String date) {
