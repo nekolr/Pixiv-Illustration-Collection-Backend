@@ -40,8 +40,12 @@ public class IllustRankService {
 
     public void pullAllRank() throws InterruptedException {
         LocalDate date = LocalDate.now().plusDays(-2);
+        pullAllRank(date.toString());
+    }
+
+    public void pullAllRank(String date) {
         for (String mode : MODES) {
-            illustrationMapper.insertRank(getIllustrations(mode, date.toString()));
+            illustrationMapper.insertRank(getIllustrations(mode, date));
         }
     }
 
