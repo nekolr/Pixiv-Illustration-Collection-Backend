@@ -66,7 +66,12 @@ public class TrendingTagsService {
     @CacheEvict(value = "trending_tags", allEntries = true)
     public void dailyTask() throws IOException {
         //获取pixiv原生热度标签
-        List<Tag> tagList = queryPixivTrendingTag();
+        List<Tag> tagList;
+        try {
+            tagList = queryPixivTrendingTag();
+        } catch (Exception e) {
+            tagList = new ArrayList<>();
+        }
         Set<String> tagNameSet = tagList.stream().collect(groupingBy(Tag::getName)).keySet();
         //读取日志
         LocalDate yesterday = LocalDate.now().plusDays(-1);
