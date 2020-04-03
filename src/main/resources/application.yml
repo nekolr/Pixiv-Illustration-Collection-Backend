@@ -76,7 +76,7 @@ mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
   type-handlers-package: dev.cheerfun.pixivic.common.util.json
-elasticsearch.ip: es-01;es-02;es-03
+elasticsearch.ip: es-1;es-2;es-3
 apiLog:
   path: /home/PIC/log
 sensitiveWordList:
