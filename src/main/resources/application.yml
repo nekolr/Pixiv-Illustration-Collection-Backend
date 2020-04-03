@@ -1,8 +1,8 @@
 server:
   port: 8080
 spring:
-#  profiles:
-#      active: mac
+  profiles:
+    active: mac
   mail:
     host: mail
     username: admin@cheerfun.dev
@@ -76,8 +76,7 @@ mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
   type-handlers-package: dev.cheerfun.pixivic.common.util.json
-elasticsearch:
-  ip: elasticsearch
+elasticsearch.ip: es-01;es-02;es-03
 apiLog:
   path: /home/PIC/log
 sensitiveWordList:
