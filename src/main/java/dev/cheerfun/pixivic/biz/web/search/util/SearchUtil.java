@@ -12,14 +12,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
@@ -34,10 +32,8 @@ import java.util.stream.Collectors;
 public class SearchUtil {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    @Value("#{'${elasticsearch.ip}'.split(';')}")
-    private List<String> elasticsearch;
-    private Integer esClusterSize;
-    private Random random;
+    @Value("${elasticsearch.ip}")
+    private String elasticsearch;
 
     private final static String MIN_SCORE = "\"min_score\": 0.6";
     private final static String FROM = "\"from\":";
@@ -83,15 +79,6 @@ public class SearchUtil {
 
     private final static String SCRIPT_SCORE = "\"script_score\":{\"script\":{\"params\":{\"total_bookmarks_max\":35000,\"total_view_max\":2500000},\"source\":\"(1.00+doc['total_bookmarks'].value/params.total_bookmarks_max+doc['total_view'].value/params.total_view_max)\"}}";
     private final static String SORT = "\"sort\":[\"_score\",{\"total_bookmarks\":{\"order\":\"desc\"}},{\"total_view\":{\"order\":\"desc\"}}],";
-
-    @PostConstruct
-    public void init() {
-
-        random = new Random(21);
-        System.out.println(elasticsearch);
-        esClusterSize = elasticsearch.size();
-
-    }
 
     public String build(
             String keyword,
@@ -195,10 +182,11 @@ public class SearchUtil {
         return stringBuilder.toString();
     }
 
+
     public CompletableFuture<List<Illustration>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .uri(URI.create("http://" + elasticsearch.get(random.nextInt(3)) + ":9200/illust/_search"))
+                .uri(URI.create("http://" + elasticsearch + ":9200/illust/_search"))
                 .method("GET", HttpRequest.BodyPublishers.ofString(body))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(
