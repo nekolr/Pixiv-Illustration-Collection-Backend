@@ -36,7 +36,7 @@ public class BangumiCrawlerService {
     @PostConstruct
     public void pullAllAnimateInfo() throws IOException, InterruptedException {
         final int endPageNum = 670;
-        final Path path = Paths.get("/Users/oysterqaq/Desktop/id.txt");
+        final Path path = Paths.get("/home/PIC/id.txt");
         //从redis中查出上次爬到哪一页
         String subject_id_list = stringRedisTemplate.opsForValue().get("subject_id_list");
         int currentIndex;
