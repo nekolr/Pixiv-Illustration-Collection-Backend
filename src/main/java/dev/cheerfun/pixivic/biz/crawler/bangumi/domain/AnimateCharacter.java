@@ -11,11 +11,12 @@ import java.util.Map;
  * @description Character
  */
 @Data
-public class Character {
+public class AnimateCharacter {
     private Integer id;
+    private String avatar;
     private String name;
     private String translatedName;
-    private Map<String, String> detail;
+    private String detail;
     private String type;
     private Seiyuu seiyuu;
 

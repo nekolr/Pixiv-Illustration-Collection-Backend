@@ -33,8 +33,8 @@ public class SpotlightService {
     private final IllustrationService illustrationService;
     private final SpotlightMapper spotlightMapper;
     private final HttpClient httpClient;
-    private Pattern illustIdPattern = Pattern.compile("(?<=(?:id=\"illust-))\\d+");
-    private Pattern imageUrlPattern = Pattern.compile("(?<=(?:src\" content=\")).+?(?=\"><meta property=\"og:title\")");
+    private final Pattern illustIdPattern = Pattern.compile("(?<=(?:id=\"illust-))\\d+");
+    private final Pattern imageUrlPattern = Pattern.compile("(?<=(?:src\" content=\")).+?(?=\"><meta property=\"og:title\")");
 
     //@CacheEvict(cacheNames = "spotlight", allEntries = true)
     public void pullAllSpotlight() {

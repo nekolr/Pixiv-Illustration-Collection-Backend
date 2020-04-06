@@ -13,4 +13,5 @@ public class Seiyuu {
     private Integer id;
     private String name;
     private String translatedName;
+    private String avatar;
 }

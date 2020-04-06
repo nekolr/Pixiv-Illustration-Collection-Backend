@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.biz.crawler.bangumi.domain;
 
 import lombok.Data;
 
-import java.util.Calendar;
 import java.util.List;
 import java.util.Map;
 
@@ -23,5 +22,5 @@ public class Animate {
     private List<String> tags;
     private String cover;
     private Float rate;
-    private List<Character> characters;
+    private List<AnimateCharacter> characters;
 }
