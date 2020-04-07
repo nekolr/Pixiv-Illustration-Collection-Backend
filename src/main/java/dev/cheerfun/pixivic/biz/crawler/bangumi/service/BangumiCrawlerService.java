@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.Animate;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.AnimateCharacter;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.Seiyuu;
+import dev.cheerfun.pixivic.biz.crawler.bangumi.mapper.AnimateMapper;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,6 +23,7 @@ import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -38,18 +40,31 @@ public class BangumiCrawlerService {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final StringRedisTemplate stringRedisTemplate;
+    private final AnimateMapper animateMapper;
 
-    //@PostConstruct
+    @PostConstruct
     public void pullAllAnimateInfo() throws IOException, InterruptedException {
-//读取idtxt获取id进行采集
+        //读取idtxt获取id进行采集
         List<String> strings = Files.readAllLines(Paths.get("/Users/oysterqaq/Desktop/id.txt"));
-        for (int i = 15000; i < 15010; i++) {
-            try {
-                System.out.println(pullAnimateInfo(Integer.valueOf(strings.get(i))));
-            } catch (Exception e) {
-                System.out.println(i + "失败");
-                e.printStackTrace();
+        //获取读取到了第几行
+        int index = 0;
+        String animate = stringRedisTemplate.opsForValue().get("animate");
+        if (animate != null) {
+            index = Integer.parseInt(animate);
+        }
+        for (int i = index; i < 15864; i++) {
+            List<Animate> animates = new ArrayList<>(1);
+            animates.add(pullAnimateInfo(Integer.valueOf(strings.get(i))));
+            animateMapper.insertAnimateList(animates);
+            List<AnimateCharacter> animateCharacterList = animates.stream().map(Animate::getCharacters).flatMap(Collection::stream).filter(e -> e.getId() != null).collect(Collectors.toList());
+            if (animateCharacterList.size() > 0) {
+                animateMapper.insertCharacterList(animateCharacterList, Integer.valueOf(strings.get(i)));
+                List<Seiyuu> seiyuuList = animateCharacterList.stream().filter(e -> e.getSeiyuu() != null && e.getSeiyuu().getId() != null).map(AnimateCharacter::getSeiyuu).collect(Collectors.toList());
+                if (seiyuuList.size() > 0) {
+                    animateMapper.insertSeiyuuList(seiyuuList);
+                }
             }
+            stringRedisTemplate.opsForValue().set("animate", String.valueOf(i + 1));
 
         }
 
@@ -76,15 +91,16 @@ public class BangumiCrawlerService {
 
     private Animate pullAnimateInfo(Integer subjectId) throws IOException, InterruptedException {
         Animate animate = new Animate();
+        animate.setId(subjectId);
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create("https://bangumi.tv/subject/" + subjectId))
-                .header("Cookie", "chii_theme=light; __utmc=1; chii_cookietime=0; chii_auth=7f8gLTYkeoBbe1CGYReErTifr1BNqPNs3YRVoCSSdGqaJASiuAbjjrsm4jnNmmy0U2ldwOfAnP9CXxlQsX98LyJv36U6kqrNFl5Y; __utmz=1.1585994994.3.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); chii_sid=ypnNkh; __utma=1.220230553.1585409845.1586173745.1586178721.8; __utmt=1; __utmb=1.4.10.1586178721").GET().build();
+                .header("Cookie", "chii_theme=light; __utmc=1; chii_cookietime=0; chii_sid=7EnC27; __utma=1.220230553.1585409845.1586178721.1586276424.9; __utmz=1.1586276424.9.3.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); __utmt=1; chii_auth=6UpwAF9Kw56gzt9HcRW08BWFX7Xh5e0ujMBdyayWlBIudqEIkqnBfdMXjmwtZ6vf9fC9Awfeqa5iDfOja4xGV2PqdQ70AJphq6W2; __utmb=1.5.10.158627642").GET().build();
         String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
         Document doc = Jsoup.parse(body);
         //获取角色
         HttpRequest pullCharacters = HttpRequest.newBuilder()
                 .uri(URI.create("https://bangumi.tv/subject/" + subjectId + "/characters"))
-                .header("Cookie", "chii_theme=light; __utmc=1; chii_cookietime=0; chii_auth=7f8gLTYkeoBbe1CGYReErTifr1BNqPNs3YRVoCSSdGqaJASiuAbjjrsm4jnNmmy0U2ldwOfAnP9CXxlQsX98LyJv36U6kqrNFl5Y; __utmz=1.1585994994.3.2.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); chii_sid=ypnNkh; __utma=1.220230553.1585409845.1586173745.1586178721.8; __utmt=1; __utmb=1.4.10.1586178721")
+                .header("Cookie", "chii_theme=light; __utmc=1; chii_cookietime=0; chii_sid=7EnC27; __utma=1.220230553.1585409845.1586178721.1586276424.9; __utmz=1.1586276424.9.3.utmcsr=google|utmccn=(organic)|utmcmd=organic|utmctr=(not%20provided); __utmt=1; chii_auth=6UpwAF9Kw56gzt9HcRW08BWFX7Xh5e0ujMBdyayWlBIudqEIkqnBfdMXjmwtZ6vf9fC9Awfeqa5iDfOja4xGV2PqdQ70AJphq6W2; __utmb=1.5.10.158627642")
                 .GET().build();
         String charactersBody = httpClient.send(pullCharacters, HttpResponse.BodyHandlers.ofString()).body();
         Document charactersDoc = Jsoup.parse(charactersBody);
@@ -122,20 +138,23 @@ public class BangumiCrawlerService {
 
             return animateCharacter;
         }).collect(Collectors.toList()));
-        Element nameSingle = doc.getElementsByClass("nameSingle").get(0);
+        Elements nameSingle1 = doc.getElementsByClass("nameSingle");
+        if (nameSingle1.size() > 0) {
+            Element nameSingle = nameSingle1.get(0);
 
-        Element title = nameSingle.child(0);
-        Elements thickbox_cover = doc.getElementsByClass("thickbox cover");
-        if (thickbox_cover != null && thickbox_cover.size() > 0) {
-            animate.setCover("https:" + thickbox_cover.get(0).attr("href"));
+            Element title = nameSingle.child(0);
+            Elements thickbox_cover = doc.getElementsByClass("thickbox cover");
+            if (thickbox_cover != null && thickbox_cover.size() > 0) {
+                animate.setCover("https:" + thickbox_cover.get(0).attr("href"));
+            }
+            if (nameSingle.getElementsByClass("grey") != null) {
+                animate.setType(nameSingle.getElementsByClass("grey").text());
+            }
+            animate.setId(subjectId);
+            animate.setTitle(title.text());
+            animate.setTranslatedTitle(title.attr("title"));
         }
-        if (nameSingle.getElementsByClass("grey") != null) {
-            animate.setType(nameSingle.getElementsByClass("grey").text());
 
-        }
-        animate.setId(subjectId);
-        animate.setTitle(title.text());
-        animate.setTranslatedTitle(title.attr("title"));
         if (doc.getElementById("subject_summary") != null) {
             animate.setIntro(doc.getElementById("subject_summary").text());
         }
@@ -144,18 +163,24 @@ public class BangumiCrawlerService {
             Elements tags = subject_tag_section.get(0).getElementsByClass("inner").get(0).getElementsByTag("a");
             animate.setTags(tags.stream().map(t -> t.child(0).text()).collect(Collectors.toList()));
         }
-        animate.setRate(Float.valueOf(doc.getElementsByClass("global_score").get(0).child(0).text()));
-        Elements infobox = doc.getElementById("infobox").getElementsByTag("li");
-        HashMap<String, String> detail = new HashMap<>();
-        infobox
-                .forEach(
-                        e -> {
-                            String key = e.getElementsByClass("tip").text().replace(":", "");
-                            String text = e.text();
-                            String value = text.substring(text.indexOf(": ") + 2);
-                            detail.merge(key, value, (a, b) -> a + "|" + b);
-                        });
-        animate.setDetail(detail);
+        Elements global_score = doc.getElementsByClass("global_score");
+        if (global_score.size() > 0) {
+            animate.setRate(Float.valueOf(global_score.get(0).child(0).text()));
+        }
+        Element infobox1 = doc.getElementById("infobox");
+        if (infobox1 != null) {
+            Elements infobox = infobox1.getElementsByTag("li");
+            HashMap<String, String> detail = new HashMap<>();
+            infobox
+                    .forEach(
+                            e -> {
+                                String key = e.getElementsByClass("tip").text().replace(":", "");
+                                String text = e.text();
+                                String value = text.substring(text.indexOf(": ") + 2);
+                                detail.merge(key, value, (a, b) -> a + "|" + b);
+                            });
+            animate.setDetail(detail);
+        }
 
         return animate;
     }
