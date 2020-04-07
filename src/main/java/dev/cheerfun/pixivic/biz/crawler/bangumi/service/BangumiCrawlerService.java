@@ -53,6 +53,7 @@ public class BangumiCrawlerService {
             index = Integer.parseInt(animate);
         }
         for (int i = index; i < 15864; i++) {
+            System.out.println("开始爬取第" + i + "个");
             List<Animate> animates = new ArrayList<>(1);
             animates.add(pullAnimateInfo(Integer.valueOf(strings.get(i))));
             animateMapper.insertAnimateList(animates);
