@@ -45,7 +45,7 @@ public class BangumiCrawlerService {
     @PostConstruct
     public void pullAllAnimateInfo() throws IOException, InterruptedException {
         //读取idtxt获取id进行采集
-        List<String> strings = Files.readAllLines(Paths.get("/Users/oysterqaq/Desktop/id.txt"));
+        List<String> strings = Files.readAllLines(Paths.get("/home/PIC/id.txt"));
         //获取读取到了第几行
         int index = 0;
         String animate = stringRedisTemplate.opsForValue().get("animate");
