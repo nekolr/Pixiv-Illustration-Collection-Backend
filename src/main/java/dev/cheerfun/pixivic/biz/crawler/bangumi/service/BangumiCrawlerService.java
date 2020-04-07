@@ -42,7 +42,7 @@ public class BangumiCrawlerService {
     private final StringRedisTemplate stringRedisTemplate;
     private final AnimateMapper animateMapper;
 
-    @PostConstruct
+    //@PostConstruct
     public void pullAllAnimateInfo() throws IOException, InterruptedException {
         //读取idtxt获取id进行采集
         List<String> strings = Files.readAllLines(Paths.get("/Users/oysterqaq/Desktop/id.txt"));
