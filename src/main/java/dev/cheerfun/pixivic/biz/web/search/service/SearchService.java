@@ -271,7 +271,7 @@ public class SearchService {
         illustration = objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
         });
         if (illustration != null && illustration.getTags().size() > 0) {
-            String keywords = illustration.getTags().stream().filter(e -> !"".equals(e.getName())).limit(4).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
+            String keywords = illustration.getTags().stream().filter(e -> !"".equals(e.getName())).limit(3).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
             return searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 5, illustId);
         }
         throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在");
