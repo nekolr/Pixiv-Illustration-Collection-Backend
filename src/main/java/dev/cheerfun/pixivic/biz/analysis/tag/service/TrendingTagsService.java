@@ -62,7 +62,7 @@ public class TrendingTagsService {
         // return trendingTagsMapper.queryByDate(date);
     }
 
-    @Scheduled(cron = "0 50 0 * * ?")
+    @Scheduled(cron = "0 50 2 * * ?")
     @CacheEvict(value = "trending_tags", allEntries = true)
     public void dailyTask() throws IOException {
         //获取pixiv原生热度标签
