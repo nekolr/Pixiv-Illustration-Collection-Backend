@@ -60,12 +60,12 @@ public class IllustrationBizService {
     @Cacheable(value = "artist_illusts")
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
         //如果是当日首次则进行拉取
-        String key = artistId + ":" + type;
-        if (currIndex == 0 && pageSize == 30 && !stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key)) {
-            System.out.println("本日首次，将从Pixiv拉取");
-            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
-            artistService.pullArtistLatestIllust(artistId, type);
-        }
+//        String key = artistId + ":" + type;
+//        if (currIndex == 0 && pageSize == 30 && !stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key)) {
+//            System.out.println("本日首次，将从Pixiv拉取");
+//            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
+//            artistService.pullArtistLatestIllust(artistId, type);
+//        }
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
     }
