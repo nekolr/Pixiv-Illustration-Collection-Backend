@@ -29,7 +29,9 @@ public class IllustHistoryController {
 
     @PostMapping("/users/{userId}/illustHistory")
     public ResponseEntity<Result<String>> log(@RequestBody IllustHistory illustHistory) {
-        illustHistoryService.push(illustHistory);
+        if (illustHistory.getUserId() != null) {
+            illustHistoryService.push(illustHistory);
+        }
         return ResponseEntity.ok(new Result<>("记录历史记录成功"));
     }
 
