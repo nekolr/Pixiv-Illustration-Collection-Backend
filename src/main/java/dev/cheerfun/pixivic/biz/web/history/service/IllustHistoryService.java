@@ -67,9 +67,10 @@ public class IllustHistoryService {
     }
 
     //定时清理历史记录长度，临时表转移到正式表，清空临时表，正式表清除期限外数据
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 10 2 * * ?")
     @Transactional
     public void clear() {
+        System.out.println("开始清理收藏");
         //获取keylist
         Set<String> keys = stringRedisTemplate.keys(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + "*");
         //每个用户维持在1000个，超过一千从数据库取
