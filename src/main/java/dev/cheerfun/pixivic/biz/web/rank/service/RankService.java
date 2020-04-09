@@ -34,4 +34,9 @@ public class RankService {
         return illustrationList;
     }
 
+    public List<Rank> queryByDate(String date) {
+        List<Rank> rankList = rankMapper.queryByDate(date);
+        return rankList;
+    }
+
 }

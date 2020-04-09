@@ -204,8 +204,15 @@ public class IllustrationBizService {
     }
 
     public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {
-        return illustIdList.stream().map(this::queryIllustrationById).collect(Collectors.toList());
-        //return illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
+        return illustIdList.stream().map(e -> {
+            Illustration illustration = null;
+            try {
+                illustration = queryIllustrationById(e);
+            } catch (BusinessException businessException) {
+                System.out.println("部分文件不存在");
+            }
+            return illustration;
+        }).collect(Collectors.toList());
     }
 
     @Cacheable("illust_bookmarked")

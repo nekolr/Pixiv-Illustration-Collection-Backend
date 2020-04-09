@@ -28,4 +28,12 @@ public interface RankMapper {
             @Result(property = "data", column = "data", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
     Rank queryByDateAndMode(String date, String mode);
+
+    @Select("select * from ranks where date = #{date}")
+    @Results({
+            @Result(property = "date", column = "date"),
+            @Result(property = "mode", column = "mode"),
+            @Result(property = "data", column = "data", javaType = List.class, typeHandler = JsonTypeHandler.class)
+    })
+    List<Rank> queryByDate(String date);
 }
