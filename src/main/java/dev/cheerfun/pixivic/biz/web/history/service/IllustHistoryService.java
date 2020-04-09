@@ -51,21 +51,18 @@ public class IllustHistoryService {
     }
 
     public List<Illustration> pullFromMysql(int userId, int page, int pageSize) {
-        System.out.println("开始拉取早起历史记录");
         //取最小分数即时间戳
         Set<String> illustIdList = stringRedisTemplate.opsForZSet().rangeByScore(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1);
-        System.out.println("画作list为" + illustIdList);
         LocalDateTime localDateTime;
         if (illustIdList != null && illustIdList.size() > 0) {
             Double timestamp = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, illustIdList.iterator().next());
             assert timestamp != null;
-            Instant instant = Instant.ofEpochMilli(timestamp.longValue());
+            Instant instant = Instant.ofEpochSecond(timestamp.longValue());
             ZoneId zone = ZoneId.systemDefault();
             localDateTime = LocalDateTime.ofInstant(instant, zone);
         } else {
             localDateTime = LocalDateTime.now();
         }
-        System.out.println("时间戳为" + localDateTime.toString());
         return illustrationBizService.queryIllustrationByIllustIdList(illustHistoryMapper.queryByUser(userId, localDateTime, (page - 1) * pageSize, pageSize));
     }
 
