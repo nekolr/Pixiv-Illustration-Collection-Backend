@@ -4,6 +4,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author OysterQAQ
@@ -15,10 +16,10 @@ import javax.validation.constraints.NotBlank;
 @NoArgsConstructor
 public class BookmarkRelation {
     private int id;
-    @NotBlank
+    @NotNull
     private String username;
-    @NotBlank
+    @NotNull
     private int userId;
-    @NotBlank
+    @NotNull
     private int illustId;
 }

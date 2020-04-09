@@ -11,6 +11,7 @@ import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
@@ -24,6 +25,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Validated
 public class IllustHistoryController {
     private final IllustHistoryService illustHistoryService;
 
