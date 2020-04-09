@@ -20,6 +20,6 @@ public interface IllustHistoryMapper {
             "truncate illust_history_temp;")
     void updateFromTemp();
 
-    @Select("select illust_id from illust_history where user_id=#{userId} and create_at between  #{localDateTime} and (SELECT DATE_ADD(now(),INTERVAL -3 MONTH)) order by create_at desc limit #{currIndex} , #{pageSize}")
+    @Select("select illust_id from illust_history where user_id=#{userId} and create_at between (SELECT DATE_ADD(now(),INTERVAL -3 MONTH)) and #{localDateTime} order by create_at desc limit #{currIndex} , #{pageSize}")
     List<Integer> queryByUser(int userId, LocalDateTime localDateTime, int currIndex, int pageSize);
 }
