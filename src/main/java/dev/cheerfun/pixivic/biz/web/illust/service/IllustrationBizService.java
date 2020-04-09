@@ -212,7 +212,7 @@ public class IllustrationBizService {
                 System.out.println("部分文件不存在");
             }
             return illustration;
-        }).collect(Collectors.toList());
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Cacheable("illust_bookmarked")
