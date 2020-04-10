@@ -109,7 +109,7 @@ public class TrendingTagsService {
                                 return new TrendingTags(e.getName(), e.getTranslatedName(), illustration);
                             }
                         } catch (ExecutionException | InterruptedException ex) {
-                            ex.printStackTrace();
+                            System.out.println("网络错误");
                         }
                         return null;
                     }).collect(Collectors.toList()));

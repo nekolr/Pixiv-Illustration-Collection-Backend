@@ -85,7 +85,7 @@ public class SpotlightService {
                     }
                 }
             } catch (IOException | InterruptedException e) {
-                e.printStackTrace();
+                System.out.println("网络错误");
             }
         });
         saveToDb(spotlights);
