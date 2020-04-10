@@ -152,7 +152,7 @@ public class ArtistService {
                         });
                 return artistCompletableFuture.get();
             } catch (InterruptedException | ExecutionException e) {
-                e.printStackTrace();
+                System.out.println("网络错误");
             }
             return null;
         }).filter(Objects::nonNull).collect(Collectors.toList());
