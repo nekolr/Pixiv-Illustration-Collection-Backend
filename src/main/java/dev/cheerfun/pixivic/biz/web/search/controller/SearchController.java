@@ -27,6 +27,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -45,8 +46,8 @@ public class SearchController {
     private final TrendingTagsService trendingTagsService;
 
     @GetMapping("/trendingTags")
-    public ResponseEntity<Result<List<TrendingTags>>> getTrendingTags(@RequestParam String date) throws JsonProcessingException {
-        return ResponseEntity.ok().body(new Result<>("搜索热门标签成功", trendingTagsService.queryByDate(date)));
+    public ResponseEntity<Result<List<TrendingTags>>> getTrendingTags() throws JsonProcessingException {
+        return ResponseEntity.ok().body(new Result<>("搜索热门标签成功", trendingTagsService.queryByDate(LocalDate.now().toString())));
     }
 
     @GetMapping("/keywords/**/candidates")
