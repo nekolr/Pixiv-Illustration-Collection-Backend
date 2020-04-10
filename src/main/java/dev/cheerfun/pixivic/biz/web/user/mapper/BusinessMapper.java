@@ -98,7 +98,7 @@ public interface BusinessMapper {
     @Select("select  count(id) from user_artist_followed where user_id = #{userId} and artist_id=#{artistId}")
     int queryIsFollowed(int userId, int artistId);
 
-    @Insert("insert into user_illust_bookmarked (user_id, illust_id,username,create_date) values (#{userId}, #{illustId},#{username}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Insert("replace into user_illust_bookmarked (user_id, illust_id,username,create_date) values (#{userId}, #{illustId},#{username}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     int bookmark(int userId, int illustId, String username, LocalDateTime now);
 
     @Delete("delete from user_illust_bookmarked where id=#{relationId} ")
