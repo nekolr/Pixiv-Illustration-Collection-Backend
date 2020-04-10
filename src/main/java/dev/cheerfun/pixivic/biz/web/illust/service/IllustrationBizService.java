@@ -46,10 +46,13 @@ public class IllustrationBizService {
     private final ArtistService artistService;
     private final StringRedisTemplate stringRedisTemplate;
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
-    private String today;
+    private volatile String today;
+    private volatile String yesterday;
 
     {
-        today = LocalDate.now().toString();
+        LocalDate now = LocalDate.now();
+        today = now.toString();
+        yesterday = now.plusDays(-1).toString();
     }
 
     @Cacheable(value = "tagTranslation")
@@ -59,20 +62,23 @@ public class IllustrationBizService {
 
     @Cacheable(value = "artist_illusts")
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
-        //如果是当日首次则进行拉取
-//        String key = artistId + ":" + type;
-//        if (currIndex == 0 && pageSize == 30 && !stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key)) {
-//            System.out.println("本日首次，将从Pixiv拉取");
-//            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
-//            artistService.pullArtistLatestIllust(artistId, type);
-//        }
+        //如果是近日首次则进行拉取
+        String key = artistId + ":" + type;
+        Boolean todayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
+        Boolean yesterdayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday, key);
+        if (currIndex == 0 && pageSize == 30 && !(todayCheck || yesterdayCheck)) {
+            System.out.println("近日首次，将从Pixiv拉取");
+            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
+            artistService.pullArtistLatestIllust(artistId, type);
+        }
         List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
     }
 
     @Scheduled(cron = "0 1 0 * * ?")
     public void clearArtistLatestIllustsMap() {
-        stringRedisTemplate.delete(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today);
+        stringRedisTemplate.delete(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday);
+        yesterday = today;
         today = LocalDate.now().toString();
     }
 
