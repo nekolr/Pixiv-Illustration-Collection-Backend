@@ -72,7 +72,7 @@ final public class RequestUtil {
         try {
             return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("网络错误");
         }
         return null;
     }
