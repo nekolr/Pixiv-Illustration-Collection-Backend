@@ -63,8 +63,13 @@ public class TrendingTagsService {
     }
 
     @Scheduled(cron = "0 50 2 * * ?")
-    @CacheEvict(value = "trending_tags", allEntries = true)
     public void dailyTask() throws IOException {
+        LocalDate yesterday = LocalDate.now().plusDays(-1);
+        dailyTask(yesterday);
+    }
+
+    @CacheEvict(value = "trending_tags", allEntries = true)
+    public void dailyTask(LocalDate yesterday) throws IOException {
         //获取pixiv原生热度标签
         List<Tag> tagList;
         try {
@@ -74,7 +79,6 @@ public class TrendingTagsService {
         }
         Set<String> tagNameSet = tagList.stream().collect(groupingBy(Tag::getName)).keySet();
         //读取日志
-        LocalDate yesterday = LocalDate.now().plusDays(-1);
         try (Stream<String> stream = Files.lines(Paths.get(logPath, yesterday + LOG_POS), StandardCharsets.ISO_8859_1)) {
             //逐行处理
             tagList.addAll(stream.map(line -> {
@@ -118,7 +122,7 @@ public class TrendingTagsService {
             //综合pixiv原生标签后打乱
             Collections.shuffle(tagList);
             //持久化
-            trendingTagsMapper.insert(LocalDate.now().plusDays(1).toString(), tagList);
+            trendingTagsMapper.insert(yesterday.plusDays(2).toString(), tagList);
             //删除日志
             Files.delete(Paths.get(logPath, yesterday + LOG_POS));
         }

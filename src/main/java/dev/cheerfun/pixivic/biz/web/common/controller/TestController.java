@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -59,11 +60,11 @@ public class TestController {
 
     @GetMapping("/test")
     //@PermissionRequired
-    public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException, MessagingException {
+    public ResponseEntity<String> test(@RequestParam String date) throws InterruptedException, ExecutionException, IOException, MessagingException {
         //spotlightService.deal();
         //businessService.follow(53,123);
         //emailUtil.sendEmail("392822872@qq.com","sasa","sasa","sas0","");
-        trendingTagsService.dailyTask();
+        trendingTagsService.dailyTask(LocalDate.parse(date));
         return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")
