@@ -84,7 +84,9 @@ public class TrendingTagsService {
                     String params = line.substring(line.indexOf("GET ") + 4, line.indexOf(" HTTP"));
                     MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(params).build().getQueryParams();
                     String keyword = queryParams.getFirst("keyword");
-                    return sensitiveFilter.filter(URLDecoder.decode(keyword.replaceAll("%(?![0-9a-fA-F]{2})", "%25")));
+                    if (keyword != null) {
+                        return sensitiveFilter.filter(URLDecoder.decode(keyword.replaceAll("%(?![0-9a-fA-F]{2})", "%25")));
+                    }
                 }
                 return null;
             }).filter(e -> e != null && !"".equals(e) && !e.contains("*") && !tagNameSet.contains(e)).collect(groupingBy(Function.identity(), counting()))
@@ -112,7 +114,7 @@ public class TrendingTagsService {
                             System.out.println("网络错误");
                         }
                         return null;
-                    }).collect(Collectors.toList()));
+                    }).filter(Objects::nonNull).collect(Collectors.toList()));
             //综合pixiv原生标签后打乱
             Collections.shuffle(tagList);
             //持久化
