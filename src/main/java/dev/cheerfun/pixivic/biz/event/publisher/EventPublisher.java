@@ -1,7 +1,7 @@
-package dev.cheerfun.pixivic.biz.notify.publisher;
+package dev.cheerfun.pixivic.biz.event.publisher;
 
-import dev.cheerfun.pixivic.biz.notify.constant.NotifyObjectType;
-import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
+import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
+import dev.cheerfun.pixivic.biz.event.domain.Event;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,17 +13,17 @@ import org.springframework.stereotype.Component;
  * @description NotifyEventSender
  */
 @Component
-public class NotifyEventPublisher {
+public class EventPublisher {
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
-    public void publish(NotifyEvent notifyEvent) {
+    public void publish(Event event) {
         //更具事件主体类型分发不同的queue
-        this.rabbitTemplate.convertAndSend(notifyEvent.getObjectType(), notifyEvent);
+        this.rabbitTemplate.convertAndSend(event.getObjectType(), event.getObjectType(), event);
     }
 
     //@Scheduled(cron = "0/10 * * * * ?")
     public void publish() {
-        this.rabbitTemplate.convertAndSend(NotifyObjectType.COMMENT, new NotifyEvent());
+        this.rabbitTemplate.convertAndSend(ObjectType.COMMENT, new Event());
     }
 }

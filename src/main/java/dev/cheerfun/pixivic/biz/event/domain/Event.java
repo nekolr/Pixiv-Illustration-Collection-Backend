@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.notify.po;
+package dev.cheerfun.pixivic.biz.event.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -19,7 +19,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotifyEvent implements Serializable {
+public class Event implements Serializable {
     private Integer userId;
     private String userName;
     private String action;
