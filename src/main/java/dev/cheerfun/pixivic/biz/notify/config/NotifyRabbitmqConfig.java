@@ -1,10 +1,7 @@
 package dev.cheerfun.pixivic.biz.notify.config;
 
 import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -19,7 +16,7 @@ public class NotifyRabbitmqConfig {
 
     @Bean("notifyExchange")
     DirectExchange notifyExchange() {
-        return new DirectExchange("notifyExchange");//配置广播路由器
+        return new DirectExchange("notifyExchange");
     }
 
     @Bean("commentNotifyQueue")
@@ -38,18 +35,23 @@ public class NotifyRabbitmqConfig {
     }
 
     @Bean
-    public Binding notifyExchangeBindCommentQueue(Queue commentNotifyQueue) {
-        return BindingBuilder.bind(commentNotifyQueue).to(notifyExchange()).with(ObjectType.COMMENT);
+    public Binding bindFanoutExchange(FanoutExchange fanoutExchange, DirectExchange notifyExchange) {
+        return BindingBuilder.bind(notifyExchange).to(fanoutExchange);
     }
 
     @Bean
-    public Binding notifyExchangeBindIllustQueue(Queue illustNotifyQueue) {
-        return BindingBuilder.bind(illustNotifyQueue).to(notifyExchange()).with(ObjectType.ILLUST);
+    public Binding notifyExchangeBindCommentQueue(Queue commentNotifyQueue, DirectExchange notifyExchange) {
+        return BindingBuilder.bind(commentNotifyQueue).to(notifyExchange).with(ObjectType.COMMENT);
     }
 
     @Bean
-    public Binding notifyExchangeBindCollectionQueue(Queue collectionNotifyQueue) {
-        return BindingBuilder.bind(collectionNotifyQueue).to(notifyExchange()).with(ObjectType.COLLECTION);
+    public Binding notifyExchangeBindIllustQueue(Queue illustNotifyQueue, DirectExchange notifyExchange) {
+        return BindingBuilder.bind(illustNotifyQueue).to(notifyExchange).with(ObjectType.ILLUST);
+    }
+
+    @Bean
+    public Binding notifyExchangeBindCollectionQueue(Queue collectionNotifyQueue, DirectExchange notifyExchange) {
+        return BindingBuilder.bind(collectionNotifyQueue).to(notifyExchange).with(ObjectType.COLLECTION);
     }
 
 }

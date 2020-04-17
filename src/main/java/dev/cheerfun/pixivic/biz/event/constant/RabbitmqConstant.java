@@ -7,5 +7,6 @@ package dev.cheerfun.pixivic.biz.event.constant;
  * @description RabbitmqConstant
  */
 public class RabbitmqConstant {
+    public final static String FANOUT_EXCHANGE = "fanoutExchange";
 
 }

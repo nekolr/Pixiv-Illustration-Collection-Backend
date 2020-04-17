@@ -1,10 +1,15 @@
 package dev.cheerfun.pixivic.biz.event.publisher;
 
+import dev.cheerfun.pixivic.biz.event.constant.ActionType;
 import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
+import dev.cheerfun.pixivic.biz.event.constant.RabbitmqConstant;
 import dev.cheerfun.pixivic.biz.event.domain.Event;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 /**
  * @author OysterQAQ
@@ -18,12 +23,12 @@ public class EventPublisher {
     private AmqpTemplate rabbitTemplate;
 
     public void publish(Event event) {
-        //更具事件主体类型分发不同的queue
-        this.rabbitTemplate.convertAndSend(event.getObjectType(), event.getObjectType(), event);
+        //发布事件
+        this.rabbitTemplate.convertAndSend(RabbitmqConstant.FANOUT_EXCHANGE, event.getObjectType(), event);
     }
 
     //@Scheduled(cron = "0/10 * * * * ?")
     public void publish() {
-        this.rabbitTemplate.convertAndSend(ObjectType.COMMENT, new Event());
+        this.rabbitTemplate.convertAndSend(RabbitmqConstant.FANOUT_EXCHANGE, ObjectType.COMMENT, new Event(1, "test", ActionType.RELEASED, ObjectType.COLLECTION, 1, LocalDateTime.now()));
     }
 }
