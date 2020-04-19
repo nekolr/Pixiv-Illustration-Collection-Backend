@@ -49,7 +49,7 @@ public class CommonController {
         if (userService.checkUsername(username)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("用户名已存在"));
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result<>("用户名不存在"));
+        return ResponseEntity.ok().body(new Result<>("用户名不存在"));
     }
 
     @GetMapping("/emails/{email:.+}")
@@ -57,7 +57,7 @@ public class CommonController {
         if (userService.checkEmail(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("邮箱已存在"));
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result<>("邮箱不存在"));
+        return ResponseEntity.ok().body(new Result<>("邮箱不存在"));
     }
 
     @PostMapping
