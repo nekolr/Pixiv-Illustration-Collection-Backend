@@ -9,6 +9,6 @@ import lombok.Data;
  * @description Response
  */
 @Data
-public class ElasticsearchResponse {
-    private Hits hits;
+public class ElasticsearchResponse<T> {
+    private Hits<T> hits;
 }

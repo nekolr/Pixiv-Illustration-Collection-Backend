@@ -11,7 +11,7 @@ import java.util.List;
  * @description Hits
  */
 @Data
-public class Hits {
-    private List<Hit> hits;
+public class Hits<T> {
+    private List<Hit<T>> hits;
     private Total total;
 }

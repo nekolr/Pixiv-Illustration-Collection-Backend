@@ -88,6 +88,7 @@ public class BusinessController {
 
     @GetMapping("/{userId}/followedWithRecentlyIllusts")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
+    @WithUserInfo
     public ResponseEntity<Result<List<ArtistWithRecentlyIllusts>>> queryFollowedWithRecentlyIllusts(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         List<ArtistWithRecentlyIllusts> artists = businessService.queryFollowedWithRecentlyIllusts(userId, (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取带有近期画作的follow画师列表成功", artists));

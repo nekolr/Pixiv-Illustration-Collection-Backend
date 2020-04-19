@@ -191,14 +191,14 @@ public class SearchUtil {
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(
                 r -> {
-                    ElasticsearchResponse elasticsearchResponse;
+                    ElasticsearchResponse<Illustration> elasticsearchResponse;
                     try {
                         if (r.body() != null) {
                             elasticsearchResponse = objectMapper.readValue(r.body(), new TypeReference<>() {
                             });
-                            Hits hits = elasticsearchResponse.getHits();
+                            Hits<Illustration> hits = elasticsearchResponse.getHits();
                             if (hits != null && hits.getHits() != null) {
-                                return hits.getHits().stream().map(Hit::getIllustration).collect(Collectors.toList());
+                                return hits.getHits().stream().map(Hit::getT).collect(Collectors.toList());
                                 //return new SearchResult(hits.getTotal().getValue(), illustrationList);
                             }
                         }

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -69,7 +70,15 @@ public class UserInfoProcessor {
                 body.setData(objectMapper.convertValue(data, new TypeReference<List<Illustration>>() {
                 }));
             }
+            if (data.get(0) instanceof ArtistWithRecentlyIllusts) {
+                List<ArtistWithRecentlyIllusts> result = data;
+                result.stream().parallel().forEach(r -> {
+                    dealIsLikedInfoForIllustList(r.getRecentlyIllustrations(), userId);
+                });
+                return;
+            }
             dealIsLikedInfoForIllustList(body.getData(), userId);
+
         }
     }
 

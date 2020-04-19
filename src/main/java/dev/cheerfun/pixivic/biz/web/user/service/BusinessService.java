@@ -1,9 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import com.google.common.collect.Lists;
-import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
-import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
@@ -48,6 +47,7 @@ public class BusinessService {
     private final StringRedisTemplate stringRedisTemplate;
     private final BusinessMapper businessMapper;
     private final IllustrationBizService illustrationBizService;
+    private final ArtistBizService artistBizService;
 
     public void bookmark(int userId, String username, int illustId) {
         bookmarkOperation(userId, username, illustId, 1, 0);
@@ -84,30 +84,6 @@ public class BusinessService {
                 return operations.exec();
             }
         });
-    }
-
-    public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
-        Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            int userId = (int) context.get(AuthConstant.USER_ID);
-            dealIsLikedInfoForIllustList(illustrationList, userId);
-        }
-    }
-
-    public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {
-        List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-            for (Illustration illustration : illustrationList) {
-                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
-            }
-            return null;
-        });
-        int size = isFollowedList.size();
-        for (int i = 0; i < size; i++) {
-            IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), true);
-            illustrationWithLikeInfo.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustrationWithLikeInfo.getArtistPreView(), (Boolean) isFollowedList.get(i)));
-            illustrationList.set(i, illustrationWithLikeInfo);
-        }
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")
@@ -174,7 +150,7 @@ public class BusinessService {
                     });
                 }
                 for (int i = 0; i < artists.size(); i++) {
-                    illustrationBizService.dealArtist(artists.get(i));
+                    artistBizService.dealArtist(artists.get(i));
                     artists.set(i, new ArtistWithIsFollowedInfo(artists.get(i), (Boolean) isFollowedList.get(i)));
                 }
             }
@@ -241,8 +217,8 @@ public class BusinessService {
     public List<ArtistWithRecentlyIllusts> queryFollowedWithRecentlyIllusts(Integer userId, int currIndex, int pageSize) {
         List<Artist> artists = queryFollowed(userId, currIndex, pageSize);
         return artists.stream().map(e -> {
-            List<Illustration> illustrations = illustrationBizService.queryIllustrationsByArtistId(e.getId(), "illust", 0, 3);
-            dealIsLikedInfoForIllustList(illustrations);
+            List<Illustration> illustrations = artistBizService.queryIllustrationsByArtistId(e.getId(), "illust", 0, 3);
+            // illustrationBizService.dealIsLikedInfoForIllustList(illustrations);
             return new ArtistWithRecentlyIllusts(e, illustrations);
         }).collect(Collectors.toList());
     }

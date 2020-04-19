@@ -11,7 +11,7 @@ import lombok.Data;
  * @description Hit
  */
 @Data
-public class Hit {
+public class Hit<T> {
     @JsonSetter("_source")
-    private Illustration illustration;
+    private T t;
 }
