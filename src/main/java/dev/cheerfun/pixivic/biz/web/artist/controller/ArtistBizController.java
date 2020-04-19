@@ -63,7 +63,7 @@ public class ArtistBizController {
     @GetMapping("/artists")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithUserInfo
-    public CompletableFuture<ResponseEntity<Result<List<Artist>>>> queryArtistByName(@RequestParam String artistName, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public CompletableFuture<ResponseEntity<Result<List<Artist>>>> queryArtistByName(@RequestParam String artistName, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         return artistBizService.queryArtistByName(artistName, page, pageSize).thenApply(e -> ResponseEntity.ok().body(new Result<>("获取画师搜索结果成功", e)));
     }
 }
