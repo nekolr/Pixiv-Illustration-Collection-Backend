@@ -46,9 +46,9 @@ public class CommonService {
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
     private final static String QQ_BIND_URL_PRE = "https://graph.qq.com/oauth2.0/me?access_token=";
 
-    public User signUp(User user) throws MessagingException {
+    public User signUp(User user) {
         //检测用户名或邮箱是否重复
-        if (userMapper.checkUserNameAndEmail(user.getUsername(), user.getEmail()) == 1) {
+        if (userMapper.checkUserName(user.getUsername()) == 1 || userMapper.checkUserEmail(user.getEmail()) == 1) {
             throw new UserCommonException(HttpStatus.CONFLICT, "用户名或邮箱已存在");
         }
         user.setPassword(passwordUtil.encrypt(user.getPassword()));
@@ -73,11 +73,11 @@ public class CommonService {
     }
 
     public boolean checkUsername(String username) {
-        return userMapper.checkUserNameAndEmail(username, "") == 1;
+        return userMapper.checkUserName(username) == 1;
     }
 
     public boolean checkEmail(String email) {
-        return userMapper.checkUserNameAndEmail("", email) == 1;
+        return userMapper.checkUserEmail(email) == 1;
     }
 
     public User signIn(String qqAccessToken) throws IOException, InterruptedException {
