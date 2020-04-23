@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public class BusinessController {
     private final BusinessService businessService;
 
     @PostMapping("/bookmarked")
-    public ResponseEntity<Result<String>> bookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> bookmark(@RequestBody @Valid BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
         businessService.bookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getUsername(), bookmarkRelation.getIllustId());
         return ResponseEntity.ok().body(new Result<>("收藏成功"));
     }
@@ -68,7 +69,7 @@ public class BusinessController {
     }
 
     @PostMapping("/followed")
-    public ResponseEntity<Result<String>> follow(@RequestBody FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> follow(@RequestBody @Valid FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
         businessService.follow((int) AppContext.get().get(AuthConstant.USER_ID), followedRelation.getArtistId(), followedRelation.getUsername());
         return ResponseEntity.ok().body(new Result<>("follow成功"));
     }
