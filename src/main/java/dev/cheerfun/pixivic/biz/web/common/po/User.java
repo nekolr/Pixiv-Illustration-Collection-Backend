@@ -24,7 +24,7 @@ import java.util.Map;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements Authable {
-    private int id;
+    private Integer id;
     private String username;
     private String email;
     @JsonIgnore
@@ -33,11 +33,9 @@ public class User implements Authable {
     private Integer gender;
     private String signature;
     private String location;
-    @JsonIgnore
-    private int permissionLevel;
-    @JsonIgnore
-    private int isBan;
-    private int star;
+    private Integer permissionLevel;
+    private Integer isBan;
+    private Integer star;
     @JsonIgnore
     private String pixivAccount;
     @JsonIgnore

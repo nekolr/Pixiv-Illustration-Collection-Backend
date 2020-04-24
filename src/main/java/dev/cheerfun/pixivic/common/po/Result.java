@@ -38,6 +38,12 @@ public class Result<T> {
         this.message = message;
     }
 
+    public Result(String message, Integer total, T data) {
+        this.message = message;
+        this.total = total;
+        this.data = data;
+    }
+
     public void set(HttpStatus httpStatus, String message, T data) {
         this.httpStatus = httpStatus;
         this.message = message;
