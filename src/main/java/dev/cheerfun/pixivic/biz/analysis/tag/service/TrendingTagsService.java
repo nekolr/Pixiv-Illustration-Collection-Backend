@@ -131,15 +131,17 @@ public class TrendingTagsService {
 
     public List<Tag> queryPixivTrendingTag() {
         PixivTrendingTagResponse pixivTrendingTagResponse = (PixivTrendingTagResponse) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/trending-tags/illust?filter=for_ios", PixivTrendingTagResponse.class);
-        assert pixivTrendingTagResponse != null;
-        List<Tag> searchRecommends = pixivTrendingTagResponse.getTrendTags().stream().map(e -> {
-            Illustration illustration = IllustrationDTO.castToIllustration(e.getIllust());
-            illustrationMapper.simpleInsert(illustration);
-            return new TrendingTags(e.getTag(), e.getTranslatedName(), illustration);
-        }).collect(Collectors.toList());
-        //持久化
-        illustrationMapper.insertTag(searchRecommends);
-        return searchRecommends;
+        if (pixivTrendingTagResponse != null) {
+            List<Tag> searchRecommends = pixivTrendingTagResponse.getTrendTags().stream().map(e -> {
+                Illustration illustration = IllustrationDTO.castToIllustration(e.getIllust());
+                illustrationMapper.simpleInsert(illustration);
+                return new TrendingTags(e.getTag(), e.getTranslatedName(), illustration);
+            }).collect(Collectors.toList());
+            //持久化
+            illustrationMapper.insertTag(searchRecommends);
+            return searchRecommends;
+        }
+        return new ArrayList<>();
     }
 
 }
