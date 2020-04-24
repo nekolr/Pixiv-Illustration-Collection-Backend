@@ -23,9 +23,8 @@ public class DailyTaskService {
         spotlightService.pullAllSpotlight();
     }
 
-    @Scheduled(cron = "0 10 5 * * ?")
-    public void rank() throws
-            InterruptedException {
+    @Scheduled(cron = "0 10 3,4,5 * * ?")
+    public void rank() {
         rankService.pullAllRank();
     }
 
