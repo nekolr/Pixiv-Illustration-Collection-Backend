@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-
 /**
  * @author OysterQAQ
  * @version 2.0
@@ -19,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Result<T>  {
+public class Result<T> {
     @JsonIgnore
     private HttpStatus httpStatus;
     private String message;

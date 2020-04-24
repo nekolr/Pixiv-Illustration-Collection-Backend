@@ -13,13 +13,14 @@ import org.springframework.web.util.UrlPathHelper;
  */
 @Configuration
 @EnableWebMvc
-public class PathMatchingConfigurationAdapter  implements WebMvcConfigurer {
+public class PathMatchingConfigurationAdapter implements WebMvcConfigurer {
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
         UrlPathHelper urlPathHelper = new UrlPathHelper();
         urlPathHelper.setUrlDecode(false);
         configurer.setUrlPathHelper(urlPathHelper);
     }
+
     @Override
     public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
         configurer.favorPathExtension(false);
@@ -37,6 +38,6 @@ public class PathMatchingConfigurationAdapter  implements WebMvcConfigurer {
                 .allowedOrigins("*")
                 .allowedMethods("GET", "POST", "PUT", "DELETE")
                 .allowedHeaders("*")
-               ;
+        ;
     }
 }

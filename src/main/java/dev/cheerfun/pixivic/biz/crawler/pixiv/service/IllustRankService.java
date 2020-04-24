@@ -33,11 +33,11 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustRankService {
+    private final static String[] MODES = {"day", "week", "month", "day_female", "day_male", "day_manga", "week_manga", "month_manga", "week_rookie_manga"};
     private final ObjectMapper objectMapper;
     private final IllustrationMapper illustrationMapper;
     private final IllustrationService illustrationService;
     private final RequestUtil requestUtil;
-    private final static String[] MODES = {"day", "week", "month", "day_female", "day_male", "day_manga", "week_manga", "month_manga", "week_rookie_manga"};
 
     @CacheEvict(value = "rank", allEntries = true)
     public void pullAllRank() {

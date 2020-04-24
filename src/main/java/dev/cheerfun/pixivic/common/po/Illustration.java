@@ -38,7 +38,7 @@ public class Illustration {
     protected List<String> tools;
     @JsonSetter("create_date")
     @JsonAlias({"create_date", "createDate"})
-    @JsonFormat(pattern="yyyy-MM-dd",timezone = "GMT+8")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     protected Date createDate;
     @JsonSetter("page_count")
     @JsonAlias({"page_count", "pageCount"})

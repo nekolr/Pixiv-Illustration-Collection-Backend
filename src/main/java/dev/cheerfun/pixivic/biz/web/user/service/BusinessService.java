@@ -49,6 +49,44 @@ public class BusinessService {
     private final IllustrationBizService illustrationBizService;
     private final ArtistBizService artistBizService;
 
+    private static List<List<Integer>> split(List<Integer> illustrationIdList) {
+        List<List<Integer>> result = new ArrayList<>();
+        int size = illustrationIdList.size();
+        if (size > 1) {
+            int from = 0;
+            int to = 1;
+            for (; to < size; to++) {
+                if (to == size - 1) {
+                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
+                    break;
+                } else if (to != size - 1 && illustrationIdList.get(to) > illustrationIdList.get(to + 1)) {
+                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
+                    from = to + 1;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static List<Integer> mergekSortedArrays(List<List<Integer>> arrays) {
+        ArrayList<Integer> list = new ArrayList<>();
+        if (arrays == null || arrays.size() == 0 || arrays.get(0).size() == 0) {
+            return list;
+        }
+        PriorityQueue<NewInteger> pq = new PriorityQueue<>(arrays.size(), (x, y) -> x.value > y.value ? -1 : 1);
+        for (int i = 0; i < arrays.size(); i++) {
+            pq.offer(new NewInteger(arrays.get(i).get(0), i, 0));
+        }
+        while (list.size() < 3000 && !pq.isEmpty()) {
+            NewInteger min = pq.poll();
+            if (min.col + 1 < arrays.get(min.row).size()) {
+                pq.offer(new NewInteger(arrays.get(min.row).get(min.col + 1), min.row, min.col + 1));
+            }
+            list.add(min.value);
+        }
+        return list;
+    }
+
     public void bookmark(int userId, String username, int illustId) {
         bookmarkOperation(userId, username, illustId, 1, 0);
     }
@@ -195,25 +233,6 @@ public class BusinessService {
         return sortedIdList;
     }
 
-    private static List<List<Integer>> split(List<Integer> illustrationIdList) {
-        List<List<Integer>> result = new ArrayList<>();
-        int size = illustrationIdList.size();
-        if (size > 1) {
-            int from = 0;
-            int to = 1;
-            for (; to < size; to++) {
-                if (to == size - 1) {
-                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
-                    break;
-                } else if (to != size - 1 && illustrationIdList.get(to) > illustrationIdList.get(to + 1)) {
-                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
-                    from = to + 1;
-                }
-            }
-        }
-        return result;
-    }
-
     public List<ArtistWithRecentlyIllusts> queryFollowedWithRecentlyIllusts(Integer userId, int currIndex, int pageSize) {
         List<Artist> artists = queryFollowed(userId, currIndex, pageSize);
         return artists.stream().map(e -> {
@@ -231,25 +250,6 @@ public class BusinessService {
             this.row = row;
             this.col = col;
         }
-    }
-
-    public static List<Integer> mergekSortedArrays(List<List<Integer>> arrays) {
-        ArrayList<Integer> list = new ArrayList<>();
-        if (arrays == null || arrays.size() == 0 || arrays.get(0).size() == 0) {
-            return list;
-        }
-        PriorityQueue<NewInteger> pq = new PriorityQueue<>(arrays.size(), (x, y) -> x.value > y.value ? -1 : 1);
-        for (int i = 0; i < arrays.size(); i++) {
-            pq.offer(new NewInteger(arrays.get(i).get(0), i, 0));
-        }
-        while (list.size() < 3000 && !pq.isEmpty()) {
-            NewInteger min = pq.poll();
-            if (min.col + 1 < arrays.get(min.row).size()) {
-                pq.offer(new NewInteger(arrays.get(min.row).get(min.col + 1), min.row, min.col + 1));
-            }
-            list.add(min.value);
-        }
-        return list;
     }
 
 }

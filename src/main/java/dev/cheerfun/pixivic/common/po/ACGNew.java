@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.common.po;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dev.cheerfun.pixivic.common.util.json.LocalDateSerializer;
@@ -18,7 +17,7 @@ import java.time.LocalDate;
 @Data
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class ACGNew  {
+public class ACGNew {
     private int id;
     private String title;
     private String intro;

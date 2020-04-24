@@ -12,7 +12,7 @@ import lombok.Data;
 @Data
 public class OathResp {
     @JsonSetter("access_token")
-    private  String accessToken;
+    private String accessToken;
     @JsonSetter("device_token")
     private String deviceToken;
     @JsonSetter("refresh_token")

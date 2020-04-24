@@ -5,8 +5,6 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.Data;
 
-import java.time.LocalDate;
-
 /**
  * @author OysterQAQ
  * @version 1.0

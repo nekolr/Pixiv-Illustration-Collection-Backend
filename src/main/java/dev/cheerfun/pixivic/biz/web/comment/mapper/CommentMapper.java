@@ -21,9 +21,9 @@ public interface CommentMapper {
             @Result(property = "replyToName", column = "reply_to_name"),
             @Result(property = "replyFrom", column = "reply_from"),
             @Result(property = "replyFromName", column = "reply_from_name"),
-            @Result(property = "createDate", column = "create_Date",typeHandler =org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "createDate", column = "create_Date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
             @Result(property = "likedCount", column = "liked_count")
     })
-    List<Comment> pullComment(String appType,Integer appId);
+    List<Comment> pullComment(String appType, Integer appId);
 
 }

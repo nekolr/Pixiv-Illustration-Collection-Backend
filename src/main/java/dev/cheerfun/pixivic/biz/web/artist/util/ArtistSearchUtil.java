@@ -31,17 +31,16 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ArtistSearchUtil {
-    private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
-    @Value("${elasticsearch.ip}")
-    private String elasticsearch;
-
     private final static String PRE = "{";
     private final static String FROM = "\"from\":";
     private final static String SIZE = "\"size\":";
     private final static String DOT = ",";
     private final static String QUERY = "\"query\":{\"match\":{\"name\":\"";
     private final static String POS = "\"}}}";
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
+    @Value("${elasticsearch.ip}")
+    private String elasticsearch;
 
     @Cacheable("artistSearchResult")
     public CompletableFuture<List<ArtistSearchDTO>> search(String artistName, Integer page, Integer pageSize) {

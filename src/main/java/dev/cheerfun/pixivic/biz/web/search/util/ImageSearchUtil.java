@@ -31,12 +31,12 @@ import java.util.concurrent.CompletableFuture;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageSearchUtil {
-    private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
     private final static String SAUCENAO_URL_1 = "https://saucenao.com/search.php?db=999&output_type=2&testmode=1&numres=3&url=";
     private final static String SAUCENAO_URL_2 = "&api_key=";
     private final static String ASCII2D_URL = "https://ascii2d.net/search/uri";
     private final static String URL = "uri=";
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
     private Random random = new Random();
     private int length;
     private List<String> tokens;
@@ -57,9 +57,10 @@ public class ImageSearchUtil {
                 .GET()
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(s -> {
-            SaucenaoResponse saucenaoResponse= null;
+            SaucenaoResponse saucenaoResponse = null;
             try {
-                saucenaoResponse = objectMapper.readValue(s.body(), new TypeReference<SaucenaoResponse>() {});
+                saucenaoResponse = objectMapper.readValue(s.body(), new TypeReference<SaucenaoResponse>() {
+                });
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -70,10 +71,9 @@ public class ImageSearchUtil {
     public CompletableFuture<HttpResponse<String>> searchByAscii2D(String url) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(ASCII2D_URL))
-                .POST(HttpRequest.BodyPublishers.ofString(URL+ URLDecoder.decode(url, StandardCharsets.UTF_8)))
+                .POST(HttpRequest.BodyPublishers.ofString(URL + URLDecoder.decode(url, StandardCharsets.UTF_8)))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString());
     }
-
 
 }

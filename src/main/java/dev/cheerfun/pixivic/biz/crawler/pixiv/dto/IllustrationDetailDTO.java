@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.dto;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 

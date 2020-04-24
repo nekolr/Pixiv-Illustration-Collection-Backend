@@ -7,6 +7,6 @@ package dev.cheerfun.pixivic.biz.web.comment.constant;
  * @description CommentType
  */
 public class CommentAppType {
-    public final static String NEWS="news";
-    public final static String ILLUSTS="illusts";
+    public final static String NEWS = "news";
+    public final static String ILLUSTS = "illusts";
 }

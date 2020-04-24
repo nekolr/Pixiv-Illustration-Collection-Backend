@@ -46,15 +46,15 @@ import static java.util.stream.Collectors.groupingBy;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TrendingTagsService {
-    @Value("${apiLog.path}")
-    private String logPath;
+    private final static String LOG_POS = ".log";
     private final SensitiveFilter sensitiveFilter;
     private final IllustrationMapper illustrationMapper;
     private final RequestUtil requestUtil;
     private final SearchService searchService;
     private final TrendingTagsMapper trendingTagsMapper;
     private final ObjectMapper objectMapper;
-    private final static String LOG_POS = ".log";
+    @Value("${apiLog.path}")
+    private String logPath;
 
     @Cacheable("trending_tags")
     public List<TrendingTags> queryByDate(String date) throws JsonProcessingException {

@@ -60,6 +60,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SearchService {
+    private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final RequestUtil requestUtil;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
@@ -68,7 +69,6 @@ public class SearchService {
     private final PixivSuggestionMapper pixivSuggestionMapper;
     private final IllustrationMapper illustrationMapper;
     private final IllustrationBizService illustrationBizService;
-    private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
     @Cacheable(value = "candidateWords")

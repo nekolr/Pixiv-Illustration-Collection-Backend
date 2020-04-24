@@ -25,7 +25,8 @@ public class DMZJNewDTO {
     private String refererUrl;
     @JsonSetter("nickname")
     private String author;
-    public ACGNew cast(){
-       return new ACGNew(title, intro, author, cover, refererUrl, Instant.ofEpochSecond(createTime).atZone(ZoneId.systemDefault()).toLocalDate(),"动漫之家");
+
+    public ACGNew cast() {
+        return new ACGNew(title, intro, author, cover, refererUrl, Instant.ofEpochSecond(createTime).atZone(ZoneId.systemDefault()).toLocalDate(), "动漫之家");
     }
 }

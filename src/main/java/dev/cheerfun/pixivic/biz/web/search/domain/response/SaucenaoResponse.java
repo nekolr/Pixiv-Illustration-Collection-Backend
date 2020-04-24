@@ -20,7 +20,7 @@ public class SaucenaoResponse {
 
     public Stream<Integer> getPixivIdList() {
         try {
-            return results.stream().filter(e ->  e.getData().getOriginalUrls().stream().anyMatch(s -> s != null && s.contains("pixiv"))).map(e ->
+            return results.stream().filter(e -> e.getData().getOriginalUrls().stream().anyMatch(s -> s != null && s.contains("pixiv"))).map(e ->
                     e.getData().getIllustId());
         } catch (NullPointerException e) {
             throw new SearchException(HttpStatus.NOT_FOUND, "为找到搜索建议");

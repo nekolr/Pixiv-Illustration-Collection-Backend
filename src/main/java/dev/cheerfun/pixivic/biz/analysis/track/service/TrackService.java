@@ -3,8 +3,8 @@ package dev.cheerfun.pixivic.biz.analysis.track.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
-import dev.cheerfun.pixivic.biz.analysis.track.mapper.TrackMapper;
 import dev.cheerfun.pixivic.biz.analysis.track.domain.Track;
+import dev.cheerfun.pixivic.biz.analysis.track.mapper.TrackMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -29,12 +29,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TrackService {
-    @Value("${apiLog.path")
-    private String logPath;
     private final static String LOG_POS = ".log";
     private final TrackMapper trackMapper;
     private final ObjectMapper objectMapper;
     private final JWTUtil jwtUtil;
+    @Value("${apiLog.path")
+    private String logPath;
 
     public void dailyTrackAnalysis() throws IOException {
         System.gc();
@@ -60,7 +60,7 @@ public class TrackService {
                 if (Duration.between(curr.getTimestamp(), after.getTimestamp()).toMinutes() > 10) {
                     tracksShouldBeStore.add(curr);
                     //取末尾元素，则为这次断点的初始index
-                    Integer before =timePoint.get(timePoint.size() - 1)+1;
+                    Integer before = timePoint.get(timePoint.size() - 1) + 1;
                     //时间段范围再根据行为划分
                     Map<String, List<Track>> map = tracksByUserId.subList(before, i).stream().collect(Collectors.groupingBy(e -> e.getMethod() + ":" + e.getUrl() + ":" + e.getArgs().replaceAll("&page=[0-9]+", "")));
                     map.keySet().forEach(e -> {

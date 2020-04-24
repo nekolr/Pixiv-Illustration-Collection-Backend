@@ -37,10 +37,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationBizService {
+    private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationService illustrationService;
     private final StringRedisTemplate stringRedisTemplate;
-    private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {

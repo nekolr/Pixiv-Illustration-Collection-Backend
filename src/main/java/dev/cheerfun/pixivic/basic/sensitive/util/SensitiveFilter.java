@@ -16,14 +16,9 @@ import java.nio.file.Paths;
 import java.util.Date;
 import java.util.NavigableSet;
 
-
 @Component
 @Data
-public class SensitiveFilter  {
-
-    private final long serialVersionUID = 1L;
-    @Value("${sensitiveWordList.path}")
-    private String path;
+public class SensitiveFilter {
 
     /**
      * 为2的n次方，考虑到敏感词大概在10k左右，
@@ -32,13 +27,29 @@ public class SensitiveFilter  {
      * 加快访问速度。
      */
     final int DEFAULT_INITIAL_CAPACITY = 131072;
-
+    private final long serialVersionUID = 1L;
     /**
      * 类似HashMap的桶，比较稀疏。
      * 使用2个字符的hash定位。
      */
     protected SensitiveNode[] nodes = new SensitiveNode[DEFAULT_INITIAL_CAPACITY];
+    @Value("${sensitiveWordList.path}")
+    private String path;
 
+    public static boolean isBaseType(Object object) {
+        Class className = object.getClass();
+        if (className.equals(java.lang.Integer.class) ||
+                className.equals(java.lang.Byte.class) ||
+                className.equals(java.lang.Long.class) ||
+                className.equals(java.lang.Double.class) ||
+                className.equals(java.lang.Float.class) ||
+                className.equals(java.lang.Character.class) ||
+                className.equals(java.lang.Short.class) ||
+                className.equals(java.lang.Boolean.class)) {
+            return true;
+        }
+        return false;
+    }
 
     @PostConstruct
     public void init() throws IOException {
@@ -124,8 +135,8 @@ public class SensitiveFilter  {
      * @author ZhangXiaoye
      * @date 2017年1月5日 下午4:16:31
      */
-    public String filter(String sentence){
-        return filter(sentence,'*');
+    public String filter(String sentence) {
+        return filter(sentence, '*');
     }
 
     public String filter(String sentence, char replace) {
@@ -214,6 +225,7 @@ public class SensitiveFilter  {
             return sentence;
         }
     }
+
     public Object filter(Object object) throws IllegalAccessException {
         if (object == null)
             return object;
@@ -230,20 +242,5 @@ public class SensitiveFilter  {
             return object;
         }
         return object;
-    }
-
-    public static boolean isBaseType(Object object) {
-        Class className = object.getClass();
-        if (className.equals(java.lang.Integer.class) ||
-                className.equals(java.lang.Byte.class) ||
-                className.equals(java.lang.Long.class) ||
-                className.equals(java.lang.Double.class) ||
-                className.equals(java.lang.Float.class) ||
-                className.equals(java.lang.Character.class) ||
-                className.equals(java.lang.Short.class) ||
-                className.equals(java.lang.Boolean.class)) {
-            return true;
-        }
-        return false;
     }
 }

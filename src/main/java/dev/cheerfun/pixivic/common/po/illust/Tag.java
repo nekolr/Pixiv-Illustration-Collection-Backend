@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class Tag {
-    private Long id;
     protected String name;
     protected String translatedName;
+    private Long id;
 
     public Tag(String name, String translatedName) {
         this.name = name;

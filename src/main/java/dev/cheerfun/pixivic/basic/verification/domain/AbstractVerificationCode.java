@@ -16,13 +16,13 @@ import java.util.UUID;
 public abstract class AbstractVerificationCode {
     @Getter
     protected String vid;
-    @Getter@JsonIgnore
+    @Getter
+    @JsonIgnore
     protected String value;
 
     protected AbstractVerificationCode(String value) {
         this.vid = UUID.randomUUID().toString();
         this.value = value;
     }
-
 
 }

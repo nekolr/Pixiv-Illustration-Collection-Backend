@@ -18,13 +18,17 @@ public class VerificationCodeBuildUtil {
     private final static Random random;
     private final static String str;
 
-    private VerificationCodeBuildUtil(String type) {
-        this.type = type;
-    }
-
     static {
         random = new Random();
         str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
+    }
+
+    private String type;
+    private String value;
+    private String email;
+
+    private VerificationCodeBuildUtil(String type) {
+        this.type = type;
     }
 
     private static String generateRandomStr(int n) {
@@ -37,10 +41,6 @@ public class VerificationCodeBuildUtil {
         }
         return stringBuilder.toString();
     }
-
-    private String type;
-    private String value;
-    private String email;
 
     public static VerificationCodeBuildUtil create(String type) {
         return new VerificationCodeBuildUtil(type);

@@ -1,8 +1,6 @@
 package dev.cheerfun.pixivic.biz.analysis.tag.mapper;
 
-import dev.cheerfun.pixivic.biz.analysis.tag.po.TrendingTags;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
-import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

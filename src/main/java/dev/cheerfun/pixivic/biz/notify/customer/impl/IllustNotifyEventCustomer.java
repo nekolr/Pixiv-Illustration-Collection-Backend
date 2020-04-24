@@ -1,11 +1,11 @@
 package dev.cheerfun.pixivic.biz.notify.customer.impl;
 
+import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
+import dev.cheerfun.pixivic.biz.event.domain.Event;
 import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyChannel;
-import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyStatus;
 import dev.cheerfun.pixivic.biz.notify.customer.NotifyEventCustomer;
-import dev.cheerfun.pixivic.biz.event.domain.Event;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;

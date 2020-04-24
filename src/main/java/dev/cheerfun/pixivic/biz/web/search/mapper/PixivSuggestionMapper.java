@@ -27,5 +27,5 @@ public interface PixivSuggestionMapper {
     List<SearchSuggestionSyncDTO> queryByNoSuggestId();
 
     @Update("update tag_suggestion set suggestion_tag_id= #{tagId} where suggestion_tag=#{tag,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}")
-    int updateSuggestionTagId(@Param("tag") Tag tag, @Param("tagId")Long tagId);
+    int updateSuggestionTagId(@Param("tag") Tag tag, @Param("tagId") Long tagId);
 }

@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VerificationCodeController {
     private final VerificationCodeService verificationCodeService;
+
     @GetMapping("/verificationCode")
     public ResponseEntity<Result<ImageVerificationCode>> getImageVerificationCode() {
         ImageVerificationCode verificationCode = verificationCodeService.getImageVerificationCode();

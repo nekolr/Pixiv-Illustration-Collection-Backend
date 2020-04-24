@@ -28,13 +28,12 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class OauthUtil {
+    private static ReentrantLock lock = new ReentrantLock();
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     @Value("${pixiv.oauth.config}")
     private String path;
-
     private Random random = new Random();
-    private static ReentrantLock lock = new ReentrantLock();
     private int length;
 
     @Getter

@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.notify.customer;
 
-import dev.cheerfun.pixivic.biz.notify.mapper.NotifyMapper;
 import dev.cheerfun.pixivic.biz.event.domain.Event;
+import dev.cheerfun.pixivic.biz.notify.mapper.NotifyMapper;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.biz.notify.po.NotifySettingConfig;
 import dev.cheerfun.pixivic.biz.notify.sender.NotifySenderManager;

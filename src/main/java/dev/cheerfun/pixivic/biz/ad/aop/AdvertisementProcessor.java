@@ -32,9 +32,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Order(3)
 public class AdvertisementProcessor {
-    private final AdvertisementMapper advertisementMapper;
     private static List<Integer> randomList;
     private static Map<Integer, List<Advertisement>> advertisementMap;
+    private final AdvertisementMapper advertisementMapper;
     Random random;
 
     @Pointcut(value = "@annotation(dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement)||@within(dev.cheerfun.pix" +

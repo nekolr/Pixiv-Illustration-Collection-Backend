@@ -29,7 +29,7 @@ public class Oauth {
 
     {
         deviceToken = "fb12e7c1945000850deb5f7001c02745";
-        refreshToken="";
+        refreshToken = "";
         grantType = "password";
         bucket = Bucket4j.builder()
                 .addLimit(Bandwidth.classic(800, Refill.intervally(800, Duration.ofMinutes(10))))
@@ -39,7 +39,7 @@ public class Oauth {
     public String getRequestBody() {
         Map<String, String> paramMap = new HashMap<>(
                 Map.of("client_id", CLIENT_ID, "client_secret", CLIENT_SECRET, "grant_type", grantType
-                        , "username", username, "password", password, "device_token", deviceToken,"refresh_token", refreshToken
+                        , "username", username, "password", password, "device_token", deviceToken, "refresh_token", refreshToken
                         , "get_secure_url", "true"));
         return RequestUtil.getPostEntity(paramMap);
     }

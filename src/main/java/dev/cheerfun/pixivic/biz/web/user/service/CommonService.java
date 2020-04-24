@@ -33,18 +33,18 @@ import java.net.http.HttpResponse;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonService {
-    private final CommonMapper userMapper;
-    private final HttpClient httpClient;
-    private final JWTUtil jwtUtil;
-    private final PasswordUtil passwordUtil;
-    private final EmailUtil emailUtil;
-    private final VerificationCodeService verificationCodeService;
     private final static String AVATAR_PRE = "https://pic.pixivic.com/";
     private final static String AVATAR_POS = ".png";
     private final static String PIXIVIC = "Pixivic酱";
     private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
     private final static String QQ_BIND_URL_PRE = "https://graph.qq.com/oauth2.0/me?access_token=";
+    private final CommonMapper userMapper;
+    private final HttpClient httpClient;
+    private final JWTUtil jwtUtil;
+    private final PasswordUtil passwordUtil;
+    private final EmailUtil emailUtil;
+    private final VerificationCodeService verificationCodeService;
 
     public User signUp(User user) {
         //检测用户名或邮箱是否重复

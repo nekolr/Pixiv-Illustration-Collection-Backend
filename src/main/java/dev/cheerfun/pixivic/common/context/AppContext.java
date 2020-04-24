@@ -9,13 +9,13 @@ import java.util.Map;
  * @description
  */
 public class AppContext {
-    private static final ThreadLocal<Map<String,Object>> CONTEXT = ThreadLocal.withInitial(() -> null);
+    private static final ThreadLocal<Map<String, Object>> CONTEXT = ThreadLocal.withInitial(() -> null);
 
-    public static Map<String,Object> get() {
+    public static Map<String, Object> get() {
         return CONTEXT.get();
     }
 
-    public static void set(Map<String,Object> map) {
+    public static void set(Map<String, Object> map) {
         CONTEXT.set(map);
     }
 

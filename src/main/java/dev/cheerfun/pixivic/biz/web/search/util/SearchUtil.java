@@ -30,55 +30,42 @@ import java.util.stream.Collectors;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SearchUtil {
-    private final HttpClient httpClient;
-    private final ObjectMapper objectMapper;
-    @Value("${elasticsearch.ip}")
-    private String elasticsearch;
-
     private final static String MIN_SCORE = "\"min_score\": 0.6";
     private final static String FROM = "\"from\":";
     private final static String SIZE = "\"size\": ";
-
     private final static String PRE = "{";
     private final static String DOT = ",";
     private final static String POS = "}";
     private final static String QUERY_PRE = /*"query":{"function_score":{*/"\"query\":{\"bool\":{";
     private final static String QUERY_SHOULD = /*"query":{"function_score":{*/"\"should\":[";
-
     private final static String FILTER_PRE = "],\"filter\":[";
     private final static String FILTER_POS = "]";
     private final static String QUERY_POS = "}}";
-
     private final static String NESTED_PRE = "{\"nested\":{\"path\":\"tags\",\"query\":{\"boosting\":{\"positive\":{\"match\":{\"tags.name\":{\"query\":\"";
     private final static String NESTED_POS = "\"}}},\"negative\":{\"match\":{\"tags.translated_name.keyword\":\"\"}},\"negative_boost\":0.865}}}}";
-
     private final static String TYPE_PRE = "{\"term\":{\"type\":\"";
     private final static String TYPE_POS = "\"}}";
-
     private final static String X_RESTRICT_PRE = "{\"term\":{\"x_restrict\":";
     private final static String X_RESTRICT_POS = "}}";
-
     private final static String ID_PRE = "\"must_not\": {\"term\": {\"_id\":\"";
     private final static String ID_POS = "\"}}";
-
     private final static String MIN_WIDTH_PRE = "{\"range\":{\"width\":{\"gte\":";
     private final static String MIN_WIDTH_POS = "}}}";
-
     private final static String MIN_BOOKMARK_PRE = "{\"range\":{\"total_bookmarks\":{\"gte\":";
     private final static String MIN_BOOKMARK_POS = "}}}";
-
     private final static String MIN_HEIGHT_PRE = "{\"range\":{\"height\":{\"gte\":";
     private final static String MIN_HEIGHT_POS = "}}}";
-
     private final static String MAX_SANITY_LEVEL_PRE = "{\"range\":{\"sanity_level\":{\"lte\":";
     private final static String MAX_SANITY_LEVEL_POS = "}}}";
-
     private final static String DATE_RANGE_1 = "{\"range\":{\"create_date\":{\"gte\":\"";
     private final static String DATE_RANGE_2 = "\",\"lte\":\"";
     private final static String DATE_RANGE_3 = "\"}}}";
-
     private final static String SCRIPT_SCORE = "\"script_score\":{\"script\":{\"params\":{\"total_bookmarks_max\":35000,\"total_view_max\":2500000},\"source\":\"(1.00+doc['total_bookmarks'].value/params.total_bookmarks_max+doc['total_view'].value/params.total_view_max)\"}}";
     private final static String SORT = "\"sort\":[\"_score\",{\"total_bookmarks\":{\"order\":\"desc\"}},{\"total_view\":{\"order\":\"desc\"}}],";
+    private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
+    @Value("${elasticsearch.ip}")
+    private String elasticsearch;
 
     public String build(
             String keyword,
@@ -181,7 +168,6 @@ public class SearchUtil {
                 .append(POS);
         return stringBuilder.toString();
     }
-
 
     public CompletableFuture<List<Illustration>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
