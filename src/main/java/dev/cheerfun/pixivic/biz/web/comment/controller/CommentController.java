@@ -18,7 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -36,7 +35,7 @@ public class CommentController {
 
     @PostMapping("/{commentAppType}/{commentAppId}/comments")
     @PermissionRequired
-    public ResponseEntity<Result<String>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @Valid @SensitiveCheck Comment comment, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @SensitiveCheck Comment comment, @RequestHeader("Authorization") String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         comment.init(commentAppType, commentAppId, userId);
         commentService.pushComment(comment);
