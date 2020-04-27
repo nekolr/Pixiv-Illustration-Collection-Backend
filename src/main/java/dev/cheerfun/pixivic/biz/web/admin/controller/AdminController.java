@@ -22,7 +22,7 @@ import java.util.List;
  * @date 2020/4/24 2:46 下午
  * @description AdminController
  */
-@RestController
+//@RestController
 @Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @PermissionRequired(PermissionLevel.ADMIN)

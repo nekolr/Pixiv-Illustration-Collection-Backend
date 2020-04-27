@@ -17,7 +17,7 @@ import java.util.List;
  * @date 2020/4/24 2:46 下午
  * @description AdminService
  */
-@Service
+//@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AdminService {
     private final AdminMapper adminMapper;

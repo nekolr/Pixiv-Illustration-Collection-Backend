@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.Update;
 
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface AdminMapper {
     @Select({
             "<script>",
