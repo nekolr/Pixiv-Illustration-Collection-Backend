@@ -17,4 +17,5 @@ public class RedisKeyConstant {
     public final static String LIKE_COUNT_MAP_REDIS_PRE = "c:lcm";//+appType:appId
     public final static String ILLUST_BROWSING_HISTORY_REDIS_PRE = "u:h:i:";//+appType:appId
     public final static String ARTIST_LATEST_ILLUSTS_PULL_FLAG = "a:l:p:f:";
+    public final static String COLLECTION_REORDER_LOCK = "crl:";
 }

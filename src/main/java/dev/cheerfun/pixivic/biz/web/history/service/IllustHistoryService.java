@@ -67,7 +67,7 @@ public class IllustHistoryService {
 
     //定时清理历史记录长度，临时表转移到正式表，清空临时表，正式表清除期限外数据
     @Scheduled(cron = "0 10 2 * * ?")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void clear() {
         System.out.println("开始清理收藏");
         //获取keylist

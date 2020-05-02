@@ -95,7 +95,7 @@ public class BusinessService {
         bookmarkOperation(userId, null, illustId, -1, relationId);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "illust_bookmarked", key = "#illustId+'1'+'30'")
     public void bookmarkOperation(int userId, String username, int illustId, int increment, int relationId) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
@@ -125,7 +125,7 @@ public class BusinessService {
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void flushBookmarkCountToDb() {
         //半夜三点往mysql更新收藏数
         Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(RedisKeyConstant.BOOKMARK_COUNT_MAP_REDIS_PRE);
@@ -149,7 +149,7 @@ public class BusinessService {
             @CacheEvict(value = "followedLatest", key = "#userId + 'illust'"),
             @CacheEvict(value = "followedLatest", key = "#userId + 'manga'"),
             @CacheEvict(value = "artist_followed", key = "#artistId+'1'+'30'")})
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void follow(int userId, int artistId, String username) {
         try {
             businessMapper.follow(userId, artistId, username, LocalDateTime.now());
@@ -200,7 +200,7 @@ public class BusinessService {
         return stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void addTag(int userId, String illustId, List<Tag> tags) {
         List<Tag> oldTags = businessMapper.queryIllustrationTagsById(illustId);
         oldTags.addAll(tags);

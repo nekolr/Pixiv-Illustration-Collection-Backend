@@ -154,7 +154,7 @@ public class IllustrationService {
         cd.await(waitForReDownload.size() * 2, TimeUnit.SECONDS);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Async
     public void saveToDb(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
@@ -176,7 +176,7 @@ public class IllustrationService {
         illustrationMapper.flush();
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void saveToDb2(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
         if (tags.size() > 0) {

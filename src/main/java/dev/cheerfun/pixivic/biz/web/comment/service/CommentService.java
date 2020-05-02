@@ -42,7 +42,7 @@ public class CommentService {
         //
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void likeComment(Like like, int userId) {
         Long add = stringRedisTemplate.opsForSet().add(RedisKeyConstant.LIKE_REDIS_PRE + userId, like.toString());
         if (add != null && add != 0L) {
@@ -53,7 +53,7 @@ public class CommentService {
 
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void cancelLikeComment(int userId, Like like) {
         Long remove = stringRedisTemplate.opsForSet().remove(RedisKeyConstant.LIKE_REDIS_PRE + userId, like.toString());
         if (remove != null && remove != 0L) {

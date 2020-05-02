@@ -99,7 +99,7 @@ public class CommonService {
         return userMapper.setAvatar(avatar, userId);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public User setEmail(String email, int userId) {
         userMapper.setEmail(email, userId);
         return userMapper.queryUserByUserId(userId);
