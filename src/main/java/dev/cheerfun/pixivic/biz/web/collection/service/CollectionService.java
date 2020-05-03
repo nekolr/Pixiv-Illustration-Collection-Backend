@@ -172,7 +172,6 @@ public class CollectionService {
     }
 
     private Integer queryIllustrationOrder(Integer collectionId, Integer illustrationId) {
-
         return collectionMapper.queryIllustrationOrder(collectionId, illustrationId);
     }
 
