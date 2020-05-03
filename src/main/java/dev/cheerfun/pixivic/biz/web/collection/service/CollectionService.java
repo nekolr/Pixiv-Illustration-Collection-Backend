@@ -1,14 +1,17 @@
 package dev.cheerfun.pixivic.biz.web.collection.service;
 
+import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.biz.web.collection.dto.UpdateIllustrationOrderDTO;
 import dev.cheerfun.pixivic.biz.web.collection.mapper.CollectionMapper;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
+import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,21 +31,51 @@ import static dev.cheerfun.pixivic.common.constant.RedisKeyConstant.COLLECTION_R
 public class CollectionService {
     private final CollectionMapper collectionMapper;
     private final StringRedisTemplate stringRedisTemplate;
+    private final SensitiveFilter sensitiveFilter;
 
     public Boolean createCollection(Integer userId, Collection collection) {
-        return null;
+        //去除敏感词
+        collection.getTagList().forEach(e -> {
+            e.setTagName(sensitiveFilter.filter(e.getTagName()));
+        });
+        //插入画集
+        collectionMapper.createCollection(userId, collection);
+        //异步将tag入库
+        insertCollectionTag(collection);
+        return true;
+    }
+
+    @Async
+    public void insertCollectionTag(Collection collection) {
+        List<CollectionTag> tagList = collection.getTagList();
+        if (tagList != null && tagList.size() > 0) {
+            collectionMapper.insertCollectionTag(tagList);
+        }
     }
 
     public Boolean updateCollection(Integer userId, Collection collection) {
-        return null;
+        if (collection.getId() == null) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "更新画集出错");
+        }
+        //校验collectionId是否属于用户
+        checkCollectionAuth(collection.getId(), userId);
+        collectionMapper.updateCollection(userId, collection);
+        //异步将tag入库
+        insertCollectionTag(collection);
+        return true;
     }
 
     public Boolean deleteCollection(Integer userId, Integer collectionId) {
-        return null;
+        return collectionMapper.deleteCollection(userId, collectionId) == 1;
     }
 
+    @Transactional
     public Boolean addIllustrationToCollection(Integer userId, Integer collectionId, Illustration illustration) {
-        return null;
+        //校验collectionId是否属于用户
+        checkCollectionAuth(collectionId, userId);
+        //插入
+        collectionMapper.addIllustrationToCollection(collectionId, illustration.getId());
+        return true;
     }
 
     public Boolean deleteIllustrationFromCollection(Integer userId, Integer collectionId, Integer illustrationId) {
@@ -50,7 +83,11 @@ public class CollectionService {
     }
 
     public boolean checkCollectionAuth(Integer collectionId, Integer userId) {
-        return false;
+        if (collectionMapper.checkCollectionAuth(collectionId, userId) != null) {
+            return true;
+        }
+        throw new BusinessException(HttpStatus.FORBIDDEN, "没有修改画集的权限");
+
     }
 
     public boolean checkCollectionUpdateStatus(Integer collectionId) {
@@ -60,9 +97,7 @@ public class CollectionService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateIllustrationOrder(Integer collectionId, UpdateIllustrationOrderDTO updateIllustrationOrderDTO, Integer userId) {
         //校验collectionId是否属于用户
-        if (!checkCollectionAuth(collectionId, userId)) {
-            throw new BusinessException(HttpStatus.FORBIDDEN, "没有修改画集的权限");
-        }
+        checkCollectionAuth(collectionId, userId);
         //输入三个illust对象，分别是要插入位置的上下两个 以及 插入对象
         //查看要插入的画作是否在画集中
         Integer illustrationOrder = queryIllustrationOrder(updateIllustrationOrderDTO.getReOrderIllustrationId());

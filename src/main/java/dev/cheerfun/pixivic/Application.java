@@ -16,10 +16,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @description pixivic项目启动类
  */
 @SpringBootApplication
-@EnableAsync
+@EnableAsync(mode = AdviceMode.ASPECTJ)
 @EnableScheduling
 @EnableCaching(mode = AdviceMode.ASPECTJ)
-@EnableTransactionManagement
+@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @EnableLoadTimeWeaving(aspectjWeaving = EnableLoadTimeWeaving.AspectJWeaving.ENABLED)
 public class Application {
     public static void main(String[] args) {

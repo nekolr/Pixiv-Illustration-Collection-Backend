@@ -36,4 +36,5 @@ public class Collection {
     private Integer totalReward;
     private LocalDateTime createTime;
     private Integer updateTime;
+
 }
