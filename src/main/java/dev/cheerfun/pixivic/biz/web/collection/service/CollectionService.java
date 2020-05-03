@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -38,6 +39,7 @@ public class CollectionService {
         collection.getTagList().forEach(e -> {
             e.setTagName(sensitiveFilter.filter(e.getTagName()));
         });
+        collection.setCreateTime(LocalDateTime.now());
         //插入画集
         collectionMapper.createCollection(userId, collection);
         //异步将tag入库
@@ -53,6 +55,7 @@ public class CollectionService {
         }
     }
 
+    @Transactional
     public Boolean updateCollection(Integer userId, Collection collection) {
         if (collection.getId() == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "更新画集出错");
@@ -74,16 +77,23 @@ public class CollectionService {
         //校验collectionId是否属于用户
         checkCollectionAuth(collectionId, userId);
         //插入
+        collectionMapper.incrCollectionIllustCount(collectionId);
         collectionMapper.addIllustrationToCollection(collectionId, illustration.getId());
         return true;
     }
 
+    @Transactional
     public Boolean deleteIllustrationFromCollection(Integer userId, Integer collectionId, Integer illustrationId) {
-        return null;
+        //校验collectionId是否属于用户
+        checkCollectionAuth(collectionId, userId);
+        //删除
+        collectionMapper.decrCollectionIllustCount(collectionId);
+        collectionMapper.deleteIllustrationFromCollection(collectionId, illustrationId);
+        return true;
     }
 
     public boolean checkCollectionAuth(Integer collectionId, Integer userId) {
-        if (collectionMapper.checkCollectionAuth(collectionId, userId) != null) {
+        if (collectionMapper.checkCollectionAuth(collectionId, userId) == 1) {
             return true;
         }
         throw new BusinessException(HttpStatus.FORBIDDEN, "没有修改画集的权限");
@@ -100,7 +110,7 @@ public class CollectionService {
         checkCollectionAuth(collectionId, userId);
         //输入三个illust对象，分别是要插入位置的上下两个 以及 插入对象
         //查看要插入的画作是否在画集中
-        Integer illustrationOrder = queryIllustrationOrder(updateIllustrationOrderDTO.getReOrderIllustrationId());
+        Integer illustrationOrder = queryIllustrationOrder(collectionId, updateIllustrationOrderDTO.getReOrderIllustrationId());
         if (illustrationOrder == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "画作不在画集中");
         }
@@ -116,7 +126,7 @@ public class CollectionService {
             Integer resultIndex;
             //查出上界
             try {
-                upperIndex = queryIllustrationOrder(updateIllustrationOrderDTO.getUpIllustrationId());
+                upperIndex = queryIllustrationOrder(collectionId, updateIllustrationOrderDTO.getUpIllustrationId());
                 if (upperIndex == null) {
                     throw new BusinessException(HttpStatus.BAD_REQUEST, "画作不在画集中");
                 }
@@ -126,7 +136,7 @@ public class CollectionService {
                     resultIndex = upperIndex + 10000;
                 } else {
                     //查出下界index
-                    lowerIndex = queryIllustrationOrder(updateIllustrationOrderDTO.getLowIllustrationId());
+                    lowerIndex = queryIllustrationOrder(collectionId, updateIllustrationOrderDTO.getLowIllustrationId());
                     if (lowerIndex == null) {
                         throw new BusinessException(HttpStatus.BAD_REQUEST, "画作不在画集中");
                     }
@@ -153,8 +163,9 @@ public class CollectionService {
         return false;
     }
 
-    private Integer queryIllustrationOrder(Integer illustrationId) {
-        return null;
+    private Integer queryIllustrationOrder(Integer collectionId, Integer illustrationId) {
+
+        return collectionMapper.queryIllustrationOrder(collectionId, illustrationId);
     }
 
     public List<Collection> queryUserCollection(Integer userId) {

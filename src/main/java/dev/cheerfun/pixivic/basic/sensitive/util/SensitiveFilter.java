@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Collection;
 import java.util.Date;
 import java.util.NavigableSet;
 
@@ -234,6 +235,10 @@ public class SensitiveFilter {
         } else if (!isBaseType(object)) {
             //如果是对象则遍历里面的属性
             Class<?> valueClass = object.getClass();
+            //集合则跳过
+            if (object instanceof Collection) {
+                return object;
+            }
             for (Field declaredField : valueClass.getDeclaredFields()) {
                 declaredField.setAccessible(true);
                 //递归处理

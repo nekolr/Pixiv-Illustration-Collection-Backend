@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 /**
@@ -24,12 +25,11 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-//@RequestMapping("/collections")
 public class CollectionController {
     private final CollectionService collectionService;
 
     //新建画集
-    @PostMapping
+    @PostMapping("/collections")
     @PermissionRequired
     public ResponseEntity<Result<Boolean>> createCollection(@RequestBody @SensitiveCheck Collection collection, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
@@ -37,7 +37,7 @@ public class CollectionController {
     }
 
     //修改画集元数据
-    @PostMapping("/collections/{collectionId}")
+    @PutMapping("/collections/{collectionId}")
     @PermissionRequired
     public ResponseEntity<Result<Boolean>> updateCollection(@PathVariable Integer collectionId, @RequestBody @SensitiveCheck Collection collection, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
@@ -78,8 +78,10 @@ public class CollectionController {
 
     //查询用户画集
     @GetMapping("/users/{userId}/collections")
-    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.queryUserCollection(userId)));
+    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(15) Integer pageSize) {
+        List<Collection> collections = collectionService.queryUserCollection(userId);
+
+        return ResponseEntity.ok().body(new Result<>("获取用户画集成功", null));
     }
 
     //搜索画集
