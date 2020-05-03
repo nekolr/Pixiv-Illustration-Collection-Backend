@@ -14,7 +14,16 @@ public interface CollectionMapper {
     @Update("update collection_illust_relation set insert_factor=insert_factor+1 where collection_id=#{collectionId} and illust_id=#{upIllustrationId}")
     Integer incrIllustrationInsertFactor(Integer collectionId, Integer upIllustrationId);
 
-    @Update("update collection_illust_relation set insert_factor=0 where collection_id=#{collectionId}")
+    @Update("update collection_illust_relation c ,\n" +
+            "    (select illust_id, (@rowNum := @rowNum + 1) order_num\n" +
+            "     from collection_illust_relation,\n" +
+            "          (Select (@rowNum := 0)) b\n" +
+            "     where collection_id = #{collectionId}\n" +
+            "     order by order_num) t\n" +
+            "set c.order_num=t.order_num * 10000,\n" +
+            "    c.insert_factor=0\n" +
+            "where c.collection_id = #{collectionId}\n" +
+            "  and c.illust_id = t.illust_id")
     Integer reOrderIllustration(Integer collectionId);
 
     @Insert("insert into collections (user_id, username,title,cover,caption,tag_list,is_public,forbid_comment,porn_warning,create_time) " +
@@ -86,4 +95,7 @@ public interface CollectionMapper {
 
     @Select("select order_num from collection_illust_relation where collection_id= #{collectionId} and illust_id=#{illustrationId}")
     Integer queryIllustrationOrder(Integer collectionId, Integer illustrationId);
+
+    @Select("select insert_factor from collection_illust_relation where collection_id= #{collectionId} and illust_id=#{upIllustrationId}")
+    Integer queryIllustrationInsertFactor(Integer collectionId, Integer upIllustrationId);
 }

@@ -106,6 +106,8 @@ public class CollectionService {
 
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateIllustrationOrder(Integer collectionId, UpdateIllustrationOrderDTO updateIllustrationOrderDTO, Integer userId) {
+        long start = System.currentTimeMillis();
+        System.out.println(start);
         //校验collectionId是否属于用户
         checkCollectionAuth(collectionId, userId);
         //输入三个illust对象，分别是要插入位置的上下两个 以及 插入对象
@@ -123,9 +125,11 @@ public class CollectionService {
             }
             Integer upperIndex;
             Integer lowerIndex;
+            Integer originalIndex;
             Integer resultIndex;
             //查出上界
             try {
+                originalIndex = queryIllustrationOrder(collectionId, updateIllustrationOrderDTO.getReOrderIllustrationId());
                 upperIndex = queryIllustrationOrder(collectionId, updateIllustrationOrderDTO.getUpIllustrationId());
                 if (upperIndex == null) {
                     throw new BusinessException(HttpStatus.BAD_REQUEST, "画作不在画集中");
@@ -142,15 +146,19 @@ public class CollectionService {
                     }
                     resultIndex = (upperIndex + lowerIndex) / 2;
                 }
-                //更新
-                collectionMapper.updateIllustrationOrder(collectionId, updateIllustrationOrderDTO.getReOrderIllustrationId(), resultIndex);
-                //并更改上界插入因子
-                Integer insertFactor = collectionMapper.incrIllustrationInsertFactor(collectionId, updateIllustrationOrderDTO.getUpIllustrationId());
-                //判断上界是否达到阈值
-                if (insertFactor >= 10) {
-                    //达到则进行全量更新，并把插入因子都置为0
-                    collectionMapper.reOrderIllustration(collectionId);
+                if (resultIndex.compareTo(originalIndex) != 0) {
+                    //更新
+                    collectionMapper.updateIllustrationOrder(collectionId, updateIllustrationOrderDTO.getReOrderIllustrationId(), resultIndex);
+                    //并更改上界插入因子
+                    collectionMapper.incrIllustrationInsertFactor(collectionId, updateIllustrationOrderDTO.getUpIllustrationId());
+                    Integer insertFactor = collectionMapper.queryIllustrationInsertFactor(collectionId, updateIllustrationOrderDTO.getUpIllustrationId());
+                    //判断上界是否达到阈值
+                    if (insertFactor >= 10) {
+                        //达到则进行全量更新，并把插入因子都置为0
+                        collectionMapper.reOrderIllustration(collectionId);
+                    }
                 }
+                System.out.println("耗时：" + (System.currentTimeMillis() - start));
                 return true;
             } catch (Exception exception) {
                 exception.printStackTrace();
