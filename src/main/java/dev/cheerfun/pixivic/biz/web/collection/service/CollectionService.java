@@ -2,15 +2,17 @@ package dev.cheerfun.pixivic.biz.web.collection.service;
 
 import dev.cheerfun.pixivic.biz.web.collection.dto.UpdateIllustrationOrderDTO;
 import dev.cheerfun.pixivic.biz.web.collection.mapper.CollectionMapper;
+import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
+import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import static dev.cheerfun.pixivic.common.constant.RedisKeyConstant.COLLECTION_REORDER_LOCK;
@@ -27,7 +29,27 @@ public class CollectionService {
     private final CollectionMapper collectionMapper;
     private final StringRedisTemplate stringRedisTemplate;
 
-    public boolean checkColletionAuth(Integer collectionId, Integer userId) {
+    public Boolean createCollection(Integer userId, Collection collection) {
+        return null;
+    }
+
+    public Boolean updateCollection(Integer userId, Collection collection) {
+        return null;
+    }
+
+    public Boolean deleteCollection(Integer userId, Integer collectionId) {
+        return null;
+    }
+
+    public Boolean addIllustrationToCollection(Integer userId, Integer collectionId, Illustration illustration) {
+        return null;
+    }
+
+    public Boolean deleteIllustrationFromCollection(Integer userId, Integer collectionId, Integer illustrationId) {
+        return null;
+    }
+
+    public boolean checkCollectionAuth(Integer collectionId, Integer userId) {
         return false;
     }
 
@@ -36,9 +58,9 @@ public class CollectionService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    public void updateIllustrationOrder(Integer collectionId, UpdateIllustrationOrderDTO updateIllustrationOrderDTO, Integer userId) {
+    public Boolean updateIllustrationOrder(Integer collectionId, UpdateIllustrationOrderDTO updateIllustrationOrderDTO, Integer userId) {
         //校验collectionId是否属于用户
-        if (!checkColletionAuth(collectionId, userId)) {
+        if (!checkCollectionAuth(collectionId, userId)) {
             throw new BusinessException(HttpStatus.FORBIDDEN, "没有修改画集的权限");
         }
         //输入三个illust对象，分别是要插入位置的上下两个 以及 插入对象
@@ -84,17 +106,23 @@ public class CollectionService {
                     //达到则进行全量更新，并把插入因子都置为0
                     collectionMapper.reOrderIllustration(collectionId);
                 }
-                break;
+                return true;
             } catch (Exception exception) {
                 exception.printStackTrace();
                 throw new BusinessException(HttpStatus.EXPECTATION_FAILED, "未知异常");
             } finally {
                 stringRedisTemplate.delete(COLLECTION_REORDER_LOCK + collectionId);
             }
+
         }
+        return false;
     }
 
     private Integer queryIllustrationOrder(Integer illustrationId) {
+        return null;
+    }
+
+    public List<Collection> queryUserCollection(Integer userId) {
         return null;
     }
 }

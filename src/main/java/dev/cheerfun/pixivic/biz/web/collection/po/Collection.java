@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.collection.po;
 
+import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.Data;
 
@@ -18,7 +19,9 @@ public class Collection {
     private Integer userId;
     private String username;
     private Illustration cover;
+    @SensitiveCheck
     private String title;
+    @SensitiveCheck
     private String caption;
     private List<CollectionTag> tagList;
     private Integer illustCount;
