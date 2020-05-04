@@ -120,4 +120,8 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
     }
 
+    //收藏画集
+    //点赞画集
+    //关注用户
+
 }

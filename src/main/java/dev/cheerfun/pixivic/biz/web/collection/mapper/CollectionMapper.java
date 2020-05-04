@@ -2,6 +2,8 @@ package dev.cheerfun.pixivic.biz.web.collection.mapper;
 
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
+import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -98,4 +100,40 @@ public interface CollectionMapper {
 
     @Select("select insert_factor from collection_illust_relation where collection_id= #{collectionId} and illust_id=#{upIllustrationId}")
     Integer queryIllustrationInsertFactor(Integer collectionId, Integer upIllustrationId);
+
+    @Select({
+            "<script>",
+            "select collection_id from collections where use_flag=1 and  is_public ",
+            "<if test=\"isSelf==0\">\n",
+            "=0",
+            "</if>",
+            "<if test=\"isSelf==1\">\n",
+            "= #{isPublic}",
+            "</if>",
+            "and user_id=#{userId} order by create_time limit #{currIndex},#{pageSize}",
+            "</script>"
+    })
+    List<Integer> queryUserCollection(Integer userId, Integer currIndex, Integer pageSize, Integer isSelf, Integer isPublic);
+
+    @Select("select * from collections where collection_id=#{collectionId} and use_flag=1")
+    @Results({
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "id", column = "collection_id"),
+            @Result(property = "tagList", column = "tag_list", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "cover", column = "cover", javaType = Illustration.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "createTime", column = "create_time", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+    })
+    Collection queryCollectionById(Integer collectionId);
+
+    @Select("select illust_id from collection_illust_relation where collection_id =#{collectionId} limit #{currIndex},#{pageSize}")
+    List<Integer> queryCollectionIllustIdList(Integer collectionId, Integer currIndex, Integer pageSize);
+
+    @Select("select collection_id from collections where use_flag=1 and  is_public=1 order by create_time limit #{currIndex},#{pageSize} ")
+    List<Integer> queryLatestPublicCollection(Integer currIndex, Integer pageSize);
+
+    @Select("select collection_id from collections where use_flag=1 and  is_public=1 order by total_bookmark limit #{currIndex},#{pageSize} ")
+    List<Integer> queryPopPublicCollection(int currIndex, Integer pageSize);
+
+    @Update("update collections set cover=#{illustration,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler} where collection_id=#{collectionId}")
+    Integer updateCollectionCover(Integer collectionId, Illustration illustration);
 }

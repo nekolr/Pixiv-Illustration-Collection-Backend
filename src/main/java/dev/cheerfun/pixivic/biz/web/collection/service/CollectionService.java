@@ -6,9 +6,14 @@ import dev.cheerfun.pixivic.biz.web.collection.mapper.CollectionMapper;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
+import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
@@ -17,7 +22,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static dev.cheerfun.pixivic.common.constant.RedisKeyConstant.COLLECTION_REORDER_LOCK;
 
@@ -33,6 +40,7 @@ public class CollectionService {
     private final CollectionMapper collectionMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final SensitiveFilter sensitiveFilter;
+    private final IllustrationBizService illustrationBizService;
 
     public Boolean createCollection(Integer userId, Collection collection) {
         //去除敏感词
@@ -73,12 +81,17 @@ public class CollectionService {
     }
 
     @Transactional
+    @CacheEvict(value = "collections", key = "#collectionId")
     public Boolean addIllustrationToCollection(Integer userId, Integer collectionId, Illustration illustration) {
         //校验collectionId是否属于用户
         checkCollectionAuth(collectionId, userId);
+        Collection collection = queryCollectionById(collectionId);
         //插入
         collectionMapper.incrCollectionIllustCount(collectionId);
         collectionMapper.addIllustrationToCollection(collectionId, illustration.getId());
+        if (collection.getIllustCount() == 0) {
+            collectionMapper.updateCollectionCover(collectionId, illustrationBizService.queryIllustrationById(illustration.getId()));
+        }
         return true;
     }
 
@@ -92,8 +105,10 @@ public class CollectionService {
         return true;
     }
 
+    @Cacheable("collectionAuth")
     public boolean checkCollectionAuth(Integer collectionId, Integer userId) {
-        if (collectionMapper.checkCollectionAuth(collectionId, userId) == 1) {
+        Collection collection = queryCollectionById(collectionId);
+        if (collection.getUserId().compareTo(userId) == 0) {
             return true;
         }
         throw new BusinessException(HttpStatus.FORBIDDEN, "没有修改画集的权限");
@@ -175,7 +190,53 @@ public class CollectionService {
         return collectionMapper.queryIllustrationOrder(collectionId, illustrationId);
     }
 
-    public List<Collection> queryUserCollection(Integer userId) {
-        return null;
+    public List<Collection> queryUserCollection(Integer userId, Integer isPublic, Integer page, Integer pageSize) {
+        //是否登陆，是否查看本人画集
+        Map<String, Object> context = AppContext.get();
+        Integer isSelf = 0;
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            if ((int) context.get(AuthConstant.USER_ID) == userId) {
+                isSelf = 1;
+            }
+        }
+        List<Integer> collectionIdList = collectionMapper.queryUserCollection(userId, (page - 1) * pageSize, pageSize, isSelf, isPublic);
+        return queryCollectionById(collectionIdList);
+    }
+
+    public List<Illustration> queryCollectionIllust(Integer collectionId, Integer page, Integer pageSize) {
+        //校验画集是否公开 画集isPublic 或者user是本人
+        Collection collection = queryCollectionById(collectionId);
+        if (collection == null) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "未找到该画集");
+        }
+        if (collection.getIsPublic() == 0) {
+            Map<String, Object> context = AppContext.get();
+            if (context != null && context.get(AuthConstant.USER_ID) != null) {
+                if (context.get(AuthConstant.USER_ID) != collection.getUserId()) {
+                    throw new BusinessException(HttpStatus.FORBIDDEN, "无权限访问");
+                }
+            }
+        }
+        List<Integer> illustIdList = collectionMapper.queryCollectionIllustIdList(collectionId, (page - 1) * pageSize, pageSize);
+        return illustrationBizService.queryIllustrationByIllustIdList(illustIdList);
+    }
+
+    @Cacheable("collections")
+    public Collection queryCollectionById(Integer collectionId) {
+        return collectionMapper.queryCollectionById(collectionId);
+    }
+
+    public List<Collection> queryCollectionById(List<Integer> collectionId) {
+        return collectionId.stream().parallel().map(this::queryCollectionById).collect(Collectors.toList());
+    }
+
+    public List<Collection> queryLatestPublicCollection(Integer page, Integer pageSize) {
+        List<Integer> collectionIdList = collectionMapper.queryLatestPublicCollection((page - 1) * pageSize, pageSize);
+        return queryCollectionById(collectionIdList);
+    }
+
+    public List<Collection> queryPopPublicCollection(Integer page, Integer pageSize) {
+        List<Integer> collectionIdList = collectionMapper.queryPopPublicCollection((page - 1) * pageSize, pageSize);
+        return queryCollectionById(collectionIdList);
     }
 }
