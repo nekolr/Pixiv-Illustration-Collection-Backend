@@ -119,9 +119,12 @@ public class BusinessController {
         businessService.addTag((int) AppContext.get().get(AuthConstant.USER_ID), illustId, tags);
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
     }
+    //注销
 
     //收藏画集
+
     //点赞画集
+
     //关注用户
 
 }
