@@ -14,7 +14,7 @@ public interface TrendingTagsMapper {
     })
     List<Tag> queryTag(String keyword);
 
-    @Insert("insert into trending_tags (trending_tags, date) values (#{tagList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{date})")
+    @Insert("replace into trending_tags (trending_tags, date) values (#{tagList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{date})")
     void insert(String date, List<Tag> tagList);
 
     @Select("select trending_tags from trending_tags where date=#{date}")

@@ -41,15 +41,17 @@ public class IllustRankService {
 
     @CacheEvict(value = "rank", allEntries = true)
     public void pullAllRank() {
-        LocalDate date = LocalDate.now().plusDays(-2);
+        LocalDate date = LocalDate.now().plusDays(-1);
         pullAllRank(date.toString());
     }
 
     public void pullAllRank(String date) {
         for (String mode : MODES) {
             Rank rank = getIllustrations(mode, date);
-            illustrationMapper.insertRank(rank);
-            illustrationService.saveToDb(rank.getData());
+            if (rank.getData() != null && rank.getData().size() > 0) {
+                illustrationMapper.insertRank(rank);
+                illustrationService.saveToDb(rank.getData());
+            }
         }
         System.out.println(date + "排行爬取完毕");
     }
