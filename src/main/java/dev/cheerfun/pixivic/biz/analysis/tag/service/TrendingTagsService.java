@@ -123,6 +123,7 @@ public class TrendingTagsService {
             Collections.shuffle(tagList);
             //持久化
             trendingTagsMapper.insert(yesterday.plusDays(2).toString(), tagList);
+        } finally {
             //删除日志
             Files.delete(Paths.get(logPath, yesterday + LOG_POS));
         }
