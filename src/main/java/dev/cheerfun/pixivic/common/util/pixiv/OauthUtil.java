@@ -52,7 +52,7 @@ final public class OauthUtil {
         length = oauths.size();
     }
 
-    @Scheduled(cron = "0 0/50 * * * ?")
+    @Scheduled(cron = "0 0/30 * * * ?")
     public void refreshAccessToken() {
         System.out.println("开始刷新帐号池");
         oauths.stream().parallel().forEach(this::refreshToken);
