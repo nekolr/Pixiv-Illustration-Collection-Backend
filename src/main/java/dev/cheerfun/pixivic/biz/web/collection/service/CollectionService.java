@@ -239,4 +239,9 @@ public class CollectionService {
         List<Integer> collectionIdList = collectionMapper.queryPopPublicCollection((page - 1) * pageSize, pageSize);
         return queryCollectionById(collectionIdList);
     }
+
+    public List<CollectionTag> autocompleteCollectionTag(String keyword) {
+
+        return null;
+    }
 }

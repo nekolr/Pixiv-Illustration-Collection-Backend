@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.collection.dto.UpdateIllustrationOrderDTO;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
+import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
 import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -106,6 +107,12 @@ public class CollectionController {
     public ResponseEntity<Result<List<Collection>>> querypopPublicCollection(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize) {
         return ResponseEntity.ok().body(new Result<>("获取最热门公开画集成功", collectionService.queryPopPublicCollection(page, pageSize)));
 
+    }
+
+    //标签自动补全
+    @GetMapping("/collections/tags")
+    public ResponseEntity<Result<List<CollectionTag>>> autocompleteCollectionTag(@RequestParam String keyword) {
+        return ResponseEntity.ok().body(new Result<>("标签补全成功", collectionService.autocompleteCollectionTag(keyword)));
     }
 
     //搜索画集

@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.collection.po;
 
+import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
 /**
@@ -10,6 +11,8 @@ import lombok.Data;
  */
 @Data
 public class CollectionTag {
+    @JsonSetter("tag_id")
     private Integer id;
+    @JsonSetter("tag_name")
     private String tagName;
 }
