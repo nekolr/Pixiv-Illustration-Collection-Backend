@@ -121,42 +121,41 @@ public class BusinessController {
         businessService.addTag((int) AppContext.get().get(AuthConstant.USER_ID), illustId, tags);
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
     }
-    //注销
 
     @PostMapping("/bookmarked/collections")
     public ResponseEntity<Result<String>> bookmarkCollection(@RequestBody @Valid BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
         businessService.bookmarkCollection((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkCollectionRelation.getUsername(), bookmarkCollectionRelation.getCollectionId());
-        return ResponseEntity.ok().body(new Result<>("收藏成功"));
+        return ResponseEntity.ok().body(new Result<>("收藏画集成功"));
     }
 
     @DeleteMapping("/bookmarked/collections")
     public ResponseEntity<Result<String>> cancelBookmarkCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
         businessService.cancelBookmarkCollection((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkCollectionRelation.getCollectionId());
-        return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
+        return ResponseEntity.ok().body(new Result<>("取消收藏画集成功"));
     }
 
     @PostMapping("/liked/collections")
     public ResponseEntity<Result<String>> likeCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
         businessService.likeCollection((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkCollectionRelation.getCollectionId());
-        return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
+        return ResponseEntity.ok().body(new Result<>("点赞画集成功"));
     }
 
     @DeleteMapping("/liked/collections")
     public ResponseEntity<Result<String>> cancelLikeCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
         businessService.cancelLikeCollection((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkCollectionRelation.getCollectionId());
-        return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
+        return ResponseEntity.ok().body(new Result<>("取消点赞画集成功"));
     }
 
     @PostMapping("/followed/users")
     public ResponseEntity<Result<String>> followUser(@RequestBody @Valid FollowedUserRelation followedUserRelation, @RequestHeader("Authorization") String token) {
         businessService.followUser((int) AppContext.get().get(AuthConstant.USER_ID), followedUserRelation.getUsername(), followedUserRelation.getFollowedUserId());
-        return ResponseEntity.ok().body(new Result<>("follow成功"));
+        return ResponseEntity.ok().body(new Result<>("关注用户成功"));
     }
 
     @DeleteMapping("/followed/users")
     public ResponseEntity<Result<String>> cancelFollowUser(@RequestBody FollowedUserRelation followedUserRelation, @RequestHeader("Authorization") String token) {
         businessService.cancelFollowUser((int) AppContext.get().get(AuthConstant.USER_ID), followedUserRelation.getFollowedUserId());
-        return ResponseEntity.ok().body(new Result<>("取消follow成功"));
+        return ResponseEntity.ok().body(new Result<>("取消关注用户成功"));
     }
 
 }
