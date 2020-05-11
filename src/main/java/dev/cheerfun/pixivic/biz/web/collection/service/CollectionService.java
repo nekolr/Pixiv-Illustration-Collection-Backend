@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.biz.web.collection.util.CollectionTagSearchUtil;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
@@ -79,8 +80,15 @@ public class CollectionService {
         return true;
     }
 
+    @Transactional
     public Boolean deleteCollection(Integer userId, Integer collectionId) {
-        return collectionMapper.deleteCollection(userId, collectionId) == 1;
+        //删除收藏、点赞数据
+        if (collectionMapper.deleteCollection(userId, collectionId) == 1) {
+            collectionMapper.deleteCollectionBookmark(collectionId);
+            stringRedisTemplate.delete(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId);
+            stringRedisTemplate.delete(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId);
+        }
+        return true;
     }
 
     @Transactional

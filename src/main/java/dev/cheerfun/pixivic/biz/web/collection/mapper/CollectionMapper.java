@@ -136,4 +136,8 @@ public interface CollectionMapper {
 
     @Update("update collections set cover=#{illustration,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler} where collection_id=#{collectionId}")
     Integer updateCollectionCover(Integer collectionId, Illustration illustration);
+
+    @Delete("delete from user_collection_bookmarked where collection_id = #{collectionId}")
+    Integer deleteCollectionBookmark(Integer collectionId);
+
 }

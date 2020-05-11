@@ -147,4 +147,7 @@ public interface BusinessMapper {
 
     @Delete("delete from user_user_followed where user_id = #{userId} and followed_user_id = #{followedUserId}")
     Integer cancelFollowUser(Integer userId, Integer followedUserId);
+
+    @Insert("select collection_id from user_collection_bookmarked where user_id = #{userId} limit #{currIndex},#{pageSize}")
+    List<Integer> queryBookmarkCollection(Integer userId, int currIndex, Integer pageSize);
 }

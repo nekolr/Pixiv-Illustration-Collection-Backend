@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
+import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkCollectionRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
@@ -132,6 +133,12 @@ public class BusinessController {
     public ResponseEntity<Result<String>> cancelBookmarkCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
         businessService.cancelBookmarkCollection((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkCollectionRelation.getCollectionId());
         return ResponseEntity.ok().body(new Result<>("取消收藏画集成功"));
+    }
+
+    @GetMapping("/{userId}/bookmarked/collections")
+    public ResponseEntity<Result<List<Collection>>> queryBookmarkCollection(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
+        List<Collection> collections = businessService.queryBookmarkCollection(userId, page, pageSize);
+        return ResponseEntity.ok().body(new Result<>("获取收藏画集成功", collections));
     }
 
     @PostMapping("/liked/collections")
