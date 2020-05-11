@@ -184,8 +184,8 @@ public class ArtistService {
     }
 
     private void addToWaitingList(int id) {
+        lock.lock();
         try {
-            lock.lock();
             waitForReDownload.add(id);
         } finally {
             lock.unlock();

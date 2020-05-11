@@ -12,11 +12,13 @@ import lombok.Data;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.locks.ReentrantLock;
 
 @Data
 public class Oauth {
     public final static String CLIENT_ID = "KzEZED7aC0vird8jWyHM38mXjNTY";
     public final static String CLIENT_SECRET = "W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP";
+    private ReentrantLock lock = new ReentrantLock();
     private volatile String accessToken;
     private String deviceToken;
     private String refreshToken;
@@ -45,17 +47,28 @@ public class Oauth {
     }
 
     public void refresh(OathRespBody responseBody) {
-        OathResp response = responseBody.getResponse();
-        accessToken = response.getAccessToken();
-        deviceToken = response.getDeviceToken();
-        refreshToken = response.getRefreshToken();
+        lock.lock();
+        try {
+            OathResp response = responseBody.getResponse();
+            accessToken = response.getAccessToken();
+            deviceToken = response.getDeviceToken();
+            refreshToken = response.getRefreshToken();
+        } finally {
+            lock.unlock();
+        }
+
     }
 
     public void refreshError() {
-        accessToken = null;
-        deviceToken = null;
-        refreshToken = null;
-        grantType = "password";
+        lock.lock();
+        try {
+            accessToken = null;
+            deviceToken = null;
+            refreshToken = null;
+            grantType = "password";
+        } finally {
+            lock.unlock();
+        }
     }
 
 }

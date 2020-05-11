@@ -28,7 +28,7 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class OauthManager {
-    private static ReentrantLock lock = new ReentrantLock();
+    private ReentrantLock lock = new ReentrantLock();
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     @Value("${pixiv.oauth.config}")
@@ -56,6 +56,7 @@ final public class OauthManager {
     public void refreshAccessToken() {
         System.out.println("开始刷新帐号池");
         oauths.stream().parallel().forEach(e -> {
+            //刷新失败
             if ("password".equals(e.getGrantType())) {
                 oauthInit(e);
             } else {
@@ -79,65 +80,62 @@ final public class OauthManager {
         OathRespBody body = null;
         try {
             body = (OathRespBody) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(OathRespBody.class)).body();
+            oauth.refresh(body);
         } catch (IOException | InterruptedException e) {
+            oauth.refreshError();
             e.printStackTrace();
-
         }
-        assert body != null;
-        oauth.refresh(body);
         System.out.println(oauth.getAccessToken());
     }
 
     public int getRandomOauthIndex() {
-        try {
-            lock.lock();
-            while (true) {
-                int i = random.nextInt(oauthListSize);
-                Oauth oauth = oauths.get(i);
-                if (oauth.getAccessToken() == null) {
-                    continue;
-                }
-                if (!oauth.getIsBan()) {
-                    ConsumptionProbe consumptionProbe = oauth.getBucket().tryConsumeAndReturnRemaining(1);
-                    if (consumptionProbe.isConsumed()) {
-                        return i;
-                    }
-                }
-                if (oauths.stream().noneMatch(Oauth::getIsBan)) {
-                    try {
-                        Thread.sleep(1000 * 60);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                }
+        long start = System.currentTimeMillis();
+        while (System.currentTimeMillis() - start < 1000 * 15) {
+            int i = random.nextInt(oauthListSize);
+            Oauth oauth = oauths.get(i);
+            if (oauth.getAccessToken() == null) {
+                oauthInit(oauth);
+                continue;
             }
-        } finally {
-            lock.unlock();
+            //     if (!oauth.getIsBan()) {
+            ConsumptionProbe consumptionProbe = oauth.getBucket().tryConsumeAndReturnRemaining(1);
+            if (consumptionProbe.isConsumed()) {
+                return i;
+            }
+            //   }
+          /*  if (oauths.stream().noneMatch(Oauth::getIsBan)) {
+                try {
+                    init();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }*/
         }
+        throw new RuntimeException("获取token失败");
     }
 
-    void ban(int index) {
+    /*void ban(int index) {
         Oauth oauth = oauths.get(index);
+        lock.lock();
         try {
-            lock.lock();
             oauth.setIsBan(true);
             oauth.setBanAt(System.currentTimeMillis());
         } finally {
             lock.unlock();
         }
-    }
+    }*/
 
-    @Scheduled(initialDelay = 1000 * 60 * 10, fixedRate = 5000)
+    /*@Scheduled(initialDelay = 1000 * 60 * 10, fixedRate = 5000)
     public void scanAndResetIsban() {
         oauths.stream().parallel().filter(Oauth::getIsBan).forEach(oauth -> {
             if (System.currentTimeMillis() - oauth.getBanAt() > 1000 * 60 * 10)
-                try {
-                    lock.lock();
-                    oauth.setIsBan(false);
-                } finally {
-                    lock.unlock();
-                }
+                lock.lock();
+            try {
+                oauth.setIsBan(false);
+            } finally {
+                lock.unlock();
+            }
         });
-    }
+    }*/
 
 }
