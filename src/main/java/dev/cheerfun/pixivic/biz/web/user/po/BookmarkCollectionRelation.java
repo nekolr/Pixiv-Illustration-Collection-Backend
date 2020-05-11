@@ -16,8 +16,8 @@ public class BookmarkCollectionRelation {
     @NotNull
     private String username;
     @NotNull
-    private int userId;
+    private Integer userId;
     @NotNull
-    private int collectionId;
+    private Integer collectionId;
 
 }

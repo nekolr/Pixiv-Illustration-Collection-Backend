@@ -255,4 +255,12 @@ public class CollectionService {
     public CompletableFuture<List<CollectionTag>> autocompleteCollectionTag(String keyword) {
         return collectionTagSearchUtil.search(keyword);
     }
+
+    public void modifyTotalBookmark(Integer collectionId, Integer modify) {
+        if (modify > 0) {
+            collectionMapper.decrCollectionyTotalBookmark(collectionId);
+        } else {
+
+        }
+    }
 }

@@ -140,4 +140,6 @@ public interface CollectionMapper {
     @Delete("delete from user_collection_bookmarked where collection_id = #{collectionId}")
     Integer deleteCollectionBookmark(Integer collectionId);
 
+    @Update("update collections set total_book where collection_id = #")
+    Integer decrCollectionyTotalBookmark(Integer collectionId);
 }
