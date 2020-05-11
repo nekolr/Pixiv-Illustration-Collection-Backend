@@ -7,13 +7,15 @@ import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -71,19 +73,17 @@ public class IllustHistoryService {
     public void clear() {
         System.out.println("开始清理收藏");
         //获取keylist
-        Set<String> keys = stringRedisTemplate.keys(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + "*");
-        //每个用户维持在1000个，超过一千从数据库取
-        stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-            for (String key : keys) {
-                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                //Long size = stringRedisConnection.zCard(key);
-                //只保留五天内数据
-                stringRedisConnection.zRemRangeByScore(key, LocalDateTime.now().plusDays(-5).toEpochSecond(ZoneOffset.of("+8")), -Integer.MAX_VALUE);
-            }
-            return null;
-        });
+        final ScanOptions scanOptions = ScanOptions.scanOptions().match(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + "*").build();
+        RedisConnection connection = stringRedisTemplate.getConnectionFactory().getConnection();
+        Cursor<byte[]> cursor = connection.scan(scanOptions);
+        int i = 0;
+        while (cursor.hasNext()) {
+            connection.zRemRangeByScore(cursor.next(), LocalDateTime.now().plusDays(-5).toEpochSecond(ZoneOffset.of("+8")), -Integer.MAX_VALUE);
+            i++;
+        }
         illustHistoryMapper.deleteIllustHistory();
         illustHistoryMapper.tempToIllustHistory();
         illustHistoryMapper.truncateTemp();
     }
+
 }

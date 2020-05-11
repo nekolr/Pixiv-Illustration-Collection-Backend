@@ -114,16 +114,14 @@ final public class OauthManager {
         throw new RuntimeException("获取token失败");
     }
 
-    /*void ban(int index) {
-        Oauth oauth = oauths.get(index);
+    void ban(int index) {
         lock.lock();
         try {
-            oauth.setIsBan(true);
-            oauth.setBanAt(System.currentTimeMillis());
+            oauths.remove(index);
         } finally {
             lock.unlock();
         }
-    }*/
+    }
 
     /*@Scheduled(initialDelay = 1000 * 60 * 10, fixedRate = 5000)
     public void scanAndResetIsban() {
