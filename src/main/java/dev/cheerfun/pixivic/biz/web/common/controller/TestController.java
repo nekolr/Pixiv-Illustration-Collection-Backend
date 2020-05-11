@@ -16,7 +16,7 @@ import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.EmailUtil;
-import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
+import dev.cheerfun.pixivic.common.util.pixiv.OauthManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -38,7 +38,7 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TestController {
     private final JWTUtil jwtUtil;
-    private final OauthUtil oauthUtil;
+    private final OauthManager oauthManager;
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustRankService rankDailyService;
     private final EmailUtil emailUtil;

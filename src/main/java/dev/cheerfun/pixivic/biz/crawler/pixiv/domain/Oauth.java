@@ -51,4 +51,11 @@ public class Oauth {
         refreshToken = response.getRefreshToken();
     }
 
+    public void refreshError() {
+        accessToken = null;
+        deviceToken = null;
+        refreshToken = null;
+        grantType = "password";
+    }
+
 }

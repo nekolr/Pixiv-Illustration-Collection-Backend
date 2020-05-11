@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 final public class RequestUtil {
     //@Resource(name = "httpClientWithProxy")
     private final HttpClient httpClient;
-    private final OauthUtil oauthUtil;
+    private final OauthManager oauthManager;
 
     public static String getPostEntity(Map<String, String> param) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -89,8 +89,8 @@ final public class RequestUtil {
         HttpRequest.Builder uri = HttpRequest.newBuilder()
                 .uri(URI.create(url));
         decorateHeader(uri);
-        int randomOauthIndex = oauthUtil.getRandomOauthIndex();
-        Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
+        int randomOauthIndex = oauthManager.getRandomOauthIndex();
+        Oauth oauth = oauthManager.getOauths().get(randomOauthIndex);
         HttpRequest getRank = uri
                 .header("Authorization", "Bearer " + oauth.getAccessToken())
                 .GET()
@@ -99,7 +99,7 @@ final public class RequestUtil {
             int code = resp.statusCode();
             //System.out.println(resp.body().length());
             if (code == 403) {
-                oauthUtil.ban(randomOauthIndex);
+                oauthManager.ban(randomOauthIndex);
                 return "false";
             }
             return resp.body();
@@ -110,8 +110,8 @@ final public class RequestUtil {
         HttpRequest.Builder uri = HttpRequest.newBuilder()
                 .uri(URI.create(url));
         decorateHeader(uri);
-        int randomOauthIndex = oauthUtil.getRandomOauthIndex();
-        Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
+        int randomOauthIndex = oauthManager.getRandomOauthIndex();
+        Oauth oauth = oauthManager.getOauths().get(randomOauthIndex);
         HttpRequest getRank = uri
                 .header("Authorization", "Bearer " + oauth.getAccessToken())
                 .GET()

@@ -27,14 +27,14 @@ import java.util.concurrent.locks.ReentrantLock;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-final public class OauthUtil {
+final public class OauthManager {
     private static ReentrantLock lock = new ReentrantLock();
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     @Value("${pixiv.oauth.config}")
     private String path;
     private Random random = new Random();
-    private int length;
+    private int oauthListSize;
 
     @Getter
     private volatile List<Oauth> oauths;
@@ -49,22 +49,28 @@ final public class OauthUtil {
         System.out.println("开始初始化帐号池");
         CompletableFuture.runAsync(() -> oauths.stream().parallel().forEach(this::oauthInit));
         System.out.println("帐号池初始化完毕");
-        length = oauths.size();
+        oauthListSize = oauths.size();
     }
 
     @Scheduled(cron = "0 0/30 * * * ?")
     public void refreshAccessToken() {
         System.out.println("开始刷新帐号池");
-        oauths.stream().parallel().forEach(this::refreshToken);
+        oauths.stream().parallel().forEach(e -> {
+            if ("password".equals(e.getGrantType())) {
+                oauthInit(e);
+            } else {
+                refresh(e);
+            }
+        });
         System.out.println("帐号池刷新完毕");
     }
 
     private void oauthInit(Oauth oauth) {
-        refreshToken(oauth);
+        refresh(oauth);
         oauth.setGrantType("refresh_token");
     }
 
-    private void refreshToken(Oauth oauth) {
+    private void refresh(Oauth oauth) {
         HttpRequest.Builder uri = HttpRequest.newBuilder()
                 .uri(URI.create("https://proxy.pixivic.com:23334/auth/token"));
         RequestUtil.decorateHeader(uri);
@@ -75,6 +81,7 @@ final public class OauthUtil {
             body = (OathRespBody) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(OathRespBody.class)).body();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
+
         }
         assert body != null;
         oauth.refresh(body);
@@ -82,22 +89,30 @@ final public class OauthUtil {
     }
 
     public int getRandomOauthIndex() {
-        while (true) {
-            int i = random.nextInt(length);
-            Oauth oauth = oauths.get(i);
-            if (!oauth.getIsBan()) {
-                ConsumptionProbe consumptionProbe = oauth.getBucket().tryConsumeAndReturnRemaining(1);
-                if (consumptionProbe.isConsumed()) {
-                    return i;
+        try {
+            lock.lock();
+            while (true) {
+                int i = random.nextInt(oauthListSize);
+                Oauth oauth = oauths.get(i);
+                if (oauth.getAccessToken() == null) {
+                    continue;
+                }
+                if (!oauth.getIsBan()) {
+                    ConsumptionProbe consumptionProbe = oauth.getBucket().tryConsumeAndReturnRemaining(1);
+                    if (consumptionProbe.isConsumed()) {
+                        return i;
+                    }
+                }
+                if (oauths.stream().noneMatch(Oauth::getIsBan)) {
+                    try {
+                        Thread.sleep(1000 * 60);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
-            if (oauths.stream().noneMatch(Oauth::getIsBan)) {
-                try {
-                    Thread.sleep(1000 * 60);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
+        } finally {
+            lock.unlock();
         }
     }
 
