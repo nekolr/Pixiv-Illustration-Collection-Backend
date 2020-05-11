@@ -28,9 +28,9 @@ import java.util.concurrent.locks.ReentrantLock;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class OauthManager {
-    private ReentrantLock lock = new ReentrantLock();
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private ReentrantLock lock = new ReentrantLock();
     @Value("${pixiv.oauth.config}")
     private String path;
     private Random random = new Random();

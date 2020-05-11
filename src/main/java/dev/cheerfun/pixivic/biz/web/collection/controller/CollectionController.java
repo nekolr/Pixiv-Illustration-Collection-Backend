@@ -118,7 +118,7 @@ public class CollectionController {
 
     //搜索画集
     @GetMapping("/collections")
-    public ResponseEntity<Result<Boolean>> searchCollection(@RequestBody UpdateIllustrationOrderDTO updateIllustrationOrderDTO, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<List<Collection>>> searchCollection(@RequestBody UpdateIllustrationOrderDTO updateIllustrationOrderDTO, @RequestHeader(value = "Authorization", required = false) String token) {
         return null;
     }
 
