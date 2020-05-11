@@ -243,6 +243,7 @@ public class CollectionService {
         return queryCollectionById(collectionIdList);
     }
 
+    @Cacheable("collection_tag_search")
     public CompletableFuture<List<CollectionTag>> autocompleteCollectionTag(String keyword) {
         return collectionTagSearchUtil.search(keyword);
     }
