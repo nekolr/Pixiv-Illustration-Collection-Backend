@@ -82,6 +82,8 @@ public class IllustHistoryService {
             }
             return null;
         });
-        illustHistoryMapper.updateFromTemp();
+        illustHistoryMapper.deleteIllustHistory();
+        illustHistoryMapper.tempToIllustHistory();
+        illustHistoryMapper.truncateTemp();
     }
 }
