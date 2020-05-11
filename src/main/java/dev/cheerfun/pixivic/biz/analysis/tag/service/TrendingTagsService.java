@@ -70,16 +70,17 @@ public class TrendingTagsService {
 
     @CacheEvict(value = "trending_tags", allEntries = true)
     public void dailyTask(LocalDate yesterday) throws IOException {
-        //获取pixiv原生热度标签
-        List<Tag> tagList;
-        try {
-            tagList = queryPixivTrendingTag();
-        } catch (Exception e) {
-            tagList = new ArrayList<>();
-        }
-        Set<String> tagNameSet = tagList.stream().collect(groupingBy(Tag::getName)).keySet();
+
         //读取日志
         try (Stream<String> stream = Files.lines(Paths.get(logPath, yesterday + LOG_POS), StandardCharsets.ISO_8859_1)) {
+            //获取pixiv原生热度标签
+            List<Tag> tagList;
+            try {
+                tagList = queryPixivTrendingTag();
+            } catch (Exception e) {
+                tagList = new ArrayList<>();
+            }
+            Set<String> tagNameSet = tagList.stream().collect(groupingBy(Tag::getName)).keySet();
             //逐行处理
             tagList.addAll(stream.map(line -> {
                 //搜索api
