@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.biz.web.collection.dto.UpdateIllustrationOrderDTO;
 import dev.cheerfun.pixivic.biz.web.collection.mapper.CollectionMapper;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
+import dev.cheerfun.pixivic.biz.web.collection.util.CollectionTagSearchUtil;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
@@ -23,6 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,7 @@ public class CollectionService {
     private final StringRedisTemplate stringRedisTemplate;
     private final SensitiveFilter sensitiveFilter;
     private final IllustrationBizService illustrationBizService;
+    private final CollectionTagSearchUtil collectionTagSearchUtil;
 
     public Boolean createCollection(Integer userId, Collection collection) {
         //去除敏感词
@@ -240,8 +243,7 @@ public class CollectionService {
         return queryCollectionById(collectionIdList);
     }
 
-    public List<CollectionTag> autocompleteCollectionTag(String keyword) {
-
-        return null;
+    public CompletableFuture<List<CollectionTag>> autocompleteCollectionTag(String keyword) {
+        return collectionTagSearchUtil.search(keyword);
     }
 }

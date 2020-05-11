@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author OysterQAQ
@@ -111,8 +112,8 @@ public class CollectionController {
 
     //标签自动补全
     @GetMapping("/collections/tags")
-    public ResponseEntity<Result<List<CollectionTag>>> autocompleteCollectionTag(@RequestParam String keyword) {
-        return ResponseEntity.ok().body(new Result<>("标签补全成功", collectionService.autocompleteCollectionTag(keyword)));
+    public CompletableFuture<ResponseEntity<Result<List<CollectionTag>>>> autocompleteCollectionTag(@RequestParam String keyword) {
+        return collectionService.autocompleteCollectionTag(keyword).thenApply(e -> ResponseEntity.ok().body(new Result<>("标签补全成功", e)));
     }
 
     //搜索画集
