@@ -242,6 +242,34 @@ public class BusinessService {
         }).collect(Collectors.toList());
     }
 
+    @Transactional
+    public void bookmarkCollection(Integer userId, String username, Integer collectionId) {
+        businessMapper.bookmarkCollection(userId, username, collectionId);
+        stringRedisTemplate.opsForSet().add(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId, String.valueOf(userId));
+    }
+
+    @Transactional
+    public void cancelBookmarkCollection(int userId, int collectionId) {
+        businessMapper.cancelBookmarkCollection(userId, collectionId);
+        stringRedisTemplate.opsForSet().remove(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId, String.valueOf(userId));
+    }
+
+    public void likeCollection(Integer userId, Integer collectionId) {
+        stringRedisTemplate.opsForSet().add(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, String.valueOf(userId));
+    }
+
+    public void cancelLikeCollection(int userId, int collectionId) {
+        stringRedisTemplate.opsForSet().remove(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, String.valueOf(userId));
+    }
+
+    public void followUser(Integer userId, String username, Integer followedUserId) {
+        businessMapper.followUser(userId, username, followedUserId);
+    }
+
+    public void cancelFollowUser(Integer userId, Integer followedUserId) {
+        businessMapper.cancelFollowUser(userId, followedUserId);
+    }
+
     private static class NewInteger {
         int value, row, col;
 
