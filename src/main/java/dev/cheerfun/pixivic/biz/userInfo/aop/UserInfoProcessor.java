@@ -23,6 +23,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -90,6 +91,12 @@ public class UserInfoProcessor {
         }
         return illustrationList;
 
+    }
+
+    public List<Collection> dealIsLikedInfoForCollectionList() {
+        //处理like信息以及收藏信息
+        //获取统计数据
+        return null;
     }
 
     public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {
