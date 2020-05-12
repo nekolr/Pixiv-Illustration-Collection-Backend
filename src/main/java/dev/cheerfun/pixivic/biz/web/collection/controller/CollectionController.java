@@ -93,7 +93,7 @@ public class CollectionController {
     @WithUserInfo
     @WithAdvertisement
     public ResponseEntity<Result<List<Illustration>>> queryCollectionIllust(@PathVariable Integer collectionId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize) {
-        //用户指纹+hyperlog记录浏览量
+        //TODO header中添加用户指纹 放到hyperlog记录浏览量
         return ResponseEntity.ok().body(new Result<>("获取画集下画作成功", collectionService.queryCollectionIllust(collectionId, page, pageSize)));
     }
 

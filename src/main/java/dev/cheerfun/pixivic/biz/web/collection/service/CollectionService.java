@@ -75,6 +75,8 @@ public class CollectionService {
         //校验collectionId是否属于用户
         checkCollectionAuth(collection.getId(), userId);
         collectionMapper.updateCollection(userId, collection);
+        //是否修改了可见性
+        //修改则清空收藏数以及收藏数据
         //异步将tag入库
         insertCollectionTag(collection);
         return true;
@@ -256,11 +258,24 @@ public class CollectionService {
         return collectionTagSearchUtil.search(keyword);
     }
 
+    @Transactional
     public void modifyTotalBookmark(Integer collectionId, Integer modify) {
         if (modify > 0) {
-            collectionMapper.decrCollectionyTotalBookmark(collectionId);
+            collectionMapper.incrCollectionTotalBookmark(collectionId);
         } else {
-
+            collectionMapper.decrCollectionTotalBookmark(collectionId);
         }
     }
+
+    @Transactional
+    @Async
+    public void modifyLikeCount(Integer collectionId, Integer modify) {
+        if (modify > 0) {
+            collectionMapper.incrCollectionTotalLike(collectionId);
+        } else {
+            collectionMapper.decrCollectionTotalLike(collectionId);
+        }
+    }
+
+    //每秒
 }

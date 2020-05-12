@@ -37,6 +37,7 @@ public class Collection {
     private Integer pornWarning;
     private Integer totalBookmarked;
     private Integer totalView;
+    private Integer totalPeopleSeen;
     private Integer totalLiked;
     private Integer totalReward;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
