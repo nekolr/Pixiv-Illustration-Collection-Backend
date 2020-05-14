@@ -20,6 +20,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.util.*;
+import java.util.concurrent.CompletableFuture;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -48,7 +49,7 @@ public class OauthManager {
         });
         //账号初始化
         pixivUserSize = pixivUserList.size();
-        refreshAccessToken();
+        CompletableFuture.runAsync(this::refreshAccessToken);
     }
 
     @Scheduled(cron = "0 0/30 * * * ?")
