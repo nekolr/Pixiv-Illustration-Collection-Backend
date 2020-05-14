@@ -49,7 +49,7 @@ public class CommonController {
         if (userService.checkUsername(username)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("用户名已存在"));
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result<>("用户名不存在"));
+        return ResponseEntity.ok().body(new Result<>("用户名不存在"));
     }
 
     @GetMapping("/emails/{email:.+}")
@@ -57,12 +57,12 @@ public class CommonController {
         if (userService.checkEmail(email)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("邮箱已存在"));
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result<>("邮箱不存在"));
+        return ResponseEntity.ok().body(new Result<>("邮箱不存在"));
     }
 
     @PostMapping
     @CheckVerification
-    public ResponseEntity<Result<User>> signUp(@RequestBody SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) throws MessagingException {
+    public ResponseEntity<Result<User>> signUp(@RequestBody SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userInfo.castToUser();
         user = userService.signUp(user);
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", user));

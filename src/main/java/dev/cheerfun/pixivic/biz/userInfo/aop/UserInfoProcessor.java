@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -22,6 +23,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -69,7 +71,15 @@ public class UserInfoProcessor {
                 body.setData(objectMapper.convertValue(data, new TypeReference<List<Illustration>>() {
                 }));
             }
+            if (data.get(0) instanceof ArtistWithRecentlyIllusts) {
+                List<ArtistWithRecentlyIllusts> result = data;
+                result.stream().parallel().forEach(r -> {
+                    dealIsLikedInfoForIllustList(r.getRecentlyIllustrations(), userId);
+                });
+                return;
+            }
             dealIsLikedInfoForIllustList(body.getData(), userId);
+
         }
     }
 
@@ -81,6 +91,12 @@ public class UserInfoProcessor {
         }
         return illustrationList;
 
+    }
+
+    public List<Collection> dealIsLikedInfoForCollectionList() {
+        //处理like信息以及收藏信息
+        //获取统计数据
+        return null;
     }
 
     public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {

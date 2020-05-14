@@ -3,7 +3,7 @@ package dev.cheerfun.pixivic.biz.web.user.po;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 /**
  * @author OysterQAQ
@@ -14,11 +14,11 @@ import javax.validation.constraints.NotBlank;
 @Data
 @NoArgsConstructor
 public class FollowedRelation {
-    @NotBlank
+    @NotNull
     private Integer userId;
-    @NotBlank
+    @NotNull
     private String username;
-    @NotBlank
+    @NotNull
     private Integer artistId;
 
 }

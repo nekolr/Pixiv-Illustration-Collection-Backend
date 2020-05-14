@@ -1,9 +1,10 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import com.google.common.collect.Lists;
-import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
-import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
+import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
+import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
+import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
@@ -48,6 +49,46 @@ public class BusinessService {
     private final StringRedisTemplate stringRedisTemplate;
     private final BusinessMapper businessMapper;
     private final IllustrationBizService illustrationBizService;
+    private final ArtistBizService artistBizService;
+    private final CollectionService collectionService;
+
+    private static List<List<Integer>> split(List<Integer> illustrationIdList) {
+        List<List<Integer>> result = new ArrayList<>();
+        int size = illustrationIdList.size();
+        if (size > 1) {
+            int from = 0;
+            int to = 1;
+            for (; to < size; to++) {
+                if (to == size - 1) {
+                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
+                    break;
+                } else if (to != size - 1 && illustrationIdList.get(to) > illustrationIdList.get(to + 1)) {
+                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
+                    from = to + 1;
+                }
+            }
+        }
+        return result;
+    }
+
+    public static List<Integer> mergekSortedArrays(List<List<Integer>> arrays) {
+        ArrayList<Integer> list = new ArrayList<>();
+        if (arrays == null || arrays.size() == 0 || arrays.get(0).size() == 0) {
+            return list;
+        }
+        PriorityQueue<NewInteger> pq = new PriorityQueue<>(arrays.size(), (x, y) -> x.value > y.value ? -1 : 1);
+        for (int i = 0; i < arrays.size(); i++) {
+            pq.offer(new NewInteger(arrays.get(i).get(0), i, 0));
+        }
+        while (list.size() < 3000 && !pq.isEmpty()) {
+            NewInteger min = pq.poll();
+            if (min.col + 1 < arrays.get(min.row).size()) {
+                pq.offer(new NewInteger(arrays.get(min.row).get(min.col + 1), min.row, min.col + 1));
+            }
+            list.add(min.value);
+        }
+        return list;
+    }
 
     public void bookmark(int userId, String username, int illustId) {
         bookmarkOperation(userId, username, illustId, 1, 0);
@@ -57,7 +98,7 @@ public class BusinessService {
         bookmarkOperation(userId, null, illustId, -1, relationId);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "illust_bookmarked", key = "#illustId+'1'+'30'")
     public void bookmarkOperation(int userId, String username, int illustId, int increment, int relationId) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
@@ -86,32 +127,8 @@ public class BusinessService {
         });
     }
 
-    public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
-        Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            int userId = (int) context.get(AuthConstant.USER_ID);
-            dealIsLikedInfoForIllustList(illustrationList, userId);
-        }
-    }
-
-    public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {
-        List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-            for (Illustration illustration : illustrationList) {
-                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
-            }
-            return null;
-        });
-        int size = isFollowedList.size();
-        for (int i = 0; i < size; i++) {
-            IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), true);
-            illustrationWithLikeInfo.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustrationWithLikeInfo.getArtistPreView(), (Boolean) isFollowedList.get(i)));
-            illustrationList.set(i, illustrationWithLikeInfo);
-        }
-    }
-
     //@Scheduled(cron = "0 0 16 * * ?")
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void flushBookmarkCountToDb() {
         //半夜三点往mysql更新收藏数
         Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(RedisKeyConstant.BOOKMARK_COUNT_MAP_REDIS_PRE);
@@ -135,7 +152,7 @@ public class BusinessService {
             @CacheEvict(value = "followedLatest", key = "#userId + 'illust'"),
             @CacheEvict(value = "followedLatest", key = "#userId + 'manga'"),
             @CacheEvict(value = "artist_followed", key = "#artistId+'1'+'30'")})
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void follow(int userId, int artistId, String username) {
         try {
             businessMapper.follow(userId, artistId, username, LocalDateTime.now());
@@ -174,7 +191,7 @@ public class BusinessService {
                     });
                 }
                 for (int i = 0; i < artists.size(); i++) {
-                    illustrationBizService.dealArtist(artists.get(i));
+                    artistBizService.dealArtist(artists.get(i));
                     artists.set(i, new ArtistWithIsFollowedInfo(artists.get(i), (Boolean) isFollowedList.get(i)));
                 }
             }
@@ -186,7 +203,7 @@ public class BusinessService {
         return stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void addTag(int userId, String illustId, List<Tag> tags) {
         List<Tag> oldTags = businessMapper.queryIllustrationTagsById(illustId);
         oldTags.addAll(tags);
@@ -219,32 +236,50 @@ public class BusinessService {
         return sortedIdList;
     }
 
-    private static List<List<Integer>> split(List<Integer> illustrationIdList) {
-        List<List<Integer>> result = new ArrayList<>();
-        int size = illustrationIdList.size();
-        if (size > 1) {
-            int from = 0;
-            int to = 1;
-            for (; to < size; to++) {
-                if (to == size - 1) {
-                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
-                    break;
-                } else if (to != size - 1 && illustrationIdList.get(to) > illustrationIdList.get(to + 1)) {
-                    result.add(Lists.reverse(illustrationIdList.subList(from, to + 1)));
-                    from = to + 1;
-                }
-            }
-        }
-        return result;
-    }
-
     public List<ArtistWithRecentlyIllusts> queryFollowedWithRecentlyIllusts(Integer userId, int currIndex, int pageSize) {
         List<Artist> artists = queryFollowed(userId, currIndex, pageSize);
         return artists.stream().map(e -> {
-            List<Illustration> illustrations = illustrationBizService.queryIllustrationsByArtistId(e.getId(), "illust", 0, 3);
-            dealIsLikedInfoForIllustList(illustrations);
+            List<Illustration> illustrations = artistBizService.queryIllustrationsByArtistId(e.getId(), "illust", 0, 3);
+            // illustrationBizService.dealIsLikedInfoForIllustList(illustrations);
             return new ArtistWithRecentlyIllusts(e, illustrations);
         }).collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void bookmarkCollection(Integer userId, String username, Integer collectionId) {
+        businessMapper.bookmarkCollection(userId, username, collectionId);
+        collectionService.modifyTotalBookmark(collectionId, 1);
+        stringRedisTemplate.opsForSet().add(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId, String.valueOf(userId));
+    }
+
+    @Transactional
+    public void cancelBookmarkCollection(int userId, int collectionId) {
+        businessMapper.cancelBookmarkCollection(userId, collectionId);
+        collectionService.modifyTotalBookmark(collectionId, -1);
+        stringRedisTemplate.opsForSet().remove(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId, String.valueOf(userId));
+    }
+
+    public void likeCollection(Integer userId, Integer collectionId) {
+        stringRedisTemplate.opsForSet().add(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, String.valueOf(userId));
+        collectionService.modifyLikeCount(collectionId, 1);
+    }
+
+    public void cancelLikeCollection(int userId, int collectionId) {
+        stringRedisTemplate.opsForSet().remove(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, String.valueOf(userId));
+        collectionService.modifyLikeCount(collectionId, -1);
+    }
+
+    public void followUser(Integer userId, String username, Integer followedUserId) {
+        businessMapper.followUser(userId, username, followedUserId);
+    }
+
+    public void cancelFollowUser(Integer userId, Integer followedUserId) {
+        businessMapper.cancelFollowUser(userId, followedUserId);
+    }
+
+    public List<Collection> queryBookmarkCollection(Integer userId, Integer page, Integer pageSize) {
+        List<Integer> collectionIdList = businessMapper.queryBookmarkCollection(userId, (page - 1), pageSize);
+        return collectionService.queryCollectionById(collectionIdList);
     }
 
     private static class NewInteger {
@@ -255,25 +290,6 @@ public class BusinessService {
             this.row = row;
             this.col = col;
         }
-    }
-
-    public static List<Integer> mergekSortedArrays(List<List<Integer>> arrays) {
-        ArrayList<Integer> list = new ArrayList<>();
-        if (arrays == null || arrays.size() == 0 || arrays.get(0).size() == 0) {
-            return list;
-        }
-        PriorityQueue<NewInteger> pq = new PriorityQueue<>(arrays.size(), (x, y) -> x.value > y.value ? -1 : 1);
-        for (int i = 0; i < arrays.size(); i++) {
-            pq.offer(new NewInteger(arrays.get(i).get(0), i, 0));
-        }
-        while (list.size() < 3000 && !pq.isEmpty()) {
-            NewInteger min = pq.poll();
-            if (min.col + 1 < arrays.get(min.row).size()) {
-                pq.offer(new NewInteger(arrays.get(min.row).get(min.col + 1), min.row, min.col + 1));
-            }
-            list.add(min.value);
-        }
-        return list;
     }
 
 }

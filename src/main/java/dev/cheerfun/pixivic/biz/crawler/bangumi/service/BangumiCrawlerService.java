@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.crawler.bangumi.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.Animate;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.AnimateCharacter;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -22,10 +22,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -42,7 +39,7 @@ public class BangumiCrawlerService {
     private final StringRedisTemplate stringRedisTemplate;
     private final AnimateMapper animateMapper;
 
-    @PostConstruct
+    //@PostConstruct
     public void pullAllAnimateInfo() throws IOException, InterruptedException {
         //读取idtxt获取id进行采集
         List<String> strings = Files.readAllLines(Paths.get("/home/PIC/id.txt"));
@@ -184,6 +181,22 @@ public class BangumiCrawlerService {
         }
 
         return animate;
+    }
+
+    public void deal() {
+        Set<String> set = new HashSet<>();
+        List<String> strings = animateMapper.queryAllTag();
+        strings.forEach(e -> {
+            if (e == null) return;
+            try {
+                List<String> list = objectMapper.readValue(e, List.class);
+                set.addAll(list);
+            } catch (JsonProcessingException jsonProcessingException) {
+                jsonProcessingException.printStackTrace();
+            }
+        });
+        animateMapper.insertTags(set);
+        System.out.println("233");
     }
 
 }

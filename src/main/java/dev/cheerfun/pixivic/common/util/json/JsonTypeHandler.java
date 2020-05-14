@@ -21,21 +21,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.sql.CallableStatement;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 @MappedJdbcTypes(value = {JdbcType.OTHER}, includeNullJdbcType = true)
 @MappedTypes({ArtistPreView.class, Artist.class, ArrayList.class, Tag.class, ImageUrl.class, SearchSuggestion.class, List.class, Illustration.class})
 public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
 
     private static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -49,6 +44,7 @@ public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     }
 
+    private Logger logger = LoggerFactory.getLogger(getClass());
     private Class<T> type;
 
     public JsonTypeHandler(Class<T> type) {

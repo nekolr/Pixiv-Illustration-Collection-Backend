@@ -9,10 +9,19 @@ public interface CommonMapper {
             "SELECT IFNULL((\n" +
                     "SELECT 1\n" +
                     "FROM users\n" +
-                    "WHERE email=#{email} OR username=#{username}\n" +
+                    "WHERE username=#{username}\n" +
                     "LIMIT 1),0)",
     })
-    int checkUserNameAndEmail(String username, String email);
+    int checkUserName(String username);
+
+    @Select({
+            "SELECT IFNULL((\n" +
+                    "SELECT 1\n" +
+                    "FROM users\n" +
+                    "WHERE email=#{email} \n" +
+                    "LIMIT 1),0)",
+    })
+    int checkUserEmail(String email);
 
     @Insert("insert into users (email, username,password,permission_level,is_ban,star,create_date) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan},#{star},#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "user_id")

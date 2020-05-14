@@ -28,6 +28,7 @@ public class CreditProcessor {
 
     @Around(value = "pointCut()")
     public Object handleCredit(ProceedingJoinPoint joinPoint) {
+        //扣分使用aop 加分用事件
         //获取注解参数
         //获取userId
         //积分处理并且持久化

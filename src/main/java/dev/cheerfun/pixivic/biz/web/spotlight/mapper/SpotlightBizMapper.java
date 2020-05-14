@@ -20,24 +20,23 @@ public interface SpotlightBizMapper {
     @Insert("insert into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler})")
     int insert(Rank rank);
 
-
     @Select("select * from spotlights order by publish_date desc limit #{currIndex} , #{pageSize}")
     @Results({
-            @Result(property="id", column="spotlight_id"),
-            @Result(property="pureTitle", column="pure_title"),
-            @Result(property="publishDate", column="publish_date",typeHandler=org.apache.ibatis.type.LocalDateTypeHandler.class),
-            @Result(property="subcategoryLabel", column="subcategory_label"),
-            @Result(property="articleUrl", column="article_url")
+            @Result(property = "id", column = "spotlight_id"),
+            @Result(property = "pureTitle", column = "pure_title"),
+            @Result(property = "publishDate", column = "publish_date", typeHandler = org.apache.ibatis.type.LocalDateTypeHandler.class),
+            @Result(property = "subcategoryLabel", column = "subcategory_label"),
+            @Result(property = "articleUrl", column = "article_url")
     })
     List<Spotlight> queryList(int pageSize, int currIndex);
 
     @Select("select * from spotlights where spotlight_id = #{spotlightId} limit 1")
     @Results({
-            @Result(property="pureTitle", column="pure_title"),
-            @Result(property="id", column="spotlight_id"),
-            @Result(property="publishDate", column="publish_date",typeHandler=org.apache.ibatis.type.LocalDateTypeHandler.class),
-            @Result(property="subcategoryLabel", column="subcategory_label"),
-            @Result(property="articleUrl", column="article_url")
+            @Result(property = "pureTitle", column = "pure_title"),
+            @Result(property = "id", column = "spotlight_id"),
+            @Result(property = "publishDate", column = "publish_date", typeHandler = org.apache.ibatis.type.LocalDateTypeHandler.class),
+            @Result(property = "subcategoryLabel", column = "subcategory_label"),
+            @Result(property = "articleUrl", column = "article_url")
     })
     Spotlight queryDetail(int spotlightId);
 

@@ -16,7 +16,7 @@ import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.EmailUtil;
-import dev.cheerfun.pixivic.common.util.pixiv.OauthUtil;
+import dev.cheerfun.pixivic.common.util.pixiv.OauthManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -25,6 +25,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.mail.MessagingException;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -37,7 +38,7 @@ import java.util.concurrent.ExecutionException;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TestController {
     private final JWTUtil jwtUtil;
-    private final OauthUtil oauthUtil;
+    private final OauthManager oauthManager;
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustRankService rankDailyService;
     private final EmailUtil emailUtil;
@@ -53,17 +54,18 @@ public class TestController {
     @RateLimit
     //@PermissionRequired
     public ResponseEntity<String> test(@RequestBody @SensitiveCheck SignUpDTO signUpDTO,/*@RequestHeader("Authorization")  String token,*/@RequestParam @SensitiveCheck String content, @RequestParam @SensitiveCheck String title) throws InterruptedException, ExecutionException, IOException {
-        trendingTagsService.dailyTask();
+        // trendingTagsService.dailyTask();
+
         return ResponseEntity.ok().body("");
     }
 
     @GetMapping("/test")
     //@PermissionRequired
-    public ResponseEntity<String> test() throws InterruptedException, ExecutionException, IOException, MessagingException {
+    public ResponseEntity<String> test(@RequestParam String date) throws InterruptedException, ExecutionException, IOException, MessagingException {
         //spotlightService.deal();
         //businessService.follow(53,123);
         //emailUtil.sendEmail("392822872@qq.com","sasa","sasa","sas0","");
-        trendingTagsService.dailyTask();
+        trendingTagsService.dailyTask(LocalDate.parse(date));
         return ResponseEntity.ok().body("content");
     }
     /*@GetMapping("/32")

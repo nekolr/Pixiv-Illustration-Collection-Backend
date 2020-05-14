@@ -6,9 +6,6 @@ import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
 import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
-import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
-import dev.cheerfun.pixivic.common.po.Artist;
-import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
@@ -39,25 +36,6 @@ public class IllustrationBizController {
     @GetMapping("/tags/{tag}/translation")
     public ResponseEntity<Result<Tag>> translationTag(@PathVariable String tag) {
         return ResponseEntity.ok().body(new Result<>("获取标签翻译成功", illustrationBizService.translationTag(tag)));
-    }
-
-    @GetMapping("/artists/{artistId}/illusts/{type}")
-    @PermissionRequired(PermissionLevel.ANONYMOUS)
-    @WithUserInfo
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
-        List<Illustration> illustrationList = illustrationBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationList));
-    }
-
-    @GetMapping("/artists/{artistId}/summary")
-    public ResponseEntity<Result<ArtistSummary>> querySummaryByArtistId(@PathVariable Integer artistId) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作汇总成功", illustrationBizService.querySummaryByArtistId(artistId)));
-    }
-
-    @GetMapping("/artists/{artistId}")
-    @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("获取画师详情成功", illustrationBizService.queryArtistDetail(artistId)));
     }
 
     @GetMapping("/exists/{type}/{id}")
@@ -105,16 +83,6 @@ public class IllustrationBizController {
     @GetMapping("/tags/{tag}/candidates")
     public ResponseEntity<Result<List<Tag>>> autoCompleteTag(@PathVariable String tag, @RequestBody List<String> tagList) {
         return ResponseEntity.ok().body(new Result<>("获取标签候选成功", null));
-    }
-
-    @GetMapping("/artists/{artistId}/followedUsers")
-    public ResponseEntity<Result<List<UserListDTO>>> queryUserListFollowedArtist(
-            @PathVariable Integer artistId,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "30") Integer pageSize
-    ) {
-        List<UserListDTO> userList = illustrationBizService.queryUserListFollowedArtist(artistId, page, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取关注该画师的用户列表成功", userList));
     }
 
 }

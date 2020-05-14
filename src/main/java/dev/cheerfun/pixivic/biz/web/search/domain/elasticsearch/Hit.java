@@ -1,7 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.search.domain.elasticsearch;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
-import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.Data;
 
 /**
@@ -11,7 +10,7 @@ import lombok.Data;
  * @description Hit
  */
 @Data
-public class Hit {
+public class Hit<T> {
     @JsonSetter("_source")
-    private Illustration illustration;
+    private T t;
 }

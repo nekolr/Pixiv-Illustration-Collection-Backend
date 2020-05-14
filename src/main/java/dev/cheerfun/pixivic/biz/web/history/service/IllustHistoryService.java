@@ -7,8 +7,9 @@ import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.ScanOptions;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -20,7 +21,6 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -57,7 +57,7 @@ public class IllustHistoryService {
         if (illustIdList != null && illustIdList.size() > 0) {
             Double timestamp = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, illustIdList.iterator().next());
             assert timestamp != null;
-            Instant instant = Instant.ofEpochMilli(timestamp.longValue());
+            Instant instant = Instant.ofEpochSecond(timestamp.longValue());
             ZoneId zone = ZoneId.systemDefault();
             localDateTime = LocalDateTime.ofInstant(instant, zone);
         } else {
@@ -67,21 +67,22 @@ public class IllustHistoryService {
     }
 
     //定时清理历史记录长度，临时表转移到正式表，清空临时表，正式表清除期限外数据
-    @Scheduled(cron = "0 0 1 * * ?")
-    @Transactional
+    @Scheduled(cron = "0 10 2 * * ?")
+    @Transactional(rollbackFor = Exception.class)
     public void clear() {
+        System.out.println("开始清理收藏");
         //获取keylist
-        Set<String> keys = stringRedisTemplate.keys(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + "*");
-        //每个用户维持在1000个，超过一千从数据库取
-        stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-            for (String key : keys) {
-                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                //Long size = stringRedisConnection.zCard(key);
-                //只保留五天内数据
-                stringRedisConnection.zRemRangeByScore(key, LocalDateTime.now().plusDays(-5).toEpochSecond(ZoneOffset.of("+8")), -Integer.MAX_VALUE);
-            }
-            return null;
-        });
-        illustHistoryMapper.updateFromTemp();
+        final ScanOptions scanOptions = ScanOptions.scanOptions().match(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + "*").build();
+        RedisConnection connection = stringRedisTemplate.getConnectionFactory().getConnection();
+        Cursor<byte[]> cursor = connection.scan(scanOptions);
+        int i = 0;
+        while (cursor.hasNext()) {
+            connection.zRemRangeByScore(cursor.next(), LocalDateTime.now().plusDays(-5).toEpochSecond(ZoneOffset.of("+8")), -Integer.MAX_VALUE);
+            i++;
+        }
+        illustHistoryMapper.deleteIllustHistory();
+        illustHistoryMapper.tempToIllustHistory();
+        illustHistoryMapper.truncateTemp();
     }
+
 }

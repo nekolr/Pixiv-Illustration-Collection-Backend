@@ -146,7 +146,7 @@ public class NewService {
                             n.setContent(d.getElementById(name).html());
                         }
                     } catch (IOException | InterruptedException e) {
-                        e.printStackTrace();
+                        System.out.println("网络错误");
                     }
                 });
                 newMapper.insert(acgNewList);

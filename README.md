@@ -1,3 +1,7 @@
+<p align="center">
+<img src="https://pixivic.com/img/icon.9a42bbfa.svg" width = "129" height = "90" alt="pixivic_icon"/>
+</p>
+
  ## 前言
 
 ## About Code

@@ -21,14 +21,15 @@ public class BangumiSearchResponse {
     private List<ResultItem> Result;
 
     public static List<SearchSuggestion> castToSearchSuggestionList(BangumiSearchResponse bangumiSearchResponse) {
-        return bangumiSearchResponse!=null&&bangumiSearchResponse.Result!=null?bangumiSearchResponse.getResult().stream()
+        return bangumiSearchResponse != null && bangumiSearchResponse.Result != null ? bangumiSearchResponse.getResult().stream()
                 .map(resultItem -> new SearchSuggestion(resultItem.getKeyword(), resultItem.getKeywordTranslated()))
-                .collect(Collectors.toList()):new ArrayList<>();
+                .collect(Collectors.toList()) : new ArrayList<>();
     }
-    public static double getAvgSum(BangumiSearchResponse bangumiSearchResponse){
-        if(bangumiSearchResponse.getResult()!=null){
+
+    public static double getAvgSum(BangumiSearchResponse bangumiSearchResponse) {
+        if (bangumiSearchResponse.getResult() != null) {
             OptionalDouble average = bangumiSearchResponse.getResult().stream().filter(b -> b.getRating() != null && b.getRating().getScore() != 0).mapToInt(resultItem -> resultItem.getRating().getScore()).average();
-            return average.isPresent()?average.getAsDouble():0;
+            return average.isPresent() ? average.getAsDouble() : 0;
         }
         return 0;
     }
@@ -43,7 +44,8 @@ class ResultItem {
     @JsonSetter("rating")
     private Rating rating;
 }
+
 @Data
-class Rating{
+class Rating {
     private int score;
 }

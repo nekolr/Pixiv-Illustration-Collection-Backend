@@ -36,13 +36,13 @@ public class CommentService {
     private final StringRedisTemplate stringRedisTemplate;
     private final CommentMapper commentMapper;
 
-    @CacheEvict(value = "comments",key = "#comment.appType+#comment.appId")
+    @CacheEvict(value = "comments", key = "#comment.appType+#comment.appId")
     public void pushComment(Comment comment) {
         commentMapper.pushComment(comment);
         //
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void likeComment(Like like, int userId) {
         Long add = stringRedisTemplate.opsForSet().add(RedisKeyConstant.LIKE_REDIS_PRE + userId, like.toString());
         if (add != null && add != 0L) {
@@ -53,7 +53,7 @@ public class CommentService {
 
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public void cancelLikeComment(int userId, Like like) {
         Long remove = stringRedisTemplate.opsForSet().remove(RedisKeyConstant.LIKE_REDIS_PRE + userId, like.toString());
         if (remove != null && remove != 0L) {
@@ -69,7 +69,7 @@ public class CommentService {
                 .limit(pageSize).collect(Collectors.toList());
     }
 
-    @Cacheable(value = "comments",key = "#appType+#appId")
+    @Cacheable(value = "comments", key = "#appType+#appId")
     public List<Comment> pullComment(String appType, Integer appId) {
         List<Comment> comments = queryCommentList(appType, appId);
         if (comments.size() == 0) {
@@ -81,7 +81,7 @@ public class CommentService {
         List<Object> isLikedList;
         if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
             isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-                comments.forEach(e->{
+                comments.forEach(e -> {
                     StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
                     stringRedisConnection.sIsMember(RedisKeyConstant.LIKE_REDIS_PRE + AppContext.get().get(AuthConstant.USER_ID), String.valueOf(e.toStringForQueryLike()));
                 });

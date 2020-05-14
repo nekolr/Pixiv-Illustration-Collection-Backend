@@ -3,10 +3,10 @@ package dev.cheerfun.pixivic.biz.web.comment.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
+import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
+import dev.cheerfun.pixivic.biz.event.domain.Event;
+import dev.cheerfun.pixivic.biz.event.publisher.EventPublisher;
 import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
-import dev.cheerfun.pixivic.biz.notify.constant.NotifyObjectType;
-import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
-import dev.cheerfun.pixivic.biz.notify.publisher.NotifyEventPublisher;
 import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
@@ -31,7 +31,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommentController {
     private final CommentService commentService;
-    private final NotifyEventPublisher notifyEventPublisher;
+    private final EventPublisher eventPublisher;
 
     @PostMapping("/{commentAppType}/{commentAppId}/comments")
     @PermissionRequired
@@ -41,7 +41,7 @@ public class CommentController {
         commentService.pushComment(comment);
 //        //如果不是顶层(即存在被回复人)产生通知事件
         if (comment.getReplyTo() != 0) {
-            notifyEventPublisher.publish(new NotifyEvent(userId, comment.getReplyFromName(), ActionType.REPLIED, NotifyObjectType.COMMENT, comment.getParentId(), LocalDateTime.now()));
+            eventPublisher.publish(new Event(userId, comment.getReplyFromName(), ActionType.REPLIED, ObjectType.COMMENT, comment.getParentId(), LocalDateTime.now()));
         }
         return ResponseEntity.ok().body(new Result<>("评论成功"));
     }

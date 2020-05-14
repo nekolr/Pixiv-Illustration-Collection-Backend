@@ -1,11 +1,11 @@
 package dev.cheerfun.pixivic.biz.notify.customer.impl;
 
+import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
+import dev.cheerfun.pixivic.biz.event.domain.Event;
 import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyChannel;
-import dev.cheerfun.pixivic.biz.notify.constant.NotifyObjectType;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyStatus;
 import dev.cheerfun.pixivic.biz.notify.customer.NotifyEventCustomer;
-import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -23,27 +23,27 @@ import java.util.stream.Collectors;
  * @date 2020/3/18 2:32 下午
  * @description IllustNotifyEventCustomer
  */
-@Component(NotifyObjectType.ILLUST)
-@RabbitListener(queues = NotifyObjectType.ILLUST)
+@Component(ObjectType.ILLUST)
+@RabbitListener(queues = ObjectType.ILLUST)
 public class IllustNotifyEventCustomer extends NotifyEventCustomer {
 
     @Override
     @RabbitHandler()
-    public void consume(NotifyEvent notifyEvent) {
-        process(notifyEvent);
+    public void consume(Event event) {
+        process(event);
     }
 
     @Override
-    protected List<Integer> querySendTo(NotifyEvent notifyEvent) {
+    protected List<Integer> querySendTo(Event event) {
         //找出画师关注者
-        Set<String> members = stringRedisTemplate.opsForSet().members(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + notifyEvent.getUserId());
+        Set<String> members = stringRedisTemplate.opsForSet().members(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + event.getUserId());
         assert members != null;
         return members.stream().map(Integer::parseInt).collect(Collectors.toList());
     }
 
     @Override
-    protected NotifyRemind generateRemind(NotifyEvent notifyEvent, Integer sendTo) {
-        return new NotifyRemind(null, notifyEvent.getUserId(), notifyEvent.getUserName(), ActionType.RELEASED, notifyEvent.getObjectId(), notifyEvent.getObjectType(), sendTo, queryTemplate(notifyEvent), LocalDateTime.now(), NotifyStatus.UNREAD, null);
+    protected NotifyRemind generateRemind(Event event, Integer sendTo) {
+        return new NotifyRemind(null, event.getUserId(), event.getUserName(), ActionType.RELEASED, event.getObjectId(), event.getObjectType(), sendTo, queryTemplate(event), LocalDateTime.now(), NotifyStatus.UNREAD, null);
     }
 
     @Override

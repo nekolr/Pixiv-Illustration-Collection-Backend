@@ -46,15 +46,15 @@ import static java.util.stream.Collectors.groupingBy;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TrendingTagsService {
-    @Value("${apiLog.path}")
-    private String logPath;
+    private final static String LOG_POS = ".log";
     private final SensitiveFilter sensitiveFilter;
     private final IllustrationMapper illustrationMapper;
     private final RequestUtil requestUtil;
     private final SearchService searchService;
     private final TrendingTagsMapper trendingTagsMapper;
     private final ObjectMapper objectMapper;
-    private final static String LOG_POS = ".log";
+    @Value("${apiLog.path}")
+    private String logPath;
 
     @Cacheable("trending_tags")
     public List<TrendingTags> queryByDate(String date) throws JsonProcessingException {
@@ -62,20 +62,25 @@ public class TrendingTagsService {
         // return trendingTagsMapper.queryByDate(date);
     }
 
-    @Scheduled(cron = "0 30 0 * * ?")
-    @CacheEvict(value = "trending_tags", allEntries = true)
+    @Scheduled(cron = "0 50 2 * * ?")
     public void dailyTask() throws IOException {
-        //获取pixiv原生热度标签
-        List<Tag> tagList;
-        try {
-            tagList = queryPixivTrendingTag();
-        } catch (Exception e) {
-            tagList = new ArrayList<>();
-        }
-        Set<String> tagNameSet = tagList.stream().collect(groupingBy(Tag::getName)).keySet();
-        //读取日志
         LocalDate yesterday = LocalDate.now().plusDays(-1);
+        dailyTask(yesterday);
+    }
+
+    @CacheEvict(value = "trending_tags", allEntries = true)
+    public void dailyTask(LocalDate yesterday) throws IOException {
+
+        //读取日志
         try (Stream<String> stream = Files.lines(Paths.get(logPath, yesterday + LOG_POS), StandardCharsets.ISO_8859_1)) {
+            //获取pixiv原生热度标签
+            List<Tag> tagList;
+            try {
+                tagList = queryPixivTrendingTag();
+            } catch (Exception e) {
+                tagList = new ArrayList<>();
+            }
+            Set<String> tagNameSet = tagList.stream().collect(groupingBy(Tag::getName)).keySet();
             //逐行处理
             tagList.addAll(stream.map(line -> {
                 //搜索api
@@ -84,7 +89,9 @@ public class TrendingTagsService {
                     String params = line.substring(line.indexOf("GET ") + 4, line.indexOf(" HTTP"));
                     MultiValueMap<String, String> queryParams = UriComponentsBuilder.fromUriString(params).build().getQueryParams();
                     String keyword = queryParams.getFirst("keyword");
-                    return sensitiveFilter.filter(URLDecoder.decode(keyword.replaceAll("%(?![0-9a-fA-F]{2})", "%25")));
+                    if (keyword != null) {
+                        return sensitiveFilter.filter(URLDecoder.decode(keyword.replaceAll("%(?![0-9a-fA-F]{2})", "%25")));
+                    }
                 }
                 return null;
             }).filter(e -> e != null && !"".equals(e) && !e.contains("*") && !tagNameSet.contains(e)).collect(groupingBy(Function.identity(), counting()))
@@ -109,14 +116,15 @@ public class TrendingTagsService {
                                 return new TrendingTags(e.getName(), e.getTranslatedName(), illustration);
                             }
                         } catch (ExecutionException | InterruptedException ex) {
-                            ex.printStackTrace();
+                            System.out.println("网络错误");
                         }
                         return null;
-                    }).collect(Collectors.toList()));
+                    }).filter(Objects::nonNull).collect(Collectors.toList()));
             //综合pixiv原生标签后打乱
             Collections.shuffle(tagList);
             //持久化
-            trendingTagsMapper.insert(LocalDate.now().plusDays(1).toString(), tagList);
+            trendingTagsMapper.insert(yesterday.plusDays(2).toString(), tagList);
+        } finally {
             //删除日志
             Files.delete(Paths.get(logPath, yesterday + LOG_POS));
         }
@@ -125,15 +133,17 @@ public class TrendingTagsService {
 
     public List<Tag> queryPixivTrendingTag() {
         PixivTrendingTagResponse pixivTrendingTagResponse = (PixivTrendingTagResponse) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/trending-tags/illust?filter=for_ios", PixivTrendingTagResponse.class);
-        assert pixivTrendingTagResponse != null;
-        List<Tag> searchRecommends = pixivTrendingTagResponse.getTrendTags().stream().map(e -> {
-            Illustration illustration = IllustrationDTO.castToIllustration(e.getIllust());
-            illustrationMapper.simpleInsert(illustration);
-            return new TrendingTags(e.getTag(), e.getTranslatedName(), illustration);
-        }).collect(Collectors.toList());
-        //持久化
-        illustrationMapper.insertTag(searchRecommends);
-        return searchRecommends;
+        if (pixivTrendingTagResponse != null) {
+            List<Tag> searchRecommends = pixivTrendingTagResponse.getTrendTags().stream().map(e -> {
+                Illustration illustration = IllustrationDTO.castToIllustration(e.getIllust());
+                illustrationMapper.simpleInsert(illustration);
+                return new TrendingTags(e.getTag(), e.getTranslatedName(), illustration);
+            }).collect(Collectors.toList());
+            //持久化
+            illustrationMapper.insertTag(searchRecommends);
+            return searchRecommends;
+        }
+        return new ArrayList<>();
     }
 
 }

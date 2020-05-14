@@ -7,8 +7,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 
-import java.util.List;
-
 /**
  * @author OysterQAQ
  * @version 2.0
@@ -19,7 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
-public class Result<T>  {
+public class Result<T> {
     @JsonIgnore
     private HttpStatus httpStatus;
     private String message;
@@ -38,6 +36,12 @@ public class Result<T>  {
     public Result(HttpStatus httpStatus, String message) {
         this.httpStatus = httpStatus;
         this.message = message;
+    }
+
+    public Result(String message, Integer total, T data) {
+        this.message = message;
+        this.total = total;
+        this.data = data;
     }
 
     public void set(HttpStatus httpStatus, String message, T data) {

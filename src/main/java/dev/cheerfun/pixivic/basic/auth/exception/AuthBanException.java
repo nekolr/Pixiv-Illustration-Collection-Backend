@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
  */
 @Data
 @AllArgsConstructor
-public class AuthBanException  extends BaseException {
+public class AuthBanException extends BaseException {
     private HttpStatus httpStatus;
     private String message;
 }

@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
 #  profiles:
-#    active: mac
+  #    active: mac
   mail:
     host: mail
     username: admin@cheerfun.dev

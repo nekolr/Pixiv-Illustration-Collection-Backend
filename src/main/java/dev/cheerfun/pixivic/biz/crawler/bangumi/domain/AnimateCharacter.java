@@ -2,8 +2,6 @@ package dev.cheerfun.pixivic.biz.crawler.bangumi.domain;
 
 import lombok.Data;
 
-import java.util.Map;
-
 /**
  * @author OysterQAQ
  * @version 1.0

@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -28,4 +27,12 @@ public interface RankMapper {
             @Result(property = "data", column = "data", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
     Rank queryByDateAndMode(String date, String mode);
+
+    @Select("select * from ranks where date = #{date}")
+    @Results({
+            @Result(property = "date", column = "date"),
+            @Result(property = "mode", column = "mode"),
+            @Result(property = "data", column = "data", javaType = List.class, typeHandler = JsonTypeHandler.class)
+    })
+    List<Rank> queryByDate(String date);
 }

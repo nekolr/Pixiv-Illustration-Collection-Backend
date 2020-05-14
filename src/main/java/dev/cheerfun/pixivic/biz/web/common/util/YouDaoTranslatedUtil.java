@@ -36,6 +36,7 @@ public class YouDaoTranslatedUtil {
             return null;
         }
     }
+
     public static String truncate(String q) {
         if (q == null) {
             return null;

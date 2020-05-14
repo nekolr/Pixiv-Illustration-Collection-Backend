@@ -22,6 +22,7 @@ public class JoinPointArgUtil {
     public String getFirstMethodArgByAnnotationValueMethodValue(JoinPoint joinPoint, Class argAnnotationClass, String annotationMethodValue) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         return (String) getJoinPointArgsByAnnotation(joinPoint, argAnnotationClass, "value", annotationMethodValue).get(0).getValue();
     }
+
     public List<JoinPointArg> getMethodArgsByAnnotationValueMethodValue(JoinPoint joinPoint, Class argAnnotationClass) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
         return getJoinPointArgsByAnnotation(joinPoint, argAnnotationClass, null, null);
     }
@@ -38,13 +39,13 @@ public class JoinPointArgUtil {
                 if (!annotation.annotationType().equals(argAnnotationClass)) {
                     continue;
                 }
-                if(annotationMethodName!=null&&annotationMethodValue!=null){
+                if (annotationMethodName != null && annotationMethodValue != null) {
                     Method m = argAnnotationClass.getMethod(annotationMethodName);
                     if (!annotationMethodValue.equals(m.invoke(annotation))) {
                         continue;
                     }
                 }
-                argList.add(new JoinPointArg(argIndex,args[argIndex]));
+                argList.add(new JoinPointArg(argIndex, args[argIndex]));
             }
         }
         return argList;
@@ -61,7 +62,7 @@ public class JoinPointArgUtil {
                 if (!annotation.annotationType().equals(argAnnotationClass)) {
                     continue;
                 }
-                if (annotationMethodName!=null&&annotationMethodValue!=null){
+                if (annotationMethodName != null && annotationMethodValue != null) {
                     Method m = argAnnotationClass.getMethod(annotationMethodName);
                     if (!annotationMethodValue.equals(m.invoke(annotation))) {
                         continue;

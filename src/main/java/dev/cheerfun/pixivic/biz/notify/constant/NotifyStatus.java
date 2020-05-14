@@ -7,7 +7,7 @@ package dev.cheerfun.pixivic.biz.notify.constant;
  * @description NotifyStatus
  */
 public class NotifyStatus {
-    public final static Integer UNREAD=0;
-    public final static Integer READ=1;
-    public final static Integer DELETED=2;
+    public final static Integer UNREAD = 0;
+    public final static Integer READ = 1;
+    public final static Integer DELETED = 2;
 }

@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.common.util.pixiv;
 
-import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.Oauth;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 final public class RequestUtil {
     //@Resource(name = "httpClientWithProxy")
     private final HttpClient httpClient;
-    private final OauthUtil oauthUtil;
+    private final OauthManager oauthManager;
 
     public static String getPostEntity(Map<String, String> param) {
         StringBuilder stringBuilder = new StringBuilder();
@@ -37,60 +37,6 @@ final public class RequestUtil {
         }
         return stringBuilder.toString();
     }
-
-    public CompletableFuture<String> getJson(String url) {
-        HttpRequest.Builder uri = HttpRequest.newBuilder()
-                .uri(URI.create(url));
-        decorateHeader(uri);
-        int randomOauthIndex = oauthUtil.getRandomOauthIndex();
-        Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
-        HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + oauth.getAccessToken())
-                .GET()
-                .build();
-        return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
-            int code = resp.statusCode();
-            //System.out.println(resp.body().length());
-            if (code == 403) {
-                oauthUtil.ban(randomOauthIndex);
-                return "false";
-            }
-            return resp.body();
-        });
-    }
-
-    public Object getJsonSync(String url, Class target) {
-        HttpRequest.Builder uri = HttpRequest.newBuilder()
-                .uri(URI.create(url));
-        decorateHeader(uri);
-        int randomOauthIndex = oauthUtil.getRandomOauthIndex();
-        Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
-        HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + oauth.getAccessToken())
-                .GET()
-                .build();
-        try {
-            return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-/*
-    public CompletableFuture<String> getJsonAsync(String url) {
-        HttpRequest.Builder uri = HttpRequest.newBuilder()
-                .uri(URI.create(url));
-        decorateHeader(uri);
-        int randomOauthIndex = oauthUtil.getRandomOauthIndex();
-        Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
-        HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + oauth.getAccessToken())
-                .GET()
-                .build();
-        return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body);
-    }
-*/
 
     private static String[] gethash() {
         SimpleDateFormat simpleDateFormat;
@@ -122,5 +68,59 @@ final public class RequestUtil {
                 .header("Accept-Language", "zh_CN")
                 .header("X-Client-Hash", hash[1])
                 .header("X-Client-Time", hash[0]);
+    }
+
+/*
+    public CompletableFuture<String> getJsonAsync(String url) {
+        HttpRequest.Builder uri = HttpRequest.newBuilder()
+                .uri(URI.create(url));
+        decorateHeader(uri);
+        int randomOauthIndex = oauthUtil.getRandomOauthIndex();
+        Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
+        HttpRequest getRank = uri
+                .header("Authorization", "Bearer " + oauth.getAccessToken())
+                .GET()
+                .build();
+        return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body);
+    }
+*/
+
+    public CompletableFuture<String> getJson(String url) {
+        HttpRequest.Builder uri = HttpRequest.newBuilder()
+                .uri(URI.create(url));
+        decorateHeader(uri);
+        int randomOauthIndex = oauthManager.getRandomOauthIndex();
+        PixivUser oauth = oauthManager.getOauths().get(randomOauthIndex);
+        HttpRequest getRank = uri
+                .header("Authorization", "Bearer " + oauth.getAccessToken())
+                .GET()
+                .build();
+        return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
+            int code = resp.statusCode();
+            //System.out.println(resp.body().length());
+            if (code == 403) {
+                oauthManager.ban(randomOauthIndex);
+                return "false";
+            }
+            return resp.body();
+        });
+    }
+
+    public Object getJsonSync(String url, Class target) {
+        HttpRequest.Builder uri = HttpRequest.newBuilder()
+                .uri(URI.create(url));
+        decorateHeader(uri);
+        int randomOauthIndex = oauthManager.getRandomOauthIndex();
+        PixivUser oauth = oauthManager.getOauths().get(randomOauthIndex);
+        HttpRequest getRank = uri
+                .header("Authorization", "Bearer " + oauth.getAccessToken())
+                .GET()
+                .build();
+        try {
+            return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
+        } catch (IOException | InterruptedException e) {
+            System.out.println("网络错误");
+        }
+        return null;
     }
 }

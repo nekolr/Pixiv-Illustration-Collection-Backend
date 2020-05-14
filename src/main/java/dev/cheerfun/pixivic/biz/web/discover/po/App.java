@@ -1,7 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.discover.po;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import dev.cheerfun.pixivic.biz.web.discover.constant.DiscoverNodeType;
 import lombok.Data;
 
 /**
@@ -13,6 +12,5 @@ import lombok.Data;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class App extends DiscoverNode {
-
 
 }

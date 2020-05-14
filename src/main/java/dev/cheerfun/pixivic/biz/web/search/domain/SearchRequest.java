@@ -19,9 +19,13 @@ import javax.validation.constraints.NotBlank;
 public class SearchRequest {
     @NotBlank
     private String keyword;
-    @NonNull@Max(60)@Min(1)
+    @NonNull
+    @Max(60)
+    @Min(1)
     private int pageSize;
-    @NonNull@Max(1600)@Min(1)
+    @NonNull
+    @Max(1600)
+    @Min(1)
     private int page;
     @NotBlank
     private String searchType;//搜索类型（原生、自动翻译、自动匹配词条）

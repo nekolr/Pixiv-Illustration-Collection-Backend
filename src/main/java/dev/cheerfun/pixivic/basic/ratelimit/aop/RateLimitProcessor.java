@@ -39,38 +39,6 @@ public class RateLimitProcessor implements HandlerInterceptor {
             .addLimit(Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(1))))
             .build();
 
-    @Pointcut(value = "@annotation(dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit)||@within(dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit)")
-    public void pointCut() {
-    }
-
-    @Around(value = "pointCut()")
-    public Object handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
-        Bucket requestBucket;
-        if (AppContext.get() != null) {
-            Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-            Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
-            if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
-                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
-            }else
-            if (permissionLevel == PermissionLevel.VIP) {
-                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> premiumBucket());
-            } else {
-                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
-            }
-        } else {
-            requestBucket = this.freeBucket;
-        }
-
-/*        if (userId != null && permissionLevel != null) {
-
-        }*/
-        ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
-        if (probe.isConsumed()) {
-            return joinPoint.proceed();
-        }
-        throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
-    }
-
     private static Bucket standardBucket() {
         return Bucket4j.builder()
                 .addLimit(Bandwidth.classic(50, Refill.intervally(50, Duration.ofMinutes(1))))
@@ -87,5 +55,36 @@ public class RateLimitProcessor implements HandlerInterceptor {
         return Bucket4j.builder()
                 .addLimit(Bandwidth.classic(100, Refill.intervally(100, Duration.ofMinutes(1))))
                 .build();
+    }
+
+    @Pointcut(value = "@annotation(dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit)||@within(dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit)")
+    public void pointCut() {
+    }
+
+    @Around(value = "pointCut()")
+    public Object handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
+        Bucket requestBucket;
+        if (AppContext.get() != null) {
+            Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+            Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
+            if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
+                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
+            } else if (permissionLevel == PermissionLevel.VIP) {
+                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> premiumBucket());
+            } else {
+                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
+            }
+        } else {
+            requestBucket = this.freeBucket;
+        }
+
+/*        if (userId != null && permissionLevel != null) {
+
+        }*/
+        ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
+        if (probe.isConsumed()) {
+            return joinPoint.proceed();
+        }
+        throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
     }
 }

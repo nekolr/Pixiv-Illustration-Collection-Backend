@@ -6,6 +6,7 @@ import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import lombok.Data;
 
+import javax.validation.constraints.Max;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -26,12 +27,13 @@ public class Comment {
     private Integer replyTo;
     private String replyToName;
     @SensitiveCheck
+    @Max(value = 512)
     private String content;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime createDate;
     private Integer likedCount;
-    private Boolean isLike=false;
+    private Boolean isLike = false;
     private List<Comment> subCommentList;
 
     public LocalDateTime getCreateDate() {
@@ -42,8 +44,8 @@ public class Comment {
         this.appType = commentAppType;
         this.appId = commentAppId;
         this.replyFrom = userId;
-        createDate=LocalDateTime.now();
-        likedCount=0;
+        createDate = LocalDateTime.now();
+        likedCount = 0;
     }
 
     public String toStringForQueryLike() {

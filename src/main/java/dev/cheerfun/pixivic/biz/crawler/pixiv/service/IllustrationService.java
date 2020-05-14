@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.common.collect.Lists;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.ModeMeta;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDetailDTO;
@@ -36,13 +35,10 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationService {
-    private final RequestUtil requestUtil;
-    private final IllustrationMapper illustrationMapper;
-    private final ObjectMapper objectMapper;
-    private static ReentrantLock lock = new ReentrantLock();
     private static final List<ModeMeta> modes;
     private static final HashMap<String, Integer> modeIndex;
     private static final Integer taskSum;
+    private static ReentrantLock lock = new ReentrantLock();
 
     static {
         taskSum = 162;
@@ -81,6 +77,10 @@ public class IllustrationService {
             add(new ModeMeta("week_rookie_manga", 4));
         }};
     }
+
+    private final RequestUtil requestUtil;
+    private final IllustrationMapper illustrationMapper;
+    private final ObjectMapper objectMapper;
 
     public List<Integer> pullAllRankInfo(LocalDate date) throws InterruptedException {
         final CountDownLatch cd = new CountDownLatch(taskSum);
@@ -154,7 +154,7 @@ public class IllustrationService {
         cd.await(waitForReDownload.size() * 2, TimeUnit.SECONDS);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     @Async
     public void saveToDb(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
@@ -175,7 +175,8 @@ public class IllustrationService {
         System.out.println("画作入库完毕");
         illustrationMapper.flush();
     }
-    @Transactional
+
+    @Transactional(rollbackFor = Exception.class)
     public void saveToDb2(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
         if (tags.size() > 0) {

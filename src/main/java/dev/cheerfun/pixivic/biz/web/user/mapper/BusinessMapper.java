@@ -98,7 +98,7 @@ public interface BusinessMapper {
     @Select("select  count(id) from user_artist_followed where user_id = #{userId} and artist_id=#{artistId}")
     int queryIsFollowed(int userId, int artistId);
 
-    @Insert("insert into user_illust_bookmarked (user_id, illust_id,username,create_date) values (#{userId}, #{illustId},#{username}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Insert("replace into user_illust_bookmarked (user_id, illust_id,username,create_date) values (#{userId}, #{illustId},#{username}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     int bookmark(int userId, int illustId, String username, LocalDateTime now);
 
     @Delete("delete from user_illust_bookmarked where id=#{relationId} ")
@@ -135,4 +135,19 @@ public interface BusinessMapper {
 
     @Select("select  illust_id from (select    artist_id from user_artist_followed where user_id=#{userId}) u  join illusts  i   on i.artist_id=u.artist_id   where i.type=#{type} and create_date >= (SELECT DATE_ADD(now(),INTERVAL -1 MONTH))")
     List<Integer> queryFollowedLatestIllustId(int userId, String type);
+
+    @Insert("insert into user_collection_bookmarked (user_id,username,collection_id) values (#{userId},#{username}, #{collectionId})")
+    Integer bookmarkCollection(Integer userId, String username, Integer collectionId);
+
+    @Delete("delete from user_collection_bookmarked where user_id = #{userId} and collection_id = #{collectionId}")
+    Integer cancelBookmarkCollection(int userId, int collectionId);
+
+    @Insert("insert into user_user_followed (user_id,username,followed_user_id) values (#{userId},#{username}, #{followedUserId})")
+    Integer followUser(Integer userId, String username, Integer followedUserId);
+
+    @Delete("delete from user_user_followed where user_id = #{userId} and followed_user_id = #{followedUserId}")
+    Integer cancelFollowUser(Integer userId, Integer followedUserId);
+
+    @Select("select collection_id from user_collection_bookmarked where user_id = #{userId} order by create_time desc limit #{currIndex},#{pageSize}")
+    List<Integer> queryBookmarkCollection(Integer userId, int currIndex, Integer pageSize);
 }

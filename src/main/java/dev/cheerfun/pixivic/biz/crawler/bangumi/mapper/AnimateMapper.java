@@ -6,8 +6,10 @@ import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.Seiyuu;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
+import java.util.Set;
 
 @Mapper
 public interface AnimateMapper {
@@ -62,4 +64,16 @@ public interface AnimateMapper {
             "</script>")
     Integer insertSeiyuuList(@Param("seiyuuList") List<Seiyuu> seiyuuList);
 
+    @Select("select tags from animates")
+    List<String> queryAllTag();
+
+    @Insert("<script>" +
+            "insert ignore  INTO " +
+            "collection_tag (`tag_name`)" +
+            "VALUES" +
+            "<foreach collection='set' item='s' index='index'  separator=','>" +
+            "(#{s})" +
+            "</foreach>" +
+            "</script>")
+    void insertTags(@Param("set") Set<String> set);
 }

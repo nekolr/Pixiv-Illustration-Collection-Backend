@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class WebMessageSender implements NotifySender {
     private final NotifyMapper notifyMapper;
+
     @Override
     public Boolean send(NotifyRemind notifyRemind) {
         //直接持久化到数据库

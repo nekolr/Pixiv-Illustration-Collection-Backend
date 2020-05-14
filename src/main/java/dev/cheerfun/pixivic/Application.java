@@ -16,14 +16,17 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
  * @description pixivic项目启动类
  */
 @SpringBootApplication
-@EnableAsync
+@EnableAsync(mode = AdviceMode.ASPECTJ)
 @EnableScheduling
 @EnableCaching(mode = AdviceMode.ASPECTJ)
-@EnableTransactionManagement
+@EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @EnableLoadTimeWeaving(aspectjWeaving = EnableLoadTimeWeaving.AspectJWeaving.ENABLED)
 public class Application {
     public static void main(String[] args) {
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Referer");
+        System.setProperty("jdk.httpclient.redirects.retrylimit", "20");
+        System.setProperty("jdk.httpclient.disableRetryConnect", "true");
+        System.setProperty("jdk.httpclient.enableAllMethodRetry", "true");
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Content-Length");
         System.setProperty("jdk.internal.httpclient.disableHostnameVerification", "true");//取消主机名验证
         System.setProperty("org.apache.tomcat.util.buf.UDecoder.ALLOW_ENCODED_SLASH", "true");

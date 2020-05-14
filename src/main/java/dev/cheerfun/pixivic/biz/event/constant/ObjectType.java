@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.notify.constant;
+package dev.cheerfun.pixivic.biz.event.constant;
 
 /**
  * @author OysterQAQ
@@ -7,8 +7,8 @@ package dev.cheerfun.pixivic.biz.notify.constant;
  * @description NotifyObjectType
  */
 
-public class NotifyObjectType {
-    public final static String COMMENT="comment";
+public class ObjectType {
+    public final static String COMMENT = "comment";
     public final static String ILLUST = "illust";
     public final static String COLLECTION = "collection";
 }

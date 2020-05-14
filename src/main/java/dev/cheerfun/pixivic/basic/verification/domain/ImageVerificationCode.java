@@ -92,7 +92,7 @@ public class ImageVerificationCode extends AbstractVerificationCode {
         int r = fc + random.nextInt(bc - fc);
         int g = fc + random.nextInt(bc - fc);
         int b = fc + random.nextInt(bc - fc);
-        return new Color(r, g, b,188);
+        return new Color(r, g, b, 188);
     }
 
 }

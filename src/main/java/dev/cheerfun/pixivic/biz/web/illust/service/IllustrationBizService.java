@@ -1,9 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.illust.service;
 
-import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
-import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
@@ -13,21 +11,19 @@ import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
-import dev.cheerfun.pixivic.common.po.Artist;
-import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.connection.StringRedisConnection;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -41,72 +37,14 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationBizService {
+    private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationService illustrationService;
-    private final ArtistService artistService;
     private final StringRedisTemplate stringRedisTemplate;
-    private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
-    private String today;
-
-    {
-        today = LocalDate.now().toString();
-    }
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
         return new Tag(tag, YouDaoTranslatedUtil.truncate(tag));
-    }
-
-    @Cacheable(value = "artist_illusts")
-    public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
-        //如果是当日首次则进行拉取
-        String key = artistId + ":" + type;
-        if (currIndex == 0 && pageSize == 30 && !stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key)) {
-            System.out.println("本日首次，将从Pixiv拉取");
-            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
-            artistService.pullArtistLatestIllust(artistId, type);
-        }
-        List<Illustration> illustrations = illustrationBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
-        return illustrations;
-    }
-
-    @Scheduled(cron = "0 1 0 * * ?")
-    public void clearArtistLatestIllustsMap() {
-        stringRedisTemplate.delete(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today);
-        today = LocalDate.now().toString();
-    }
-
-    public Artist queryArtistDetail(Integer artistId) {
-        Artist artist = queryArtistById(artistId);
-        dealArtist(artist);
-        Map<String, Object> context = AppContext.get();
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            int userId = (int) context.get(AuthConstant.USER_ID);
-            Boolean isFollowed = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
-            //businessService.queryIsFollowed(userId, artist.getId());
-
-            return new ArtistWithIsFollowedInfo(artist, isFollowed);
-        }
-        return artist;
-    }
-
-    public void dealArtist(Artist artist) {
-        //更改关注数
-        artist.setTotalFollowUsers(String.valueOf(stringRedisTemplate.opsForSet().size(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artist.getId())));
-
-    }
-
-    @Cacheable(value = "artist")
-    public Artist queryArtistById(Integer artistId) {
-        Artist artist = illustrationBizMapper.queryArtistById(artistId);
-        if (artist == null) {
-            artist = artistService.pullArtistsInfo(artistId);
-            if (artist == null) {
-                throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
-            }
-        }
-
-        return artist;
     }
 
     public Illustration queryIllustrationByIdWithUserInfo(Integer illustId) {
@@ -162,11 +100,6 @@ public class IllustrationBizService {
         return url.toString();
     }
 
-    @Cacheable(value = "artistSummarys")
-    public ArtistSummary querySummaryByArtistId(Integer artistId) {
-        return illustrationBizMapper.querySummaryByArtistId(artistId);
-    }
-
     //@Scheduled(cron = "0 0/5 * * * ? ")
     void saveIllustRelatedToDb() {
         final HashMap<String, List<Illustration>> temp = new HashMap<>(waitSaveToDb);
@@ -194,9 +127,6 @@ public class IllustrationBizService {
     }
 
     public Boolean queryExistsById(String type, Integer id) {
-        if ("artist".equals(type)) {
-            return queryArtistById(id) != null;
-        }
         if ("illust".equals(type)) {
             return queryIllustrationById(id) != null;
         }
@@ -204,8 +134,15 @@ public class IllustrationBizService {
     }
 
     public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {
-        return illustIdList.stream().map(this::queryIllustrationById).collect(Collectors.toList());
-        //return illustrationBizMapper.queryIllustrationByIllustIdList(illustIdList);
+        return illustIdList.stream().map(e -> {
+            Illustration illustration = null;
+            try {
+                illustration = queryIllustrationById(e);
+            } catch (BusinessException businessException) {
+                System.out.println("部分画作不存在");
+            }
+            return illustration;
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Cacheable("illust_bookmarked")
@@ -213,8 +150,28 @@ public class IllustrationBizService {
         return illustrationBizMapper.queryUserListBookmarkedIllust(illustId, (page - 1) * pageSize, pageSize);
     }
 
-    @Cacheable("artist_followed")
-    public List<UserListDTO> queryUserListFollowedArtist(Integer artistId, Integer page, Integer pageSize) {
-        return illustrationBizMapper.queryUserListFollowedArtist(artistId, (page - 1) * pageSize, pageSize);
+    public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {
+        Map<String, Object> context = AppContext.get();
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            int userId = (int) context.get(AuthConstant.USER_ID);
+            dealIsLikedInfoForIllustList(illustrationList, userId);
+        }
     }
+
+    public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {
+        List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+            for (Illustration illustration : illustrationList) {
+                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
+                stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
+            }
+            return null;
+        });
+        int size = isFollowedList.size();
+        for (int i = 0; i < size; i++) {
+            IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), true);
+            illustrationWithLikeInfo.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustrationWithLikeInfo.getArtistPreView(), (Boolean) isFollowedList.get(i)));
+            illustrationList.set(i, illustrationWithLikeInfo);
+        }
+    }
+
 }

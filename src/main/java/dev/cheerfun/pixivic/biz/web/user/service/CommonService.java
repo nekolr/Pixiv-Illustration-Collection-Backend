@@ -33,22 +33,22 @@ import java.net.http.HttpResponse;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonService {
-    private final CommonMapper userMapper;
-    private final HttpClient httpClient;
-    private final JWTUtil jwtUtil;
-    private final PasswordUtil passwordUtil;
-    private final EmailUtil emailUtil;
-    private final VerificationCodeService verificationCodeService;
     private final static String AVATAR_PRE = "https://pic.pixivic.com/";
     private final static String AVATAR_POS = ".png";
     private final static String PIXIVIC = "Pixivic酱";
     private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
     private final static String QQ_BIND_URL_PRE = "https://graph.qq.com/oauth2.0/me?access_token=";
+    private final CommonMapper userMapper;
+    private final HttpClient httpClient;
+    private final JWTUtil jwtUtil;
+    private final PasswordUtil passwordUtil;
+    private final EmailUtil emailUtil;
+    private final VerificationCodeService verificationCodeService;
 
-    public User signUp(User user) throws MessagingException {
+    public User signUp(User user) {
         //检测用户名或邮箱是否重复
-        if (userMapper.checkUserNameAndEmail(user.getUsername(), user.getEmail()) == 1) {
+        if (userMapper.checkUserName(user.getUsername()) == 1 || userMapper.checkUserEmail(user.getEmail()) == 1) {
             throw new UserCommonException(HttpStatus.CONFLICT, "用户名或邮箱已存在");
         }
         user.setPassword(passwordUtil.encrypt(user.getPassword()));
@@ -73,11 +73,11 @@ public class CommonService {
     }
 
     public boolean checkUsername(String username) {
-        return userMapper.checkUserNameAndEmail(username, "") == 1;
+        return userMapper.checkUserName(username) == 1;
     }
 
     public boolean checkEmail(String email) {
-        return userMapper.checkUserNameAndEmail("", email) == 1;
+        return userMapper.checkUserEmail(email) == 1;
     }
 
     public User signIn(String qqAccessToken) throws IOException, InterruptedException {
@@ -99,7 +99,7 @@ public class CommonService {
         return userMapper.setAvatar(avatar, userId);
     }
 
-    @Transactional
+    @Transactional(rollbackFor = Exception.class)
     public User setEmail(String email, int userId) {
         userMapper.setEmail(email, userId);
         return userMapper.queryUserByUserId(userId);

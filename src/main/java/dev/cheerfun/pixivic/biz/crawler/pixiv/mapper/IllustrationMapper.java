@@ -110,6 +110,6 @@ public interface IllustrationMapper {
     })
     List<Integer> queryIllustsNotInDb(@Param("illustIds") List<Integer> illustIds);
 
-    @Insert("insert into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler})")
+    @Insert("replace into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler})")
     int insertRank(Rank rank);
 }

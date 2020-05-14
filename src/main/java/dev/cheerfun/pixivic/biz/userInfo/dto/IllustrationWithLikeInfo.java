@@ -39,5 +39,4 @@ public class IllustrationWithLikeInfo extends Illustration {
         this.isLiked = isLiked;
     }
 
-
 }

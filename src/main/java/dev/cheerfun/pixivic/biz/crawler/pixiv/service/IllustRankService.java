@@ -33,32 +33,42 @@ import java.util.stream.IntStream;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustRankService {
+    private final static String[] MODES = {"day", "week", "month", "day_female", "day_male", "day_manga", "week_manga", "month_manga", "week_rookie_manga"};
     private final ObjectMapper objectMapper;
     private final IllustrationMapper illustrationMapper;
     private final IllustrationService illustrationService;
     private final RequestUtil requestUtil;
-    private final static String[] MODES = {"day", "week", "month", "day_female", "day_male", "day_manga", "week_manga", "month_manga", "week_rookie_manga"};
 
     @CacheEvict(value = "rank", allEntries = true)
     public void pullAllRank() {
-        LocalDate date = LocalDate.now().plusDays(-2);
+        LocalDate date = LocalDate.now().plusDays(-1);
         pullAllRank(date.toString());
     }
 
     public void pullAllRank(String date) {
         for (String mode : MODES) {
-            illustrationMapper.insertRank(getIllustrations(mode, date));
+            Rank rank = getIllustrations(mode, date);
+            if (rank.getData() != null && rank.getData().size() > 0) {
+                illustrationMapper.insertRank(rank);
+                illustrationService.saveToDb(rank.getData());
+            }
         }
         System.out.println(date + "排行爬取完毕");
     }
 
     private Rank getIllustrations(String mode, String date) {
         ArrayList<Illustration> illustrations = new ArrayList<>(100);
-        IntStream.range(0, 10).forEach(i -> {
+        IntStream.range(0, 22).forEach(i -> {
             try {
                 illustrations.addAll(getIllustrationsJson(mode, date, i));
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
+                System.out.println("重试");
+                try {
+                    illustrations.addAll(getIllustrationsJson(mode, date, i));
+                } catch (ExecutionException | InterruptedException ex) {
+                    ex.printStackTrace();
+                }
             }
         });
         String rankMode;

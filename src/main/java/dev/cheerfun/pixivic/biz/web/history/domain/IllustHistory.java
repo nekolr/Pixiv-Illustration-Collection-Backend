@@ -1,10 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.history.domain;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -15,7 +13,9 @@ import java.time.LocalDateTime;
  */
 @Data
 public class IllustHistory {
+    @NotNull
     private Integer userId;
+    @NotNull
     private Integer illustId;
     private LocalDateTime createAt;
 

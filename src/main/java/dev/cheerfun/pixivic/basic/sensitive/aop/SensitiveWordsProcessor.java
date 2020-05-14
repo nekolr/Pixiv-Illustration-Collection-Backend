@@ -36,7 +36,7 @@ public class SensitiveWordsProcessor {
     }
 
     @Around(value = "pointCutInMethodParam()")
-    private Object handleSensitiveCheck(ProceedingJoinPoint joinPoint) throws Throwable {
+    public Object handleSensitiveCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         List<JoinPointArg> contentStream = commonUtil.getMethodArgsByAnnotationValueMethodValue(joinPoint, SensitiveCheck.class);
         contentStream.forEach(e -> {
             try {

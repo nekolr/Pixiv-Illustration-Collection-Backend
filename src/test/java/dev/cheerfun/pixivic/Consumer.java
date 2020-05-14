@@ -1,7 +1,6 @@
 package dev.cheerfun.pixivic;
 
 import com.rabbitmq.client.*;
-import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;

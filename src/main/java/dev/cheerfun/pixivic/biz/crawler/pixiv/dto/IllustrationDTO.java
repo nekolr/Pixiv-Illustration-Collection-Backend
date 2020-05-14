@@ -42,7 +42,7 @@ public class IllustrationDTO {
     private Integer total_bookmarks;
 
     public static Illustration castToIllustration(IllustrationDTO illustrationDTO) {
-        if(illustrationDTO!=null){
+        if (illustrationDTO != null) {
             Illustration illustration = new Illustration();
             //System.out.println(illustrationDTO);
             illustration.setId(Integer.valueOf(illustrationDTO.getId()));

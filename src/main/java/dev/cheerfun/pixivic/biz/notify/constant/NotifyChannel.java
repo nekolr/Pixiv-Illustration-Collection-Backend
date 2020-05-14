@@ -7,8 +7,8 @@ package dev.cheerfun.pixivic.biz.notify.constant;
  * @description NotifyChannel
  */
 public class NotifyChannel {
-    public final static String WEB="web";
-    public final static String APP="app";
-    public final static String EMAIL="email";
-    public final static String MESSAGE="message";
+    public final static String WEB = "web";
+    public final static String APP = "app";
+    public final static String EMAIL = "email";
+    public final static String MESSAGE = "message";
 }

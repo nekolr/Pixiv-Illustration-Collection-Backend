@@ -24,7 +24,7 @@ public class MainCrawlerService {
     @CacheEvict(cacheNames = "illust", allEntries = true)
     public void dailyPersistentTask() throws InterruptedException {
         int hour = LocalTime.now().getHour();
-        LocalDate date = LocalDate.now().plusDays(-(hour + 1)*2);
+        LocalDate date = LocalDate.now().plusDays(-(hour + 1) * 2);
         System.out.println(date);
         List<Integer> artistIds = illustrationService.pullAllRankInfo(date);
         artistService.pullArtistsInfo(artistIds);

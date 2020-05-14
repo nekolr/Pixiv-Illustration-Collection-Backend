@@ -1,16 +1,12 @@
 package dev.cheerfun.pixivic.biz.notify.customer.impl;
 
-import dev.cheerfun.pixivic.biz.notify.constant.NotifyObjectType;
+import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
+import dev.cheerfun.pixivic.biz.event.domain.Event;
 import dev.cheerfun.pixivic.biz.notify.customer.NotifyEventCustomer;
-import dev.cheerfun.pixivic.biz.notify.po.NotifyEvent;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
-import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.Set;
 
 /**
  * @author OysterQAQ
@@ -18,25 +14,25 @@ import java.util.Set;
  * @date 2020/3/18 2:33 下午
  * @description CollectionNotifyEventCustomer
  */
-@Component(NotifyObjectType.COLLECTION)
-@RabbitListener(queues = NotifyObjectType.COLLECTION)
+@Component(ObjectType.COLLECTION)
+@RabbitListener(queues = ObjectType.COLLECTION)
 public class CollectionNotifyEventCustomer extends NotifyEventCustomer {
 
     @Override
     @RabbitHandler()
-    public void consume(NotifyEvent notifyEvent) {
-        super.process(notifyEvent);
+    public void consume(Event event) {
+        super.process(event);
     }
 
     @Override
-    protected Object querySendTo(NotifyEvent notifyEvent) {
+    protected Object querySendTo(Event event) {
         //如果是发布 则找出所有关注发布者的用户
         //如果是收藏评论则找出发布者
         return null;
     }
 
     @Override
-    protected NotifyRemind generateRemind(NotifyEvent notifyEvent, Integer sendTo) {
+    protected NotifyRemind generateRemind(Event event, Integer sendTo) {
         return null;
     }
 
