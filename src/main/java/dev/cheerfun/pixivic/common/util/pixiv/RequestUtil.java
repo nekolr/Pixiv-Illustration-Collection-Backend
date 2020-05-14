@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.common.util.pixiv;
 
-import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.Oauth;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -90,7 +90,7 @@ final public class RequestUtil {
                 .uri(URI.create(url));
         decorateHeader(uri);
         int randomOauthIndex = oauthManager.getRandomOauthIndex();
-        Oauth oauth = oauthManager.getOauths().get(randomOauthIndex);
+        PixivUser oauth = oauthManager.getOauths().get(randomOauthIndex);
         HttpRequest getRank = uri
                 .header("Authorization", "Bearer " + oauth.getAccessToken())
                 .GET()
@@ -111,7 +111,7 @@ final public class RequestUtil {
                 .uri(URI.create(url));
         decorateHeader(uri);
         int randomOauthIndex = oauthManager.getRandomOauthIndex();
-        Oauth oauth = oauthManager.getOauths().get(randomOauthIndex);
+        PixivUser oauth = oauthManager.getOauths().get(randomOauthIndex);
         HttpRequest getRank = uri
                 .header("Authorization", "Bearer " + oauth.getAccessToken())
                 .GET()

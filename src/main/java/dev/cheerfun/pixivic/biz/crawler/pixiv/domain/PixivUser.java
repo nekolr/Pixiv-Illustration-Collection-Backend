@@ -12,22 +12,23 @@ import lombok.Data;
 import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 @Data
-public class Oauth {
+public class PixivUser {
     public final static String CLIENT_ID = "KzEZED7aC0vird8jWyHM38mXjNTY";
     public final static String CLIENT_SECRET = "W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP";
-    private ReentrantLock lock = new ReentrantLock();
+    ReentrantReadWriteLock lock = new ReentrantReadWriteLock(false);
+    final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
+    final ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
     private volatile String accessToken;
     private String deviceToken;
     private String refreshToken;
     private String grantType;
     private String username;
     private String password;
-    private volatile Boolean isBan = false;
-    private long banAt;
     private Bucket bucket;
+    private volatile Integer isBan;
 
     {
         deviceToken = "fb12e7c1945000850deb5f7001c02745";
@@ -46,28 +47,39 @@ public class Oauth {
         return RequestUtil.getPostEntity(paramMap);
     }
 
+    public String getAccessToken() {
+        readLock.lock();
+        try {
+            return accessToken;
+        } finally {
+            readLock.unlock();
+        }
+
+    }
+
     public void refresh(OathRespBody responseBody) {
-        lock.lock();
+        writeLock.lock();
         try {
             OathResp response = responseBody.getResponse();
             accessToken = response.getAccessToken();
             deviceToken = response.getDeviceToken();
             refreshToken = response.getRefreshToken();
+            grantType = "refresh_token";
+            isBan = 0;
         } finally {
-            lock.unlock();
+            writeLock.unlock();
         }
 
     }
 
     public void refreshError() {
-        lock.lock();
+        writeLock.lock();
         try {
             accessToken = null;
-            deviceToken = null;
-            refreshToken = null;
             grantType = "password";
+            isBan = 1;
         } finally {
-            lock.unlock();
+            writeLock.unlock();
         }
     }
 
