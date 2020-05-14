@@ -72,7 +72,7 @@ public class PixivUser {
 
     }
 
-    public void refreshError() {
+    public void ban() {
         writeLock.lock();
         try {
             accessToken = null;

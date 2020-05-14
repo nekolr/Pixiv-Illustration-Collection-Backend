@@ -89,17 +89,16 @@ final public class RequestUtil {
         HttpRequest.Builder uri = HttpRequest.newBuilder()
                 .uri(URI.create(url));
         decorateHeader(uri);
-        int randomOauthIndex = oauthManager.getRandomOauthIndex();
-        PixivUser oauth = oauthManager.getOauths().get(randomOauthIndex);
+        PixivUser pixivUser = oauthManager.getRandomPixivUser();
         HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + oauth.getAccessToken())
+                .header("Authorization", "Bearer " + pixivUser.getAccessToken())
                 .GET()
                 .build();
         return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
             int code = resp.statusCode();
             //System.out.println(resp.body().length());
             if (code == 403) {
-                oauthManager.ban(randomOauthIndex);
+                pixivUser.ban();
                 return "false";
             }
             return resp.body();
@@ -110,10 +109,9 @@ final public class RequestUtil {
         HttpRequest.Builder uri = HttpRequest.newBuilder()
                 .uri(URI.create(url));
         decorateHeader(uri);
-        int randomOauthIndex = oauthManager.getRandomOauthIndex();
-        PixivUser oauth = oauthManager.getOauths().get(randomOauthIndex);
+        PixivUser pixivUser = oauthManager.getRandomPixivUser();
         HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + oauth.getAccessToken())
+                .header("Authorization", "Bearer " + pixivUser.getAccessToken())
                 .GET()
                 .build();
         try {

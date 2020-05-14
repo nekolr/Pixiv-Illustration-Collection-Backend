@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -36,7 +37,7 @@ public class OauthManager {
     private volatile int pixivUserSize;
 
     //失败队列，由于只会有一个线程访问所以不需要可见
-    private Set<PixivUser> refreshErrorSet;
+    private Set<Integer> refreshErrorSet;
 
     @PostConstruct
     private void init() throws IOException {
@@ -46,8 +47,8 @@ public class OauthManager {
         pixivUserList = objectMapper.readValue(json, new TypeReference<ArrayList<PixivUser>>() {
         });
         //账号初始化
-        refreshAccessToken();
         pixivUserSize = pixivUserList.size();
+        refreshAccessToken();
     }
 
     @Scheduled(cron = "0 0/30 * * * ?")
@@ -55,12 +56,12 @@ public class OauthManager {
         System.out.println("开始刷新帐号池");
         for (int i = 0; i < pixivUserSize; i++) {
             if (!refresh(pixivUserList.get(i))) {
-                refreshErrorSet.add(pixivUserList.get(i));
+                refreshErrorSet.add(i);
             } else {
-                refreshErrorSet.remove(pixivUserList.get(i));
+                refreshErrorSet.remove(i);
             }
         }
-        refreshErrorSet.removeIf(this::refresh);
+        refreshErrorSet.removeIf(e -> refresh(pixivUserList.get(e)));
         System.out.println("帐号池刷新完毕");
     }
 
@@ -77,8 +78,9 @@ public class OauthManager {
                 OathRespBody body;
                 body = (OathRespBody) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(OathRespBody.class)).body();
                 pixivUser.refresh(body);
+                System.out.println(pixivUser.getUsername() + "账号刷新成功");
             } catch (Exception e) {
-                pixivUser.refreshError();
+                pixivUser.ban();
                 System.err.println("账号" + pixivUser.getUsername() + "刷新token失败");
                 e.printStackTrace();
                 continue;
@@ -88,7 +90,11 @@ public class OauthManager {
         return false;
     }
 
-    public int getRandomOauthIndex() {
+    public void ban(PixivUser pixivUser) {
+        pixivUser.ban();
+    }
+
+    public PixivUser getRandomPixivUser() {
         long start = System.currentTimeMillis();
         //自旋获取
         while (System.currentTimeMillis() - start < 1000 * 15) {
@@ -96,7 +102,7 @@ public class OauthManager {
             PixivUser pixivUser = pixivUserList.get(i);
             //token不为空且令牌桶足够
             if (pixivUser.getAccessToken() != null && pixivUser.getBucket().tryConsumeAndReturnRemaining(1).isConsumed()) {
-                return i;
+                return pixivUser;
             }
         }
         //超时手动刷新
