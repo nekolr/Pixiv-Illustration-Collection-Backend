@@ -29,7 +29,7 @@ public class OauthManager {
 
     @Value("${pixiv.oauth.config}")
     private String path;
-    private Random random = new Random();
+    private final Random random = new Random();
 
     @Getter
     private volatile List<PixivUser> pixivUserList;
@@ -99,6 +99,7 @@ public class OauthManager {
                 return i;
             }
         }
+        //超时手动刷新
         refreshAccessToken();
         throw new RuntimeException("获取token失败，开始重新刷新");
     }
