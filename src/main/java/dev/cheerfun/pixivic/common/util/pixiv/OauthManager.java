@@ -18,9 +18,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -38,12 +36,13 @@ public class OauthManager {
     private volatile int pixivUserSize;
 
     //失败队列，由于只会有一个线程访问所以不需要可见
-    private ArrayList<PixivUser> refreshErrorList;
+    private Set<PixivUser> refreshErrorSet;
 
     @PostConstruct
     private void init() throws IOException {
         //读取账号信息
         File json = new File(path);
+        refreshErrorSet = new HashSet<>();
         pixivUserList = objectMapper.readValue(json, new TypeReference<ArrayList<PixivUser>>() {
         });
         //账号初始化
@@ -56,15 +55,12 @@ public class OauthManager {
         System.out.println("开始刷新帐号池");
         for (int i = 0; i < pixivUserSize; i++) {
             if (!refresh(pixivUserList.get(i))) {
-                refreshErrorList.add(pixivUserList.get(i));
+                refreshErrorSet.add(pixivUserList.get(i));
+            } else {
+                refreshErrorSet.remove(pixivUserList.get(i));
             }
         }
-
-        for (int i = 0; i < refreshErrorList.size(); i++) {
-            if (!refresh(refreshErrorList.get(i))) {
-                refreshErrorList.add(refreshErrorList.get(i));
-            }
-        }
+        refreshErrorSet.removeIf(this::refresh);
         System.out.println("帐号池刷新完毕");
     }
 
