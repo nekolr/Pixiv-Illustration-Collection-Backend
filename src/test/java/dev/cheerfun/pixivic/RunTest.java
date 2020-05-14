@@ -7,10 +7,32 @@ import java.time.ZoneId;
 import java.util.concurrent.TimeoutException;
 
 public class RunTest {
-    public static void main(String[] args) throws IOException, TimeoutException {
-        Instant instant = Instant.ofEpochSecond(1585153148);
-        ZoneId zone = ZoneId.systemDefault();
-        LocalDateTime localDateTime = LocalDateTime.ofInstant(instant, zone);
-        System.out.println(localDateTime);
+
+    int i = 0;
+    volatile int j = 0;
+
+    public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
+
+        final RunTest runTest = new RunTest();
+        long b = System.currentTimeMillis();
+        new Thread(() -> {
+            while ((System.currentTimeMillis() - b) <= 30) {
+                final int k = runTest.i;
+                final int v = runTest.j;
+                System.out.println("非volatile:" + k);
+                System.out.println("volatile:" + v);
+            }
+        }).start();
+
+        Thread.sleep(15);
+        new Thread(() -> {
+//            runTest.i=8;
+//            runTest.j=20;
+            runTest.i = 8;
+
+        }).start();
+        Thread.sleep(10);
+
     }
+
 }
