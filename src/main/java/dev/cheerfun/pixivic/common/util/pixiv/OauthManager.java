@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -19,7 +20,6 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.util.*;
-import java.util.concurrent.CompletableFuture;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -48,31 +48,23 @@ public class OauthManager {
         });
         //账号初始化
         pixivUserSize = pixivUserList.size();
-        CompletableFuture.runAsync(this::refreshAccessToken);
+        refreshAccessToken();
     }
 
+    @Async
     @Scheduled(cron = "0 0/30 * * * ?")
     public void refreshAccessToken() {
         long start = System.currentTimeMillis();
-
-        while (System.currentTimeMillis() - start < 10 * 60 * 1000) {
-            try {
-                System.out.println("开始刷新帐号池" + start);
-                for (int i = 0; i < pixivUserSize; i++) {
-                    if (!refresh(pixivUserList.get(i))) {
-                        refreshErrorSet.add(i);
-                    } else {
-                        refreshErrorSet.remove(i);
-                    }
-                }
-                refreshErrorSet.removeIf(e -> refresh(pixivUserList.get(e)));
-                System.out.println("帐号池刷新完毕,耗时" + (System.currentTimeMillis() - start) / 1000 + "秒");
-                break;
-            } catch (Exception e) {
-                System.out.println("异常重试");
+        System.out.println("开始刷新帐号池" + start);
+        for (int i = 0; i < pixivUserSize; i++) {
+            if (!refresh(pixivUserList.get(i))) {
+                refreshErrorSet.add(i);
+            } else {
+                refreshErrorSet.remove(i);
             }
         }
-
+        refreshErrorSet.removeIf(e -> refresh(pixivUserList.get(e)));
+        System.out.println("帐号池刷新完毕,耗时" + (System.currentTimeMillis() - start) / 1000 + "秒");
     }
 
     private boolean refresh(PixivUser pixivUser) {
