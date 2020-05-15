@@ -90,7 +90,7 @@ public class ArtistService {
     }
 
     public void pullArtistLatestIllust(Integer artistId, String type) {
-        IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
+        IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("http://app-api2.pixivlite.cn/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
         // IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
         if (illustrationDetailDTOPage1 != null && illustrationDetailDTOPage1.getIllusts() != null) {
             List<Illustration> illustrationListPage1 = illustrationDetailDTOPage1.getIllusts().stream().filter(Objects::nonNull).map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
