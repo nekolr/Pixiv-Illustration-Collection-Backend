@@ -24,7 +24,7 @@ import java.util.concurrent.CompletableFuture;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class RequestUtil {
-    //@Resource(name = "httpClientWithProxy")
+    @Resource(name = "httpClientWithProxy")
     private final HttpClient httpClientWithProxy;
     private final OauthManager oauthManager;
 
