@@ -15,12 +15,26 @@ import java.util.concurrent.*;
  */
 @Configuration
 public class ExecutorServiceConfig {
+    @Bean(name = "executorService")
+    public ExecutorService executorService() {
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("httpclient-pool-%d").build();
+        return new ThreadPoolExecutor(
+                4,
+                40,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(1024),
+                namedThreadFactory,
+                new ThreadPoolExecutor.AbortPolicy()
+        );
+    }
+
     @Bean(name = "httpclientExecutorService")
     public ExecutorService httpclientExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("httpclient-pool-%d").build();
         return new ThreadPoolExecutor(
                 4,
-                40,
+                10,
                 0L,
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(1024),
