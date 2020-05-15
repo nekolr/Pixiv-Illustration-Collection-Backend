@@ -81,7 +81,7 @@ public class HttpClientConfig {
                 .version(HttpClient.Version.HTTP_2)
 //                .sslParameters(sslParams)
 //                .sslContext(sc)
-                .connectTimeout(Duration.ofMinutes(1))
+                .connectTimeout(Duration.ofSeconds(30))
                 //        .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 8888)))
                 .executor(httpclientExecutorService)
                 .followRedirects(HttpClient.Redirect.NEVER)

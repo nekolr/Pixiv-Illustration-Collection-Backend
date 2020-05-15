@@ -35,7 +35,7 @@ public class AdvertisementProcessor {
     private static List<Integer> randomList;
     private static Map<Integer, List<Advertisement>> advertisementMap;
     private final AdvertisementMapper advertisementMapper;
-    Random random;
+    private final Random random = new Random(21);
 
     @Pointcut(value = "@annotation(dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement)||@within(dev.cheerfun.pix" +
             "ivic.biz.ad.annotation.WithAdvertisement)")
@@ -44,7 +44,6 @@ public class AdvertisementProcessor {
 
     @PostConstruct
     public void init() {
-        random = new Random(21);
         randomList = new ArrayList<>();
         List<AdvertisementInfo> advertisementInfos = advertisementMapper.queryAllEnableAdvertisementInfo();
         //构造randomList
@@ -78,7 +77,7 @@ public class AdvertisementProcessor {
         data.addAll(bodyData);
         //随机决定是否插入
         int isAdd = random.nextInt(1000);
-        if (isAdd > 995) {
+        if (isAdd > 500) {
             //如果插入则根据权重选一个广告插入
             int i = random.nextInt(randomList.size());
             Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
