@@ -239,7 +239,12 @@ public class BusinessService {
     public List<ArtistWithRecentlyIllusts> queryFollowedWithRecentlyIllusts(Integer userId, int currIndex, int pageSize) {
         List<Artist> artists = queryFollowed(userId, currIndex, pageSize);
         return artists.stream().map(e -> {
-            List<Illustration> illustrations = artistBizService.queryIllustrationsByArtistId(e.getId(), "illust", 0, 3);
+            List<Illustration> illustrations = null;
+            try {
+                illustrations = artistBizService.queryIllustrationsByArtistId(e.getId(), "illust", 0, 3);
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
             // illustrationBizService.dealIsLikedInfoForIllustList(illustrations);
             return new ArtistWithRecentlyIllusts(e, illustrations);
         }).collect(Collectors.toList());

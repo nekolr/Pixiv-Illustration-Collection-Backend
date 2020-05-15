@@ -20,13 +20,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +46,8 @@ public class ArtistBizService {
     private final ArtistService artistService;
     private final IllustrationBizService illustrationBizService;
     private final ArtistSearchUtil artistSearchUtil;
+    private LinkedBlockingQueue<String> waitForPullArtistQueue;
+
     private volatile String today;
     private volatile String yesterday;
 
@@ -50,6 +55,12 @@ public class ArtistBizService {
         LocalDate now = LocalDate.now();
         today = now.toString();
         yesterday = now.plusDays(-1).toString();
+        waitForPullArtistQueue = new LinkedBlockingQueue<>(10 * 1000);
+    }
+
+    @PostConstruct
+    public void init() {
+        dealWaitForPullArtistQueue();
     }
 
     @Scheduled(cron = "0 1 0 * * ?")
@@ -105,18 +116,36 @@ public class ArtistBizService {
     }
 
     @Cacheable(value = "artist_illusts")
-    public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) {
+    public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) throws InterruptedException {
         //如果是近日首次则进行拉取
         String key = artistId + ":" + type;
-        Boolean todayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
-        Boolean yesterdayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday, key);
-        if (currIndex == 0 && pageSize == 30 && !(todayCheck || yesterdayCheck)) {
-            System.out.println("近日首次，将从Pixiv拉取");
-            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
-            artistService.pullArtistLatestIllust(artistId, type);
+        if (currIndex == 0 && pageSize == 30) {
+            waitForPullArtistQueue.put(key);
         }
         List<Illustration> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
+    }
+
+    @Async
+    public void dealWaitForPullArtistQueue() {
+        while (true) {
+            //取不到会阻塞
+            String key = null;
+            try {
+                key = waitForPullArtistQueue.take();
+                Boolean todayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
+                Boolean yesterdayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday, key);
+                if (!(todayCheck || yesterdayCheck)) {
+                    String[] split = key.split(":");
+                    System.out.println("开始从Pixiv获取画师(id:" + split[0] + "),首页画作");
+                    stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
+                    artistService.pullArtistLatestIllust(Integer.valueOf(split[0]), split[1]);
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
     @Cacheable(value = "artistSummarys")
@@ -134,7 +163,12 @@ public class ArtistBizService {
         Integer finalUserId = userId;
         return request.thenApply(e -> e.stream().parallel().map(artistSearchDTO ->
         {
-            List<Illustration> illustrations = queryIllustrationsByArtistId(artistSearchDTO.getId(), "illust", 0, 3);
+            List<Illustration> illustrations = null;
+            try {
+                illustrations = queryIllustrationsByArtistId(artistSearchDTO.getId(), "illust", 0, 3);
+            } catch (InterruptedException interruptedException) {
+                interruptedException.printStackTrace();
+            }
             return new ArtistWithRecentlyIllusts(queryArtistDetail(artistSearchDTO.getId(), finalUserId), illustrations);
 
         }).collect(Collectors.toList()));
