@@ -27,11 +27,9 @@ public class OauthManager {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final ExecutorService executorService;
-
+    private final Random random = new Random();
     @Value("${pixiv.oauth.config}")
     private String path;
-    private final Random random = new Random();
-
     @Getter
     private volatile List<PixivUser> pixivUserList;
     private volatile int pixivUserSize;

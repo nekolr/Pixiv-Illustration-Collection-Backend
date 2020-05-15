@@ -13,7 +13,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.redis.core.StringRedisTemplate;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -153,7 +152,7 @@ public class ArtistService {
                         });
                 return artistCompletableFuture.get();
             } catch (InterruptedException | ExecutionException e) {
-                System.out.println("网络错误");
+                System.out.println("网络错误" + e.getMessage());
             }
             return null;
         }).filter(Objects::nonNull).collect(Collectors.toList());

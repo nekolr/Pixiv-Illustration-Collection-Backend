@@ -116,7 +116,7 @@ public class TrendingTagsService {
                                 return new TrendingTags(e.getName(), e.getTranslatedName(), illustration);
                             }
                         } catch (ExecutionException | InterruptedException ex) {
-                            System.out.println("网络错误");
+                            System.out.println("网络错误" + ex.getMessage());
                         }
                         return null;
                     }).filter(Objects::nonNull).collect(Collectors.toList()));

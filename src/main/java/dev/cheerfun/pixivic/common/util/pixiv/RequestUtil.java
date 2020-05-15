@@ -117,7 +117,7 @@ final public class RequestUtil {
         try {
             return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
         } catch (IOException | InterruptedException e) {
-            System.out.println("网络错误");
+            System.out.println("网络错误" + e.getMessage());
         }
         return null;
     }
