@@ -24,8 +24,8 @@ import java.util.concurrent.CompletableFuture;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class RequestUtil {
-    @Resource(name = "httpClientWithProxy")
-    private final HttpClient httpClientWithProxy;
+    //@Resource(name = "httpClientWithProxy")
+    private final HttpClient httpClient;
     private final OauthManager oauthManager;
 
     public static String getPostEntity(Map<String, String> param) {
@@ -95,7 +95,7 @@ final public class RequestUtil {
                 .header("Authorization", "Bearer " + pixivUser.getAccessToken())
                 .GET()
                 .build();
-        return httpClientWithProxy.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
+        return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
             int code = resp.statusCode();
             //System.out.println(resp.body().length());
             if (code == 403) {
@@ -116,7 +116,7 @@ final public class RequestUtil {
                 .GET()
                 .build();
         try {
-            return httpClientWithProxy.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
+            return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
         } catch (IOException | InterruptedException e) {
             System.out.println("网络错误" + e.getMessage());
         }
