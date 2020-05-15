@@ -126,25 +126,26 @@ public class ArtistBizService {
         return illustrations;
     }
 
-    @Async
     public void dealWaitForPullArtistQueue() {
-        while (true) {
-            //取不到会阻塞
-            String key = null;
-            try {
-                key = waitForPullArtistQueue.take();
-                Boolean todayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
-                Boolean yesterdayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday, key);
-                if (!(todayCheck || yesterdayCheck)) {
-                    String[] split = key.split(":");
-                    System.out.println("开始从Pixiv获取画师(id:" + split[0] + "),首页画作");
-                    stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
-                    artistService.pullArtistLatestIllust(Integer.valueOf(split[0]), split[1]);
+        new Thread(() -> {
+            while (true) {
+                //取不到会阻塞
+                String key = null;
+                try {
+                    key = waitForPullArtistQueue.take();
+                    Boolean todayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
+                    Boolean yesterdayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday, key);
+                    if (!(todayCheck || yesterdayCheck)) {
+                        String[] split = key.split(":");
+                        System.out.println("开始从Pixiv获取画师(id:" + split[0] + "),首页画作");
+                        stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
+                        artistService.pullArtistLatestIllust(Integer.valueOf(split[0]), split[1]);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
-            } catch (InterruptedException e) {
-                e.printStackTrace();
             }
-        }
+        }).start();
 
     }
 
