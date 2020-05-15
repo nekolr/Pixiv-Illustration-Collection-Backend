@@ -79,9 +79,9 @@ public class HttpClientConfig {
         sc.init(null, trustAllCertificates, new SecureRandom());
         return HttpClient.newBuilder()
                 .version(HttpClient.Version.HTTP_1_1)
-                .sslParameters(sslParams)
-                .sslContext(sc)
-                .connectTimeout(Duration.ofMinutes(5))
+//                .sslParameters(sslParams)
+//                .sslContext(sc)
+                .connectTimeout(Duration.ofMinutes(1))
                 //        .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 8888)))
                 .executor(httpclientExecutorService)
                 .followRedirects(HttpClient.Redirect.NEVER)
