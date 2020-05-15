@@ -9,8 +9,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +18,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -27,6 +26,7 @@ public class OauthManager {
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    private final ExecutorService executorService;
 
     @Value("${pixiv.oauth.config}")
     private String path;
@@ -48,11 +48,20 @@ public class OauthManager {
         });
         //账号初始化
         pixivUserSize = pixivUserList.size();
-        refreshAccessToken();
+        refresh();
     }
 
-    @Async
-    @Scheduled(cron = "0 0/30 * * * ?")
+    public void refresh() {
+        executorService.submit(() -> {
+            while (true) {
+                refreshAccessToken();
+                Thread.sleep(30 *
+                        60 *
+                        1000);
+            }
+        });
+    }
+
     public void refreshAccessToken() {
         long start = System.currentTimeMillis();
         System.out.println("开始刷新帐号池" + start);
