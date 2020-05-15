@@ -78,7 +78,7 @@ public class HttpClientConfig {
         SSLContext sc = SSLContext.getInstance("SSL");
         sc.init(null, trustAllCertificates, new SecureRandom());
         return HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
+                .version(HttpClient.Version.HTTP_1_1)
 //                .sslParameters(sslParams)
 //                .sslContext(sc)
                 .connectTimeout(Duration.ofSeconds(30))
