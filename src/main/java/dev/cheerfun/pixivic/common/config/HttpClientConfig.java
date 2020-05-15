@@ -71,14 +71,9 @@ public class HttpClientConfig {
     }
 
     @Bean
-    public ExecutorService executorService() {
-        return Executors.newFixedThreadPool(4);
-    }
-
-    @Bean
     @Primary
     @Autowired
-    public HttpClient httpClientWithOutProxy(TrustManager[] trustAllCertificates, ExecutorService executorService) throws NoSuchAlgorithmException, KeyManagementException {
+    public HttpClient httpClientWithOutProxy(TrustManager[] trustAllCertificates, ExecutorService httpclientExecutorService) throws NoSuchAlgorithmException, KeyManagementException {
         SSLParameters sslParams = new SSLParameters();
         sslParams.setEndpointIdentificationAlgorithm("");
         SSLContext sc = SSLContext.getInstance("SSL");
@@ -89,14 +84,14 @@ public class HttpClientConfig {
                 .sslContext(sc)
                 .connectTimeout(Duration.ofMinutes(5))
                 //        .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 8888)))
-                .executor(executorService)
+                .executor(httpclientExecutorService)
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .build();
     }
 
     @Autowired
     @Bean(name = "httpClientWithProxy")
-    public HttpClient httpClient(TrustManager[] trustAllCertificates, ExecutorService executorService) throws NoSuchAlgorithmException, KeyManagementException {
+    public HttpClient httpClient(TrustManager[] trustAllCertificates, ExecutorService httpclientExecutorService) throws NoSuchAlgorithmException, KeyManagementException {
         SSLParameters sslParams = new SSLParameters();
         sslParams.setEndpointIdentificationAlgorithm("");
         SSLContext sc = SSLContext.getInstance("SSL");
@@ -106,7 +101,7 @@ public class HttpClientConfig {
                 .sslParameters(sslParams)
                 .sslContext(sc)
                 .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 9999)))
-                .executor(executorService)
+                .executor(httpclientExecutorService)
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .build();
     }
