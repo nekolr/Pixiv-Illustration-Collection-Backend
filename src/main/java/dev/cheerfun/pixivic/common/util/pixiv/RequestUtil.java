@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,7 +25,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class RequestUtil {
     //@Resource(name = "httpClientWithProxy")
-    private final HttpClient httpClient;
+    private final HttpClient httpClientWithProxy;
     private final OauthManager oauthManager;
 
     public static String getPostEntity(Map<String, String> param) {
@@ -94,7 +95,7 @@ final public class RequestUtil {
                 .header("Authorization", "Bearer " + pixivUser.getAccessToken())
                 .GET()
                 .build();
-        return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
+        return httpClientWithProxy.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
             int code = resp.statusCode();
             //System.out.println(resp.body().length());
             if (code == 403) {
@@ -115,7 +116,7 @@ final public class RequestUtil {
                 .GET()
                 .build();
         try {
-            return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
+            return httpClientWithProxy.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
         } catch (IOException | InterruptedException e) {
             System.out.println("网络错误" + e.getMessage());
         }
