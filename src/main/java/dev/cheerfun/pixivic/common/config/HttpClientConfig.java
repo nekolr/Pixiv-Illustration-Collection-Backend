@@ -72,7 +72,7 @@ public class HttpClientConfig {
 
     @Bean
     public ExecutorService executorService() {
-        return Executors.newFixedThreadPool(12);
+        return Executors.newFixedThreadPool(4);
     }
 
     @Bean
