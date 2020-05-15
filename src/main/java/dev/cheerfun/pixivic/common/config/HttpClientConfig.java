@@ -96,9 +96,9 @@ public class HttpClientConfig {
         SSLContext sc = SSLContext.getInstance("SSL");
         sc.init(null, trustAllCertificates, new SecureRandom());
         return HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
-                .sslParameters(sslParams)
-                .sslContext(sc)
+                .version(HttpClient.Version.HTTP_1_1)
+                //   .sslParameters(sslParams)
+                //    .sslContext(sc)
                 .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 1080)))
                 .executor(httpclientExecutorService)
                 .followRedirects(HttpClient.Redirect.NEVER)
