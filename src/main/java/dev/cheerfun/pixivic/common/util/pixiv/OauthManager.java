@@ -9,7 +9,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -55,22 +54,31 @@ public class OauthManager {
     @Scheduled(cron = "0 0/30 * * * ?")
     public void refreshAccessToken() {
         long start = System.currentTimeMillis();
-        System.out.println("开始刷新帐号池" + start);
-        for (int i = 0; i < pixivUserSize; i++) {
-            if (!refresh(pixivUserList.get(i))) {
-                refreshErrorSet.add(i);
-            } else {
-                refreshErrorSet.remove(i);
+
+        while (System.currentTimeMillis() - start < 10 * 60 * 1000) {
+            try {
+                System.out.println("开始刷新帐号池" + start);
+                for (int i = 0; i < pixivUserSize; i++) {
+                    if (!refresh(pixivUserList.get(i))) {
+                        refreshErrorSet.add(i);
+                    } else {
+                        refreshErrorSet.remove(i);
+                    }
+                }
+                refreshErrorSet.removeIf(e -> refresh(pixivUserList.get(e)));
+                System.out.println("帐号池刷新完毕,耗时" + (System.currentTimeMillis() - start) / 1000 + "秒");
+                break;
+            } catch (Exception e) {
+                System.out.println("异常重试");
             }
         }
-        refreshErrorSet.removeIf(e -> refresh(pixivUserList.get(e)));
-        System.out.println("帐号池刷新完毕,耗时" + (System.currentTimeMillis() - start) / 1000 + "秒");
+
     }
 
     private boolean refresh(PixivUser pixivUser) {
         long start = System.currentTimeMillis();
         //自旋10秒
-        while ((System.currentTimeMillis() - start) < 10 * 1000) {
+        while ((System.currentTimeMillis() - start) < 60 * 1000) {
             try {
                 HttpRequest.Builder uri = HttpRequest.newBuilder()
                         .uri(URI.create("https://proxy.pixivic.com:23334/auth/token"));
