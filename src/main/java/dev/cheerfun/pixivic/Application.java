@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 public class Application {
     public static void main(String[] args) {
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Referer");
-        System.setProperty("jdk.httpclient.redirects.retrylimit", "5");
+        System.setProperty("jdk.httpclient.redirects.retrylimit", "2");
         System.setProperty("jdk.httpclient.disableRetryConnect", "true");
         System.setProperty("jdk.httpclient.enableAllMethodRetry", "true");
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Content-Length");

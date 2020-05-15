@@ -33,8 +33,8 @@ public class ExecutorServiceConfig {
     public ExecutorService httpclientExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("httpclient-pool-%d").build();
         return new ThreadPoolExecutor(
-                4,
-                20,
+                10,
+                10,
                 0L,
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(1024),
