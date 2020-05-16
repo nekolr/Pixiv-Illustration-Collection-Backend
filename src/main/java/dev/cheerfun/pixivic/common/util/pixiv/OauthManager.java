@@ -115,7 +115,7 @@ public class OauthManager {
             }
         }
         //超时手动刷新
-        refreshAccessToken();
+        //refreshAccessToken();
         throw new RuntimeException("获取token失败，开始重新刷新");
     }
 }

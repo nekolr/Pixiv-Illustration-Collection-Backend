@@ -43,7 +43,7 @@ public class ExecutorServiceConfig {
         );
     }
 
-    @Bean(name = "threadPoolTaskExecutor")
+    //@Bean(name = "threadPoolTaskExecutor")
     public Executor threadPoolTaskExecutor() {
         return new ThreadPoolTaskExecutor();
     }
