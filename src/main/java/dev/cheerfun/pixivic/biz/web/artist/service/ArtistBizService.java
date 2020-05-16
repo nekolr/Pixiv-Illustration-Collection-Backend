@@ -61,11 +61,12 @@ public class ArtistBizService {
 
     @PostConstruct
     public void init() {
-        dealWaitForPullArtistQueue();
+        //dealWaitForPullArtistQueue();
     }
 
     @Scheduled(cron = "0 1 0 * * ?")
     public void clearArtistLatestIllustsMap() {
+
         stringRedisTemplate.delete(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday);
         yesterday = today;
         today = LocalDate.now().toString();

@@ -77,7 +77,7 @@ public class IllustHistoryService {
         Cursor<byte[]> cursor = connection.scan(scanOptions);
         int i = 0;
         while (cursor.hasNext()) {
-            connection.zRemRangeByScore(cursor.next(), LocalDateTime.now().plusDays(-5).toEpochSecond(ZoneOffset.of("+8")), -Integer.MAX_VALUE);
+            connection.zRemRangeByScore(cursor.next(), LocalDateTime.now().plusDays(-4).toEpochSecond(ZoneOffset.of("+8")), -Integer.MAX_VALUE);
             i++;
         }
         illustHistoryMapper.deleteIllustHistory();
