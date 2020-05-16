@@ -121,9 +121,9 @@ public class ArtistBizService {
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) throws InterruptedException {
         //如果是近日首次则进行拉取
         String key = artistId + ":" + type;
-        if (currIndex == 0 && pageSize == 30) {
-            waitForPullArtistQueue.put(key);
-        }
+//        if (currIndex == 0 && pageSize == 30) {
+//            waitForPullArtistQueue.put(key);
+//        }
         List<Illustration> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
     }
