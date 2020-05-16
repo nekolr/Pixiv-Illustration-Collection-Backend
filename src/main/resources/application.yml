@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
 #  profiles:
-  #    active: mac
+#    active: mac
   mvc:
     async:
       request-timeout: 3600000
@@ -85,5 +85,6 @@ apiLog:
   path: /home/PIC/log
 sensitiveWordList:
   path: /home/PIC/sensitive
-#logging:
-#  level: error
+logging:
+  level:
+    root: ERROR
