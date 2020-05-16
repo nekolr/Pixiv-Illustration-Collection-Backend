@@ -1,8 +1,11 @@
 server:
   port: 8080
 spring:
-#  profiles:
-#    active: mac
+  mvc:
+    async:
+      request-timeout: 3600000
+  #  profiles:
+  #    active: mac
   mail:
     host: mail
     username: admin@cheerfun.dev
