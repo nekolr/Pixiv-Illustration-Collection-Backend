@@ -85,5 +85,5 @@ apiLog:
   path: /home/PIC/log
 sensitiveWordList:
   path: /home/PIC/sensitive
-logging:
-  level: error
+#logging:
+#  level: error
