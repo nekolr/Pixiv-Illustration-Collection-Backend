@@ -39,7 +39,7 @@ final public class RequestUtil {
         return stringBuilder.toString();
     }
 
-    private static String[] gethash() {
+    public static String[] gethash() {
         SimpleDateFormat simpleDateFormat;
         String fortmat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ";
         simpleDateFormat = new SimpleDateFormat(fortmat, Locale.US);

@@ -19,6 +19,11 @@ public class NotifyRabbitmqConfig {
         return new DirectExchange("notifyExchange");
     }
 
+    @Bean
+    public Binding bindFanoutExchange(FanoutExchange fanoutExchange, DirectExchange notifyExchange) {
+        return BindingBuilder.bind(notifyExchange).to(fanoutExchange);
+    }
+
     @Bean("commentNotifyQueue")
     public Queue commentNotifyQueue() {
         return new Queue(ObjectType.COMMENT);
@@ -32,11 +37,6 @@ public class NotifyRabbitmqConfig {
     @Bean("collectionNotifyQueue")
     public Queue collectionNotifyQueue() {
         return new Queue(ObjectType.COLLECTION);
-    }
-
-    @Bean
-    public Binding bindFanoutExchange(FanoutExchange fanoutExchange, DirectExchange notifyExchange) {
-        return BindingBuilder.bind(notifyExchange).to(fanoutExchange);
     }
 
     @Bean

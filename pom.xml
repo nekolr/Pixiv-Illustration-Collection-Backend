@@ -39,6 +39,7 @@
         <guava.version>28.2-jre</guava.version>
         <protobuf.version>3.11.4</protobuf.version>
         <rabbitmq.version>5.8.0</rabbitmq.version>
+        <retrofit.version>2.8.1</retrofit.version>
     </properties>
 
     <dependencies>
@@ -84,6 +85,16 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis-spring-boot-starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>converter-jackson</artifactId>
+            <version>${retrofit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.squareup.retrofit2</groupId>
+            <artifactId>retrofit</artifactId>
+            <version>${retrofit.version}</version>
         </dependency>
         <dependency>
             <groupId>com.rabbitmq</groupId>

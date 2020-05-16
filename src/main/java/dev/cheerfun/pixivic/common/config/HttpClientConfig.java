@@ -31,23 +31,6 @@ import java.util.concurrent.ExecutorService;
  */
 @Configuration
 public class HttpClientConfig {
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
-        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
-        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
-        //objectMapper.registerModule(new Jdk8Module());
-        objectMapper.registerModule(new JavaTimeModule());
-//        JavaTimeModule javaTimeModule = new JavaTimeModule();
-//        javaTimeModule.addSerializer(LocalDateTime.class, new LocalDateTimeSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
-//        javaTimeModule.addSerializer(LocalDate.class, new LocalDateSerializer(DateTimeFormatter.ofPattern("yyyy-MM-dd")));
-//        javaTimeModule.addSerializer(LocalTime.class, new LocalTimeSerializer(DateTimeFormatter.ofPattern("HH:mm:ss")));
-//        objectMapper.registerModule(javaTimeModule);
-        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-        return objectMapper;
-    }
 
     @Bean
     public TrustManager[] trustAllCertificates() {
@@ -82,7 +65,7 @@ public class HttpClientConfig {
 //                .sslParameters(sslParams)
 //                .sslContext(sc)
                 .connectTimeout(Duration.ofSeconds(30))
-                //        .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 8888)))
+              //          .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 8888)))
                 .executor(httpclientExecutorService)
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .build();
@@ -99,7 +82,7 @@ public class HttpClientConfig {
                 .version(HttpClient.Version.HTTP_1_1)
                 .sslParameters(sslParams)
                 .sslContext(sc)
-                .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 1080)))
+                //   .proxy(ProxySelector.of(new InetSocketAddress("127.0.0.1", 1080)))
                 .executor(httpclientExecutorService)
                 .followRedirects(HttpClient.Redirect.NEVER)
                 .build();

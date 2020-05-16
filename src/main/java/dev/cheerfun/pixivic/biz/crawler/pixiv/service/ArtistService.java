@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.ArtistDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.ArtistMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.remote.PixivService;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
@@ -45,6 +46,7 @@ public class ArtistService {
     private final ArtistMapper artistMapper;
     private final IllustrationService illustrationService;
     private final StringRedisTemplate stringRedisTemplate;
+    private final PixivService pixivService;
     private ReentrantLock lock = new ReentrantLock();
 
     private List<Integer> waitForReDownload = new ArrayList<>();
@@ -89,9 +91,11 @@ public class ArtistService {
 
     }
 
-    public void pullArtistLatestIllust(Integer artistId, String type) {
-        IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
+    public void pullArtistLatestIllust(Integer artistId, String type) throws IOException {
+        //IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
         // IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
+        IllustsDTO illustrationDetailDTOPage1 = pixivService.pullArtistIllust(artistId, 0, type).execute().body();
+        System.out.println(illustrationDetailDTOPage1);
         if (illustrationDetailDTOPage1 != null && illustrationDetailDTOPage1.getIllusts() != null) {
             List<Illustration> illustrationListPage1 = illustrationDetailDTOPage1.getIllusts().stream().filter(Objects::nonNull).map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
             if (illustrationListPage1.size() > 0) {
