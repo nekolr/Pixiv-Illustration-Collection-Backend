@@ -84,7 +84,7 @@ public class SpotlightService {
                     }
                 }
             } catch (IOException | InterruptedException e) {
-                System.out.println("网络错误" + e.getMessage());
+                System.out.println("抓取spot错误" + e.getMessage());
             }
         });
         saveToDb(spotlights);

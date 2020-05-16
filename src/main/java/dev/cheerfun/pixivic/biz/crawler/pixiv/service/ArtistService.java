@@ -154,7 +154,7 @@ public class ArtistService {
                         });
                 return artistCompletableFuture.get();
             } catch (InterruptedException | ExecutionException e) {
-                System.out.println("网络错误" + e.getMessage());
+                System.out.println("抓取画师信息错误" + e.getMessage());
             }
             return null;
         }).filter(Objects::nonNull).collect(Collectors.toList());

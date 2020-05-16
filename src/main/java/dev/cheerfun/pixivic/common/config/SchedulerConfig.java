@@ -11,7 +11,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
  * @date 2020/5/15 10:04 上午
  * @description SchedulerConfig
  */
-@Configuration
+//@Configuration
 public class SchedulerConfig implements SchedulingConfigurer {
     /**
      * The pool size.
