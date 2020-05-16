@@ -21,10 +21,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -48,6 +45,7 @@ public class ArtistService {
     private final StringRedisTemplate stringRedisTemplate;
     private final PixivService pixivService;
     private ReentrantLock lock = new ReentrantLock();
+    private final Random random = new Random(21);
 
     private List<Integer> waitForReDownload = new ArrayList<>();
 
@@ -92,7 +90,7 @@ public class ArtistService {
     }
 
     public void pullArtistLatestIllust(Integer artistId, String type) throws IOException {
-        IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
+        IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("http://app-api" + (random.nextInt(4) - 1) + ".pixivlite.cn/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
         // IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
         //IllustsDTO illustrationDetailDTOPage1 = pixivService.pullArtistIllust(artistId, 0, type).execute().body();
         //   System.out.println(illustrationDetailDTOPage1);
