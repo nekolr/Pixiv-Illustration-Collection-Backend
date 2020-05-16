@@ -9,6 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+
 /**
  * @author OysterQAQ
  * @version 1.0
@@ -39,7 +42,7 @@ public class OKHttpConfig {
                                     .build();
                             return chain.proceed(request);
                         })
-                //  .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 8888)))
+                .proxy(new Proxy(Proxy.Type.HTTP, new InetSocketAddress("127.0.0.1", 1080)))
                 .build();
     }
 
