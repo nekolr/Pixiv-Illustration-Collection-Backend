@@ -33,7 +33,7 @@ public class ArtistBizController {
 
     @GetMapping("/artists/{artistId}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = "Authorization", required = false) String token) throws InterruptedException {
         return ResponseEntity.ok().body(new Result<>("获取画师详情成功", artistBizService.queryArtistDetail(artistId)));
     }
 

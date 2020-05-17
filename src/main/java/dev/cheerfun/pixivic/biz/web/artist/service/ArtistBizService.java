@@ -27,6 +27,7 @@ import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -48,6 +49,7 @@ public class ArtistBizService {
     private final IllustrationBizService illustrationBizService;
     private final ArtistSearchUtil artistSearchUtil;
     private LinkedBlockingQueue<String> waitForPullArtistQueue;
+    private LinkedBlockingQueue<Integer> waitForPullArtistInfoQueue;
 
     private volatile String today;
     private volatile String yesterday;
@@ -57,11 +59,12 @@ public class ArtistBizService {
         today = now.toString();
         yesterday = now.plusDays(-1).toString();
         waitForPullArtistQueue = new LinkedBlockingQueue<>(10 * 1000);
+        waitForPullArtistInfoQueue = new LinkedBlockingQueue<>(10 * 1000);
     }
 
     @PostConstruct
     public void init() {
-        //dealWaitForPullArtistQueue();
+        dealWaitForPullArtistQueue();
     }
 
     @Scheduled(cron = "0 1 0 * * ?")
@@ -72,7 +75,7 @@ public class ArtistBizService {
         today = LocalDate.now().toString();
     }
 
-    public Artist queryArtistDetail(Integer artistId) {
+    public Artist queryArtistDetail(Integer artistId) throws InterruptedException {
         Artist artist = queryArtistById(artistId);
         dealArtist(artist);
         Map<String, Object> context = AppContext.get();
@@ -84,7 +87,7 @@ public class ArtistBizService {
         return artist;
     }
 
-    public Artist queryArtistDetail(Integer artistId, Integer userId) {
+    public Artist queryArtistDetail(Integer artistId, Integer userId) throws InterruptedException {
         Artist artist = queryArtistById(artistId);
         dealArtist(artist);
         if (userId != null) {
@@ -100,13 +103,11 @@ public class ArtistBizService {
     }
 
     @Cacheable(value = "artist")
-    public Artist queryArtistById(Integer artistId) {
+    public Artist queryArtistById(Integer artistId) throws InterruptedException {
         Artist artist = artistBizMapper.queryArtistById(artistId);
         if (artist == null) {
-            artist = artistService.pullArtistsInfo(artistId);
-            if (artist == null) {
-                throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
-            }
+            waitForPullArtistInfoQueue.put(artistId);
+            throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
         }
 
         return artist;
@@ -121,9 +122,9 @@ public class ArtistBizService {
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) throws InterruptedException {
         //如果是近日首次则进行拉取
         String key = artistId + ":" + type;
-//        if (currIndex == 0 && pageSize == 30) {
-//            waitForPullArtistQueue.put(key);
-//        }
+        if (currIndex == 0 && pageSize == 30) {
+            waitForPullArtistQueue.put(key);
+        }
         List<Illustration> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
     }
@@ -131,8 +132,10 @@ public class ArtistBizService {
     public void dealWaitForPullArtistQueue() {
         executorService.submit(() -> {
             while (true) {
-                //取不到会阻塞
+                //处理画师画作
                 String key = null;
+                //处理画师详情
+                Integer artistId = null;
                 try {
                     key = waitForPullArtistQueue.take();
                     Boolean todayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
@@ -143,6 +146,9 @@ public class ArtistBizService {
                         stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
                         artistService.pullArtistLatestIllust(Integer.valueOf(split[0]), split[1]);
                     }
+                    artistId = waitForPullArtistInfoQueue.take();
+                    System.out.println("开始从Pixiv获取画师(id:" + artistId + ")信息");
+                    artistService.pullArtistsInfo(artistId);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -170,11 +176,11 @@ public class ArtistBizService {
             List<Illustration> illustrations = null;
             try {
                 illustrations = queryIllustrationsByArtistId(artistSearchDTO.getId(), "illust", 0, 3);
+                return new ArtistWithRecentlyIllusts(queryArtistDetail(artistSearchDTO.getId(), finalUserId), illustrations);
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
             }
-            return new ArtistWithRecentlyIllusts(queryArtistDetail(artistSearchDTO.getId(), finalUserId), illustrations);
-
-        }).collect(Collectors.toList()));
+            return null;
+        }).filter(Objects::nonNull).collect(Collectors.toList()));
     }
 }
