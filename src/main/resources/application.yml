@@ -1,8 +1,8 @@
 server:
   port: 8080
 spring:
-#  profiles:
-  #    active: mac
+  profiles:
+    active: mac
   mvc:
     async:
       request-timeout: -1
