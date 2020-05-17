@@ -77,7 +77,7 @@ public class AdvertisementProcessor {
         data.addAll(bodyData);
         //随机决定是否插入
         int isAdd = random.nextInt(1000);
-        if (isAdd < 50) {
+        if (isAdd < 100) {
             //如果插入则根据权重选一个广告插入
             int i = random.nextInt(randomList.size());
             Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
