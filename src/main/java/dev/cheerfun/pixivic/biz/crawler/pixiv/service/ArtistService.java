@@ -136,7 +136,7 @@ public class ArtistService {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
         List<Artist> artistList = artistIdsToDownload.stream().parallel().distinct().map(i -> {
             try {
-                CompletableFuture<Artist> artistCompletableFuture = requestUtil.getJson("https://app-api.pixiv.net/v1/user/detail?user_id=" + i + "&filter=for_ios")
+                CompletableFuture<Artist> artistCompletableFuture = requestUtil.getJson("https://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios")
                         .thenApply(result -> {
                             if ("false".equals(result)) {
                                 this.addToWaitingList(i);
