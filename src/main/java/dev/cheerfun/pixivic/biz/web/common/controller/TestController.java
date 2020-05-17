@@ -34,7 +34,7 @@ import java.util.concurrent.ExecutionException;
  * @date 2019/07/16 9:21
  * @description TODO
  */
-@RestController
+//@RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TestController {
     private final JWTUtil jwtUtil;

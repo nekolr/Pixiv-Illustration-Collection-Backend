@@ -24,7 +24,7 @@ import java.util.List;
  * @date 2020/4/1 8:40 上午
  * @description PixivicSyncController
  */
-@RestController
+//@RestController
 @RequestMapping("/pixiv")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class PixivicSyncController {
