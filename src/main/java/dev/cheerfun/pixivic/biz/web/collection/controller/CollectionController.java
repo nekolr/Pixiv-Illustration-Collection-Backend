@@ -92,8 +92,11 @@ public class CollectionController {
     @GetMapping("/collections/{collectionId}/illustrations")
     @WithUserInfo
     @WithAdvertisement
-    public ResponseEntity<Result<List<Illustration>>> queryCollectionIllust(@PathVariable Integer collectionId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize) {
-        //TODO header中添加用户指纹 放到hyperlog记录浏览量
+    public ResponseEntity<Result<List<Illustration>>> queryCollectionIllust(@PathVariable Integer collectionId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestParam String userFinger) {
+        //用户指纹 放到hyperlog记录浏览量
+        if (page == 1) {
+            collectionService.modifyCollectionTotalPeopleSeen(collectionId, userFinger);
+        }
         return ResponseEntity.ok().body(new Result<>("获取画集下画作成功", collectionService.queryCollectionIllust(collectionId, page, pageSize)));
     }
 

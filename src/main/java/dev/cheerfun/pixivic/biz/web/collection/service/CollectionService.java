@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -46,6 +47,7 @@ public class CollectionService {
     private final IllustrationBizService illustrationBizService;
     private final CollectionTagSearchUtil collectionTagSearchUtil;
 
+
     public Boolean createCollection(Integer userId, Collection collection) {
         //去除敏感词
         collection.getTagList().forEach(e -> {
@@ -55,7 +57,7 @@ public class CollectionService {
         //插入画集
         collectionMapper.createCollection(userId, collection);
         //异步将tag入库
-        insertCollectionTag(collection);
+        //insertCollectionTag(collection);
         return true;
     }
 
@@ -84,11 +86,12 @@ public class CollectionService {
 
     @Transactional
     public Boolean deleteCollection(Integer userId, Integer collectionId) {
-        //删除收藏、点赞数据
+        //删除收藏、点赞、浏览量数据
         if (collectionMapper.deleteCollection(userId, collectionId) == 1) {
             collectionMapper.deleteCollectionBookmark(collectionId);
             stringRedisTemplate.delete(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId);
             stringRedisTemplate.delete(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId);
+            stringRedisTemplate.delete(RedisKeyConstant.COLLECTION_TOTAL_PEOPLE_SEEN_REDIS_PRE + collectionId);
         }
         return true;
     }
@@ -258,7 +261,7 @@ public class CollectionService {
         return collectionTagSearchUtil.search(keyword);
     }
 
-    @Transactional
+    //@Async
     public void modifyTotalBookmark(Integer collectionId, Integer modify) {
         if (modify > 0) {
             collectionMapper.incrCollectionTotalBookmark(collectionId);
@@ -277,4 +280,16 @@ public class CollectionService {
         }
     }
 
+    public void modifyCollectionTotalPeopleSeen(Integer collectionId, String userFinger) {
+        stringRedisTemplate.opsForHyperLogLog().add(RedisKeyConstant.COLLECTION_TOTAL_PEOPLE_SEEN_REDIS_PRE + collectionId, userFinger);
+    }
+
+    public void pullStaticInfo(Collection collection) {
+        Integer collectionId = collection.getId();
+        collection.setTotalBookmarked(Math.toIntExact(stringRedisTemplate.opsForSet().size(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId)));
+        ;
+        collection.setTotalLiked(Integer.valueOf(stringRedisTemplate.opsForValue().get(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId)));
+        collection.setTotalPeopleSeen(Math.toIntExact(stringRedisTemplate.opsForHyperLogLog().size((RedisKeyConstant.COLLECTION_TOTAL_PEOPLE_SEEN_REDIS_PRE + collectionId))));
+        //处理是否点赞
+    }
 }

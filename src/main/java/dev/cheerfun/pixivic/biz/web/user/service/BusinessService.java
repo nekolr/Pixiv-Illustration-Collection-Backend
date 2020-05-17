@@ -253,25 +253,25 @@ public class BusinessService {
     @Transactional
     public void bookmarkCollection(Integer userId, String username, Integer collectionId) {
         businessMapper.bookmarkCollection(userId, username, collectionId);
-        collectionService.modifyTotalBookmark(collectionId, 1);
+        //collectionService.modifyTotalBookmark(collectionId, 1);
         stringRedisTemplate.opsForSet().add(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId, String.valueOf(userId));
     }
 
     @Transactional
     public void cancelBookmarkCollection(int userId, int collectionId) {
         businessMapper.cancelBookmarkCollection(userId, collectionId);
-        collectionService.modifyTotalBookmark(collectionId, -1);
+        // collectionService.modifyTotalBookmark(collectionId, -1);
         stringRedisTemplate.opsForSet().remove(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId, String.valueOf(userId));
     }
 
     public void likeCollection(Integer userId, Integer collectionId) {
-        stringRedisTemplate.opsForSet().add(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, String.valueOf(userId));
-        collectionService.modifyLikeCount(collectionId, 1);
+        stringRedisTemplate.opsForValue().increment(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, 1);
+        //collectionService.modifyLikeCount(collectionId, 1);
     }
 
     public void cancelLikeCollection(int userId, int collectionId) {
-        stringRedisTemplate.opsForSet().remove(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, String.valueOf(userId));
-        collectionService.modifyLikeCount(collectionId, -1);
+        stringRedisTemplate.opsForValue().decrement(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, 1);
+        // collectionService.modifyLikeCount(collectionId, -1);
     }
 
     public void followUser(Integer userId, String username, Integer followedUserId) {
