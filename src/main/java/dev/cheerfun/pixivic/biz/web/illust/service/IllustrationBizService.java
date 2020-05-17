@@ -14,6 +14,7 @@ import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.connection.StringRedisConnection;
@@ -35,6 +36,7 @@ import java.util.stream.Collectors;
  * @description IllustrationService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationBizService {
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
@@ -66,6 +68,7 @@ public class IllustrationBizService {
     public Illustration queryIllustrationById(Integer illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
+            log.info("开始爬取" + illustId);
             illustration = illustrationService.pullIllustrationInfo(illustId);
             if (illustration == null) {
                 throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
