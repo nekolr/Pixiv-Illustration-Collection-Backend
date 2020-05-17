@@ -5,7 +5,7 @@ spring:
 #    active: mac
   mvc:
     async:
-      request-timeout: 3600000
+      request-timeout: -1
   mail:
     host: mail
     username: admin@cheerfun.dev
