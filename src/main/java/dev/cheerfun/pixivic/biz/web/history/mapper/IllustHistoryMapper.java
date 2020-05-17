@@ -13,7 +13,6 @@ import java.util.List;
 @Mapper
 public interface IllustHistoryMapper {
     @Insert("insert into illust_history_temp (user_id,illust_id,create_at) value (#{userId},#{illustId},#{createAt,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
-    @Async
     Integer insertToTemp(IllustHistory illustHistory);
 
     @Delete("delete from illust_history where create_at < (SELECT DATE_ADD(now(),INTERVAL -3 MONTH))")

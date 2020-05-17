@@ -57,7 +57,7 @@ public class CommonService {
         //签发token
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
-        emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId() + "&email=" + user.getEmail());
+        //emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId() + "&email=" + user.getEmail());
         user = userMapper.queryUserByusernameAndPassword(user.getUsername(), user.getPassword());
         userMapper.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS, user.getId());
         user.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS);

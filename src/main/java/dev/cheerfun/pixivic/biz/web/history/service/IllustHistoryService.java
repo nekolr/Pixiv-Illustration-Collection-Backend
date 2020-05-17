@@ -21,6 +21,7 @@ import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Collectors;
 
 /**
@@ -39,7 +40,7 @@ public class IllustHistoryService {
     public void push(IllustHistory illustHistory) {
         stringRedisTemplate.opsForZSet().add(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + illustHistory.getUserId(), String.valueOf(illustHistory.getIllustId()), illustHistory.getCreateAt().toEpochSecond(ZoneOffset.of("+8")));
         //异步入临时表
-        illustHistoryMapper.insertToTemp(illustHistory);
+        CompletableFuture.runAsync(() -> illustHistoryMapper.insertToTemp(illustHistory));
     }
 
     public List<Illustration> pullFromRedis(int userId, int page, int pageSize) {
