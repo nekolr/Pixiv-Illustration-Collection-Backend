@@ -90,7 +90,7 @@ public class SearchService {
 
     @Cacheable(value = "searchSuggestions")
     public CompletableFuture<List<SearchSuggestion>> getSearchSuggestion(String keyword) {
-        return getSearchSuggestionFromBangumi(keyword)
+      /*  return getSearchSuggestionFromBangumi(keyword)
                 .orTimeout(2, TimeUnit.SECONDS)
                 .thenCompose(result -> {
                     List<SearchSuggestion> searchSuggestions = BangumiSearchResponse.castToSearchSuggestionList(result);
@@ -101,7 +101,8 @@ public class SearchService {
                         });
                     }
                     return CompletableFuture.completedFuture(searchSuggestions);
-                });
+                });*/
+        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "暂时不可用");
 
     }
 
