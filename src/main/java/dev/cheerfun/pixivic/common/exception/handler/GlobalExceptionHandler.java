@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 import javax.mail.SendFailedException;
 import javax.validation.ConstraintViolationException;
@@ -65,7 +66,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("请求超时"));
     }
 
-
+    @ExceptionHandler(value = AsyncRequestTimeoutException.class)
+    public ResponseEntity<Result> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e) {
+        System.out.println("请求超时");
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("请求超时"));
+    }
     /*@ExceptionHandler(value = MessagingException.class)
     public ResponseEntity<Result> handleIllegalMessagingException(MessagingException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("登录信息异常"));

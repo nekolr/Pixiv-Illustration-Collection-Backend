@@ -8,6 +8,7 @@ import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 /**
  * @author OysterQAQ

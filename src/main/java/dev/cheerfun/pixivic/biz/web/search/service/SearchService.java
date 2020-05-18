@@ -48,6 +48,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -74,7 +75,7 @@ public class SearchService {
     @Cacheable(value = "candidateWords")
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(@SensitiveCheck String keyword) {
         return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
-                .thenApply(r -> {
+                .orTimeout(2, TimeUnit.SECONDS).thenApply(r -> {
                     PixivSearchCandidatesResponse pixivSearchCandidatesResponse = null;
                     try {
                         pixivSearchCandidatesResponse = objectMapper.readValue(r, new TypeReference<PixivSearchCandidatesResponse>() {
