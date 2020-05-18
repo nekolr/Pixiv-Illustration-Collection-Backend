@@ -13,8 +13,11 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
 
 import javax.mail.SendFailedException;
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
+import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -67,7 +70,8 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = AsyncRequestTimeoutException.class)
-    public ResponseEntity<Result> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e) {
+    public ResponseEntity<Result> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e, HttpServletRequest request) throws IOException {
+        System.out.println(request.getReader().lines().collect(Collectors.joining(System.lineSeparator())));
         System.out.println("请求超时");
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("请求超时"));
     }
