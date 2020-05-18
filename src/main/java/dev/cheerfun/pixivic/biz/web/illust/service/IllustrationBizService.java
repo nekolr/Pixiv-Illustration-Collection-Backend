@@ -68,16 +68,15 @@ public class IllustrationBizService {
     public Illustration queryIllustrationById(Integer illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
-            throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
-          /*  log.info("开始爬取" + illustId);
+            log.info("开始爬取" + illustId);
             illustration = illustrationService.pullIllustrationInfo(illustId);
             if (illustration == null) {
-
+                throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
             } else {
                 List<Illustration> illustrations = new ArrayList<>(1);
                 illustrations.add(illustration);
                 illustrationService.saveToDb(illustrations);
-            }*/
+            }
         }
         return illustration;
     }
