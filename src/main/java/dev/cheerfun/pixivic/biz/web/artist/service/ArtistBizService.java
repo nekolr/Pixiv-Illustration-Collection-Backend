@@ -64,7 +64,7 @@ public class ArtistBizService {
 
     @PostConstruct
     public void init() {
-        //dealWaitForPullArtistQueue();
+        dealWaitForPullArtistQueue();
     }
 
     @Scheduled(cron = "0 1 0 * * ?")
