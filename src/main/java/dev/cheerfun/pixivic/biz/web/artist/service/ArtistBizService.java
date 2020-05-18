@@ -16,6 +16,7 @@ import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -40,6 +41,7 @@ import java.util.stream.Collectors;
  * @description ArtistBizService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ArtistBizService {
     private final StringRedisTemplate stringRedisTemplate;
@@ -142,17 +144,19 @@ public class ArtistBizService {
                     Boolean yesterdayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday, key);
                     if (!(todayCheck || yesterdayCheck)) {
                         String[] split = key.split(":");
-                        System.out.println("开始从Pixiv获取画师(id:" + split[0] + "),首页画作");
+                        System.out.println("开始从Pixiv获取画师(id:" + split[0] + ")首页画作");
                         stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
                         artistService.pullArtistLatestIllust(Integer.valueOf(split[0]), split[1]);
+                        log.info("获取画师(id:" + split[0] + ")首页画作完毕");
                     }
+
                     artistId = waitForPullArtistInfoQueue.take();
-                    System.out.println("开始从Pixiv获取画师(id:" + artistId + ")信息");
+                    log.info("开始从Pixiv获取画师(id:" + artistId + ")信息");
                     artistService.pullArtistsInfo(artistId);
+                    log.info("获取画师(id:" + artistId + ")信息完毕");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                //Thread.sleep(1000);
             }
         });
 
