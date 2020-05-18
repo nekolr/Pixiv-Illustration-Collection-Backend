@@ -75,7 +75,8 @@ public class SearchService {
     @Cacheable(value = "candidateWords")
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(@SensitiveCheck String keyword) {
         return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
-                .orTimeout(2, TimeUnit.SECONDS).thenApply(r -> {
+                .orTimeout(2, TimeUnit.SECONDS)
+                .thenApply(r -> {
                     PixivSearchCandidatesResponse pixivSearchCandidatesResponse = null;
                     try {
                         pixivSearchCandidatesResponse = objectMapper.readValue(r, new TypeReference<PixivSearchCandidatesResponse>() {
@@ -89,16 +90,18 @@ public class SearchService {
 
     @Cacheable(value = "searchSuggestions")
     public CompletableFuture<List<SearchSuggestion>> getSearchSuggestion(String keyword) {
-        return getSearchSuggestionFromBangumi(keyword).thenCompose(result -> {
-            List<SearchSuggestion> searchSuggestions = BangumiSearchResponse.castToSearchSuggestionList(result);
-            //平均分小于4则进行萌娘百科检索+有道翻译
-            if (BangumiSearchResponse.getAvgSum(result) < 4) {
-                return getSearchSuggestionFromMoeGirl(keyword).whenComplete((r, t) -> {
-                    searchSuggestions.addAll(r);
+        return getSearchSuggestionFromBangumi(keyword)
+                .orTimeout(2, TimeUnit.SECONDS)
+                .thenCompose(result -> {
+                    List<SearchSuggestion> searchSuggestions = BangumiSearchResponse.castToSearchSuggestionList(result);
+                    //平均分小于4则进行萌娘百科检索+有道翻译
+                    if (BangumiSearchResponse.getAvgSum(result) < 4) {
+                        return getSearchSuggestionFromMoeGirl(keyword).whenComplete((r, t) -> {
+                            searchSuggestions.addAll(r);
+                        });
+                    }
+                    return CompletableFuture.completedFuture(searchSuggestions);
                 });
-            }
-            return CompletableFuture.completedFuture(searchSuggestions);
-        });
 
     }
 
@@ -109,25 +112,26 @@ public class SearchService {
                 .uri(URI.create("https://proxy.pixivic.com:23334/ajax/search/artworks/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
                 .GET()
                 .build();
-        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r -> {
-            String body = r.body();
-            if (!body.contains("\"body\":[]") && !body.contains("\"tagTranslation\":[]"))
-                try {
-                    PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
-                    Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
-                    List<String> relatedTags = pixivSearchSuggestionDTO.getBody().getRelatedTags();
-                    List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(e, tagTranslation.get(e) == null ? "" : tagTranslation.get(e).getZh())).collect(Collectors.toList());
-                    if (searchSuggestions.size() > 0) {
-                        //保存
-                        waitSaveToDb.put(keyword, searchSuggestions);
-                    }
-                    return searchSuggestions;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            // List<SearchSuggestion> searchSuggestions = null;
-            return null;
-        });
+        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
+                .orTimeout(2, TimeUnit.SECONDS).thenApply(r -> {
+                    String body = r.body();
+                    if (!body.contains("\"body\":[]") && !body.contains("\"tagTranslation\":[]"))
+                        try {
+                            PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
+                            Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
+                            List<String> relatedTags = pixivSearchSuggestionDTO.getBody().getRelatedTags();
+                            List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(e, tagTranslation.get(e) == null ? "" : tagTranslation.get(e).getZh())).collect(Collectors.toList());
+                            if (searchSuggestions.size() > 0) {
+                                //保存
+                                waitSaveToDb.put(keyword, searchSuggestions);
+                            }
+                            return searchSuggestions;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    // List<SearchSuggestion> searchSuggestions = null;
+                    return null;
+                });
     }
 
     @Scheduled(cron = "0 0/5 * * * ? ")
