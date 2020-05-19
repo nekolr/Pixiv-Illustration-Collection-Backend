@@ -50,12 +50,12 @@ public class SearchController {
         return ResponseEntity.ok().body(new Result<>("搜索热门标签成功", trendingTagsService.queryByDate(LocalDate.now().toString())));
     }
 
-    @GetMapping("/keywords/**/candidates")
+    //@GetMapping("/keywords/**/candidates")
     public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
         return searchService.getCandidateWords(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", r)));
     }
 
-    @GetMapping("/keywords/**/suggestions")
+    //@GetMapping("/keywords/**/suggestions")
     public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getSearchSuggestion(HttpServletRequest request) {
         return searchService.getSearchSuggestion(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议获取成功", r)));
     }
