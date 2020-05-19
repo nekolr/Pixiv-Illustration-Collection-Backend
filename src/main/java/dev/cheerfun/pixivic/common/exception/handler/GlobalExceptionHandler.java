@@ -17,6 +17,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
 /**
@@ -70,7 +71,14 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = AsyncRequestTimeoutException.class)
-    public ResponseEntity<Result> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e, HttpServletRequest request) throws IOException {
+    public ResponseEntity<Result> handleAsyncRequestTimeoutException(AsyncRequestTimeoutException e, HttpServletRequest request) {
+        System.out.println(request.getRequestURI());
+        System.out.println("请求超时");
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("请求超时"));
+    }
+
+    @ExceptionHandler(value = TimeoutException.class)
+    public ResponseEntity<Result> handleTimeoutException(TimeoutException e, HttpServletRequest request) {
         System.out.println(request.getRequestURI());
         System.out.println("请求超时");
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("请求超时"));
