@@ -26,6 +26,7 @@ public class Advertisement extends IllustrationWithLikeInfo {
     public Advertisement(AdvertisementInfo advertisementInfo) {
         title = advertisementInfo.getTitle();
         imageUrls = new ArrayList<>(1);
+        pageCount = 1;
         ImageUrl imageUrl = new ImageUrl();
         String adImageUrl = advertisementInfo.getImageUrl();
         imageUrl.setLarge(adImageUrl);
