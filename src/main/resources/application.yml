@@ -2,10 +2,6 @@ server:
   port: 8080
   tomcat:
     connection-timeout: 5000
-  netty:
-    connection-timeout: 5000
-
-
 spring:
   #  profiles:
   #    active: mac
