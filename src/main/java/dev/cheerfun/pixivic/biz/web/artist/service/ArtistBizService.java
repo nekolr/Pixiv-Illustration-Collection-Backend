@@ -108,7 +108,7 @@ public class ArtistBizService {
     public Artist queryArtistById(Integer artistId) throws InterruptedException {
         Artist artist = artistBizMapper.queryArtistById(artistId);
         if (artist == null) {
-            waitForPullArtistInfoQueue.put(artistId);
+            waitForPullArtistInfoQueue.offer(artistId);
             throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
         }
 
@@ -125,7 +125,7 @@ public class ArtistBizService {
         //如果是近日首次则进行拉取
         String key = artistId + ":" + type;
         if (currIndex == 0 && pageSize == 30) {
-            waitForPullArtistQueue.put(key);
+            waitForPullArtistQueue.offer(key);
         }
         List<Illustration> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrations;
