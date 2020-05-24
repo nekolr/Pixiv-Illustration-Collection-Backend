@@ -105,7 +105,7 @@ public interface CollectionMapper {
             "<script>",
             "select collection_id from collections where use_flag=1 and  is_public ",
             "<if test=\"isSelf==0\">\n",
-            "=0",
+            "=1",
             "</if>",
             "<if test=\"isSelf==1\">\n",
             "= #{isPublic}",
