@@ -28,7 +28,7 @@ public abstract class NotifyEventCustomer {
     @Autowired
     protected StringRedisTemplate stringRedisTemplate;
 
-    @PostConstruct
+    //@PostConstruct
     void init() {
         notifySettingMap = notifyMapper.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
     }

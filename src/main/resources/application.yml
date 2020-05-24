@@ -3,7 +3,7 @@ server:
 #  tomcat:
 #    connection-timeout: 5000
 spring:
-  #  profiles:
+#  profiles:
   #    active: mac
   mail:
     host: mail
