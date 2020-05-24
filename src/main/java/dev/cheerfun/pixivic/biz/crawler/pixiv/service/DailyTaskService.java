@@ -23,7 +23,7 @@ public class DailyTaskService {
         spotlightService.pullAllSpotlight();
     }
 
-    @Scheduled(cron = "0 10 2 * * ?")
+    @Scheduled(cron = "0 0 13 14 * * ?")
     public void rank() {
         rankService.pullAllRank();
     }

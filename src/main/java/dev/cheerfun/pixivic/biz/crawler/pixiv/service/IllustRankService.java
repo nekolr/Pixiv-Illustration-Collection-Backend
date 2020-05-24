@@ -17,6 +17,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -41,7 +42,9 @@ public class IllustRankService {
 
     @CacheEvict(value = "rank", allEntries = true)
     public void pullAllRank() {
-        LocalDate date = LocalDate.now().plusDays(-2);
+        int hour = LocalTime.now().getHour();
+        LocalDate date = LocalDate.now().plusDays(-(hour - 12));
+        //LocalDate date = LocalDate.now().plusDays(-2);
         pullAllRank(date.toString());
     }
 
