@@ -11,7 +11,9 @@ import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.YoudaoTranslatedResponse;
+import dev.cheerfun.pixivic.biz.web.search.dto.PixivSearchSuggestionDTO;
 import dev.cheerfun.pixivic.biz.web.search.dto.SearchSuggestionSyncDTO;
+import dev.cheerfun.pixivic.biz.web.search.dto.TagTranslation;
 import dev.cheerfun.pixivic.biz.web.search.exception.SearchException;
 import dev.cheerfun.pixivic.biz.web.search.mapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.biz.web.search.util.ImageSearchUtil;
@@ -45,6 +47,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -110,27 +113,27 @@ public class SearchService {
                 .uri(URI.create("https://proxy.pixivic.com:23334/ajax/search/artworks/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
                 .GET()
                 .build();
-//        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
-//                .orTimeout(2, TimeUnit.SECONDS).thenApply(r -> {
-//                    String body = r.body();
-//                    if (!body.contains("\"body\":[]") && !body.contains("\"tagTranslation\":[]"))
-//                        try {
-//                            PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
-//                            Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
-//                            List<String> relatedTags = pixivSearchSuggestionDTO.getBody().getRelatedTags();
-//                            List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(e, tagTranslation.get(e) == null ? "" : tagTranslation.get(e).getZh())).collect(Collectors.toList());
-//                            if (searchSuggestions.size() > 0) {
-//                                //保存
-//                                waitSaveToDb.put(keyword, searchSuggestions);
-//                            }
-//                            return searchSuggestions;
-//                        } catch (IOException e) {
-//                            e.printStackTrace();
-//                        }
-//                    // List<SearchSuggestion> searchSuggestions = null;
-//                    return null;
-//                });
-        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "暂时不可用");
+        return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
+                .orTimeout(2, TimeUnit.SECONDS).thenApply(r -> {
+                    String body = r.body();
+                    if (!body.contains("\"body\":[]") && !body.contains("\"tagTranslation\":[]"))
+                        try {
+                            PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
+                            Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
+                            List<String> relatedTags = pixivSearchSuggestionDTO.getBody().getRelatedTags();
+                            List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(e, tagTranslation.get(e) == null ? "" : tagTranslation.get(e).getZh())).collect(Collectors.toList());
+                            if (searchSuggestions.size() > 0) {
+                                //保存
+                                waitSaveToDb.put(keyword, searchSuggestions);
+                            }
+                            return searchSuggestions;
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    // List<SearchSuggestion> searchSuggestions = null;
+                    return null;
+                });
+        // throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "暂时不可用");
     }
 
     @Scheduled(cron = "0 0/5 * * * ? ")
@@ -219,7 +222,7 @@ public class SearchService {
         try {
             youdaoTranslatedResponse = (YoudaoTranslatedResponse) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(YoudaoTranslatedResponse.class)).body();
         } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
+            throw new SearchException(HttpStatus.BAD_REQUEST, e.getMessage());
         }
         if (youdaoTranslatedResponse != null) {
             List<String> keywordTranslated = youdaoTranslatedResponse.getResult();
