@@ -114,7 +114,8 @@ public class SearchService {
                 .GET()
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())
-                .orTimeout(2, TimeUnit.SECONDS).thenApply(r -> {
+                // .orTimeout(2, TimeUnit.SECONDS)
+                .thenApply(r -> {
                     String body = r.body();
                     if (!body.contains("\"body\":[]") && !body.contains("\"tagTranslation\":[]"))
                         try {
