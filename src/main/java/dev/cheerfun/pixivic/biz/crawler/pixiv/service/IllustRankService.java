@@ -41,7 +41,7 @@ public class IllustRankService {
 
     @CacheEvict(value = "rank", allEntries = true)
     public void pullAllRank() {
-        LocalDate date = LocalDate.now().plusDays(-1);
+        LocalDate date = LocalDate.now().plusDays(-2);
         pullAllRank(date.toString());
     }
 
