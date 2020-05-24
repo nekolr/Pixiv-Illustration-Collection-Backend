@@ -221,12 +221,14 @@ public class SearchService {
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
-        assert youdaoTranslatedResponse != null;
-        List<String> keywordTranslated = youdaoTranslatedResponse.getResult();
-        if (keywordTranslated == null) {
-            throw new SearchException(HttpStatus.BAD_REQUEST, "关键词非中文，自动翻译失败");
+        if (youdaoTranslatedResponse != null) {
+            List<String> keywordTranslated = youdaoTranslatedResponse.getResult();
+            if (keywordTranslated == null) {
+                throw new SearchException(HttpStatus.BAD_REQUEST, "关键词非中文，自动翻译失败");
+            }
+            return keywordTranslated.get(0);
         }
-        return keywordTranslated.get(0);
+        throw new SearchException(HttpStatus.BAD_REQUEST, "自动翻译失败");
     }
 
     public Illustration queryFirstSearchResult(String keyword) throws ExecutionException, InterruptedException {
