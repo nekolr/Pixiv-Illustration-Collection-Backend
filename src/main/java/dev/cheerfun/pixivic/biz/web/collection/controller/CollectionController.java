@@ -94,7 +94,7 @@ public class CollectionController {
     @WithAdvertisement
     public ResponseEntity<Result<List<Illustration>>> queryCollectionIllust(@PathVariable Integer collectionId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestParam(required = false) String userFinger) {
         //用户指纹 放到hyperlog记录浏览量
-        if (page == 1) {
+        if (page == 1 && userFinger != null) {
             collectionService.modifyCollectionTotalPeopleSeen(collectionId, userFinger);
         }
         return ResponseEntity.ok().body(new Result<>("获取画集下画作成功", collectionService.queryCollectionIllust(collectionId, page, pageSize)));
