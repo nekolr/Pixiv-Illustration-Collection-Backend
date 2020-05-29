@@ -16,12 +16,14 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -109,7 +111,7 @@ public class CollectionService {
             if (collection.getIllustCount() == 0) {
                 collectionMapper.updateCollectionCover(collectionId, illustrationBizService.queryIllustrationById(illustration.getId()));
             }
-        } catch (Exception e) {
+        } catch (DuplicateKeyException e) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "画作在该画集中已经存在");
         }
 
