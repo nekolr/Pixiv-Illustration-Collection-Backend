@@ -103,11 +103,16 @@ public class CollectionService {
         checkCollectionAuth(collectionId, userId);
         Collection collection = queryCollectionById(collectionId);
         //插入
-        collectionMapper.incrCollectionIllustCount(collectionId);
-        collectionMapper.addIllustrationToCollection(collectionId, illustration.getId());
-        if (collection.getIllustCount() == 0) {
-            collectionMapper.updateCollectionCover(collectionId, illustrationBizService.queryIllustrationById(illustration.getId()));
+        try {
+            collectionMapper.incrCollectionIllustCount(collectionId);
+            collectionMapper.addIllustrationToCollection(collectionId, illustration.getId());
+            if (collection.getIllustCount() == 0) {
+                collectionMapper.updateCollectionCover(collectionId, illustrationBizService.queryIllustrationById(illustration.getId()));
+            }
+        } catch (Exception e) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "画作在该画集中已经存在");
         }
+
         return true;
     }
 
