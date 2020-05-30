@@ -85,7 +85,7 @@ public class CollectionController {
     @GetMapping("/users/{userId}/collections")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(15) Integer pageSize, @RequestParam(required = false, defaultValue = "1") Integer isPublic) {
-        return ResponseEntity.ok().body(new Result<>("获取用户画集成功", collectionService.queryUserCollection(userId, isPublic, page, pageSize)));
+        return ResponseEntity.ok().body(new Result<>("获取用户画集成功", collectionService.queryCollectionSummary(userId, isPublic), collectionService.queryUserCollection(userId, isPublic, page, pageSize)));
     }
 
     //查看画集详情

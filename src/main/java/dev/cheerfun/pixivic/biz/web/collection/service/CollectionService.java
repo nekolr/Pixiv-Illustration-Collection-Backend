@@ -23,9 +23,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -49,7 +47,6 @@ public class CollectionService {
     private final IllustrationBizService illustrationBizService;
     private final CollectionTagSearchUtil collectionTagSearchUtil;
 
-
     public Boolean createCollection(Integer userId, Collection collection) {
         //去除敏感词
         collection.getTagList().forEach(e -> {
@@ -58,6 +55,8 @@ public class CollectionService {
         collection.setCreateTime(LocalDateTime.now());
         //插入画集
         collectionMapper.createCollection(userId, collection);
+        //更新汇总
+        dealUserCollectionSummary(userId);
         //异步将tag入库
         //insertCollectionTag(collection);
         return true;
@@ -81,8 +80,8 @@ public class CollectionService {
         collectionMapper.updateCollection(userId, collection);
         //是否修改了可见性
         //修改则清空收藏数以及收藏数据
-        //异步将tag入库
-        insertCollectionTag(collection);
+        //更新汇总
+        dealUserCollectionSummary(userId);
         return true;
     }
 
@@ -90,7 +89,11 @@ public class CollectionService {
     public Boolean deleteCollection(Integer userId, Integer collectionId) {
         //删除收藏、点赞、浏览量数据
         if (collectionMapper.deleteCollection(userId, collectionId) == 1) {
+            //mysql清除
             collectionMapper.deleteCollectionBookmark(collectionId);
+            //更新汇总
+            dealUserCollectionSummary(userId);
+            //redis清除
             stringRedisTemplate.delete(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId);
             stringRedisTemplate.delete(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId);
             stringRedisTemplate.delete(RedisKeyConstant.COLLECTION_TOTAL_PEOPLE_SEEN_REDIS_PRE + collectionId);
@@ -268,7 +271,7 @@ public class CollectionService {
         return collectionTagSearchUtil.search(keyword);
     }
 
-    //@Async
+    @Async
     public void modifyTotalBookmark(Integer collectionId, Integer modify) {
         if (modify > 0) {
             collectionMapper.incrCollectionTotalBookmark(collectionId);
@@ -277,7 +280,6 @@ public class CollectionService {
         }
     }
 
-    @Transactional
     @Async
     public void modifyLikeCount(Integer collectionId, Integer modify) {
         if (modify > 0) {
@@ -287,6 +289,11 @@ public class CollectionService {
         }
     }
 
+    @Async
+    public void dealStaticInfo(Integer collectionId, Integer totalBookmarked, Integer totalLiked, Integer totalPeopleSeen) {
+        collectionMapper.dealStaticInfo(collectionId, totalBookmarked, totalLiked, totalPeopleSeen);
+    }
+
     public void modifyCollectionTotalPeopleSeen(Integer collectionId, String userFinger) {
         stringRedisTemplate.opsForHyperLogLog().add(RedisKeyConstant.COLLECTION_TOTAL_PEOPLE_SEEN_REDIS_PRE + collectionId, userFinger);
     }
@@ -294,9 +301,22 @@ public class CollectionService {
     public void pullStaticInfo(Collection collection) {
         Integer collectionId = collection.getId();
         collection.setTotalBookmarked(Math.toIntExact(stringRedisTemplate.opsForSet().size(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId)));
-        ;
-        collection.setTotalLiked(Integer.valueOf(stringRedisTemplate.opsForValue().get(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId)));
+        collection.setTotalLiked(Math.toIntExact(stringRedisTemplate.opsForSet().size(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId)));
         collection.setTotalPeopleSeen(Math.toIntExact(stringRedisTemplate.opsForHyperLogLog().size((RedisKeyConstant.COLLECTION_TOTAL_PEOPLE_SEEN_REDIS_PRE + collectionId))));
         //处理是否点赞
+        //处理是否收藏
+        //异步更新数据库
+        dealStaticInfo(collection.getId(), collection.getTotalBookmarked(), collection.getTotalLiked(), collection.getTotalPeopleSeen());
+    }
+
+    @Transactional
+    public void dealUserCollectionSummary(Integer userId) {
+        collectionMapper.dealUserPublicCollectionSummary(userId);
+        collectionMapper.dealUserPrivateCollectionSummary(userId);
+    }
+
+    @Cacheable("collectionSummary")
+    public Integer queryCollectionSummary(Integer userId, Integer isPublic) {
+        return collectionMapper.queryCollectionSummary(userId, isPublic);
     }
 }

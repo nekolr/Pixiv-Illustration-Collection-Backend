@@ -60,6 +60,8 @@ public class CommonService {
         emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId() + "&email=" + user.getEmail());
         user = userMapper.queryUserByusernameAndPassword(user.getUsername(), user.getPassword());
         userMapper.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS, user.getId());
+        //初始化汇总表
+        userMapper.initSummary(user.getId());
         user.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS);
         return user;
     }

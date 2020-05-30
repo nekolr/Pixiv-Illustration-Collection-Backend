@@ -151,4 +151,39 @@ public interface CollectionMapper {
 
     @Update("update collections set total_liked=total_liked-1 where collection_id =  #{collectionId} ")
     Integer decrCollectionTotalLike(Integer collectionId);
+
+    @Update("update user_summary\n" +
+            "set private_collection_sum=(select count(*)\n" +
+            "                            from collections\n" +
+            "                            where use_flag = 1 and is_public = 1 and collections.user_id = #{userId})\n" +
+            "where user_id = #{userId}")
+    Integer dealUserPublicCollectionSummary(Integer userId);
+
+    @Update("update user_summary\n" +
+            "set private_collection_sum=(select count(*)\n" +
+            "                            from collections\n" +
+            "                            where use_flag = 1 and is_public = 0 and collections.user_id = #{userId})\n" +
+            "where user_id = #{userId}")
+    Integer dealUserPrivateCollectionSummary(Integer userId);
+
+    @Select({
+            "<script>",
+            "select ",
+            "<if test=\"isPublic==0\">\n",
+            "private_collection_sum",
+            "</if>",
+            "<if test=\"isPublic==1\">\n",
+            "public_collection_sum",
+            "</if>",
+            "from user_summary where user_id=#{userId}",
+            "</script>"
+    })
+    Integer queryCollectionSummary(Integer userId, Integer isPublic);
+
+    @Update("update collections\n" +
+            "set total_bookmarked=#{totalBookmarked},\n" +
+            "    total_liked=#{totalLiked},\n" +
+            "    total_people_seen=#{totalPeopleSeen}\n" +
+            "where collection_id = #{collectionId}")
+    Integer dealStaticInfo(Integer collectionId, Integer totalBookmarked, Integer totalLiked, Integer totalPeopleSeen);
 }

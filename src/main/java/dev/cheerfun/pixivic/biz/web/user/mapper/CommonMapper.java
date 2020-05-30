@@ -92,4 +92,7 @@ public interface CommonMapper {
 
     @Update("update users set gender=#{gender} ,signature=#{signature},location=#{location}  where user_id=#{userId}")
     Integer updateUserInfo(int userId, Integer gender, String signature, String location);
+
+    @Insert("insert into user_summary (user_id) values (#{userId})")
+    Integer initSummary(Integer userId);
 }

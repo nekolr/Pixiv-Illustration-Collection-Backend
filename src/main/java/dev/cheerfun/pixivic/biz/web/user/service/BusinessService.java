@@ -265,12 +265,12 @@ public class BusinessService {
     }
 
     public void likeCollection(Integer userId, Integer collectionId) {
-        stringRedisTemplate.opsForValue().increment(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, 1);
+        stringRedisTemplate.opsForSet().add(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, String.valueOf(userId));
         //collectionService.modifyLikeCount(collectionId, 1);
     }
 
     public void cancelLikeCollection(int userId, int collectionId) {
-        stringRedisTemplate.opsForValue().decrement(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, 1);
+        stringRedisTemplate.opsForSet().remove(RedisKeyConstant.COLLECTION_LIKE_REDIS_PRE + collectionId, String.valueOf(userId));
         // collectionService.modifyLikeCount(collectionId, -1);
     }
 
