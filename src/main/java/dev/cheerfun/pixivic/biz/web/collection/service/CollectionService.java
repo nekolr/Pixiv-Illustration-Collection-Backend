@@ -16,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -71,6 +72,9 @@ public class CollectionService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "collections", key = "#collection.id")
+    })
     public Boolean updateCollection(Integer userId, Collection collection) {
         if (collection.getId() == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "更新画集出错");
@@ -86,6 +90,9 @@ public class CollectionService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "collections", key = "#collectionId")
+    })
     public Boolean deleteCollection(Integer userId, Integer collectionId) {
         //删除收藏、点赞、浏览量数据
         if (collectionMapper.deleteCollection(userId, collectionId) == 1) {
@@ -117,7 +124,6 @@ public class CollectionService {
         } catch (DuplicateKeyException e) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "画作在该画集中已经存在");
         }
-
         return true;
     }
 
@@ -247,7 +253,7 @@ public class CollectionService {
         return illustrationBizService.queryIllustrationByIllustIdList(illustIdList);
     }
 
-    @Cacheable("collections")
+    @Cacheable(value = "collections", key = "#collectionId")
     public Collection queryCollectionById(Integer collectionId) {
         return collectionMapper.queryCollectionById(collectionId);
     }
@@ -310,13 +316,25 @@ public class CollectionService {
     }
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "collectionSummary", key = "#userId+'-0'"),
+            @CacheEvict(value = "collectionSummary", key = "#userId+'-1'")
+    })
     public void dealUserCollectionSummary(Integer userId) {
         collectionMapper.dealUserPublicCollectionSummary(userId);
         collectionMapper.dealUserPrivateCollectionSummary(userId);
     }
 
-    @Cacheable("collectionSummary")
+    @Cacheable(value = "collectionSummary", key = "#userId+'-'+#isPublic")
     public Integer queryCollectionSummary(Integer userId, Integer isPublic) {
         return collectionMapper.queryCollectionSummary(userId, isPublic);
+    }
+
+    public void modifyUserTotalBookmarkCollection(Integer userId, int modify) {
+        collectionMapper.modifyUserTotalBookmarkCollection(userId, modify);
+    }
+
+    public Integer queryUserTotalBookmarkCollection(Integer userId) {
+        return collectionMapper.queryUserTotalBookmarkCollection(userId);
     }
 }

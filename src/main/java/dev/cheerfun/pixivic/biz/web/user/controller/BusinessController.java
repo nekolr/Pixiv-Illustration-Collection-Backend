@@ -138,7 +138,7 @@ public class BusinessController {
     @GetMapping("/{userId}/bookmarked/collections")
     public ResponseEntity<Result<List<Collection>>> queryBookmarkCollection(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
         List<Collection> collections = businessService.queryBookmarkCollection(userId, page, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取收藏画集成功", collections));
+        return ResponseEntity.ok().body(new Result<>("获取收藏画集成功", businessService.queryUserTotalBookmarkCollection(userId), collections));
     }
 
     @PostMapping("/liked/collections")

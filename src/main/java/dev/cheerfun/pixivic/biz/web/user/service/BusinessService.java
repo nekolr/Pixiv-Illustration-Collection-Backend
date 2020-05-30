@@ -253,14 +253,14 @@ public class BusinessService {
     @Transactional
     public void bookmarkCollection(Integer userId, String username, Integer collectionId) {
         businessMapper.bookmarkCollection(userId, username, collectionId);
-        //collectionService.modifyTotalBookmark(collectionId, 1);
+        collectionService.modifyUserTotalBookmarkCollection(userId, 1);
         stringRedisTemplate.opsForSet().add(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId, String.valueOf(userId));
     }
 
     @Transactional
     public void cancelBookmarkCollection(int userId, int collectionId) {
         businessMapper.cancelBookmarkCollection(userId, collectionId);
-        // collectionService.modifyTotalBookmark(collectionId, -1);
+        collectionService.modifyUserTotalBookmarkCollection(userId, -1);
         stringRedisTemplate.opsForSet().remove(RedisKeyConstant.COLLECTION_BOOKMARK_REDIS_PRE + collectionId, String.valueOf(userId));
     }
 
@@ -285,6 +285,10 @@ public class BusinessService {
     public List<Collection> queryBookmarkCollection(Integer userId, Integer page, Integer pageSize) {
         List<Integer> collectionIdList = businessMapper.queryBookmarkCollection(userId, (page - 1), pageSize);
         return collectionService.queryCollectionById(collectionIdList);
+    }
+
+    public Integer queryUserTotalBookmarkCollection(Integer userId) {
+        return collectionService.queryUserTotalBookmarkCollection(userId);
     }
 
     private static class NewInteger {

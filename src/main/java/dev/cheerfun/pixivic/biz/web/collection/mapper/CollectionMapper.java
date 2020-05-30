@@ -186,4 +186,14 @@ public interface CollectionMapper {
             "    total_people_seen=#{totalPeopleSeen}\n" +
             "where collection_id = #{collectionId}")
     Integer dealStaticInfo(Integer collectionId, Integer totalBookmarked, Integer totalLiked, Integer totalPeopleSeen);
+
+    @Update("update user_summary\n" +
+            "set bookmark_collection_sum = bookmark_collection_sum + #{modify}\n" +
+            "where user_id = #{userId}")
+    Integer modifyUserTotalBookmarkCollection(Integer userId, int modify);
+
+    @Select("select bookmark_collection_sum\n" +
+            "from user_summary\n" +
+            "where user_id = #{userId}")
+    Integer queryUserTotalBookmarkCollection(Integer userId);
 }
