@@ -50,9 +50,12 @@ public class CollectionService {
 
     public Boolean createCollection(Integer userId, Collection collection) {
         //去除敏感词
-        collection.getTagList().forEach(e -> {
-            e.setTagName(sensitiveFilter.filter(e.getTagName()));
-        });
+        List<CollectionTag> tagList = collection.getTagList();
+        if (tagList != null && tagList.size() > 0) {
+            tagList.forEach(e -> {
+                e.setTagName(sensitiveFilter.filter(e.getTagName()));
+            });
+        }
         collection.setCreateTime(LocalDateTime.now());
         //插入画集
         collectionMapper.createCollection(userId, collection);
