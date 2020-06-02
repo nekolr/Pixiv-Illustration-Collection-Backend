@@ -9,7 +9,7 @@ public class RunTest {
     volatile int j = 0;
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-
+        System.out.println(134217728 / 1024 / 1024);
         final RunTest runTest = new RunTest();
         long b = System.currentTimeMillis();
         new Thread(() -> {
