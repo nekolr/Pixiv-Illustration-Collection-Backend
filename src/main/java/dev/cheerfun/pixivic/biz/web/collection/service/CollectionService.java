@@ -349,4 +349,17 @@ public class CollectionService {
     public Integer queryUserTotalBookmarkCollection(Integer userId) {
         return collectionMapper.queryUserTotalBookmarkCollection(userId);
     }
+
+    public Collection getCollection(Integer collectionId) {
+        Collection collection = queryCollectionById(collectionId);
+        if (collection.getIsPublic() == 0) {
+            Map<String, Object> context = AppContext.get();
+            if (context != null && context.get(AuthConstant.USER_ID) != null && context.get(AuthConstant.USER_ID) == collection.getUserId()) {
+                return collection;
+            } else {
+                throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人未公开画集");
+            }
+        }
+        return collection;
+    }
 }

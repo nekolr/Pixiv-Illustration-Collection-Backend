@@ -52,6 +52,13 @@ public class CollectionController {
         return ResponseEntity.ok().body(new Result<>("修改画集成功", collectionService.updateCollection(userId, collection)));
     }
 
+    //修改画集元数据
+    @GetMapping("/collections/{collectionId}")
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<Collection>> getCollection(@PathVariable Integer collectionId, @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("查看画集成功", collectionService.getCollection(collectionId)));
+    }
+
     //删除画集
     @DeleteMapping("/collections/{collectionId}")
     @PermissionRequired
