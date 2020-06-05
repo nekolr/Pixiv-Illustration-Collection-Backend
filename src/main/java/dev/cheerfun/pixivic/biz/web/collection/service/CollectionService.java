@@ -249,7 +249,7 @@ public class CollectionService {
     }
 
     public Collection queryCollectionById(Integer collectionId) {
-        Collection collection = collectionMapper.queryCollectionById(collectionId);
+        Collection collection = queryCollectionByIdFromDb(collectionId);
         pullStaticInfo(collection);
         return collection;
     }
