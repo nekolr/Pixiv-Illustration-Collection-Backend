@@ -204,4 +204,20 @@ public interface CollectionMapper {
             "from user_summary\n" +
             "where user_id = #{userId}")
     Integer queryUserTotalBookmarkCollection(Integer userId);
+
+    @Delete("delete\n" +
+            "from collection_illust_relation\n" +
+            "where collection_id = #{collectionId}\n" +
+            "  and order_num between 0 and #{size}")
+    void deleteIllustrationByIndexFromCollection(Integer collectionId, Integer size);
+
+    @Insert({
+            "<script>",
+            "insert IGNORE into collection_illust_relation(collection_id, illust_id,order_num) values ",
+            "<foreach collection='illustIdList' item='illustId' index='index' separator=','>",
+            "(#{collectionId},#{illustId}, #{index})",
+            "</foreach>",
+            "</script>"
+    })
+    void insertIllustrationByIndexToCollection(Integer collectionId, List<Integer> illustIdList);
 }

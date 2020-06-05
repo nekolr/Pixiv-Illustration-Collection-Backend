@@ -79,9 +79,9 @@ public class CollectionController {
     //画集画作排序
     @PutMapping("/collections/{collectionId}/illustrations/order")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> updateIllustrationOrder(@PathVariable Integer collectionId, @RequestBody UpdateIllustrationOrderDTO updateIllustrationOrderDTO, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> updateIllustrationOrder(@PathVariable Integer collectionId, @RequestBody List<Integer> illustIdList, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-        return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.updateIllustrationOrder(collectionId, updateIllustrationOrderDTO, userId)));
+        return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.updateIllustrationOrder(collectionId, illustIdList, userId)));
     }
 
     //查询用户画集

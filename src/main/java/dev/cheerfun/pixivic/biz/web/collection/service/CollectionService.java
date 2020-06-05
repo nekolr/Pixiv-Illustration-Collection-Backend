@@ -155,6 +155,17 @@ public class CollectionService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    public Boolean updateIllustrationOrder(Integer collectionId, List<Integer> illustIdList, Integer userId) {
+        //校验collectionId是否属于用户
+        checkCollectionAuth(collectionId, userId);
+        //删除0到size的联系数据
+        collectionMapper.deleteIllustrationByIndexFromCollection(collectionId, illustIdList.size());
+        //插入数据
+        collectionMapper.insertIllustrationByIndexToCollection(collectionId, illustIdList);
+        return true;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
     public Boolean updateIllustrationOrder(Integer collectionId, UpdateIllustrationOrderDTO updateIllustrationOrderDTO, Integer userId) {
         long start = System.currentTimeMillis();
         System.out.println(start);
