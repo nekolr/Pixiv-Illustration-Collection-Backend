@@ -248,8 +248,14 @@ public class CollectionService {
         return illustrationBizService.queryIllustrationByIllustIdList(illustIdList);
     }
 
-    @Cacheable(value = "collections", key = "#collectionId")
     public Collection queryCollectionById(Integer collectionId) {
+        Collection collection = collectionMapper.queryCollectionById(collectionId);
+        pullStaticInfo(collection);
+        return collection;
+    }
+
+    @Cacheable(value = "collections", key = "#collectionId")
+    public Collection queryCollectionByIdFromDb(Integer collectionId) {
         return collectionMapper.queryCollectionById(collectionId);
     }
 
