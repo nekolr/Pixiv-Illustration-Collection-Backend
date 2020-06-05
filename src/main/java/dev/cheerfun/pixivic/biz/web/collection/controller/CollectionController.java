@@ -9,17 +9,20 @@ import dev.cheerfun.pixivic.biz.web.collection.dto.UpdateIllustrationOrderDTO;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
 import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
+import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -84,8 +87,24 @@ public class CollectionController {
     //查询用户画集
     @GetMapping("/users/{userId}/collections")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(15) Integer pageSize, @RequestParam(required = false, defaultValue = "1") Integer isPublic) {
-        return ResponseEntity.ok().body(new Result<>("获取用户画集成功", collectionService.queryCollectionSummary(userId, isPublic), collectionService.queryUserCollection(userId, isPublic, page, pageSize)));
+    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(15) Integer pageSize, @RequestParam(required = false) Integer isPublic) {
+        //是否登陆，是否查看本人画集
+        Map<String, Object> context = AppContext.get();
+        Integer isSelf = 0;
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            if ((int) context.get(AuthConstant.USER_ID) == userId) {
+                isSelf = 1;
+            } else {
+                if (isPublic == null || isPublic == 0) {
+                    throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人非公开画作");
+                }
+            }
+        } else {
+            if (isPublic == null || isPublic == 0) {
+                throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人非公开画作");
+            }
+        }
+        return ResponseEntity.ok().body(new Result<>("获取用户画集成功", collectionService.queryCollectionSummary(userId, isPublic), collectionService.queryUserCollection(userId, isSelf, isPublic, page, pageSize)));
     }
 
     //查看画集详情

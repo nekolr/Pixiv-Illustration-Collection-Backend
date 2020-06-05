@@ -225,15 +225,7 @@ public class CollectionService {
         return collectionMapper.queryIllustrationOrder(collectionId, illustrationId);
     }
 
-    public List<Collection> queryUserCollection(Integer userId, Integer isPublic, Integer page, Integer pageSize) {
-        //是否登陆，是否查看本人画集
-        Map<String, Object> context = AppContext.get();
-        Integer isSelf = 0;
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            if ((int) context.get(AuthConstant.USER_ID) == userId) {
-                isSelf = 1;
-            }
-        }
+    public List<Collection> queryUserCollection(Integer userId, Integer isSelf, Integer isPublic, Integer page, Integer pageSize) {
         List<Integer> collectionIdList = collectionMapper.queryUserCollection(userId, (page - 1) * pageSize, pageSize, isSelf, isPublic);
         return queryCollectionById(collectionIdList);
     }
