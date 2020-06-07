@@ -58,12 +58,13 @@ public class CollectionService {
         }
         collection.setCreateTime(LocalDateTime.now());
         //插入画集
-        Integer collectionId = collectionMapper.createCollection(userId, collection);
+        collection.setUserId(userId);
+        collectionMapper.createCollection(collection);
         //更新汇总
         dealUserCollectionSummary(userId);
         //异步将tag入库
         //insertCollectionTag(collection);
-        return collectionId;
+        return collection.getId();
     }
 
     @Async
