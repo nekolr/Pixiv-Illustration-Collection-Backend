@@ -116,7 +116,7 @@ public class CollectionService {
     public Boolean addIllustrationToCollection(Integer userId, Integer collectionId, Illustration illustration) {
         //校验collectionId是否属于用户
         checkCollectionAuth(collectionId, userId);
-        Collection collection = queryCollectionById(collectionId);
+        Collection collection = queryCollectionByIdFromDb(collectionId);
         //插入
         try {
             collectionMapper.incrCollectionIllustCount(collectionId);
@@ -142,7 +142,7 @@ public class CollectionService {
 
     @Cacheable("collectionAuth")
     public boolean checkCollectionAuth(Integer collectionId, Integer userId) {
-        Collection collection = queryCollectionById(collectionId);
+        Collection collection = queryCollectionByIdFromDb(collectionId);
         if (collection.getUserId().compareTo(userId) == 0) {
             return true;
         }

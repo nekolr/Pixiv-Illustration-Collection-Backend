@@ -208,14 +208,14 @@ public interface CollectionMapper {
     @Delete("delete\n" +
             "from collection_illust_relation\n" +
             "where collection_id = #{collectionId}\n" +
-            "  and order_num between 0 and #{size}")
+            "  and order_num between 0 and #{size}*10000")
     void deleteIllustrationByIndexFromCollection(Integer collectionId, Integer size);
 
     @Insert({
             "<script>",
             "insert IGNORE into collection_illust_relation(collection_id, illust_id,order_num) values ",
             "<foreach collection='illustIdList' item='illustId' index='index' separator=','>",
-            "(#{collectionId},#{illustId}, #{index})",
+            "(#{collectionId},#{illustId}, #{index}*10000)",
             "</foreach>",
             "</script>"
     })
