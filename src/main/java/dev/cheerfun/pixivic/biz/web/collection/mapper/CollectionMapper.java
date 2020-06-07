@@ -82,7 +82,7 @@ public interface CollectionMapper {
     @Update("update collections set illust_count=illust_count+1 where collection_id=#{collectionId}")
     void incrCollectionIllustCount(Integer collectionId);
 
-    @Insert("insert into collection_illust_relation  (collection_id, illust_id,order_num) values (#{collectionId}, #{illustrationId},(select illust_count from collections where collection_id=#{collectionId})*10000)")
+    @Insert("insert into collection_illust_relation  (collection_id, illust_id,order_num) values (#{collectionId}, #{illustrationId},(select illust_count from collections where collection_id=#{collectionId}))")
     void addIllustrationToCollection(Integer collectionId, Integer illustrationId);
 
     @Select("   SELECT IFNULL(( " +
@@ -208,14 +208,14 @@ public interface CollectionMapper {
     @Delete("delete\n" +
             "from collection_illust_relation\n" +
             "where collection_id = #{collectionId}\n" +
-            "  and order_num between 0 and #{size}*10000")
+            "  and order_num between 0 and #{size}")
     void deleteIllustrationByIndexFromCollection(Integer collectionId, Integer size);
 
     @Insert({
             "<script>",
             "insert IGNORE into collection_illust_relation(collection_id, illust_id,order_num) values ",
             "<foreach collection='illustIdList' item='illustId' index='index' separator=','>",
-            "(#{collectionId},#{illustId}, #{index}*10000)",
+            "(#{collectionId},#{illustId}, #{index})",
             "</foreach>",
             "</script>"
     })
