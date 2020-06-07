@@ -30,6 +30,7 @@ public interface CollectionMapper {
 
     @Insert("insert into collections (user_id, username,title,cover,caption,tag_list,is_public,forbid_comment,porn_warning,create_time) " +
             "values (#{userId}, #{collection.username}, #{collection.title}, #{collection.cover,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler}, #{collection.caption},#{collection.tagList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{collection.isPublic}, #{collection.forbidComment}, #{collection.pornWarning}, #{collection.createTime,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "collection_id")
     Integer createCollection(@Param("userId") Integer userId, @Param("collection") Collection collection);
 
     @Insert({

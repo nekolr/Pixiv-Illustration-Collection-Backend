@@ -48,7 +48,7 @@ public class CollectionService {
     private final IllustrationBizService illustrationBizService;
     private final CollectionTagSearchUtil collectionTagSearchUtil;
 
-    public Boolean createCollection(Integer userId, Collection collection) {
+    public Integer createCollection(Integer userId, Collection collection) {
         //去除敏感词
         List<CollectionTag> tagList = collection.getTagList();
         if (tagList != null && tagList.size() > 0) {
@@ -58,12 +58,12 @@ public class CollectionService {
         }
         collection.setCreateTime(LocalDateTime.now());
         //插入画集
-        collectionMapper.createCollection(userId, collection);
+        Integer collectionId = collectionMapper.createCollection(userId, collection);
         //更新汇总
         dealUserCollectionSummary(userId);
         //异步将tag入库
         //insertCollectionTag(collection);
-        return true;
+        return collectionId;
     }
 
     @Async
