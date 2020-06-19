@@ -170,6 +170,8 @@ public class IllustrationService {
         } else {
             System.out.println("标签为null");
         }
+        //更新画师名称与账号
+        illustrations.stream().map(Illustration::getArtistPreView).forEach(illustrationMapper::updateArtistPreView);
         //Lists.partition(illustrations, 50).forEach(illustrationMapper::insert);
         illustrationMapper.batchInsert(illustrations);
         System.out.println("画作入库完毕");

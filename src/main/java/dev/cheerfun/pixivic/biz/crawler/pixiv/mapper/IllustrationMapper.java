@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.mapper;
 
 import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import org.apache.ibatis.annotations.*;
 
@@ -112,4 +113,7 @@ public interface IllustrationMapper {
 
     @Insert("replace into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler})")
     int insertRank(Rank rank);
+
+    @Update("update artists set name=#{name} and account=#{account} and avatar=#{avatar} where artist_id=#{id}")
+    void updateArtistPreView(ArtistPreView artistPreView);
 }
