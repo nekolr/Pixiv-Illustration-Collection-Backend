@@ -114,6 +114,6 @@ public interface IllustrationMapper {
     @Insert("replace into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler})")
     int insertRank(Rank rank);
 
-    @Update("update artists set name=#{name} and account=#{account} and avatar=#{avatar} where artist_id=#{id}")
+    @Update("update artists set name=#{name} , account=#{account} , avatar=#{avatar} where artist_id=#{id}")
     void updateArtistPreView(ArtistPreView artistPreView);
 }
