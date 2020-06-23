@@ -2,7 +2,9 @@ package dev.cheerfun.pixivic.basic.ratelimit.aop;
 
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.ratelimit.exception.RateLimitException;
+import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import io.github.bucket4j.*;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +15,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -33,6 +36,9 @@ import java.util.concurrent.ConcurrentHashMap;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Order(1)
 public class RateLimitProcessor implements HandlerInterceptor {
+    private final StringRedisTemplate stringRedisTemplate;
+    private final AdminService adminService;
+
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
     //未登录用户
     private final Bucket freeBucket = Bucket4j.builder()
@@ -74,17 +80,30 @@ public class RateLimitProcessor implements HandlerInterceptor {
             } else {
                 requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
             }
+            ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
+            if (probe.isConsumed() && !stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userId))) {
+                return joinPoint.proceed();
+            }
+            //如果超出 redis中递增次数
+            log.info("用户:" + userId + "触发限流机制");
+            if (stringRedisTemplate.opsForHash().increment(RedisKeyConstant.ACCOUNT_BAN_COUNT_MAP, String.valueOf(userId), 1) > 30) {
+                log.info("用户:" + userId + "触发限流机制过多，进行屏蔽");
+                stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userId));
+                //数据库修改屏蔽
+                adminService.banUser(userId);
+            }
         } else {
             requestBucket = this.freeBucket;
+            ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
+            if (probe.isConsumed()) {
+                return joinPoint.proceed();
+            }
         }
 
 /*        if (userId != null && permissionLevel != null) {
 
         }*/
-        ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
-        if (probe.isConsumed()) {
-            return joinPoint.proceed();
-        }
+
         throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
     }
 }

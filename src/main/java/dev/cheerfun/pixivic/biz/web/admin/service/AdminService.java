@@ -36,4 +36,8 @@ public class AdminService {
     public void updateUser(UsersDTO usersDTO) {
         adminMapper.updateUser(usersDTO);
     }
+
+    public void banUser(Integer userId) {
+        adminMapper.banUser(userId);
+    }
 }

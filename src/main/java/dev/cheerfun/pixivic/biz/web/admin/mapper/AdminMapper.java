@@ -62,6 +62,9 @@ public interface AdminMapper {
     })
     void updateUser(UsersDTO usersDTO);
 
+    @Update("update users set is_ban=0 where user_id=#{userId}")
+    Integer banUser(Integer userId);
+
     @Update({
             "<script>",
             "update illusts set",

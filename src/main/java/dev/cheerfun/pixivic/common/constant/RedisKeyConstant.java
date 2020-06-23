@@ -22,4 +22,6 @@ public class RedisKeyConstant {
     public final static String COLLECTION_LIKE_REDIS_PRE = "c:l:";
     public final static String COLLECTION_TOTAL_VIEW_REDIS_PRE = "c:tv:";
     public final static String COLLECTION_TOTAL_PEOPLE_SEEN_REDIS_PRE = "c:tps:";
+    public final static String ACCOUNT_BAN_COUNT_MAP = "a:bcm";
+    public final static String ACCOUNT_BAN_SET = "a:bs";
 }
