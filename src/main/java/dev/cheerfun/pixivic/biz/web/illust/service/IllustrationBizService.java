@@ -23,10 +23,13 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
 
 /**
@@ -43,6 +46,37 @@ public class IllustrationBizService {
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationService illustrationService;
     private final StringRedisTemplate stringRedisTemplate;
+    private LinkedBlockingQueue<Integer> waitForPullIllustQueue;
+    private final ExecutorService executorService;
+
+    @PostConstruct
+    public void init() {
+        waitForPullIllustQueue = new LinkedBlockingQueue<>(1000 * 1000);
+        dealWaitForPullIllustQueue();
+    }
+
+    public void dealWaitForPullIllustQueue() {
+        executorService.submit(() -> {
+            while (true) {
+                Integer illustId;
+                try {
+                    illustId = waitForPullIllustQueue.take();
+                    Illustration illustration = illustrationService.pullIllustrationInfo(illustId);
+                    if (illustration == null) {
+                        throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
+                    } else {
+                        List<Illustration> illustrations = new ArrayList<>(1);
+                        illustrations.add(illustration);
+                        illustrationService.saveToDb(illustrations);
+                    }
+                    log.info("获取画作：" + illustId + "完毕");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+    }
 
     @Cacheable(value = "tagTranslation")
     public Tag translationTag(String tag) {
@@ -68,15 +102,10 @@ public class IllustrationBizService {
     public Illustration queryIllustrationById(Integer illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
-            log.info("开始爬取" + illustId);
-            illustration = illustrationService.pullIllustrationInfo(illustId);
-            if (illustration == null) {
-                throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
-            } else {
-                List<Illustration> illustrations = new ArrayList<>(1);
-                illustrations.add(illustration);
-                illustrationService.saveToDb(illustrations);
-            }
+            log.info("画作：" + illustId + "不存在，加入队列等待爬取");
+            waitForPullIllustQueue.offer(illustId);
+            throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
+            /* */
         }
         return illustration;
     }

@@ -60,8 +60,8 @@ public class ArtistBizService {
         LocalDate now = LocalDate.now();
         today = now.toString();
         yesterday = now.plusDays(-1).toString();
-        waitForPullArtistQueue = new LinkedBlockingQueue<>(10 * 1000);
-        waitForPullArtistInfoQueue = new LinkedBlockingQueue<>(10 * 1000);
+        waitForPullArtistQueue = new LinkedBlockingQueue<>(100 * 1000);
+        waitForPullArtistInfoQueue = new LinkedBlockingQueue<>(100 * 1000);
     }
 
     @PostConstruct
