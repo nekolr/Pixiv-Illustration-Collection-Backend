@@ -81,7 +81,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
                 requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
             }
             ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
-            if (probe.isConsumed() && !stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userId))) {
+            if (probe.isConsumed()) {
                 return joinPoint.proceed();
             }
             //如果超出 redis中递增次数

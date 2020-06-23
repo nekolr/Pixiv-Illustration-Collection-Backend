@@ -5,7 +5,9 @@ import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthBanException;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthLevelException;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
+import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.util.JoinPointArgUtil;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +20,7 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -41,6 +44,7 @@ import java.util.concurrent.CompletableFuture;
 public class AuthProcessor {
     private final JWTUtil jwtUtil;
     private final JoinPointArgUtil commonUtil;
+    private final StringRedisTemplate stringRedisTemplate;
 
     @Pointcut(value = "@annotation(dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired)||@within(dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired)")
     public void pointCut() {
@@ -60,7 +64,7 @@ public class AuthProcessor {
         if (token != null) {
             Map<String, Object> claims = jwtUtil.validateToken(token);
             AppContext.set(claims);
-            if ((Integer) claims.get(AuthConstant.IS_BAN) == 0) {
+            if ((Integer) claims.get(AuthConstant.IS_BAN) == 0 || stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(claims.get(AuthConstant.USER_ID)))) {
                 throw new AuthBanException(HttpStatus.FORBIDDEN, "账户异常");
             }
             if ((Integer) claims.get(AuthConstant.PERMISSION_LEVEL) < authLevel) {
