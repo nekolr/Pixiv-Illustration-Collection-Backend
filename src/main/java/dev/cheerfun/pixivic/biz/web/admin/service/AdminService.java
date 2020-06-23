@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * @date 2020/4/24 2:46 下午
  * @description AdminService
  */
-//@Service
+@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AdminService {
     private final AdminMapper adminMapper;
