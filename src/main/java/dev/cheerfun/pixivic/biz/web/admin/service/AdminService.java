@@ -21,22 +21,22 @@ import java.util.List;
 public class AdminService {
     private final AdminMapper adminMapper;
 
-    public List<User> queryUsers(UsersDTO usersDTO, Integer page, Integer pageSize) {
-        return adminMapper.queryUsers(usersDTO, (page - 1) * pageSize, pageSize);
-
-    }
-
-    public Integer queryUsersTotal(UsersDTO usersDTO, Integer page, Integer pageSize) {
-        return adminMapper.queryUsersTotal(usersDTO, (page - 1) * pageSize, pageSize);
-    }
-
-    public void updateIllusts(IllustDTO illustDTO) {
-        adminMapper.updateIllusts(illustDTO);
-    }
-
-    public void updateUser(UsersDTO usersDTO) {
-        adminMapper.updateUser(usersDTO);
-    }
+//    public List<User> queryUsers(UsersDTO usersDTO, Integer page, Integer pageSize) {
+//        return adminMapper.queryUsers(usersDTO, (page - 1) * pageSize, pageSize);
+//
+//    }
+//
+//    public Integer queryUsersTotal(UsersDTO usersDTO, Integer page, Integer pageSize) {
+//        return adminMapper.queryUsersTotal(usersDTO, (page - 1) * pageSize, pageSize);
+//    }
+//
+//    public void updateIllusts(IllustDTO illustDTO) {
+//        adminMapper.updateIllusts(illustDTO);
+//    }
+//
+//    public void updateUser(UsersDTO usersDTO) {
+//        adminMapper.updateUser(usersDTO);
+//    }
 
     public void banUser(Integer userId) {
         adminMapper.banUser(userId);
