@@ -155,7 +155,7 @@ public class IllustrationService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    @Async
+    @Async("saveToDBExecutorService")
     public void saveToDb(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
         if (tags.size() > 0) {

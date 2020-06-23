@@ -67,7 +67,7 @@ public class CollectionService {
         return collection.getId();
     }
 
-    @Async
+    @Async("saveToDBExecutorService")
     public void insertCollectionTag(Collection collection) {
         List<CollectionTag> tagList = collection.getTagList();
         if (tagList != null && tagList.size() > 0) {
@@ -290,7 +290,7 @@ public class CollectionService {
         return collectionTagSearchUtil.search(keyword);
     }
 
-    @Async
+    @Async("saveToDBExecutorService")
     public void modifyTotalBookmark(Integer collectionId, Integer modify) {
         if (modify > 0) {
             collectionMapper.incrCollectionTotalBookmark(collectionId);
@@ -299,7 +299,7 @@ public class CollectionService {
         }
     }
 
-    @Async
+    @Async("saveToDBExecutorService")
     public void modifyLikeCount(Integer collectionId, Integer modify) {
         if (modify > 0) {
             collectionMapper.incrCollectionTotalLike(collectionId);
@@ -308,7 +308,7 @@ public class CollectionService {
         }
     }
 
-    @Async
+    @Async("saveToDBExecutorService")
     public void dealStaticInfo(Integer collectionId, Integer totalBookmarked, Integer totalLiked, Integer totalPeopleSeen) {
         collectionMapper.dealStaticInfo(collectionId, totalBookmarked, totalLiked, totalPeopleSeen);
     }

@@ -507,7 +507,7 @@ public class EmailUtil {
                 "</html>";
     }
 
-    @Async
+    @Async("mailExecutorService")
     public void sendEmail(String emailAddr, String to, String from, String content, String link) {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = null;

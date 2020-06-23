@@ -47,7 +47,7 @@ public class ArtistBizService {
     private final StringRedisTemplate stringRedisTemplate;
     private final ArtistBizMapper artistBizMapper;
     private final ArtistService artistService;
-    private final ExecutorService executorService;
+    private final ExecutorService crawlerExecutorService;
     private final IllustrationBizService illustrationBizService;
     private final ArtistSearchUtil artistSearchUtil;
     private LinkedBlockingQueue<String> waitForPullArtistQueue;
@@ -132,7 +132,7 @@ public class ArtistBizService {
     }
 
     public void dealWaitForPullArtistQueue() {
-        executorService.submit(() -> {
+        crawlerExecutorService.submit(() -> {
             while (true) {
                 //处理画师画作
                 String key = null;

@@ -47,7 +47,7 @@ public class IllustrationBizService {
     private final IllustrationService illustrationService;
     private final StringRedisTemplate stringRedisTemplate;
     private LinkedBlockingQueue<Integer> waitForPullIllustQueue;
-    private final ExecutorService executorService;
+    private final ExecutorService crawlerExecutorService;
 
     @PostConstruct
     public void init() {
@@ -56,7 +56,7 @@ public class IllustrationBizService {
     }
 
     public void dealWaitForPullIllustQueue() {
-        executorService.submit(() -> {
+        crawlerExecutorService.submit(() -> {
             while (true) {
                 Integer illustId;
                 try {
@@ -88,7 +88,7 @@ public class IllustrationBizService {
         Map<String, Object> context = AppContext.get();
         if (context != null && context.get(AuthConstant.USER_ID) != null) {
             int userId = (int) context.get(AuthConstant.USER_ID);
-            System.out.println("用户:" + userId + "开始获取画作:" + illustId);
+            log.info("用户:" + userId + "开始获取画作:" + illustId);
             Boolean isBookmarked = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
             //businessService.queryIsBookmarked(userId, illustId);
             illustration = new IllustrationWithLikeInfo(illustration, isBookmarked);
