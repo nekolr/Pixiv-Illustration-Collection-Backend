@@ -63,14 +63,15 @@ public class IllustrationBizService {
                     illustId = waitForPullIllustQueue.take();
                     log.info("开始从pixiv获取画作：" + illustId);
                     Illustration illustration = illustrationService.pullIllustrationInfo(illustId);
-                    if (illustration == null) {
-                        throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
-                    } else {
+                    if (illustration != null) {
                         List<Illustration> illustrations = new ArrayList<>(1);
                         illustrations.add(illustration);
                         illustrationService.saveToDb(illustrations);
+                        log.info("获取画作：" + illustId + "完毕");
+                    } else {
+                        log.info("画作：" + illustId + "在pixiv上不存在");
                     }
-                    log.info("获取画作：" + illustId + "完毕");
+
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
