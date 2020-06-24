@@ -88,7 +88,7 @@ public class IllustrationBizService {
         Map<String, Object> context = AppContext.get();
         if (context != null && context.get(AuthConstant.USER_ID) != null) {
             int userId = (int) context.get(AuthConstant.USER_ID);
-            log.info("用户:" + userId + "开始获取画作:" + illustId);
+            //log.info("用户:" + userId + "开始获取画作:" + illustId);
             Boolean isBookmarked = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
             //businessService.queryIsBookmarked(userId, illustId);
             illustration = new IllustrationWithLikeInfo(illustration, isBookmarked);
