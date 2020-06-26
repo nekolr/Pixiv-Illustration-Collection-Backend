@@ -1,8 +1,5 @@
 package dev.cheerfun.pixivic.biz.web.admin.mapper;
 
-import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
-import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
-import dev.cheerfun.pixivic.biz.web.common.po.User;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
@@ -80,4 +77,7 @@ public interface AdminMapper {
 //            "</script>"
 //    })
 //    void updateIllusts(IllustDTO illustDTO);
+
+    @Select("select token from admin_key where use_flag=1")
+    List<String> queryAllAdminKey();
 }

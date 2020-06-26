@@ -2,19 +2,16 @@ package dev.cheerfun.pixivic.biz.web.admin.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
-import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
-import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
-import dev.cheerfun.pixivic.biz.web.common.po.User;
+import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
-import javax.validation.Valid;
-import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -22,13 +19,23 @@ import java.util.List;
  * @date 2020/4/24 2:46 下午
  * @description AdminController
  */
-//@RestController
+@RestController
 @Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@PermissionRequired(PermissionLevel.ADMIN)
+@Slf4j
 @RequestMapping("/admin")
 public class AdminController {
     private final AdminService adminService;
+    private final IllustrationBizService illustrationBizService;
+
+    @GetMapping("/illusts/{illustId}")
+    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Authorization", required = false) String token) {
+        if (adminService.validateKey(token)) {
+            log.info("管理员key:" + token + ",开始获取画作(" + illustId + ")详情");
+            return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationByIdWithUserInfo(illustId)));
+        }
+        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
+    }
 
 //    @PostMapping("/users")
 //    public ResponseEntity<Result<List<User>>> queryUsers(@RequestBody UsersDTO usersDTO, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
