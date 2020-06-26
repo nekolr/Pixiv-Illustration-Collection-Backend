@@ -29,7 +29,7 @@ public class AdminController {
     private final IllustrationBizService illustrationBizService;
 
     @GetMapping("/illusts/{illustId}")
-    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token", required = false) String token) {
         if (adminService.validateKey(token)) {
             log.info("管理员key:" + token + ",开始获取画作(" + illustId + ")详情");
             return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationByIdWithUserInfo(illustId)));
