@@ -28,4 +28,11 @@ public class UrlSet {
     private String xsi_schemalocation = SiteMapConstant.XSI_SCHEMALOCATION;
     @XStreamImplicit(itemFieldName = "url")
     private List<Url> urlList;
+
+    public UrlSet(List<Url> urlList) {
+        this.urlList = urlList;
+    }
+
+    public UrlSet() {
+    }
 }

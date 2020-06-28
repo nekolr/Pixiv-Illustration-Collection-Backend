@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -66,4 +67,21 @@ public interface IllustrationBizMapper {
             @Result(property = "createDate", column = "create_Date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
     })
     List<UserListDTO> queryUserListBookmarkedIllust(Integer illustId, int currIndex, int pageSize);
+
+    @Select("select * from illusts where update_time >  #{localDateTime,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}")
+    @Results({
+            @Result(property = "id", column = "illust_id"),
+            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
+    })
+    List<Illustration> queryRecentIllust(LocalDateTime localDateTime);
+
+    @Select("select illust_id from illusts where update_time >  #{localDateTime,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}")
+    List<Integer> queryRecentIllustId(LocalDateTime localDateTime);
+
+    @Select("select illust_id,create_date from illusts where illust_id between #{from} and #{to}")
+    List<Illustration> queryIllustInfoForSiteMapById(Integer from, int to);
 }

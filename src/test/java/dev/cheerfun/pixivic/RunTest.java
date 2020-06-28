@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeoutException;
 
@@ -35,7 +36,7 @@ public class RunTest {
         xstream.toXML(urlSet, writer);
         System.out.println(writer.toString());
         //System.out.println(xstream.toXML(urlSet));
-
+        System.out.println(new Date());
     }
 
 }

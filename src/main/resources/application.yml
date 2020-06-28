@@ -84,3 +84,8 @@ apiLog:
   path: /home/PIC/log
 sensitiveWordList:
   path: /home/PIC/sensitive
+ssh:
+  configPath: /home/PIC/ssh.conf
+sitemap:
+  savePath: /home/PIC/sitemap
+  remoteSavePath: /home/PIC/sitemap
