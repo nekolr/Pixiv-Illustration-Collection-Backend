@@ -14,7 +14,7 @@ import org.springframework.context.annotation.Configuration;
  * @description ObjectMapperConfig
  */
 @Configuration
-public class ObjectMapperConfig {
+public class JacksonConfig {
     @Bean
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();

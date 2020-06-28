@@ -1,6 +1,18 @@
 package dev.cheerfun.pixivic;
 
+import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.io.xml.StaxDriver;
+import com.thoughtworks.xstream.io.xml.StaxWriter;
+import dev.cheerfun.pixivic.biz.sitemap.po.Url;
+import dev.cheerfun.pixivic.biz.sitemap.po.UrlSet;
+
+import javax.xml.stream.XMLStreamException;
+import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
+import java.io.StringWriter;
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeoutException;
 
 public class RunTest {
@@ -9,26 +21,20 @@ public class RunTest {
     volatile int j = 0;
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        System.out.println(134217728 / 1024 / 1024);
-        final RunTest runTest = new RunTest();
-        long b = System.currentTimeMillis();
-        new Thread(() -> {
-            while ((System.currentTimeMillis() - b) <= 30) {
-                final int k = runTest.i;
-                final int v = runTest.j;
-                System.out.println("非volatile:" + k);
-                System.out.println("volatile:" + v);
-            }
-        }).start();
-
-        Thread.sleep(15);
-        new Thread(() -> {
-//            runTest.i=8;
-//            runTest.j=20;
-            runTest.i = 8;
-
-        }).start();
-        Thread.sleep(10);
+        Url url = new Url("1", "2", "3", "4");
+        Url url2 = new Url("1", "2", "3", "4");
+        UrlSet urlSet = new UrlSet();
+        List<Url> urlList = new ArrayList<>();
+        urlList.add(url);
+        urlList.add(url2);
+        urlSet.setUrlList(urlList);
+        XStream xstream = new XStream();
+        xstream.autodetectAnnotations(true);
+        Writer writer = new StringWriter();
+        writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
+        xstream.toXML(urlSet, writer);
+        System.out.println(writer.toString());
+        //System.out.println(xstream.toXML(urlSet));
 
     }
 

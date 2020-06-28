@@ -22,7 +22,6 @@
         <java.version>12</java.version>
         <lombok.version>1.18.8</lombok.version>
         <jjwt.version>0.10.7</jjwt.version>
-        <fastjson.version>1.2.56</fastjson.version>
         <mysql.version>8.0.15</mysql.version>
         <maven.complie.version>3.7.0</maven.complie.version>
         <velocity.version>2.1</velocity.version>
@@ -33,13 +32,15 @@
         <jsoup.version>1.12.1</jsoup.version>
         <mybatis-spring-boot-starter.version>2.1.0</mybatis-spring-boot-starter.version>
         <mybatis-typehandlers-jsr310.version>1.0.2</mybatis-typehandlers-jsr310.version>
-        <jackson-modules-java8.version>2.10.0</jackson-modules-java8.version>
+        <jackson.version>2.11.1</jackson.version>
         <bucket4j-core.version>4.5.0</bucket4j-core.version>
         <caffeine.version>2.8.0</caffeine.version>
         <guava.version>28.2-jre</guava.version>
         <protobuf.version>3.11.4</protobuf.version>
         <rabbitmq.version>5.8.0</rabbitmq.version>
         <retrofit.version>2.8.1</retrofit.version>
+        <sshj.version>0.29.0</sshj.version>
+        <xstream.version>1.4.12</xstream.version>
     </properties>
 
     <dependencies>
@@ -90,6 +91,16 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>2.0.1.Final</version>
+        </dependency>
+        <dependency>
+            <groupId>com.thoughtworks.xstream</groupId>
+            <artifactId>xstream</artifactId>
+            <version>${xstream.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.hierynomus</groupId>
+            <artifactId>sshj</artifactId>
+            <version>${sshj.version}</version>
         </dependency>
         <dependency>
             <groupId>com.squareup.retrofit2</groupId>
@@ -173,7 +184,7 @@
         <dependency>
             <groupId>com.fasterxml.jackson.module</groupId>
             <artifactId>jackson-modules-java8</artifactId>
-            <version>${jackson-modules-java8.version}</version>
+            <version>${jackson.version}</version>
             <type>pom</type>
             <scope>runtime</scope>
         </dependency>
