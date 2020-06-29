@@ -11,6 +11,7 @@ import javax.xml.stream.XMLStreamWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -36,7 +37,9 @@ public class RunTest {
         xstream.toXML(urlSet, writer);
         System.out.println(writer.toString());
         //System.out.println(xstream.toXML(urlSet));
-        System.out.println(new Date());
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+
+        System.out.println(sdf.format(new Date()));
     }
 
 }

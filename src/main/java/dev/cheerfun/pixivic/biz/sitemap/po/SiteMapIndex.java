@@ -22,4 +22,11 @@ public class SiteMapIndex {
     private String xmlns = SiteMapConstant.XMLNS;
     @XStreamImplicit(itemFieldName = "sitemap")
     private List<SiteMap> siteMapList;
+
+    public SiteMapIndex() {
+    }
+
+    public SiteMapIndex(List<SiteMap> siteMapList) {
+        this.siteMapList = siteMapList;
+    }
 }

@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.sitemap.service;
 
 import com.thoughtworks.xstream.XStream;
 import dev.cheerfun.pixivic.biz.sitemap.constant.SiteMapConstant;
+import dev.cheerfun.pixivic.biz.sitemap.po.SiteMap;
 import dev.cheerfun.pixivic.biz.sitemap.po.SiteMapIndex;
 import dev.cheerfun.pixivic.biz.sitemap.po.Url;
 import dev.cheerfun.pixivic.biz.sitemap.po.UrlSet;
@@ -14,10 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,21 +46,30 @@ public class SiteMapService {
     private String siteMapSavePath;
     @Value("${sitemap.remoteSavePath}")
     private String siteMapRemoteSavePath;
+    private final static String[] MODES = {"day", "week", "month", "day_female", "day_male", "day_manga", "week_manga", "month_manga", "week_rookie_manga"};
+    private final static SimpleDateFormat UTC_FORMAT = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
 
     //@Scheduled
-    public void dailyTask() {
-        dealIllust();
+    public void dailyTask() throws IOException {
         dealRank();
+        dealIllust();
         reGenerateSiteMap();
-
     }
 
-    private void reGenerateSiteMap() {
-        //获取illust_detail_sitemap_*文件名
-        //更新sitemap文件
+    private void reGenerateSiteMap() throws IOException {
+        //重新生成sitemap.xml
+        String fileName = siteMapSavePath + "sitemap.xml";
+        //读取本地目录
+        List<SiteMap> siteMapList = Files.list(Paths.get(siteMapSavePath))
+                .filter(e -> Files.isRegularFile(e) && !"sitemap.xml".equals(e.getFileName().toString()))
+                .map(e -> {
+                    return new SiteMap("https://pixivic.com/sitemap/" + e.getFileName().toString(), UTC_FORMAT.format(new Date(e.toFile().lastModified())));
+                }).collect(Collectors.toList());
+        writeToDisk(new SiteMapIndex(siteMapList), fileName);
+        sshUtil.upload("static", fileName, siteMapRemoteSavePath + "sitemap.xml");
     }
 
-    private void dealIllust() {
+    private void dealIllust() throws IOException {
         //取更新时间在一天内的画作
         LocalDateTime localDateTime = LocalDateTime.now().plusDays(-1);
         List<Integer> illustrationList = illustrationBizMapper.queryRecentIllustId(localDateTime);
@@ -62,7 +78,7 @@ public class SiteMapService {
         mapById.keySet().stream().parallel().forEach(e -> {
             //重新生成sitemap
             List<Illustration> list = illustrationBizMapper.queryIllustInfoForSiteMapById(e, e + 50000);
-            List<Url> urlList = list.stream().map(illustration -> new Url("https://pixivic.com/illusts/" + illustration.getId(), illustration.getCreateDate().toString(), "monthly", "0.7")).collect(Collectors.toList());
+            List<Url> urlList = list.stream().map(illustration -> new Url("https://pixivic.com/illusts/" + illustration.getId(), UTC_FORMAT.format(illustration.getCreateDate()), "never", "0.7")).collect(Collectors.toList());
             UrlSet urlSet = new UrlSet(urlList);
             //持久化illust_detail_sitemap_(index).xml
             String fileName = "illust_detail_sitemap_" + e + ".xml";
@@ -83,12 +99,24 @@ public class SiteMapService {
     }
 
     private void dealRank() {
-        //取今日排行
-
-        //更新sitemap文件以及对应的rank_sitemap.xml
-
-        //ssh对远端静态文件服务器进行移动（覆盖）sitemap文件
-
+        try {
+            LocalDate localDate = LocalDate.now().plusDays(-1);
+            //反序列化xml
+            String fileName = siteMapSavePath + "rank_sitemap.xml";
+            UrlSet rank = (UrlSet) xStream.fromXML(new File(fileName));
+            //添加元素
+            for (String mode : MODES) {
+                rank.getUrlList().add(new Url("https://m.pixivic.com/rank/" + mode + "/" + localDate.toString(), localDate.toString(), "never", "0.8"));
+            }
+            //更新sitemap文件以及对应的rank_sitemap.xml
+            writeToDisk(rank, fileName);
+            //ssh对远端静态文件服务器进行移动（覆盖）sitemap文件
+            sshUtil.upload("static", fileName, siteMapRemoteSavePath + "rank_sitemap.xml");
+        } catch (IOException e) {
+            log.error("排行sitemap更新失败");
+            e.printStackTrace();
+        }
+        log.error("排行sitemap更新成功");
     }
 
     private boolean writeToDisk(UrlSet urlSet, String path) {
