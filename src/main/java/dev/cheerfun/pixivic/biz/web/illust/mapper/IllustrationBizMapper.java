@@ -83,5 +83,13 @@ public interface IllustrationBizMapper {
     List<Integer> queryRecentIllustId(LocalDateTime localDateTime);
 
     @Select("select illust_id,create_date from illusts where illust_id between #{from} and #{to}")
+    @Results({
+            @Result(property = "id", column = "illust_id"),
+            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
+    })
     List<Illustration> queryIllustInfoForSiteMapById(Integer from, int to);
 }

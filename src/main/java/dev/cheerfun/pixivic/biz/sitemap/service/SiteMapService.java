@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -56,6 +57,13 @@ public class SiteMapService {
         reGenerateSiteMap();
     }
 
+    //@PostConstruct
+    public void test() throws IOException {
+        //dealIllust();
+        dealRank();
+        reGenerateSiteMap();
+    }
+
     private void reGenerateSiteMap() throws IOException {
         //重新生成sitemap.xml
         String fileName = siteMapSavePath + SiteMapConstant.SITEMAP_NAME;
@@ -72,7 +80,7 @@ public class SiteMapService {
 
     private void dealIllust() {
         //取更新时间在一天内的画作
-        LocalDateTime localDateTime = LocalDateTime.now().plusDays(-1);
+        LocalDateTime localDateTime = LocalDateTime.now().plusDays(-60);
         List<Integer> illustrationList = illustrationBizMapper.queryRecentIllustId(localDateTime);
         //判断这些画作所在的sitemap文件
         Map<Integer, List<Integer>> mapById = illustrationList.stream().collect(Collectors.groupingBy(e -> e / 5000));
@@ -104,6 +112,7 @@ public class SiteMapService {
         try {
             LocalDate localDate = LocalDate.now().plusDays(-1);
             //反序列化xml
+            xStream.toXML(new UrlSet());
             String fileName = siteMapSavePath + "rank_sitemap.xml";
             UrlSet rank = (UrlSet) xStream.fromXML(new File(fileName));
             //添加元素
