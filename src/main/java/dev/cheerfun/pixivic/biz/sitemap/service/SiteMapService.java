@@ -58,18 +58,19 @@ public class SiteMapService {
 
     private void reGenerateSiteMap() throws IOException {
         //重新生成sitemap.xml
-        String fileName = siteMapSavePath + "sitemap.xml";
+        String fileName = siteMapSavePath + SiteMapConstant.SITEMAP_NAME;
         //读取本地目录
         List<SiteMap> siteMapList = Files.list(Paths.get(siteMapSavePath))
-                .filter(e -> Files.isRegularFile(e) && !"sitemap.xml".equals(e.getFileName().toString()))
+                .filter(e -> Files.isRegularFile(e) && !SiteMapConstant.SITEMAP_NAME.equals(e.getFileName().toString()))
                 .map(e -> {
-                    return new SiteMap("https://pixivic.com/sitemap/" + e.getFileName().toString(), UTC_FORMAT.format(new Date(e.toFile().lastModified())));
+                    return new SiteMap(SiteMapConstant.SITEMAP_WEB_CONTENT + e.getFileName().toString(), UTC_FORMAT.format(new Date(e.toFile().lastModified())));
                 }).collect(Collectors.toList());
-        writeToDisk(new SiteMapIndex(siteMapList), fileName);
-        sshUtil.upload("static", fileName, siteMapRemoteSavePath + "sitemap.xml");
+        if (writeToDisk(new SiteMapIndex(siteMapList), fileName)) {
+            sshUtil.upload(SiteMapConstant.SITEMAP_WEB_HOST, fileName, siteMapRemoteSavePath + SiteMapConstant.SITEMAP_NAME);
+        }
     }
 
-    private void dealIllust() throws IOException {
+    private void dealIllust() {
         //取更新时间在一天内的画作
         LocalDateTime localDateTime = LocalDateTime.now().plusDays(-1);
         List<Integer> illustrationList = illustrationBizMapper.queryRecentIllustId(localDateTime);
@@ -84,15 +85,16 @@ public class SiteMapService {
             String fileName = "illust_detail_sitemap_" + e + ".xml";
             String localFilePath = siteMapSavePath + fileName;
             String remoteFilePath = siteMapRemoteSavePath + fileName;
-            writeToDisk(urlSet, localFilePath);
-            //ssh对远端静态文件服务器进行移动（覆盖）sitemap文件
-            try {
-                if (sshUtil.upload("static", localFilePath, remoteFilePath)) {
-                    log.info("重生成并上传" + fileName + "成功");
+            if (writeToDisk(urlSet, localFilePath)) {
+                //ssh对远端静态文件服务器进行移动（覆盖）sitemap文件
+                try {
+                    if (sshUtil.upload(SiteMapConstant.SITEMAP_WEB_HOST, localFilePath, remoteFilePath)) {
+                        log.info("重生成并上传" + fileName + "成功");
+                    }
+                } catch (IOException ioException) {
+                    log.error("重生成并上传" + fileName + "失败");
+                    ioException.printStackTrace();
                 }
-            } catch (IOException ioException) {
-                log.error("重生成并上传" + fileName + "失败");
-                ioException.printStackTrace();
             }
         });
 
@@ -109,9 +111,10 @@ public class SiteMapService {
                 rank.getUrlList().add(new Url("https://m.pixivic.com/rank/" + mode + "/" + localDate.toString(), localDate.toString(), "never", "0.8"));
             }
             //更新sitemap文件以及对应的rank_sitemap.xml
-            writeToDisk(rank, fileName);
-            //ssh对远端静态文件服务器进行移动（覆盖）sitemap文件
-            sshUtil.upload("static", fileName, siteMapRemoteSavePath + "rank_sitemap.xml");
+            if (writeToDisk(rank, fileName)) {
+                //ssh对远端静态文件服务器进行移动（覆盖）sitemap文件
+                sshUtil.upload(SiteMapConstant.SITEMAP_WEB_HOST, fileName, siteMapRemoteSavePath + "rank_sitemap.xml");
+            }
         } catch (IOException e) {
             log.error("排行sitemap更新失败");
             e.printStackTrace();
