@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -42,6 +43,7 @@ public class SshUtil {
             log.info("初始化ssh工具类失败");
             e.printStackTrace();
         }
+        ssh.addHostKeyVerifier(new PromiscuousVerifier());
     }
 
     public boolean upload(String remoteHost, String localFilePath, String remoteFilePath) throws IOException {

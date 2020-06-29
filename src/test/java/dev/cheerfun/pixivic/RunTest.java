@@ -1,20 +1,18 @@
 package dev.cheerfun.pixivic;
 
-import com.thoughtworks.xstream.XStream;
-import com.thoughtworks.xstream.io.xml.StaxDriver;
-import com.thoughtworks.xstream.io.xml.StaxWriter;
-import dev.cheerfun.pixivic.biz.sitemap.po.Url;
-import dev.cheerfun.pixivic.biz.sitemap.po.UrlSet;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.XMLStreamWriter;
+import java.io.File;
 import java.io.IOException;
-import java.io.StringWriter;
-import java.io.Writer;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeoutException;
 
 public class RunTest {
@@ -23,23 +21,41 @@ public class RunTest {
     volatile int j = 0;
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        Url url = new Url("1", "2", "3", "4");
-        Url url2 = new Url("1", "2", "3", "4");
-        UrlSet urlSet = new UrlSet();
-        List<Url> urlList = new ArrayList<>();
-        urlList.add(url);
-        urlList.add(url2);
-        urlSet.setUrlList(urlList);
-        XStream xstream = new XStream();
-        xstream.autodetectAnnotations(true);
-        Writer writer = new StringWriter();
-        writer.write("<?xml version=\"1.0\" encoding=\"UTF-8\" ?>\n");
-        xstream.toXML(urlSet, writer);
-        System.out.println(writer.toString());
-        //System.out.println(xstream.toXML(urlSet));
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+        final SSHClient ssh = new SSHClient();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        List<Host> hostList = objectMapper.readValue(new File("/Users/oysterqaq/PIC/ssh.conf"), new TypeReference<ArrayList<Host>>() {
+        });
+        Optional<Host> hostOptional = hostList.stream().filter(e -> e.hostname.equals("static")).findFirst();
+        if (hostOptional.isPresent()) {
+            Host host = hostOptional.get();
+            ssh.addHostKeyVerifier(new PromiscuousVerifier());
+            ssh.connect(host.hostname, host.port);
+            try {
+                ssh.authPassword(host.username, host.password);
+                ssh.useCompression();
+                ssh.newSCPFileTransfer().upload("/Users/oysterqaq/PIC/ssh.conf", "/root");
+            } catch (Exception e) {
 
-        System.out.println(sdf.format(new Date()));
+            } finally {
+                ssh.disconnect();
+            }
+
+        }
+
     }
 
+}
+
+class Host {
+    public String hostname;
+    public Integer port;
+    public String username;
+    public String password;
+    public String fingerprint;
 }
