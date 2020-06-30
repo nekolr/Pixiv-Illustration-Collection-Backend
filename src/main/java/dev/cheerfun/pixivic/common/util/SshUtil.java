@@ -46,23 +46,35 @@ public class SshUtil {
         ssh.addHostKeyVerifier(new PromiscuousVerifier());
     }
 
-    public boolean upload(String remoteHost, String localFilePath, String remoteFilePath) throws IOException {
+    public boolean upload(String remoteHost, String localFilePath, String remoteFilePath) {
         Optional<Host> hostOptional = hostList.stream().filter(e -> e.hostname.equals(remoteHost)).findFirst();
         if (hostOptional.isPresent()) {
-            Host host = hostOptional.get();
-            ssh.connect(host.hostname, host.port);
             try {
-                ssh.authPassword(host.username, host.password);
-                ssh.useCompression();
+                Host host = hostOptional.get();
+                if (!ssh.isConnected()) {
+                    ssh.connect(host.hostname, host.port);
+                    ssh.getConnection().setTimeoutMs(10000);
+                    ssh.getConnection().getKeepAlive().setKeepAliveInterval(10000000);
+                    ssh.authPassword(host.username, host.password);
+                    ssh.useCompression();
+
+                }
                 ssh.newSCPFileTransfer().upload(localFilePath, remoteFilePath);
             } catch (Exception e) {
                 return false;
             } finally {
-                ssh.disconnect();
+                //ssh.disconnect();
             }
             return true;
         }
         return false;
+    }
+
+    public void disconnect(String remoteHost) throws IOException {
+        Optional<Host> hostOptional = hostList.stream().filter(e -> e.hostname.equals(remoteHost)).findFirst();
+        if (hostOptional.isPresent()) {
+            ssh.disconnect();
+        }
     }
 }
 
