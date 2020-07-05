@@ -33,7 +33,11 @@ public class AdminService {
     public void init() {
         log.info("开始初始化管理员key列表");
         //初始化固定token
-        keyList = adminMapper.queryAllAdminKey();
+        try {
+            keyList = adminMapper.queryAllAdminKey();
+        } catch (Exception e) {
+            log.error("初始化管理员key列表失败");
+        }
         log.info("初始化管理员key列表完毕");
     }
 

@@ -57,10 +57,10 @@ public class SiteMapService {
         reGenerateSiteMap();
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void test() throws IOException {
         dealIllust();
-        dealRank();
+        //dealRank();
         reGenerateSiteMap();
         sshUtil.disconnect(SiteMapConstant.SITEMAP_WEB_HOST);
     }
@@ -81,10 +81,10 @@ public class SiteMapService {
 
     private void dealIllust() {
         //取更新时间在一天内的画作
-        LocalDateTime localDateTime = LocalDateTime.now().plusDays(-60);
+        LocalDateTime localDateTime = LocalDateTime.now().plusYears(-20);
         List<Integer> illustrationList = illustrationBizMapper.queryRecentIllustId(localDateTime);
         //判断这些画作所在的sitemap文件
-        Map<Integer, List<Integer>> mapById = illustrationList.stream().collect(Collectors.groupingBy(e -> e / 5000));
+        Map<Integer, List<Integer>> mapById = illustrationList.stream().collect(Collectors.groupingBy(e -> e / 50000));
         mapById.keySet().forEach(e -> {
             //重新生成sitemap
             List<Illustration> list = illustrationBizMapper.queryIllustInfoForSiteMapById(e, e + 50000);
