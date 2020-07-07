@@ -15,7 +15,7 @@ public interface IllustHistoryMapper {
     @Insert("insert into illust_history_temp (user_id,illust_id,create_at) value (#{userId},#{illustId},#{createAt,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     Integer insertToTemp(IllustHistory illustHistory);
 
-    @Delete("delete from illust_history where create_at < (SELECT DATE_ADD(now(),INTERVAL -3 MONTH))")
+    @Delete("delete from illust_history where create_at < (SELECT DATE_ADD(now(),INTERVAL -6 MONTH))")
     void deleteIllustHistory();
 
     @Select("REPLACE INTO illust_history( `user_id`, `illust_id`, `create_at` ) SELECT user_id,illust_id,create_at FROM illust_history_temp where user_id is not null  order by temp_id")

@@ -7,13 +7,20 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 public class RunTest {
 
@@ -21,9 +28,31 @@ public class RunTest {
     volatile int j = 0;
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        System.out.println((int) "a".charAt(0) - 97);
+        System.out.println(queryRelatedKeywordFromBaidu("JSP"));
     }
 
+    public static boolean queryRelatedKeywordFromBaidu(String keyword) {
+        try {
+            //获取
+            List<String> relatedKeyWordList = null;
+            Document document = Jsoup.connect("https://www.baidu.com/s?wd=" + URLEncoder.encode(keyword)).get();
+            Element rs = document.body().getElementById("rs");
+            if (rs != null) {
+                Elements a = rs.getElementsByTag("a");
+                if (a != null && a.size() > 0) {
+                    relatedKeyWordList = a.stream().map(Element::text).collect(Collectors.toList());
+                    //更新关键词表
+                    String keywordId = "select id from osc_keyword where content=? ";
+                    System.out.println(relatedKeyWordList);
+                }
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
 }
 
 class Host {
