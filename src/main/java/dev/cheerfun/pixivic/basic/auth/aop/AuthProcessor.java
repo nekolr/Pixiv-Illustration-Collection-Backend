@@ -119,9 +119,11 @@ public class AuthProcessor {
         saveToDBExecutorService.submit(() -> {
             while (true) {
                 try {
-                    Set<Integer> userSet = waitForUpdateUserList.keySet();
-                    waitForUpdateUserList.clear();
-                    authMapper.updateUserLastActiveTime(userSet);
+                    if (!waitForUpdateUserList.isEmpty()) {
+                        Set<Integer> userSet = waitForUpdateUserList.keySet();
+                        waitForUpdateUserList.clear();
+                        authMapper.updateUserLastActiveTime(userSet);
+                    }
                     Thread.sleep(1000 * 60 * 10);
                 } catch (Exception e) {
                     e.printStackTrace();

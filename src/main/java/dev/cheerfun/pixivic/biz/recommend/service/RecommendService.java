@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.recommend.service;
 
+import dev.cheerfun.pixivic.biz.recommend.mapper.RecommendMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.apache.mahout.cf.taste.eval.RecommenderBuilder;
@@ -15,6 +16,7 @@ import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +34,10 @@ import java.io.IOException;
 public abstract class RecommendService {
     @Autowired
     protected DataSource dataSource;
+    @Autowired
+    protected StringRedisTemplate stringRedisTemplate;
+    @Autowired
+    protected RecommendMapper recommendMapper;
 
     protected boolean recommend() throws TasteException {
         log.info("开始生成推荐，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
