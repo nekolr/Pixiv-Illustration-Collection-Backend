@@ -33,7 +33,7 @@ public class SshUtil {
     private String path;
     private final ObjectMapper objectMapper;
 
-    @PostConstruct
+   // @PostConstruct
     public void init() {
         File file = new File(path);
         try {
