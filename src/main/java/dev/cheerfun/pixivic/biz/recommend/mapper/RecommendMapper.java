@@ -20,4 +20,6 @@ public interface RecommendMapper {
   /*  queryUserIllustLikeData();
     queryUserIllustViewData();
     queryUserArtistFollowData();*/
+
+    //根据活跃度查询用户
 }

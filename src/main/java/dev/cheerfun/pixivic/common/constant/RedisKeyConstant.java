@@ -24,4 +24,7 @@ public class RedisKeyConstant {
     public final static String COLLECTION_TOTAL_PEOPLE_SEEN_REDIS_PRE = "c:tps:";
     public final static String ACCOUNT_BAN_COUNT_MAP = "a:bcm";
     public final static String ACCOUNT_BAN_SET = "a:bs";
+    public final static String USER_RECOMMEND_BOOKMARK_ILLUST = "u:r:b:i:";
+    public final static String USER_RECOMMEND_VIEW_ILLUST = "u:r:v:i:";
+    public final static String USER_RECOMMEND_ARTIST = "u:r:a:";
 }

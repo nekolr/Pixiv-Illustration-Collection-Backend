@@ -40,7 +40,7 @@ public class IllustHistoryService {
     public void push(IllustHistory illustHistory) {
         stringRedisTemplate.opsForZSet().add(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + illustHistory.getUserId(), String.valueOf(illustHistory.getIllustId()), illustHistory.getCreateAt().toEpochSecond(ZoneOffset.of("+8")));
         //异步入临时表
-        CompletableFuture.runAsync(() -> illustHistoryMapper.insertToTemp(illustHistory));
+        illustHistoryMapper.insertToTemp(illustHistory);
     }
 
     public List<Illustration> pullFromRedis(int userId, int page, int pageSize) {
