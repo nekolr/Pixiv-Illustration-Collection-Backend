@@ -112,12 +112,12 @@ public class CommonService {
     }
 
     public void getResetPasswordEmail(String email) throws MessagingException {
-        if (checkEmail(email)) {
+        //if (checkEmail(email)) {
             EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
             emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
-        } else {
+       /* } else {
             throw new UserCommonException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
-        }
+        }*/
     }
 
     public void getCheckEmail(String email, int userId) throws MessagingException {
