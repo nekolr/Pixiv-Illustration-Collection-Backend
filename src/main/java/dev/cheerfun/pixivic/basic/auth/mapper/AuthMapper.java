@@ -11,7 +11,7 @@ public interface AuthMapper {
     @Update("<script>" +
             "update users set last_active_time = now() where user_id in (" +
             "<foreach collection='userSet' item='u' index='index'  separator=','>" +
-            "(#{u})" +
+            "#{u}" +
             "</foreach>" +
             ")" +
             "</script>")
