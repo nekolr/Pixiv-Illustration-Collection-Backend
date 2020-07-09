@@ -84,7 +84,7 @@ public class AuthProcessor {
                 throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
             }
             //放入等待更新map
-            waitForUpdateUserList.put((Integer) claims.get(AuthConstant.USER_ID), 1);
+            waitForUpdateUserList.put(Integer.parseInt((String) claims.get(AuthConstant.USER_ID)), 1);
             //放行
             Object proceed = joinPoint.proceed();
             //清除Threadlocal中的数据
@@ -124,7 +124,7 @@ public class AuthProcessor {
                         waitForUpdateUserList.clear();
                         authMapper.updateUserLastActiveTime(userSet);
                     }
-                    Thread.sleep(1000 * 60 * 10);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
