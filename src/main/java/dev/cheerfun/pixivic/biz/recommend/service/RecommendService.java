@@ -44,6 +44,7 @@ public abstract class RecommendService {
         boolean result = dealRecommender(generateRecommender(generetaDataModel()));
         log.info("生成推荐结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
         System.gc();
+        log.info("垃圾清理结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
         return result;
     }
 
