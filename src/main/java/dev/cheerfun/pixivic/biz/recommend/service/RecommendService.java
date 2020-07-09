@@ -39,7 +39,7 @@ public abstract class RecommendService {
     @Autowired
     protected RecommendMapper recommendMapper;
 
-    protected boolean recommend() throws TasteException {
+    public boolean recommend() throws TasteException {
         log.info("开始生成推荐，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
         boolean result = dealRecommender(generateRecommender(generetaDataModel()));
         log.info("生成推荐结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");

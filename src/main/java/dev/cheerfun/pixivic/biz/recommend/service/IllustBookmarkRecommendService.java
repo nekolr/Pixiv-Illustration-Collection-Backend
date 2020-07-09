@@ -32,7 +32,7 @@ import java.util.List;
 public class IllustBookmarkRecommendService extends RecommendService {
     @Override
     protected DataModel generetaDataModel() throws TasteException {
-        MySQLBooleanPrefJDBCDataModel mySQLBooleanPrefJDBCDataModel = new MySQLBooleanPrefJDBCDataModel(dataSource, "user_illust_bookmarked", "user_id", "illust_id", "create_date");
+        MySQLBooleanPrefJDBCDataModel mySQLBooleanPrefJDBCDataModel = new MySQLBooleanPrefJDBCDataModel(dataSource, "illust_history", "user_id", "illust_id", "create_date");
         DataModel model = new GenericBooleanPrefDataModel(GenericBooleanPrefDataModel.toDataMap(mySQLBooleanPrefJDBCDataModel.exportWithPrefs()));
         return model;
     }

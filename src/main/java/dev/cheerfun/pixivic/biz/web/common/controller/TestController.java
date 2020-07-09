@@ -11,6 +11,7 @@ import dev.cheerfun.pixivic.biz.crawler.news.service.NewService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
+import dev.cheerfun.pixivic.biz.recommend.service.IllustBookmarkRecommendService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
@@ -18,11 +19,13 @@ import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.EmailUtil;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthManager;
 import lombok.RequiredArgsConstructor;
+import org.apache.mahout.cf.taste.common.TasteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -41,6 +44,7 @@ public class TestController {
     private final OauthManager oauthManager;
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustRankService rankDailyService;
+    private final IllustBookmarkRecommendService illustBookmarkRecommendService;
     private final EmailUtil emailUtil;
 
     private final TrendingTagsService trendingTagsService;
@@ -97,5 +101,10 @@ public class TestController {
     public ResponseEntity<Result> testCode(@RequestParam("vid") String vid, @RequestParam("value") String value, @RequestBody User user) {
         System.out.println(user);
         return ResponseEntity.ok(new Result<>("测试", null));
+    }
+
+    @PostConstruct
+    public void init() throws TasteException {
+        illustBookmarkRecommendService.recommend();
     }
 }
