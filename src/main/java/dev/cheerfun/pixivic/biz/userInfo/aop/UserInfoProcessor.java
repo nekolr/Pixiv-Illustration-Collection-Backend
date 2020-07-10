@@ -23,6 +23,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -100,7 +101,13 @@ public class UserInfoProcessor {
     }
 
     public List<Illustration> dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {
-        List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+        List<Object> isLikedList = new ArrayList<>(illustrationList.size());
+        List<Object> isFollowedList = new ArrayList<>(illustrationList.size());
+        for (int i = 0; i < illustrationList.size(); i++) {
+            isLikedList.set(i, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustrationList.get(i).getId())));
+            isFollowedList.set(i, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustrationList.get(i).getArtistId(), String.valueOf(userId)));
+        }
+       /* List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
             for (Illustration illustration : illustrationList) {
                 StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
                 stringRedisConnection.sIsMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustration.getId()));
@@ -113,7 +120,7 @@ public class UserInfoProcessor {
                 stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
             }
             return null;
-        });
+        });*/
         int size = isLikedList.size();
         for (int i = 0; i < size; i++) {
             IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), (Boolean) isLikedList.get(i));
