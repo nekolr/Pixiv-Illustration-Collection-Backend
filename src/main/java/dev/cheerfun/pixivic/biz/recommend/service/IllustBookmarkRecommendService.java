@@ -32,7 +32,7 @@ import java.util.List;
 public class IllustBookmarkRecommendService extends RecommendService {
     @Override
     protected DataModel generetaDataModel() throws TasteException {
-        MySQLBooleanPrefJDBCDataModel mySQLBooleanPrefJDBCDataModel = new MySQLBooleanPrefJDBCDataModel(dataSource, "illust_history", "user_id", "illust_id", "create_date");
+        MySQLBooleanPrefJDBCDataModel mySQLBooleanPrefJDBCDataModel = new MySQLBooleanPrefJDBCDataModel(dataSource, "user_illust_bookmarked", "user_id", "illust_id", "create_date");
         DataModel model = new GenericBooleanPrefDataModel(GenericBooleanPrefDataModel.toDataMap(mySQLBooleanPrefJDBCDataModel.exportWithPrefs()));
         return model;
     }
@@ -55,7 +55,7 @@ public class IllustBookmarkRecommendService extends RecommendService {
         stringRedisTemplate.unlink(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + "*");
         //根据活跃度分级生成
         LocalDate now = LocalDate.now();
-        String today = now.toString();
+        String today = now.plusDays(1).toString();
         String threeDaysAgo = now.plusDays(-3).toString();
         String sixDaysAgo = now.plusDays(-6).toString();
         String twentyDaysAgo = now.plusDays(-12).toString();
@@ -66,7 +66,7 @@ public class IllustBookmarkRecommendService extends RecommendService {
         生成30*30个推荐收藏作品
 
         生成10*30个推荐画师*/
-        List<Integer> u1 = recommendMapper.queryUserIdByDateRange(today, threeDaysAgo);
+        List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
         dealPerUser(u1, recommender, 30);
      /*
         3-6天
@@ -76,7 +76,7 @@ public class IllustBookmarkRecommendService extends RecommendService {
         生成30*10个推荐收藏作品
 
         生成10*10个推荐画师*/
-        List<Integer> u2 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, sixDaysAgo);
+        List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
         dealPerUser(u2, recommender, 15);
 
      /*   6-12天
@@ -86,7 +86,7 @@ public class IllustBookmarkRecommendService extends RecommendService {
         生成30*10个推荐收藏作品
 
         生成10*10个推荐画师*/
-        List<Integer> u3 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, twentyDaysAgo);
+        List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twentyDaysAgo, sixDaysAgo);
         dealPerUser(u3, recommender, 10);
         return true;
     }
@@ -95,6 +95,7 @@ public class IllustBookmarkRecommendService extends RecommendService {
         u.forEach(e -> {
             try {
                 recommender.recommend(e, 30 * size).forEach(r -> {
+
                     stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(r.getItemID()), r.getValue());
                 });
             } catch (TasteException tasteException) {

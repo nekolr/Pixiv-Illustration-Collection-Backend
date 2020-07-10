@@ -84,6 +84,7 @@ public class AuthProcessor {
                 throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
             }
             //放入等待更新map
+            System.out.println(claims.get(AuthConstant.USER_ID));
             waitForUpdateUserList.put((Integer) claims.get(AuthConstant.USER_ID), 1);
             //放行
             Object proceed = joinPoint.proceed();
@@ -124,7 +125,7 @@ public class AuthProcessor {
                         waitForUpdateUserList.clear();
                         authMapper.updateUserLastActiveTime(userSet);
                     }
-                    Thread.sleep(1000 * 60 * 10);
+                    Thread.sleep(1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

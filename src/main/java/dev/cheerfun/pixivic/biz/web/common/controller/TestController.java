@@ -12,6 +12,7 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
 import dev.cheerfun.pixivic.biz.recommend.service.IllustBookmarkRecommendService;
+import dev.cheerfun.pixivic.biz.recommend.service.IllustViewRecommendService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
@@ -37,7 +38,7 @@ import java.util.concurrent.ExecutionException;
  * @date 2019/07/16 9:21
  * @description TODO
  */
-//@RestController
+@RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TestController {
     private final JWTUtil jwtUtil;
@@ -45,6 +46,7 @@ public class TestController {
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustRankService rankDailyService;
     private final IllustBookmarkRecommendService illustBookmarkRecommendService;
+    private final IllustViewRecommendService illustViewRecommendService;
     private final EmailUtil emailUtil;
 
     private final TrendingTagsService trendingTagsService;
@@ -103,8 +105,9 @@ public class TestController {
         return ResponseEntity.ok(new Result<>("测试", null));
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void init() throws TasteException {
         illustBookmarkRecommendService.recommend();
+        illustViewRecommendService.recommend();
     }
 }
