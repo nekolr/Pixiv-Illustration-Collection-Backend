@@ -21,8 +21,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisOperations;
 import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -182,13 +180,14 @@ public class BusinessService {
                 if (user == userId) {
                     isFollowedList = artists.stream().map(e -> true).collect(Collectors.toList());
                 } else {
-                    isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
+                    isFollowedList = artists.stream().map(e -> stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + e.getId(), String.valueOf(user))).collect(Collectors.toList());
+                   /* isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
                         for (Artist artist : artists) {
                             StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
                             stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artist.getId(), String.valueOf(user));
                         }
                         return null;
-                    });
+                    });*/
                 }
                 for (int i = 0; i < artists.size(); i++) {
                     artistBizService.dealArtist(artists.get(i));

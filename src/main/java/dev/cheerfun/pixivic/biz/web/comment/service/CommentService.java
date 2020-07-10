@@ -11,8 +11,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -80,13 +78,9 @@ public class CommentService {
         //拼接是否点赞
         List<Object> isLikedList;
         if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
-            isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-                comments.forEach(e -> {
-                    StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                    stringRedisConnection.sIsMember(RedisKeyConstant.LIKE_REDIS_PRE + AppContext.get().get(AuthConstant.USER_ID), String.valueOf(e.toStringForQueryLike()));
-                });
-                return null;
-            });
+            isLikedList = comments.stream().map(e -> {
+                return stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.LIKE_REDIS_PRE + AppContext.get().get(AuthConstant.USER_ID), String.valueOf(e.toStringForQueryLike()));
+            }).collect(Collectors.toList());
         } else {
             isLikedList = comments.stream().map(e -> false).collect(Collectors.toList());
         }

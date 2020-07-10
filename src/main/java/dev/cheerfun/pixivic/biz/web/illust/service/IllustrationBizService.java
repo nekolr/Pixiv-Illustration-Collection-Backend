@@ -194,17 +194,11 @@ public class IllustrationBizService {
     }
 
     public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList, int userId) {
-        List<Object> isFollowedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
-            for (Illustration illustration : illustrationList) {
-                StringRedisConnection stringRedisConnection = (StringRedisConnection) redisConnection;
-                stringRedisConnection.sIsMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustration.getArtistId(), String.valueOf(userId));
-            }
-            return null;
-        });
-        int size = isFollowedList.size();
+        int size = illustrationList.size();
         for (int i = 0; i < size; i++) {
             IllustrationWithLikeInfo illustrationWithLikeInfo = new IllustrationWithLikeInfo(illustrationList.get(i), true);
-            illustrationWithLikeInfo.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustrationWithLikeInfo.getArtistPreView(), (Boolean) isFollowedList.get(i)));
+            Boolean isFollow = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustrationList.get(i).getArtistId(), String.valueOf(userId));
+            illustrationWithLikeInfo.setArtistPreView(new ArtistPreViewWithFollowedInfo(illustrationWithLikeInfo.getArtistPreView(), isFollow));
             illustrationList.set(i, illustrationWithLikeInfo);
         }
     }
