@@ -104,8 +104,8 @@ public class UserInfoProcessor {
         List<Object> isLikedList = new ArrayList<>(illustrationList.size());
         List<Object> isFollowedList = new ArrayList<>(illustrationList.size());
         for (int i = 0; i < illustrationList.size(); i++) {
-            isLikedList.set(i, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustrationList.get(i).getId())));
-            isFollowedList.set(i, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustrationList.get(i).getArtistId(), String.valueOf(userId)));
+            isLikedList.add(i, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustrationList.get(i).getId())));
+            isFollowedList.add(i, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + illustrationList.get(i).getArtistId(), String.valueOf(userId)));
         }
        /* List<Object> isLikedList = stringRedisTemplate.executePipelined((RedisCallback<String>) redisConnection -> {
             for (Illustration illustration : illustrationList) {

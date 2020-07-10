@@ -28,6 +28,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
@@ -84,7 +85,6 @@ public class AuthProcessor {
                 throw new AuthLevelException(HttpStatus.FORBIDDEN, "用户权限不足");
             }
             //放入等待更新map
-            System.out.println(claims.get(AuthConstant.USER_ID));
             waitForUpdateUserList.put((Integer) claims.get(AuthConstant.USER_ID), 1);
             //放行
             Object proceed = joinPoint.proceed();
@@ -122,8 +122,8 @@ public class AuthProcessor {
                 try {
                     if (!waitForUpdateUserList.isEmpty()) {
                         Set<Integer> userSet = waitForUpdateUserList.keySet();
-                        waitForUpdateUserList.clear();
                         authMapper.updateUserLastActiveTime(userSet);
+                        waitForUpdateUserList.clear();
                     }
                     Thread.sleep(1000);
                 } catch (Exception e) {
