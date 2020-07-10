@@ -125,7 +125,7 @@ public class AuthProcessor {
                         authMapper.updateUserLastActiveTime(userSet);
                         waitForUpdateUserList.clear();
                     }
-                    Thread.sleep(1000);
+                    Thread.sleep(1000 * 60);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
