@@ -71,7 +71,7 @@ public class IllustHistoryService {
     @Scheduled(cron = "0 10 2 * * ?")
     @Transactional(rollbackFor = Exception.class)
     public void clear() {
-        System.out.println("开始清理收藏");
+        System.out.println("开始清理历史记录");
         //获取keylist
         final ScanOptions scanOptions = ScanOptions.scanOptions().match(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + "*").build();
         RedisConnection connection = stringRedisTemplate.getConnectionFactory().getConnection();
