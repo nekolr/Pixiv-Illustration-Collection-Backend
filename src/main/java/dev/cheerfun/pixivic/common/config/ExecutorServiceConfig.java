@@ -3,7 +3,6 @@ package dev.cheerfun.pixivic.common.config;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import java.util.concurrent.*;
 
@@ -46,6 +45,20 @@ public class ExecutorServiceConfig {
     @Bean(name = "mailExecutorService")
     public ExecutorService mailExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("mail-pool-%d").build();
+        return new ThreadPoolExecutor(
+                4,
+                40,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(1024),
+                namedThreadFactory,
+                new ThreadPoolExecutor.AbortPolicy()
+        );
+    }
+
+    @Bean(name = "recommendDownGradeExecutorService")
+    public ExecutorService recommendDownGradeExecutorService() {
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("recommendDowngrade-pool-%d").build();
         return new ThreadPoolExecutor(
                 4,
                 40,

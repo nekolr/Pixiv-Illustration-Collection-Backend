@@ -105,7 +105,7 @@ public class ArtistBizService {
     }
 
     @Cacheable(value = "artist")
-    public Artist queryArtistById(Integer artistId) throws InterruptedException {
+    public Artist queryArtistById(Integer artistId) {
         Artist artist = artistBizMapper.queryArtistById(artistId);
         if (artist == null) {
             waitForPullArtistInfoQueue.offer(artistId);
