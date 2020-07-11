@@ -20,9 +20,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.core.RedisOperations;
-import org.springframework.data.redis.core.SessionCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -106,23 +103,27 @@ public class BusinessService {
 //        ) {
 //            throw new BusinessException(HttpStatus.BAD_REQUEST, "用户与画作的收藏关系请求错误");
 //        }
-        stringRedisTemplate.execute(new SessionCallback<>() {
-            @Override
-            public List<Object> execute(RedisOperations operations) throws DataAccessException {
-                operations.multi();
-                if (increment > 0) {
-                    operations.opsForSet().add(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
-                    //异步往mysql中写入
-                    businessMapper.bookmark(userId, illustId, username, LocalDateTime.now());
-                } else {
-                    operations.opsForSet().remove(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
-                    //异步往mysql中移除
-                    businessMapper.cancelBookmark(userId, illustId);
-                }
-                operations.opsForHash().increment(RedisKeyConstant.BOOKMARK_COUNT_MAP_REDIS_PRE, String.valueOf(illustId), increment);
-                return operations.exec();
+
+        try {
+            if (increment > 0) {
+                stringRedisTemplate.opsForSet().add(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
+                //异步往mysql中写入
+                businessMapper.bookmark(userId, illustId, username, LocalDateTime.now());
+            } else {
+                stringRedisTemplate.opsForSet().remove(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
+                //异步往mysql中移除
+                businessMapper.cancelBookmark(userId, illustId);
             }
-        });
+            stringRedisTemplate.opsForHash().increment(RedisKeyConstant.BOOKMARK_COUNT_MAP_REDIS_PRE, String.valueOf(illustId), increment);
+        } catch (Exception e) {
+            if (increment > 0) {
+                stringRedisTemplate.opsForSet().remove(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
+            } else {
+                stringRedisTemplate.opsForSet().add(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
+            }
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "未知错误");
+        }
+
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")
