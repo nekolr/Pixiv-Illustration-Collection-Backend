@@ -105,7 +105,7 @@ public class TestController {
         return ResponseEntity.ok(new Result<>("测试", null));
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void init() throws TasteException {
         illustBookmarkRecommendService.recommend();
         illustViewRecommendService.recommend();
