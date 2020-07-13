@@ -19,7 +19,7 @@ public class RecommendDailyTaskService {
     private final RecommendService illustViewRecommendService;
     private final RecommendService artistRecommendService;
 
-    @Scheduled(cron = "0 50 4 * * ?")
+    @Scheduled(cron = "0 0 3 * * ?")
     public void genarateTask() throws TasteException {
         illustBookmarkRecommendService.recommend();
         artistRecommendService.recommend();

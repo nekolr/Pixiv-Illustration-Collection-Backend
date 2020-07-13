@@ -13,6 +13,7 @@ import org.apache.mahout.cf.taste.impl.recommender.GenericBooleanPrefUserBasedRe
 import org.apache.mahout.cf.taste.impl.similarity.LogLikelihoodSimilarity;
 import org.apache.mahout.cf.taste.model.DataModel;
 import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
+import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,7 +61,7 @@ public class IllustBookmarkRecommendService extends RecommendService {
         stringRedisTemplate.unlink(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + "*");
         //根据活跃度分级生成
         LocalDate now = LocalDate.now();
-        String today = now.plusDays(1).toString();
+        String today = now.plusDays(2).toString();
         String threeDaysAgo = now.plusDays(-3).toString();
         String sixDaysAgo = now.plusDays(-6).toString();
         String twentyDaysAgo = now.plusDays(-12).toString();
@@ -99,7 +100,8 @@ public class IllustBookmarkRecommendService extends RecommendService {
     private void dealPerUser(List<Integer> u, Recommender recommender, Integer size) {
         u.forEach(e -> {
             try {
-                Set<ZSetOperations.TypedTuple<String>> typedTuples = recommender.recommend(e, 30 * size).stream().map(recommendedItem -> new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItemID()), (double) recommendedItem.getValue())).collect(Collectors.toSet());
+                List<RecommendedItem> recommend = recommender.recommend(e, 30 * size);
+                Set<ZSetOperations.TypedTuple<String>> typedTuples = recommend.stream().map(recommendedItem -> new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItemID()), (double) recommendedItem.getValue())).collect(Collectors.toSet());
                 stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, typedTuples);
             } catch (TasteException tasteException) {
                 tasteException.printStackTrace();

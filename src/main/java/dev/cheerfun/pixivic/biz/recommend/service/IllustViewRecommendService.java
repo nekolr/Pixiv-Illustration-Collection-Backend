@@ -59,7 +59,7 @@ public class IllustViewRecommendService extends RecommendService {
         stringRedisTemplate.unlink(RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST + "*");
         //根据活跃度分级生成
         LocalDate now = LocalDate.now();
-        String today = now.plusDays(1).toString();
+        String today = now.plusDays(2).toString();
         String threeDaysAgo = now.plusDays(-3).toString();
         String sixDaysAgo = now.plusDays(-6).toString();
         String twentyDaysAgo = now.plusDays(-12).toString();
