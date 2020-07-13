@@ -27,19 +27,19 @@ public class RecommendBizController {
     private final RecommendBizService recommendBizService;
 
     //获取可能喜欢的画作
-    @GetMapping("/{userId}/recommendBookmarkIllusts")
+    @GetMapping("/users/{userId}/recommendBookmarkIllusts")
     public ResponseEntity<Result<List<Illustration>>> recommendBookmarkIllusts(@PathVariable Integer userId, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("获取可能喜欢的画作成功", recommendBizService.queryRecommendBookmarkIllust((Integer) AppContext.get().get(AuthConstant.USER_ID), page, pageSize)));
     }
 
     //获取可能想看的画作
-    @GetMapping("/{userId}/recommendViewIllusts")
+    @GetMapping("/users/{userId}/recommendViewIllusts")
     public ResponseEntity<Result<List<Illustration>>> recommendViewIllusts(@PathVariable Integer userId, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("获取可能想看的画作成功", recommendBizService.queryRecommendViewIllust((Integer) AppContext.get().get(AuthConstant.USER_ID), page, pageSize)));
     }
 
     //获取可能喜欢的画师
-    @GetMapping("/{userId}/recommendArtists")
+    @GetMapping("/users/{userId}/recommendArtists")
     public ResponseEntity<Result<List<Artist>>> recommendArtists(@PathVariable Integer userId, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("获取可能想看的画作成功", recommendBizService.queryRecommendArtist((Integer) AppContext.get().get(AuthConstant.USER_ID), page, pageSize)));
     }
