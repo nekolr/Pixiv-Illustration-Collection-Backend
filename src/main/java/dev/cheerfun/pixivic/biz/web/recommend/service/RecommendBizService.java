@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.recommend.service;
 
 import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -60,6 +61,16 @@ public class RecommendBizService {
         if (artistIdList != null && artistIdList.size() > 0) {
             //异步降级
             List<Artist> artistList = artistIdList.stream().map(e -> artistBizService.queryArtistById(Integer.parseInt(e.getValue()))).collect(Collectors.toList());
+            artistList.stream().map(artist -> {
+                List<Illustration> illustrationList = null;
+                try {
+                    illustrationList = artistBizService.queryIllustrationsByArtistId(artist.getId(), "illust", 0, 3);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                return new ArtistWithRecentlyIllusts(artist, illustrationList);
+            });
+
             downGrade(RedisKeyConstant.USER_RECOMMEND_ARTIST + userId, artistIdList);
             return artistList;
         }
