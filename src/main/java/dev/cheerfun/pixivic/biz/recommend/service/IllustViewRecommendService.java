@@ -16,10 +16,14 @@ import org.apache.mahout.cf.taste.neighborhood.UserNeighborhood;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.DefaultTypedTuple;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -94,13 +98,12 @@ public class IllustViewRecommendService extends RecommendService {
     private void dealPerUser(List<Integer> u, Recommender recommender, Integer size) {
         u.forEach(e -> {
             try {
-                recommender.recommend(e, 30 * size).forEach(r -> {
-
-                    stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST + e, String.valueOf(r.getItemID()), r.getValue());
-                });
+                Set<ZSetOperations.TypedTuple<String>> typedTuples = recommender.recommend(e, 30 * size).stream().map(recommendedItem -> new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItemID()), (double) recommendedItem.getValue())).collect(Collectors.toSet());
+                stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST + e, typedTuples);
             } catch (TasteException tasteException) {
                 tasteException.printStackTrace();
             }
         });
     }
+
 }
