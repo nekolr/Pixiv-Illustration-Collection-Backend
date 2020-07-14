@@ -110,7 +110,6 @@ public class IllustBookmarkRecommendService extends RecommendService {
                 System.out.println("开始持久化用户：" + e + "的推荐列表");
                 List<RecommendedItem> recommend = recommender.recommend(e, 30 * size);
                 Set<ZSetOperations.TypedTuple<String>> typedTuples = recommend.stream().map(recommendedItem -> new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItemID()), (double) recommendedItem.getValue())).collect(Collectors.toSet());
-                typedTuples.forEach(t -> System.out.println(t.getValue() + ":" + t.getScore()));
                 if (typedTuples.size() > 0) {
                     stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, typedTuples);
                 }

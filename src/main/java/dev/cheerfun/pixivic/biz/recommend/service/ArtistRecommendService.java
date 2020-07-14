@@ -107,7 +107,9 @@ public class ArtistRecommendService extends RecommendService {
         u.forEach(e -> {
             try {
                 Set<ZSetOperations.TypedTuple<String>> typedTuples = recommender.recommend(e, 30 * size).stream().map(recommendedItem -> new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItemID()), (double) recommendedItem.getValue())).collect(Collectors.toSet());
-                stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_ARTIST + e, typedTuples);
+                if (typedTuples.size() > 0) {
+                    stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_ARTIST + e, typedTuples);
+                }
             } catch (TasteException tasteException) {
                 tasteException.printStackTrace();
             }
