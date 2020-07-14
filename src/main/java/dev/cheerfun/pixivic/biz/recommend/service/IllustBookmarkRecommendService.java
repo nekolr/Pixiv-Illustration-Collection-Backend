@@ -107,7 +107,6 @@ public class IllustBookmarkRecommendService extends RecommendService {
     private void dealPerUser(List<Integer> u, Recommender recommender, Integer size) {
         u.forEach(e -> {
             try {
-                System.out.println("开始持久化用户：" + e + "的推荐列表");
                 List<RecommendedItem> recommend = recommender.recommend(e, 30 * size);
                 Set<ZSetOperations.TypedTuple<String>> typedTuples = recommend.stream().map(recommendedItem -> new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItemID()), (double) recommendedItem.getValue())).collect(Collectors.toSet());
                 if (typedTuples.size() > 0) {
