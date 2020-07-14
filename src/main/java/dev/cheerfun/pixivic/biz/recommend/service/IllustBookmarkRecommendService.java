@@ -17,12 +17,14 @@ import org.apache.mahout.cf.taste.recommender.RecommendedItem;
 import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.apache.mahout.cf.taste.similarity.UserSimilarity;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.connection.RedisClusterNode;
 import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -58,7 +60,13 @@ public class IllustBookmarkRecommendService extends RecommendService {
     @Override
     protected boolean dealRecommender(Recommender recommender) throws TasteException {
         //清理所有推荐
-        stringRedisTemplate.unlink(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + "*");
+        Iterator<RedisClusterNode> iterator = stringRedisTemplate.getConnectionFactory().getClusterConnection().clusterGetNodes().iterator();
+        while (iterator.hasNext()) {
+            RedisClusterNode clusterNode = iterator.next();
+            Set<String> keys = stringRedisTemplate.opsForCluster().keys(clusterNode, RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + "*");
+            stringRedisTemplate.unlink(keys);
+        }
+        // stringRedisTemplate.unlink(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + "*");
         //根据活跃度分级生成
         LocalDate now = LocalDate.now();
         String today = now.plusDays(2).toString();
