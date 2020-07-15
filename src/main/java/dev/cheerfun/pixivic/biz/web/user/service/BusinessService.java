@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.biz.web.recommend.service.RecommendBizService;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
@@ -46,6 +47,7 @@ public class BusinessService {
     private final IllustrationBizService illustrationBizService;
     private final ArtistBizService artistBizService;
     private final CollectionService collectionService;
+    private final RecommendBizService recommendBizService;
 
     private static List<List<Integer>> split(List<Integer> illustrationIdList) {
         List<List<Integer>> result = new ArrayList<>();
@@ -87,6 +89,8 @@ public class BusinessService {
 
     public void bookmark(int userId, String username, int illustId) {
         bookmarkOperation(userId, username, illustId, 1, 0);
+        recommendBizService.deleteFromRecommendationSet(userId, RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST, illustId);
+        recommendBizService.deleteFromRecommendationSet(userId, RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST, illustId);
     }
 
     public void cancelBookmark(int userId, int illustId, int relationId) {
@@ -159,6 +163,7 @@ public class BusinessService {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "重复收藏");
         }
         stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
+        recommendBizService.deleteFromRecommendationSet(userId, RedisKeyConstant.USER_RECOMMEND_ARTIST, artistId);
     }
 
     @Caching(evict = {
