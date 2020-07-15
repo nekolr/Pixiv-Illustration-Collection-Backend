@@ -98,4 +98,9 @@ public class RecommendBizService {
             }
         });
     }
+
+    public void deleteFromRecommendationSet(Integer userId, String key, Integer targetId) {
+        stringRedisTemplate.opsForZSet().remove(key + userId, String.valueOf(targetId));
+    }
+
 }
