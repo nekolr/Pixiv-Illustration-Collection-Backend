@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.recommend.service;
 
+import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
@@ -59,7 +60,12 @@ public class RecommendBizService {
     public List<Artist> queryRecommendArtist(Integer userId, Integer page, Integer pageSize) {
         Set<ZSetOperations.TypedTuple<String>> artistIdList = stringRedisTemplate.opsForZSet().reverseRangeWithScores(RedisKeyConstant.USER_RECOMMEND_ARTIST + userId, pageSize * (page - 1), page * pageSize);
         if (artistIdList != null && artistIdList.size() > 0) {
-            List<Artist> artistList = artistIdList.stream().map(e -> artistBizService.queryArtistById(Integer.parseInt(e.getValue()))).collect(Collectors.toList());
+            List<Artist> artistList = artistIdList.stream().map(e -> {
+                        Artist artist = artistBizService.queryArtistById(Integer.parseInt(e.getValue()));
+                        artistBizService.dealArtist(artist);
+                        return new ArtistWithIsFollowedInfo(artist, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + e.getValue(), String.valueOf(userId)));
+                    }
+            ).collect(Collectors.toList());
             artistList = artistList.stream().map(artist -> {
                 List<Illustration> illustrationList = null;
                 try {
