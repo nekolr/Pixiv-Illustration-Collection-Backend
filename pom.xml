@@ -43,6 +43,7 @@
         <xstream.version>1.4.12</xstream.version>
         <librec-core.version>2.0.0</librec-core.version>
         <mahout-mr.version>0.13.0</mahout-mr.version>
+        <wechat-sdk.version>3.8.0</wechat-sdk.version>
     </properties>
 
     <dependencies>
@@ -204,6 +205,11 @@
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-typehandlers-jsr310</artifactId>
             <version>${mybatis-typehandlers-jsr310.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>weixin-java-mp</artifactId>
+            <version>${wechat-sdk.version}</version>
         </dependency>
         <dependency>
             <groupId>jdk.tools</groupId>

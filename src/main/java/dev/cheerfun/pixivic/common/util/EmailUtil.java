@@ -1,13 +1,15 @@
 package dev.cheerfun.pixivic.common.util;
 
+import dev.cheerfun.pixivic.common.po.Email;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 
 /**
  * @author OysterQAQ
@@ -23,6 +25,9 @@ public class EmailUtil {
     private final String p3;
     private final String p4;
     private final String p5;
+    private LinkedBlockingQueue<Email> waitForSendQueue;
+    @Autowired
+    private ExecutorService mailExecutorService;
 
     @Autowired
     public EmailUtil(JavaMailSender mailSender) {
@@ -507,22 +512,36 @@ public class EmailUtil {
                 "</html>";
     }
 
-    @Async("mailExecutorService")
-    public void sendEmail(String emailAddr, String to, String from, String content, String link) {
-        MimeMessage message = mailSender.createMimeMessage();
-        MimeMessageHelper helper = null;
-        try {
-            helper = new MimeMessageHelper(message, true);
-            helper.setFrom("Pixivic.com<admin@cheerfun.dev>");
-            helper.setTo(emailAddr);
-            helper.setSubject("来自Pixivic.com的信息");
-            helper.setText(p1 + to + p2 + from + p3 + content + p4 + link + p5, true);
-            mailSender.send(message);
-        } catch (MessagingException e) {
-            //e.printStackTrace();
-            System.out.println("邮件发送失败" + emailAddr);
-        }
+    public void init() {
+        waitForSendQueue = new LinkedBlockingQueue<>(1000 * 1000);
+        dealWaitForSendQueue();
+    }
 
+    //@Async("mailExecutorService")
+    public void sendEmail(String emailAddr, String to, String from, String content, String link) {
+        waitForSendQueue.offer(new Email(emailAddr, to, from, content, link));
+
+    }
+
+    public void dealWaitForSendQueue() {
+        mailExecutorService.submit(() -> {
+            while (true) {
+                Email email = waitForSendQueue.take();
+                try {
+                    MimeMessage message = mailSender.createMimeMessage();
+                    MimeMessageHelper helper = null;
+                    helper = new MimeMessageHelper(message, true);
+                    helper.setFrom("Pixivic.com<admin@cheerfun.dev>");
+                    helper.setTo(email.getEmailAddr());
+                    helper.setSubject("来自Pixivic.com的信息");
+                    helper.setText(p1 + email.getTo() + p2 + email.getFrom() + p3 + email.getContent() + p4 + email.getLink() + p5, true);
+                    mailSender.send(message);
+                } catch (MessagingException e) {
+                    //e.printStackTrace();
+                    System.out.println("邮件发送失败" + email.getEmailAddr());
+                }
+            }
+        });
     }
 
 }
