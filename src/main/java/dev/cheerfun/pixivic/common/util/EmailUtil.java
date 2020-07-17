@@ -520,7 +520,6 @@ public class EmailUtil {
     //@Async("mailExecutorService")
     public void sendEmail(String emailAddr, String to, String from, String content, String link) {
         waitForSendQueue.offer(new Email(emailAddr, to, from, content, link));
-
     }
 
     public void dealWaitForSendQueue() {
