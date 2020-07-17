@@ -10,11 +10,13 @@ import java.lang.annotation.*;
 public @interface CreditDeal {
     int value() default 0;
 
-    int option() default CreditOption.INCREASE;
+    int option() default CreditOption.INCREASE;//加分扣分
 
-    boolean isRandom() default false;
+    boolean isRandom() default false;//是否随机
 
     int randomStart();
 
     int randomEnd();
+
+    int limit() default -1;//每天限制多少次
 }
