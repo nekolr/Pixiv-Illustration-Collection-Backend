@@ -12,18 +12,11 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 public class Email {
     private String emailAddr;
     private String to;
     private String from;
     private String content;
     private String link;
-
-    public Email(String emailAddr, String to, String from, String content, String link) {
-        this.emailAddr = emailAddr;
-        this.to = to;
-        this.from = from;
-        this.content = content;
-        this.link = link;
-    }
 }

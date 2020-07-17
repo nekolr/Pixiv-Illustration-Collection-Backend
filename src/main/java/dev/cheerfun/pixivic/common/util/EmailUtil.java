@@ -6,6 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.util.concurrent.ExecutorService;
@@ -512,6 +513,7 @@ public class EmailUtil {
                 "</html>";
     }
 
+    @PostConstruct
     public void init() {
         waitForSendQueue = new LinkedBlockingQueue<>(1000 * 1000);
         dealWaitForSendQueue();
