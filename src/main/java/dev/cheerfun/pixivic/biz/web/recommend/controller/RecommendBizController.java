@@ -44,8 +44,8 @@ public class RecommendBizController {
     //获取可能喜欢的画师
     @WithUserInfo
     @GetMapping("/users/{userId}/recommendArtists")
-    public ResponseEntity<Result<List<Artist>>> recommendArtists(@PathVariable Integer userId, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("获取可能想看的画作成功", recommendBizService.queryRecommendArtist((Integer) AppContext.get().get(AuthConstant.USER_ID), page, pageSize)));
+    public ResponseEntity<Result<List<Artist>>> recommendArtists(@PathVariable Integer userId, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("获取推荐画师成功", recommendBizService.queryRecommendArtist((Integer) AppContext.get().get(AuthConstant.USER_ID), page, pageSize)));
     }
 
 }

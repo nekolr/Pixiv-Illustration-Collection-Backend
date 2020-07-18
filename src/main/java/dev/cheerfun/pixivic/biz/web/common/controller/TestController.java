@@ -109,6 +109,7 @@ public class TestController {
     @GetMapping("/recommend")
     public void recommend() throws TasteException {
         illustBookmarkRecommendService.recommend();
-        illustViewRecommendService.recommend();
+        //illustViewRecommendService.recommend();
+
     }
 }

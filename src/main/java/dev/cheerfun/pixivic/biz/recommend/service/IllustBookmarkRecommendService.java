@@ -23,7 +23,6 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -110,7 +109,9 @@ public class IllustBookmarkRecommendService extends RecommendService {
             try {
                 List<RecommendedItem> recommend = recommender.recommend(e, 30 * size);
                 Set<ZSetOperations.TypedTuple<String>> typedTuples = recommend.stream().map(recommendedItem -> new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItemID()), (double) recommendedItem.getValue())).collect(Collectors.toSet());
-                stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, typedTuples);
+                if (typedTuples.size() > 0) {
+                    stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, typedTuples);
+                }
             } catch (TasteException tasteException) {
                 tasteException.printStackTrace();
             }
