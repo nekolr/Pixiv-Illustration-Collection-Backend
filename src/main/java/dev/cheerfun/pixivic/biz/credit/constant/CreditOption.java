@@ -7,6 +7,6 @@ package dev.cheerfun.pixivic.biz.credit.constant;
  * @description CreditOption
  */
 public class CreditOption {
-    public static final int INCREASE = 0;
-    public static final int DECREASE = 1;
+    public static final int INCREASE = 1;
+    public static final int DECREASE = 0;
 }

@@ -29,4 +29,10 @@ public interface CreditMapper {
 
     @Update("update users set star=star+#{score} where user_id=#{userId}")
     Integer increaseUserScore(Integer userId, Integer score);
+
+    @Update("update users set star=star-#{score} where user_id=#{userId}")
+    Integer decreaseUserScore(Integer userId, Integer score);
+
+    @Select("select star from users where user_id=#{userId}")
+    Integer queryUserScore(Integer userId);
 }
