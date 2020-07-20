@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.credit.customer;
 
 import dev.cheerfun.pixivic.biz.credit.mapper.CreditMapper;
 import dev.cheerfun.pixivic.biz.credit.po.CreditConfig;
+import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.event.domain.Event;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -9,6 +10,7 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -29,6 +31,7 @@ public class CreditEventCustomer {
     }
 
     @RabbitHandler()
+    @Transactional(rollbackFor = Exception.class)
     public void consume(Event event) {
         //取出配置
         CreditConfig creditConfig = creditConfigMap.get(event.getObjectType() + ":" + event.getAction());
@@ -47,11 +50,10 @@ public class CreditEventCustomer {
                 //用户积分增加
                 creditMapper.increaseUserScore(event.getUserId(), score);
                 //积分纪录增加
-                creditMapper.insertCreditLog();
+                creditMapper.insertCreditLog(new CreditHistory(null, event.getUserId(), event.getObjectType(), event.getObjectId(), event.getAction(), 1, score, creditConfig.getDesc(), null));
             }
         }
         System.out.println(event);
-
     }
 
     protected boolean limitCheck(Integer userId, String objectType, String action, Integer limitNum) {

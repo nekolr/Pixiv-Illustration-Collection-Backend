@@ -18,5 +18,5 @@ public class CreditConfig {
     private Integer score;
     private Integer randomStart;
     private Integer randomEnd;
-    private Integer desc;
+    private String desc;
 }
