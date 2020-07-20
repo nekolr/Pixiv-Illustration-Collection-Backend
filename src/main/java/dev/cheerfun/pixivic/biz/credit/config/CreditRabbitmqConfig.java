@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.credit.config;
 
-import org.springframework.amqp.core.DirectExchange;
+import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
+import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -13,8 +14,22 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class CreditRabbitmqConfig {
     @Bean("creditExchange")
-    DirectExchange notifyExchange() {
-        return new DirectExchange("creditExchange");
+    FanoutExchange creditExchange() {
+        return new FanoutExchange("creditExchange");
     }
 
+    @Bean
+    public Binding bindFanoutExchange(FanoutExchange fanoutExchange, FanoutExchange creditExchange) {
+        return BindingBuilder.bind(creditExchange).to(fanoutExchange);
+    }
+
+    @Bean("creditQueue")
+    public Queue creditQueue() {
+        return new Queue("creditQueue");
+    }
+
+    @Bean
+    public Binding creditExchangeBindCreditQueue(Queue creditQueue, FanoutExchange creditExchange) {
+        return BindingBuilder.bind(creditQueue).to(creditExchange);
+    }
 }
