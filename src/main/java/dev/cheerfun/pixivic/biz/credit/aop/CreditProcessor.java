@@ -29,8 +29,8 @@ import java.util.Map;
  * @date 2020/3/26 3:24 下午
  * @description CreditProcessor
  */
-//@Aspect
-//@Component
+@Aspect
+@Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Order(5)

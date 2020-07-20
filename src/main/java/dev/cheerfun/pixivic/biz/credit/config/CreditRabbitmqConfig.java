@@ -13,14 +13,14 @@ import org.springframework.context.annotation.Configuration;
  */
 @Configuration
 public class CreditRabbitmqConfig {
-    @Bean("creditExchange")
-    FanoutExchange creditExchange() {
-        return new FanoutExchange("creditExchange");
+    @Bean("creditFanOutExchange")
+    FanoutExchange creditFanOutExchange() {
+        return new FanoutExchange("creditFanOutExchange");
     }
 
     @Bean
-    public Binding bindFanoutExchange(FanoutExchange fanoutExchange, FanoutExchange creditExchange) {
-        return BindingBuilder.bind(creditExchange).to(fanoutExchange);
+    public Binding creditExchangeBindFanoutExchange(FanoutExchange fanoutExchange, FanoutExchange creditFanOutExchange) {
+        return BindingBuilder.bind(creditFanOutExchange).to(fanoutExchange);
     }
 
     @Bean("creditQueue")
@@ -29,7 +29,7 @@ public class CreditRabbitmqConfig {
     }
 
     @Bean
-    public Binding creditExchangeBindCreditQueue(Queue creditQueue, FanoutExchange creditExchange) {
-        return BindingBuilder.bind(creditQueue).to(creditExchange);
+    public Binding creditExchangeBindCreditQueue(Queue creditQueue, FanoutExchange creditFanOutExchange) {
+        return BindingBuilder.bind(creditQueue).to(creditFanOutExchange);
     }
 }
