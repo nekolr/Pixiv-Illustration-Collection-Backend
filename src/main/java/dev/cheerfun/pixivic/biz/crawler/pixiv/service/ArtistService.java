@@ -155,15 +155,13 @@ public class ArtistService {
                 return artistCompletableFuture.get();
             } catch (InterruptedException | ExecutionException e) {
                 System.out.println("抓取画师信息错误" + e.getMessage());
+                return null;
             }
-            return null;
         }).filter(Objects::nonNull).collect(Collectors.toList());
-        if (artistList.size() != 0) {
-            CompletableFuture.supplyAsync(() -> {
-                //更新画师汇总
-                updateArtistSummary(artistIds);
-                return artistMapper.insert(artistList);
-            }).thenAccept(e -> System.out.println("画师信息入库完毕"));
+        if (artistList.size() > 0) {
+            updateArtistSummary(artistIds);
+            artistMapper.insert(artistList);
+            System.out.println("画师信息入库完毕");
         }
         return artistList;
     }
