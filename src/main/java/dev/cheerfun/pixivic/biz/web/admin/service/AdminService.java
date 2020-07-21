@@ -1,6 +1,10 @@
 package dev.cheerfun.pixivic.biz.web.admin.service;
 
+import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
+import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
+import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
+import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
@@ -45,24 +49,31 @@ public class AdminService {
         return keyList.contains(token);
     }
 
-//    public List<User> queryUsers(UsersDTO usersDTO, Integer page, Integer pageSize) {
-//        return adminMapper.queryUsers(usersDTO, (page - 1) * pageSize, pageSize);
-//
-//    }
-//
-//    public Integer queryUsersTotal(UsersDTO usersDTO, Integer page, Integer pageSize) {
-//        return adminMapper.queryUsersTotal(usersDTO, (page - 1) * pageSize, pageSize);
-//    }
-//
-//    public void updateIllusts(IllustDTO illustDTO) {
-//        adminMapper.updateIllusts(illustDTO);
-//    }
-//
-//    public void updateUser(UsersDTO usersDTO) {
-//        adminMapper.updateUser(usersDTO);
-//    }
+    public List<User> queryUsers(UsersDTO usersDTO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        return adminMapper.queryUsers(usersDTO, (page - 1) * pageSize, pageSize, orderBy, orderByMode);
+    }
+
+    public Integer queryUsersTotal(UsersDTO usersDTO, Integer page, Integer pageSize) {
+        return adminMapper.queryUsersTotal(usersDTO, (page - 1) * pageSize, pageSize);
+    }
+
+    public void updateIllusts(IllustDTO illustDTO) {
+        adminMapper.updateIllusts(illustDTO);
+    }
+
+    public void updateUser(UsersDTO usersDTO) {
+        adminMapper.updateUser(usersDTO);
+    }
 
     public void banUser(Integer userId) {
         adminMapper.banUser(userId);
+    }
+
+    public List<Comment> queryComment(Comment comment, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        return adminMapper.queryComment(comment, page, pageSize, orderBy, orderByMode);
+    }
+
+    public Integer queryCommentTotal(Comment comment, Integer page, Integer pageSize) {
+        return adminMapper.queryCommentTotal(comment, page, pageSize);
     }
 }
