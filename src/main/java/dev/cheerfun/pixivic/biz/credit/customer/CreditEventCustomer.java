@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.biz.credit.po.CreditConfig;
 import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.event.domain.Event;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 @RabbitListener(queues = "creditQueue")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CreditEventCustomer {
@@ -27,7 +29,11 @@ public class CreditEventCustomer {
     //@PostConstruct
     void init() {
         //初始化配置
-        creditConfigMap = creditMapper.queryCreditConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
+        try {
+            creditConfigMap = creditMapper.queryCreditConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
+        } catch (Exception exception) {
+            log.error("积分事件消费者初始化失败");
+        }
     }
 
     @RabbitHandler()
