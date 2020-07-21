@@ -30,7 +30,13 @@ public class JWTUtil implements Serializable {
 
     public Claims getAllClaimsFromToken(String token) {
         JwtParser jwtParser = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(authProperties.getSecret().getBytes()));
-        return jwtParser.parseClaimsJws(token).getBody();
+        Claims body = null;
+        try {
+            body = jwtParser.parseClaimsJws(token).getBody();
+        } catch (Exception exception) {
+            throw new AuthExpirationException(HttpStatus.UNAUTHORIZED, "token无效");
+        }
+        return body;
     }
 
     public String getToken(Authable authable) {
