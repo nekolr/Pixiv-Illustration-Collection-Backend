@@ -62,7 +62,7 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("更新用户成功", true));
     }
 
-    @DeleteMapping("/users/{userId}")
+    //@DeleteMapping("/users/{userId}")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> banUser(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token) {
         adminService.banUser(userId);
