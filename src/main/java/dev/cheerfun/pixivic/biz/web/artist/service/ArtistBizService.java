@@ -175,7 +175,7 @@ public class ArtistBizService {
         }
         CompletableFuture<List<ArtistSearchDTO>> request = artistSearchUtil.search(artistName, page, pageSize);
         Integer finalUserId = userId;
-        return request.thenApply(e -> e.stream().parallel().map(artistSearchDTO ->
+        return request.thenApply(e -> e.stream().parallel().filter(Objects::nonNull).map(artistSearchDTO ->
         {
             List<Illustration> illustrations = null;
             try {
