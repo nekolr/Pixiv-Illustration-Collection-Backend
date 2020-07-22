@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.common.util.pixiv;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.biz.analysis.track.domain.Track;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
 import dev.cheerfun.pixivic.common.util.dto.pixiv.OathRespBody;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 
@@ -85,18 +87,23 @@ public class OauthManager {
                 HttpRequest httpRequest = uri.POST(HttpRequest.BodyPublishers.ofString(pixivUser.getRequestBody()))
                         .build();
                 OathRespBody body;
-                body = (OathRespBody) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(OathRespBody.class)).body();
+                String body1 = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
+                System.out.println(body1);
+
+                //body = (OathRespBody) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(OathRespBody.class)).body();
+                body = objectMapper.readValue(body1, new TypeReference<OathRespBody>() {
+                });
                 if (pixivUser.refresh(body)) {
+                    System.out.println(pixivUser.getUsername() + "账号刷新成功");
                     return true;
                 }
-                System.out.println(pixivUser.getUsername() + "账号刷新成功");
             } catch (Exception e) {
                 pixivUser.ban();
                 System.err.println("账号" + pixivUser.getUsername() + "刷新token失败");
                 e.printStackTrace();
                 continue;
             }
-            return true;
+            return false;
         }
         return false;
     }
