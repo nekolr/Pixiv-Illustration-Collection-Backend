@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
-@RabbitListener(queues = "creditQueue")
+//@RabbitListener(queues = "creditQueue")
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CreditEventCustomer {
 
@@ -36,7 +36,7 @@ public class CreditEventCustomer {
         }
     }
 
-    @RabbitHandler()
+    //@RabbitHandler()
     @Transactional(rollbackFor = Exception.class)
     public void consume(Event event) {
         //取出配置
