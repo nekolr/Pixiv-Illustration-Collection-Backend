@@ -86,7 +86,9 @@ public class OauthManager {
                         .build();
                 OathRespBody body;
                 body = (OathRespBody) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(OathRespBody.class)).body();
-                pixivUser.refresh(body);
+                if (pixivUser.refresh(body)) {
+                    return true;
+                }
                 System.out.println(pixivUser.getUsername() + "账号刷新成功");
             } catch (Exception e) {
                 pixivUser.ban();

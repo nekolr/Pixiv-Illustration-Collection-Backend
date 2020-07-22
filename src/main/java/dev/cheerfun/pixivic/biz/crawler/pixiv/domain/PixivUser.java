@@ -57,19 +57,22 @@ public class PixivUser {
 
     }
 
-    public void refresh(OathRespBody responseBody) {
+    public boolean refresh(OathRespBody responseBody) {
         writeLock.lock();
         try {
             OathResp response = responseBody.getResponse();
-            accessToken = response.getAccessToken();
-            deviceToken = response.getDeviceToken();
-            refreshToken = response.getRefreshToken();
-            grantType = "refresh_token";
-            isBan = 0;
+            if (response != null) {
+                accessToken = response.getAccessToken();
+                deviceToken = response.getDeviceToken();
+                refreshToken = response.getRefreshToken();
+                grantType = "refresh_token";
+                isBan = 0;
+                return true;
+            }
         } finally {
             writeLock.unlock();
         }
-
+        return false;
     }
 
     public void ban() {
