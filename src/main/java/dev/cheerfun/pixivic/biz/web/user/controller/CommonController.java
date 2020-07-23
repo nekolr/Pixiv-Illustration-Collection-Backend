@@ -90,7 +90,7 @@ public class CommonController {
 
     @DeleteMapping("/{userId}/qqAccessToken")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> unbindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) throws IOException, InterruptedException {
+    public ResponseEntity<Result<Boolean>> unbindQQ(@PathVariable("userId") int userId, @RequestHeader("Authorization") String token) throws IOException, InterruptedException {
         return ResponseEntity.ok().body(new Result<>("解绑QQ成功", userService.unbindQQ((int) AppContext.get().get(AuthConstant.USER_ID))));
     }
 
