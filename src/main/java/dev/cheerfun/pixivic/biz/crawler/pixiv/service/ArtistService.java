@@ -81,6 +81,7 @@ public class ArtistService {
                 log.error("抓取画师：" + artistId + "的第" + offset + "页作品失败");
             }
         }
+        updateArtistSummary(artistId);
     }
 
     public void pullArtistIllustList() throws IOException, InterruptedException {
