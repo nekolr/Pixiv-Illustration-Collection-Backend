@@ -11,6 +11,7 @@ import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -36,6 +37,7 @@ import java.util.stream.Collectors;
  * @description ArtistService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ArtistService {
     private final RequestUtil requestUtil;
@@ -154,13 +156,15 @@ public class ArtistService {
                         });
                 return artistCompletableFuture.get();
             } catch (InterruptedException | ExecutionException e) {
-                System.out.println("抓取画师信息错误" + e.getMessage());
+                log.error("抓取画师信息错误" + e.getMessage());
                 return null;
             }
         }).filter(Objects::nonNull).collect(Collectors.toList());
         if (artistList.size() > 0) {
-            updateArtistSummary(artistIds);
+            log.info("画师信息为");
+            artistList.forEach(System.out::println);
             artistMapper.insert(artistList);
+            updateArtistSummary(artistIds);
             System.out.println("画师信息入库完毕");
         }
         return artistList;
