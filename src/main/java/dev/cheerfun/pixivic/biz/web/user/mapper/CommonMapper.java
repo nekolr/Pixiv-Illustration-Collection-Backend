@@ -95,4 +95,7 @@ public interface CommonMapper {
 
     @Insert("insert into user_summary (user_id) values (#{userId})")
     Integer initSummary(Integer userId);
+
+    @Update("update users set qq_open_id=null where user_id= #{userId}")
+    Integer unbindQQ(int userId);
 }

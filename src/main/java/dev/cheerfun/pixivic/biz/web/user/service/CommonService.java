@@ -183,4 +183,9 @@ public class CommonService {
     public void updateUserInfo(int userId, User user) {
         userMapper.updateUserInfo(userId, user.getGender(), user.getSignature(), user.getLocation());
     }
+
+    public Boolean unbindQQ(int userId) {
+        userMapper.unbindQQ(userId);
+        return true;
+    }
 }

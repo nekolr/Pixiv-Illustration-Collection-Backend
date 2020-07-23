@@ -88,6 +88,12 @@ public class CommonController {
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("绑定QQ成功", user));
     }
 
+    @DeleteMapping("/{userId}/qqAccessToken")
+    @PermissionRequired
+    public ResponseEntity<Result<Boolean>> unbindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) throws IOException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("解绑QQ成功", userService.unbindQQ((int) AppContext.get().get(AuthConstant.USER_ID))));
+    }
+
     @PutMapping("/{userId}/avatar")
     @PermissionRequired
     public ResponseEntity<Result<String>> setAvatar(@RequestParam String avatar, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {

@@ -51,7 +51,6 @@ public class AdminController {
             @RequestParam(defaultValue = "user_id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
             @RequestHeader(value = "Authorization", required = false) String token) {
-        System.out.println("123");
         return ResponseEntity.ok().body(new Result<>("获取用户列表成功", adminService.queryUsersTotal(usersDTO, page, pageSize), adminService.queryUsers(usersDTO, page, pageSize, orderBy, orderByMode)));
     }
 
