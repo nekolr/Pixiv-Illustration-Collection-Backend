@@ -71,6 +71,7 @@ public class ArtistService {
                 if (illustrationDetailDTO != null && illustrationDetailDTO.getIllusts() != null && illustrationDetailDTO.getIllusts().size() > 0) {
                     illustrationService.saveToDb(illustrationDetailDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList()));
                     log.info("抓取画师：" + artistId + "的第" + offset + "页作品成功");
+                    offset++;
                 } else {
                     flag = false;
                     log.info("画师：" + artistId + "共有" + offset + "页作品成功");
