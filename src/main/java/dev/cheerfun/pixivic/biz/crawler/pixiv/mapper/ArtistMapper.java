@@ -16,7 +16,7 @@ import java.util.List;
 public interface ArtistMapper {
     @Insert({
             "<script>",
-            "insert IGNORE into artists values ",
+            "insert IGNORE into artists(artist_id,name,account,avatar,comment,gender,birth_day,region,webpage,twitter_account,twitter_url,total_follow_users,total_illust_bookmarks_public) values ",
             "<foreach collection='artists' item='artist' index='index' separator=','>",
             "(#{artist.id}, #{artist.name}," +
                     "#{artist.account}, #{artist.avatar}," +
