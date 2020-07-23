@@ -66,4 +66,9 @@ public class ArtistBizController {
     public CompletableFuture<ResponseEntity<Result<List<Artist>>>> queryArtistByName(@RequestParam String artistName, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         return artistBizService.queryArtistByName(artistName, page, pageSize).thenApply(e -> ResponseEntity.ok().body(new Result<>("获取画师搜索结果成功", e)));
     }
+
+    @GetMapping("/artists/illustsPull/{artistId}")
+    public ResponseEntity<Result<Boolean>> queryArtistById(@PathVariable Integer artistId) {
+        return ResponseEntity.ok().body(new Result<>("爬取画师所有画作成功", artistBizService.pullArtistAllIllust(artistId)));
+    }
 }

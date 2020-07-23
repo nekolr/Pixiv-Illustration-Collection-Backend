@@ -60,6 +60,26 @@ public class ArtistService {
         return null;
     }
 
+    public void pullArtistAllIllust(Integer artistId) {
+        log.info("开始全量爬取画师：" + artistId + "的画作");
+        boolean flag = true;
+        int offset = 0;
+        while (flag) {
+            log.info("开始抓取画师：" + artistId + "的第" + offset + "页作品");
+            try {
+                IllustsDTO illustrationDetailDTO = (IllustsDTO) requestUtil.getJsonSync("https://app-api.pixiv.net/v1/user/illusts?user_id=" + artistId + "&offset=" + offset, IllustsDTO.class);
+                if (illustrationDetailDTO != null && illustrationDetailDTO.getIllusts() != null && illustrationDetailDTO.getIllusts().size() > 0) {
+                    illustrationService.saveToDb(illustrationDetailDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList()));
+                } else {
+                    flag = false;
+                }
+            } catch (Exception exception) {
+                flag = false;
+                log.error("抓取画师：" + artistId + "的第" + offset + "页作品失败");
+            }
+        }
+    }
+
     public void pullArtistIllustList() throws IOException, InterruptedException {
         //初始化,查看记录
         List<String> strings = Files.readAllLines(Paths.get("/home/PIC/artistId.txt"));
