@@ -166,7 +166,7 @@ public class ArtistBizService {
                     log.info("开始从Pixiv获取画师(id:" + artistId + ")信息");
                     artistService.pullArtistsInfo(artistId);
                     log.info("获取画师(id:" + artistId + ")信息完毕");
-                    //artistService.pullArtistAllIllust(artistId);
+                    artistService.pullArtistAllIllust(artistId);
                 } catch (Exception exception) {
                     log.error("获取画师(id:" + artistId + ")信息失败");
                     exception.printStackTrace();

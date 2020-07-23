@@ -67,7 +67,7 @@ public class ArtistService {
         while (flag) {
             log.info("开始抓取画师：" + artistId + "的第" + offset + "页作品");
             try {
-                IllustsDTO illustrationDetailDTO = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=" + offset, IllustsDTO.class);
+                IllustsDTO illustrationDetailDTO = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=" + offset * 30, IllustsDTO.class);
                 if (illustrationDetailDTO != null && illustrationDetailDTO.getIllusts() != null && illustrationDetailDTO.getIllusts().size() > 0) {
                     illustrationService.saveToDb(illustrationDetailDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList()));
                     log.info("抓取画师：" + artistId + "的第" + offset + "页作品成功");
