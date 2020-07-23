@@ -137,7 +137,6 @@ public class ArtistBizService {
                 //处理画师画作
                 String key = null;
                 //处理画师详情
-                Integer artistId = null;
                 try {
                     key = waitForPullArtistQueue.take();
                     Boolean todayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
@@ -149,17 +148,29 @@ public class ArtistBizService {
                         artistService.pullArtistLatestIllust(Integer.valueOf(split[0]), split[1]);
                         log.info("获取画师(id:" + split[0] + ")首页画作完毕");
                     }
-
-                    artistId = waitForPullArtistInfoQueue.take();
-                    log.info("开始从Pixiv获取画师(id:" + artistId + ")信息");
-                    artistService.pullArtistsInfo(artistId);
-                    log.info("获取画师(id:" + artistId + ")信息完毕");
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
 
+    }
+
+    public void dealWaitForPullArtistInfoQueue() {
+        crawlerExecutorService.submit(() -> {
+            while (true) {
+                Integer artistId = null;
+                try {
+                    artistId = waitForPullArtistInfoQueue.take();
+                    log.info("开始从Pixiv获取画师(id:" + artistId + ")信息");
+                    artistService.pullArtistsInfo(artistId);
+                    log.info("获取画师(id:" + artistId + ")信息完毕");
+                } catch (Exception exception) {
+                    log.error("获取画师(id:" + artistId + ")信息失败");
+                    exception.printStackTrace();
+                }
+            }
+        });
     }
 
     @Cacheable(value = "artistSummarys")
