@@ -112,7 +112,6 @@ public class ArtistBizService {
             waitForPullArtistInfoQueue.offer(artistId);
             throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
         }
-
         return artist;
     }
 

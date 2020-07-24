@@ -173,7 +173,6 @@ public class ArtistService {
                             try {
                                 artist = ArtistDTO.castToArtist(objectMapper.readValue(result, new TypeReference<ArtistDTO>() {
                                 }));
-
                             } catch (IOException e) {
                                 return null;
                             }
