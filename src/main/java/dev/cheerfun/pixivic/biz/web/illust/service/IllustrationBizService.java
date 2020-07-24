@@ -3,7 +3,6 @@ package dev.cheerfun.pixivic.biz.web.illust.service;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
-import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
@@ -18,9 +17,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.data.redis.connection.StringRedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -47,8 +43,6 @@ public class IllustrationBizService {
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationService illustrationService;
-    @Lazy
-    private ArtistBizService artistBizService;
     private final StringRedisTemplate stringRedisTemplate;
     private LinkedBlockingQueue<Integer> waitForPullIllustQueue;
     private final ExecutorService crawlerExecutorService;
@@ -165,14 +159,8 @@ public class IllustrationBizService {
 
     }
 
-    public Boolean queryExistsById(String type, Integer id) {
-        if ("illust".equals(type)) {
-            return queryIllustrationById(id) != null;
-        }
-        if ("artist".equals(type)) {
-            return artistBizService.queryArtistById(id) != null;
-        }
-        return false;
+    public Boolean queryExistsById(Integer id) {
+        return queryIllustrationById(id) != null;
     }
 
     public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {

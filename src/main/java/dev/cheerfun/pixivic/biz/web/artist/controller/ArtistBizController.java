@@ -71,4 +71,10 @@ public class ArtistBizController {
     public ResponseEntity<Result<Boolean>> queryArtistById(@PathVariable Integer artistId) {
         return ResponseEntity.ok().body(new Result<>("爬取画师所有画作成功", artistBizService.pullArtistAllIllust(artistId)));
     }
+
+    @GetMapping("/exists/artist/{id}")
+    //@PermissionRequired
+    public ResponseEntity<Result<Boolean>> queryExistsById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(new Result<>("获取存在详情成功", artistBizService.queryExistsById(id)));
+    }
 }

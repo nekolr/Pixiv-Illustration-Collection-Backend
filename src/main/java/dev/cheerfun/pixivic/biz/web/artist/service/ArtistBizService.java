@@ -204,4 +204,8 @@ public class ArtistBizService {
         artistService.pullArtistAllIllust(artistId);
         return true;
     }
+
+    public Boolean queryExistsById(Integer id) {
+        return queryArtistById(id) != null;
+    }
 }

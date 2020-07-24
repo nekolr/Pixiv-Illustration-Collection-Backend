@@ -38,10 +38,10 @@ public class IllustrationBizController {
         return ResponseEntity.ok().body(new Result<>("获取标签翻译成功", illustrationBizService.translationTag(tag)));
     }
 
-    @GetMapping("/exists/{type}/{id}")
+    @GetMapping("/exists/illust/{id}")
     //@PermissionRequired
-    public ResponseEntity<Result<Boolean>> queryExistsById(@PathVariable String type, @PathVariable Integer id) {
-        return ResponseEntity.ok().body(new Result<>("获取存在详情成功", illustrationBizService.queryExistsById(type, id)));
+    public ResponseEntity<Result<Boolean>> queryExistsById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(new Result<>("获取存在详情成功", illustrationBizService.queryExistsById(id)));
     }
 
     @GetMapping("/illusts/{illustId}")
