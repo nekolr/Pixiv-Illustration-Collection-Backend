@@ -37,7 +37,6 @@ public class CommentService {
     @CacheEvict(value = "comments", key = "#comment.appType+#comment.appId")
     public void pushComment(Comment comment) {
         commentMapper.pushComment(comment);
-        //
     }
 
     @Transactional(rollbackFor = Exception.class)

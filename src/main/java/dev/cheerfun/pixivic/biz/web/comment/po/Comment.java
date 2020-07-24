@@ -26,6 +26,7 @@ public class Comment {
     private String replyFromName;
     private Integer replyTo;
     private String replyToName;
+    private String platform;
     @SensitiveCheck
     @Max(value = 512)
     private String content;

@@ -7,8 +7,8 @@ import java.util.List;
 
 @Mapper
 public interface CommentMapper {
-    @Insert("insert into comments (app_type, app_id,parent_id,reply_from,reply_from_name,reply_to,reply_to_name,content,create_date,liked_count) " +
-            "values (#{appType}, #{appId}, #{parentId}, #{replyFrom}, #{replyFromName},#{replyTo},#{replyToName}, #{content}, #{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}, #{likedCount})")
+    @Insert("insert into comments (app_type, app_id,parent_id,reply_from,reply_from_name,reply_to,reply_to_name,content,create_date,liked_count,platform) " +
+            "values (#{appType}, #{appId}, #{parentId}, #{replyFrom}, #{replyFromName},#{replyTo},#{replyToName}, #{content}, #{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}, #{likedCount},#{platform})")
     int pushComment(Comment comment);
 
     @Select("select * from comments where app_type = #{appType} and app_id = #{appId}")
