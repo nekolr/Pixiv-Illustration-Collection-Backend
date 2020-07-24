@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.connection.StringRedisConnection;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -46,7 +47,8 @@ public class IllustrationBizService {
     private static volatile ConcurrentHashMap<String, List<Illustration>> waitSaveToDb = new ConcurrentHashMap(10000);
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationService illustrationService;
-    private final ArtistBizService artistBizService;
+    @Lazy
+    private ArtistBizService artistBizService;
     private final StringRedisTemplate stringRedisTemplate;
     private LinkedBlockingQueue<Integer> waitForPullIllustQueue;
     private final ExecutorService crawlerExecutorService;
