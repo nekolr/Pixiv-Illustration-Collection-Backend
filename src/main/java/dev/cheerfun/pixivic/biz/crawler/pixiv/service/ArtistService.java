@@ -75,13 +75,14 @@ public class ArtistService {
                 } else {
                     flag = false;
                     log.info("画师：" + artistId + "共有" + offset + "页作品成功");
+                    updateArtistSummary(artistId);
                 }
             } catch (Exception exception) {
                 flag = false;
                 log.error("抓取画师：" + artistId + "的第" + offset + "页作品失败");
             }
         }
-        updateArtistSummary(artistId);
+
     }
 
     public void pullArtistIllustList() throws IOException, InterruptedException {
