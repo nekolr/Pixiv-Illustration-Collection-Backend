@@ -75,7 +75,9 @@ public class ArtistService {
                 } else {
                     flag = false;
                     log.info("画师：" + artistId + "共有" + offset + "页作品成功");
-                    updateArtistSummary(artistId);
+                    if (offset > 0) {
+                        updateArtistSummary(artistId);
+                    }
                 }
             } catch (Exception exception) {
                 flag = false;
