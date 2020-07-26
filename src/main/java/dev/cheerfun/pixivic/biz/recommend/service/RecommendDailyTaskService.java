@@ -28,7 +28,7 @@ public class RecommendDailyTaskService {
         clearCache();
         illustBookmarkRecommendService.recommend();
         artistRecommendService.recommend();
-        illustViewRecommendService.recommend();
+        //illustViewRecommendService.recommend();
     }
 
     private void clearCache() {
