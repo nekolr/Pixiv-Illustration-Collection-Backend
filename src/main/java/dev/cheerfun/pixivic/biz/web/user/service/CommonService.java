@@ -213,9 +213,9 @@ public class CommonService {
             Files.write(Paths.get(originalFileName), bytes, StandardOpenOption.CREATE);
             //gm处理
             //900一个档次
-            pooledGMService.execute("convert " + originalFileName + " -thumbnail \"900x900\" " + targetFileName + "_900.jpg");
+            pooledGMService.execute("convert " + originalFileName + " -thumbnail \"1200x1200>\" " + targetFileName + "_1200.jpg");
             //500一个档次
-            pooledGMService.execute("convert " + originalFileName + " -thumbnail \"500x500\" " + targetFileName + "_500.jpg");
+            pooledGMService.execute("convert " + originalFileName + " -thumbnail \"600x600>\" " + targetFileName + "_600.jpg");
             //500方图
             pooledGMService.execute("convert -size 200x200 " + originalFileName + "  -thumbnail 500x500^ -gravity center -extent 500x500 +profile \"*\" " + targetFileName + "_500_s.jpg");
             //http调用记录用户上传记录
