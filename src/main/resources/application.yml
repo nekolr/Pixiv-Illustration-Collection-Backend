@@ -3,8 +3,12 @@ server:
 #  tomcat:
 #    connection-timeout: 5000
 spring:
-#  profiles:
-#    active: mac
+  servlet:
+    multipart:
+      max-file-size: 20MB
+      max-request-size: 100MB
+  profiles:
+    active: mac
   mail:
     host: mail
     username: admin@cheerfun.dev

@@ -29,7 +29,9 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
 import java.util.UUID;
 
 /**
@@ -202,29 +204,29 @@ public class CommonService {
         if (file == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "文件为空");
         }
-        String webDir = "/home/www/pic.cheerfun.dev";
+        String webDir = "/Users/oysterqaq/Desktop";
         String imageUUID = UUID.randomUUID().toString();
         String originalFileName = Paths.get(webDir, moduleName, imageUUID + ".jpg").toString();
         String targetFileName = Paths.get(webDir, moduleName, imageUUID).toString();
         try {
             byte[] bytes = file.getBytes();
-            Files.write(Paths.get(originalFileName), bytes);
+            Files.write(Paths.get(originalFileName), bytes, StandardOpenOption.CREATE);
             //gm处理
             //900一个档次
-            pooledGMService.execute("convert" + originalFileName + "-thumbnail \"900x900\" " + targetFileName + "_900.jpg");
+            pooledGMService.execute("convert " + originalFileName + " -thumbnail \"900x900\" " + targetFileName + "_900.jpg");
             //500一个档次
-            pooledGMService.execute("convert" + originalFileName + "-thumbnail \"500x500\" " + targetFileName + "_500.jpg");
+            pooledGMService.execute("convert " + originalFileName + " -thumbnail \"500x500\" " + targetFileName + "_500.jpg");
             //500方图
             pooledGMService.execute("convert -size 200x200 " + originalFileName + "  -thumbnail 500x500^ -gravity center -extent 500x500 +profile \"*\" " + targetFileName + "_500_s.jpg");
             //http调用记录用户上传记录
             return new Picture(imageUUID, userId);
         } catch (IOException | GMException | GMServiceException e) {
             e.printStackTrace();
-            try {
-                Files.delete(Paths.get(originalFileName));
-            } catch (IOException ioException) {
-                ioException.printStackTrace();
-            }
+//            try {
+//                Files.delete(Paths.get(originalFileName));
+//            } catch (IOException ioException) {
+//                ioException.printStackTrace();
+//            }
             throw new BusinessException(HttpStatus.BAD_REQUEST, "文件上传失败");
         }
     }
