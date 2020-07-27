@@ -10,13 +10,16 @@ import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
+import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
+import org.gm4java.engine.support.PooledGMService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.mail.MessagingException;
 import javax.validation.constraints.Email;
@@ -155,6 +158,19 @@ public class CommonController {
         userService.checkEmail(email);
         userService.getCheckEmail(email, (int) AppContext.get().get(AuthConstant.USER_ID));
         return ResponseEntity.ok().body(new Result<>("发送邮箱验证邮件成功"));
+    }
+
+    @PostMapping("/{moduleName}/image")
+    @PermissionRequired
+    public ResponseEntity<Result<Picture>> uploadModuleImage(@PathVariable("moduleName") String moduleName, @RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("上传图片成功", userService.uploadModuleImage(moduleName, file, (int) AppContext.get().get(AuthConstant.USER_ID))));
+    }
+
+    @PostMapping("/{moduleName}/image/uploadLog")
+    @PermissionRequired
+    public ResponseEntity<Result> uploadModuleImageLog(@PathVariable("moduleName") String moduleName, @RequestHeader("Authorization") String token, @RequestParam("url") String url) {
+        //userService.uploadModuleImageLog(moduleName, (int) AppContext.get().get(AuthConstant.USER_ID));
+        return ResponseEntity.ok().body(new Result<>("记录用户上传图片日志成功"));
     }
 
 }

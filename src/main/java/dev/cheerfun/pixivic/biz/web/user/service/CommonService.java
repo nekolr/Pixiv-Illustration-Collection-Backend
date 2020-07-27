@@ -7,13 +7,18 @@ import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.mapper.CommonMapper;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
+import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.util.EmailUtil;
 import lombok.RequiredArgsConstructor;
+import org.gm4java.engine.GMException;
+import org.gm4java.engine.GMServiceException;
+import org.gm4java.engine.support.PooledGMService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 
 import javax.mail.MessagingException;
@@ -23,6 +28,9 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  * @author OysterQAQ
@@ -45,6 +53,7 @@ public class CommonService {
     private final PasswordUtil passwordUtil;
     private final EmailUtil emailUtil;
     private final VerificationCodeService verificationCodeService;
+    private final PooledGMService pooledGMService;
 
     public User signUp(User user) {
         //检测用户名或邮箱是否重复
@@ -113,8 +122,8 @@ public class CommonService {
 
     public void getResetPasswordEmail(String email) throws MessagingException {
         //if (checkEmail(email)) {
-            EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
-            emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
+        EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
+        emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
        /* } else {
             throw new UserCommonException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
         }*/
@@ -187,5 +196,37 @@ public class CommonService {
     public Boolean unbindQQ(int userId) {
         userMapper.unbindQQ(userId);
         return true;
+    }
+
+    public Picture uploadModuleImage(String moduleName, MultipartFile file, int userId) {
+        if (file == null) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "文件为空");
+        }
+        String webDir = "/home/www/pic.cheerfun.dev";
+        String webPre = "https://pic.cheerfun.dev/" + moduleName + "/";
+        String imageUUID = UUID.randomUUID().toString();
+        String originalFileName = Paths.get(webDir, moduleName, file.getOriginalFilename()).toString();
+        String targetFileName = Paths.get(webDir, moduleName, imageUUID + ".jpg").toString();
+        try {
+            byte[] bytes = file.getBytes();
+            Files.write(Paths.get(originalFileName), bytes);
+            //gm处理
+            //900一个档次
+            pooledGMService.execute("convert" + originalFileName + "-thumbnail \"900x900\" " + targetFileName + "_900.jpg");
+            //500一个档次
+            pooledGMService.execute("convert" + originalFileName + "-thumbnail \"500x500\" " + targetFileName + "_500.jpg");
+            //500方图
+            pooledGMService.execute("convert -size 200x200 " + originalFileName + "  -thumbnail 500x500^ -gravity center -extent 500x500 +profile \"*\" " + targetFileName);
+            //http调用记录用户上传记录
+            return new Picture();
+        } catch (IOException | GMException | GMServiceException e) {
+            e.printStackTrace();
+            try {
+                Files.delete(Paths.get(originalFileName));
+            } catch (IOException ioException) {
+                ioException.printStackTrace();
+            }
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "文件上传失败");
+        }
     }
 }
