@@ -98,3 +98,5 @@ ssh:
 sitemap:
   savePath: /home/PIC/sitemap
   remoteSavePath: /home/PIC/sitemap
+graphicsMagick:
+  path: /usr/bin/gm

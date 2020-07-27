@@ -44,6 +44,7 @@
         <librec-core.version>2.0.0</librec-core.version>
         <mahout-mr.version>0.13.0</mahout-mr.version>
         <wechat-sdk.version>3.8.0</wechat-sdk.version>
+        <gm4java.version>1.1.1</gm4java.version>
     </properties>
 
     <dependencies>
@@ -207,9 +208,9 @@
             <version>${mybatis-typehandlers-jsr310.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.github.binarywang</groupId>
-            <artifactId>weixin-java-mp</artifactId>
-            <version>${wechat-sdk.version}</version>
+            <groupId>com.sharneng</groupId>
+            <artifactId>gm4java</artifactId>
+            <version>${gm4java.version}</version>
         </dependency>
         <dependency>
             <groupId>jdk.tools</groupId>
