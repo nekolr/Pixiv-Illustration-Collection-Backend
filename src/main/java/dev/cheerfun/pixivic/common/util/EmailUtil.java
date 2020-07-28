@@ -527,10 +527,11 @@ public class EmailUtil {
     }
 
     public void dealWaitForSendQueue() {
-        mailExecutorService.submit(() -> {
+        Runnable task = () -> {
             while (true) {
-                Email email = waitForSendQueue.take();
+                Email email = null;
                 try {
+                    email = waitForSendQueue.take();
                     MimeMessage message = mailSender.createMimeMessage();
                     MimeMessageHelper helper = null;
                     helper = new MimeMessageHelper(message, true);
@@ -543,9 +544,15 @@ public class EmailUtil {
                 } catch (MessagingException e) {
                     log.error("邮件发送失败" + email.getEmailAddr());
                     e.printStackTrace();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
-        });
+        };
+        mailExecutorService.submit(task);
+        mailExecutorService.submit(task);
+        mailExecutorService.submit(task);
+        mailExecutorService.submit(task);
     }
 
 }
