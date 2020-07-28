@@ -111,7 +111,7 @@ public class TestController {
         return ResponseEntity.ok(new Result<>("测试", null));
     }
 
-    //@PostConstruct
+    @PostConstruct
 
     public void recommend() throws TasteException {
         emailUtil.sendEmail("392822872@qq.com", "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + "&value=");

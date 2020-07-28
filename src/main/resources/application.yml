@@ -10,9 +10,9 @@ spring:
   #  profiles:
   #    active: mac
   mail:
-    host: smtp.zoho.com
-    username: admin@pixivic.net
-    password: Cheerfun.dev
+    host: smtp.office365.com
+    username: oysterqaq@biuz.xyz
+    password: Linhao199741
     protocol: smtp
     properties:
       mail:

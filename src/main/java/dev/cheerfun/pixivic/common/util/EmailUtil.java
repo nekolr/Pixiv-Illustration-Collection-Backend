@@ -540,7 +540,7 @@ public class EmailUtil {
                     MimeMessage message = mailSender.createMimeMessage();
                     MimeMessageHelper helper = null;
                     helper = new MimeMessageHelper(message, true);
-                    helper.setFrom("Pixivic.com<admin@pixivic.net>");
+                    helper.setFrom("Pixivic.com<oysterqaq@biuz.xyz>");
                     helper.setTo(email.getEmailAddr());
                     helper.setSubject("来自Pixivic.com的信息");
                     helper.setText(p1 + email.getTo() + p2 + email.getFrom() + p3 + email.getContent() + p4 + email.getLink() + p5, true);
