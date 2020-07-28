@@ -7,8 +7,8 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 100MB
-  profiles:
-    active: mac
+  #  profiles:
+  #    active: mac
   mail:
     host: mail
     username: admin@cheerfun.dev

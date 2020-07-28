@@ -26,9 +26,10 @@ public class Picture {
     private String moduleName;
     private LocalDateTime createTime;
 
-    public Picture(String uuid, Integer uploadFrom) {
+    public Picture(String uuid, Integer uploadFrom, String moduleName) {
         this.uuid = uuid;
         this.uploadFrom = uploadFrom;
+        this.moduleName = moduleName;
         this.original = WEB_PRE_PATH + moduleName + "/" + uuid + ".jpg";
         this.large = WEB_PRE_PATH + moduleName + "/" + uuid + "_900.jpg";
         this.medium = WEB_PRE_PATH + moduleName + "/" + uuid + "_500.jpg";
