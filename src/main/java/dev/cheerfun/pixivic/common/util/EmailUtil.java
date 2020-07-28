@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.common.util;
 
 import dev.cheerfun.pixivic.common.po.Email;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -19,6 +20,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @description EmailUtil
  */
 @Component
+@Slf4j
 public class EmailUtil {
     private final JavaMailSender mailSender;
     private final String p1;
@@ -515,7 +517,7 @@ public class EmailUtil {
 
     @PostConstruct
     public void init() {
-        waitForSendQueue = new LinkedBlockingQueue<>(1000 * 1000);
+        waitForSendQueue = new LinkedBlockingQueue<>(1000 * 1000 * 1000);
         dealWaitForSendQueue();
     }
 
@@ -537,9 +539,10 @@ public class EmailUtil {
                     helper.setSubject("来自Pixivic.com的信息");
                     helper.setText(p1 + email.getTo() + p2 + email.getFrom() + p3 + email.getContent() + p4 + email.getLink() + p5, true);
                     mailSender.send(message);
+                    log.info(email.getEmailAddr() + "邮件发送成功");
                 } catch (MessagingException e) {
-                    //e.printStackTrace();
-                    System.out.println("邮件发送失败" + email.getEmailAddr());
+                    log.error("邮件发送失败" + email.getEmailAddr());
+                    e.printStackTrace();
                 }
             }
         });
