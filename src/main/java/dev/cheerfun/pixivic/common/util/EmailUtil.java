@@ -523,7 +523,11 @@ public class EmailUtil {
 
     //@Async("mailExecutorService")
     public void sendEmail(String emailAddr, String to, String from, String content, String link) {
-        waitForSendQueue.offer(new Email(emailAddr, to, from, content, link));
+        if (waitForSendQueue.offer(new Email(emailAddr, to, from, content, link))) {
+            log.info("邮件进入发送队列");
+        } else {
+            log.error("邮件进入发送队列失败，队列已满");
+        }
     }
 
     public void dealWaitForSendQueue() {
