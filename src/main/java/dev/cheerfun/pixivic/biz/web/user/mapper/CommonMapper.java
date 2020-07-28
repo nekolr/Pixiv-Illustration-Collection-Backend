@@ -98,4 +98,7 @@ public interface CommonMapper {
 
     @Update("update users set qq_open_id=null where user_id= #{userId}")
     Integer unbindQQ(int userId);
+
+    @Insert("insert into user_upload_image_log (user_id,image_uuid,module_name) values (#{userId},#{uuid},#{moduleName})")
+    Integer uploadModuleImageLog(Integer userId, String uuid, String moduleName);
 }

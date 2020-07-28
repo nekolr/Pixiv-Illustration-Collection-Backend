@@ -55,7 +55,7 @@ public class CommonService {
     private final PasswordUtil passwordUtil;
     private final EmailUtil emailUtil;
     private final VerificationCodeService verificationCodeService;
-    private final PooledGMService pooledGMService;
+    //private final PooledGMService pooledGMService;
 
     public User signUp(User user) {
         //检测用户名或邮箱是否重复
@@ -200,7 +200,11 @@ public class CommonService {
         return true;
     }
 
-    public Picture uploadModuleImage(String moduleName, MultipartFile file, int userId) {
+    public Boolean uploadModuleImageLog(Picture picture) {
+        return userMapper.uploadModuleImageLog(picture.getUploadFrom(), picture.getUuid(), picture.getModuleName()) == 1;
+    }
+
+   /* public Picture uploadModuleImage(String moduleName, MultipartFile file, int userId) {
         if (file == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "文件为空");
         }
@@ -229,5 +233,5 @@ public class CommonService {
 //            }
             throw new BusinessException(HttpStatus.BAD_REQUEST, "文件上传失败");
         }
-    }
+    }*/
 }

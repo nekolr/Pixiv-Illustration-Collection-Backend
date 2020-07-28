@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 /**
  * @author OysterQAQ
  * @version 1.0
@@ -21,14 +23,16 @@ public class Picture {
     private String large;
     private String medium;
     private String squareMedium;
+    private String moduleName;
+    private LocalDateTime createTime;
 
     public Picture(String uuid, Integer uploadFrom) {
         this.uuid = uuid;
         this.uploadFrom = uploadFrom;
-        this.original = WEB_PRE_PATH + uuid + ".jpg";
-        this.large = WEB_PRE_PATH + uuid + "_900.jpg";
-        this.medium = WEB_PRE_PATH + uuid + "_500.jpg";
-        this.squareMedium = WEB_PRE_PATH + uuid + "_500_s.jpg";
+        this.original = WEB_PRE_PATH + moduleName + "/" + uuid + ".jpg";
+        this.large = WEB_PRE_PATH + moduleName + "/" + uuid + "_900.jpg";
+        this.medium = WEB_PRE_PATH + moduleName + "/" + uuid + "_500.jpg";
+        this.squareMedium = WEB_PRE_PATH + moduleName + "/" + uuid + "_500_s.jpg";
     }
 
 }
