@@ -17,7 +17,6 @@ spring:
     properties:
       mail:
         smtp:
-          connectiontimeout: 5000
           writetimeout: 3000
           timeout: 1000
           auth: true
