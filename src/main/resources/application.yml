@@ -10,8 +10,8 @@ spring:
   #  profiles:
   #    active: mac
   mail:
-    host: mail
-    username: admin@cheerfun.dev
+    host: smtp.zoho.com
+    username: admin@pixivic.net
     password: Cheerfun.dev
     protocol: smtp
     properties:
