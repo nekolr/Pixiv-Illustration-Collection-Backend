@@ -60,16 +60,18 @@ public class IllustrationBizService {
                 try {
                     illustId = waitForPullIllustQueue.take();
                     log.info("开始从pixiv获取画作：" + illustId);
-                    Illustration illustration = illustrationService.pullIllustrationInfo(illustId);
-                    if (illustration != null) {
-                        List<Illustration> illustrations = new ArrayList<>(1);
-                        illustrations.add(illustration);
-                        illustrationService.saveToDb(illustrations);
-                        log.info("获取画作：" + illustId + "完毕");
-                    } else {
-                        log.info("画作：" + illustId + "在pixiv上不存在");
+                    if (!stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.COLLECTION_NOT_IN_PIXIV, String.valueOf(illustId))) {
+                        Illustration illustration = illustrationService.pullIllustrationInfo(illustId);
+                        if (illustration != null) {
+                            List<Illustration> illustrations = new ArrayList<>(1);
+                            illustrations.add(illustration);
+                            illustrationService.saveToDb(illustrations);
+                            log.info("获取画作：" + illustId + "完毕");
+                        } else {
+                            log.info("画作：" + illustId + "在pixiv上不存在");
+                            stringRedisTemplate.opsForSet().add(RedisKeyConstant.COLLECTION_NOT_IN_PIXIV, String.valueOf(illustId));
+                        }
                     }
-
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
