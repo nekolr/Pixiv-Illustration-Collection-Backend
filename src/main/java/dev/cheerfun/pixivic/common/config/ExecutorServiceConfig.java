@@ -46,8 +46,8 @@ public class ExecutorServiceConfig {
     public ExecutorService mailExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("mail-pool-%d").build();
         return new ThreadPoolExecutor(
-                20,
-                40,
+                30,
+                30,
                 0L,
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(1024),
