@@ -16,7 +16,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import javax.annotation.PostConstruct;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
@@ -34,6 +38,11 @@ public class CommentService {
     private final CommentMapper commentMapper;
     private final ExecutorService saveToDBExecutorService;
     private Map<String, Integer> waitForUpdateApp = new ConcurrentHashMap<>(1000 * 1000);
+
+    @PostConstruct
+    public void init() {
+        dealWaitForUpdateApp();
+    }
 
     @CacheEvict(value = "comments", key = "#comment.appType+#comment.appId")
     public void pushComment(Comment comment) {
