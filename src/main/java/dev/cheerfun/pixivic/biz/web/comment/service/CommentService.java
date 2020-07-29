@@ -16,10 +16,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ExecutorService;
 import java.util.stream.Collectors;
 
 /**
@@ -33,10 +32,15 @@ import java.util.stream.Collectors;
 public class CommentService {
     private final StringRedisTemplate stringRedisTemplate;
     private final CommentMapper commentMapper;
+    private final ExecutorService saveToDBExecutorService;
+    private Map<String, Integer> waitForUpdateApp = new ConcurrentHashMap<>(1000 * 1000);
 
     @CacheEvict(value = "comments", key = "#comment.appType+#comment.appId")
     public void pushComment(Comment comment) {
         commentMapper.pushComment(comment);
+        if (comment.getParentId().compareTo(0) == 0) {
+            waitForUpdateApp.put(comment.getAppType() + ":" + comment.getAppId(), 1);
+        }
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -109,4 +113,26 @@ public class CommentService {
     public List<Comment> queryCommentList(String appType, Integer appId) {
         return commentMapper.pullComment(appType, appId);
     }
+
+    //异步统计评论信息
+    public void dealWaitForUpdateApp() {
+        saveToDBExecutorService.submit(() -> {
+            while (true) {
+                try {
+                    if (!waitForUpdateApp.isEmpty()) {
+                        ArrayList<String> appList = new ArrayList<>(waitForUpdateApp.keySet());
+                        waitForUpdateApp.clear();
+                        appList.forEach(e -> {
+                            String[] split = e.split(":");
+                            commentMapper.countCommentSummary(split[0], split[1]);
+                        });
+                    }
+                    Thread.sleep(1000 * 60);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
 }

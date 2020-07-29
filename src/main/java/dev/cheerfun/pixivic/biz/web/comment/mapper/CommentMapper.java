@@ -26,4 +26,6 @@ public interface CommentMapper {
     })
     List<Comment> pullComment(String appType, Integer appId);
 
+    @Update("replace into comment_summary (app_type, app_id, top_comment_count) select #{appType}, #{appId} ,count(*) from comments where app_type= #{appType} and app_id=#{appId} and parent_id=0")
+    Integer countCommentSummary(String appType, String appId);
 }

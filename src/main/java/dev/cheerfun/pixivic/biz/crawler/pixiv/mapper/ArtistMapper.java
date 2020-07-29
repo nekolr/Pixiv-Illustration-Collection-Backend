@@ -41,7 +41,6 @@ public interface ArtistMapper {
     })
     List<Integer> queryArtistsNotInDb(@Param("artistIds") List<Integer> artists);
 
-    @Update("replace into artist_summary (artist_id, illust_sum, manga_sum) select #{artistId}, sum(IF(type='illust',1,0)) ,sum(IF(type='manga',1,0)) from illusts where artist_id=#{artistId}" +
-            "")
+    @Update("replace into artist_summary (artist_id, illust_sum, manga_sum) select #{artistId}, sum(IF(type='illust',1,0)) ,sum(IF(type='manga',1,0)) from illusts where artist_id=#{artistId}")
     void updateArtistSummary(Integer artistId);
 }

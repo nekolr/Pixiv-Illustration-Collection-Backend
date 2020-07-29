@@ -1,8 +1,12 @@
 package dev.cheerfun.pixivic.biz.web.discussion.service;
 
+import dev.cheerfun.pixivic.biz.web.discussion.mapper.DiscussionMapper;
+import dev.cheerfun.pixivic.biz.web.discussion.po.Discussion;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
 
 /**
  * @author OysterQAQ
@@ -13,10 +17,31 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DiscussionService {
+    private final DiscussionMapper discussionMapper;
+
     //新建
-    //点赞
+    public Boolean createDiscussion(Discussion discussionDTO, Integer userId) {
+        Discussion discussion = new Discussion(discussionDTO.getSectionId(), discussionDTO.getTitle(), discussionDTO.getContent(), userId, discussionDTO.getUsername(), discussionDTO.getTagList(), LocalDateTime.now());
+        if (discussionMapper.createDiscussion(discussion).compareTo(1) == 0) {
+            //发布消息
+            return true;
+        }
+        return false;
+    }
+
+    //点赞/踩
+    public Boolean upOrDown() {
+        return true;
+    }
+
     //查看详情
+
     //删除
+
     //5分钟内更新
+
+    //根据板块分页查询
+
+    //
 
 }
