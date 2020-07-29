@@ -517,21 +517,27 @@ public class EmailUtil {
 
     @PostConstruct
     public void init() {
-        waitForSendQueue = new LinkedBlockingQueue<>(1000 * 1000 * 1000);
-        dealWaitForSendQueue();
+        log.info("初始化邮件工具类");
+        try {
+            waitForSendQueue = new LinkedBlockingQueue<>(1000 * 1000 * 1000);
+            dealWaitForSendQueue();
+        } catch (Exception e) {
+            log.error("邮件工具类初始化失败");
+            e.printStackTrace();
+        }
+        log.info("邮件工具类初始化成功");
     }
 
-    //@Async("mailExecutorService")
     public void sendEmail(String emailAddr, String to, String from, String content, String link) {
         if (waitForSendQueue.offer(new Email(emailAddr, to, from, content, link))) {
-            log.info("邮件进入发送队列");
+            log.info("发送给" + emailAddr + "邮件进入发送队列");
         } else {
-            log.error("邮件进入发送队列失败，队列已满");
+            log.error("发送给" + emailAddr + "邮件进入发送队列失败，队列已满");
         }
     }
 
     public void dealWaitForSendQueue() {
-        Runnable task = () -> {
+        Runnable consumer = () -> {
             while (true) {
                 Email email = null;
                 try {
@@ -545,9 +551,9 @@ public class EmailUtil {
                     helper.setSubject("来自Pixivic.com的信息");
                     helper.setText(p1 + email.getTo() + p2 + email.getFrom() + p3 + email.getContent() + p4 + email.getLink() + p5, true);
                     mailSender.send(message);
-                    log.info(email.getEmailAddr() + "邮件发送成功");
+                    log.info("发送给" + email.getEmailAddr() + email.getEmailAddr() + "邮件发送成功");
                 } catch (MessagingException e) {
-                    log.error("邮件发送失败" + email.getEmailAddr());
+                    log.error("发送给" + email.getEmailAddr() + "邮件发送失败" + email.getEmailAddr());
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -555,7 +561,7 @@ public class EmailUtil {
             }
         };
         for (int i = 0; i < 30; i++) {
-            mailExecutorService.submit(task);
+            mailExecutorService.submit(consumer);
         }
     }
 
