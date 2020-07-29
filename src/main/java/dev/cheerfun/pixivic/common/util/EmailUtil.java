@@ -554,21 +554,9 @@ public class EmailUtil {
                 }
             }
         };
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
-        mailExecutorService.submit(task);
+        for (int i = 0; i < 20; i++) {
+            mailExecutorService.submit(task);
+        }
     }
 
 }
