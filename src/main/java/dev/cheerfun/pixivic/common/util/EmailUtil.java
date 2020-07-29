@@ -566,6 +566,9 @@ public class EmailUtil {
         mailExecutorService.submit(task);
         mailExecutorService.submit(task);
         mailExecutorService.submit(task);
+        mailExecutorService.submit(task);
+        mailExecutorService.submit(task);
+        mailExecutorService.submit(task);
     }
 
 }
