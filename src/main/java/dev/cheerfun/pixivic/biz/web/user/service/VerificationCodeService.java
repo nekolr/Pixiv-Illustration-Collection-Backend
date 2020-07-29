@@ -33,7 +33,7 @@ public class VerificationCodeService {
         EmailBindingVerificationCode verificationCode = (EmailBindingVerificationCode) VerificationCodeBuildUtil
                 .create(VerificationType.EMAIL_CHECK)
                 .email(email).build();
-        stringRedisTemplate.opsForValue().set(verificationCodeRedisPre + verificationCode.getVid(), verificationCode.getValue(), 10, TimeUnit.MINUTES);
+        stringRedisTemplate.opsForValue().set(verificationCodeRedisPre + verificationCode.getVid(), verificationCode.getValue(), 3, TimeUnit.HOURS);
         return verificationCode;
     }
 }
