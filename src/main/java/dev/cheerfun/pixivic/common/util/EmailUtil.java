@@ -551,7 +551,7 @@ public class EmailUtil {
                     helper.setSubject("来自Pixivic.com的信息");
                     helper.setText(p1 + email.getTo() + p2 + email.getFrom() + p3 + email.getContent() + p4 + email.getLink() + p5, true);
                     mailSender.send(message);
-                    log.info("发送给" + email.getEmailAddr() + email.getEmailAddr() + "邮件发送成功");
+                    log.info("发送给" + email.getEmailAddr() + "邮件发送成功");
                 } catch (MessagingException e) {
                     log.error("发送给" + email.getEmailAddr() + "邮件发送失败" + email.getEmailAddr());
                     e.printStackTrace();
