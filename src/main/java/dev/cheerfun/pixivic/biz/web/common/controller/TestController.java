@@ -112,9 +112,17 @@ public class TestController {
     }
 
     @PostConstruct
+    public void recommend() throws TasteException, InterruptedException {
+        System.out.println("ceshi");
+        for (int i = 0; i < 10; i++) {
+            Thread.sleep(1000);
+            try {
+                emailUtil.sendEmail("392822872@qq.com", "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + "&value=");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
 
-    public void recommend() throws TasteException {
-        emailUtil.sendEmail("392822872@qq.com", "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + "&value=");
         //illustViewRecommendService.recommend();
 
     }

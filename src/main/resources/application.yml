@@ -17,9 +17,9 @@ spring:
     properties:
       mail:
         smtp:
-          connectiontimeout: 5000
+          connectiontimeout: 3000
           writetimeout: 3000
-          timeout: 1000
+          timeout: 3000
           auth: true
           starttls:
             enable: true
@@ -27,6 +27,7 @@ spring:
           socketFactory:
             port: 465
             class: javax.net.ssl.SSLSocketFactory
+    test-connection: true
   redis:
     jedis:
       pool:
