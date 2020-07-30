@@ -28,4 +28,7 @@ public interface CommentMapper {
 
     @Update("replace into comment_summary (app_type, app_id, top_comment_count) select #{appType}, #{appId} ,count(*) from comments where app_type= #{appType} and app_id=#{appId} and parent_id=0")
     Integer countCommentSummary(String appType, String appId);
+
+    @Select("select top_comment_count from comment_summary where app_type =#{appType} and app_id=#{appId}")
+    Integer queryTopCommentCount(String appType, Integer appId);
 }

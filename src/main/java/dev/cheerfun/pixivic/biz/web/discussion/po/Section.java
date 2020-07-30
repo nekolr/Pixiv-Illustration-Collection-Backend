@@ -16,6 +16,6 @@ public class Section {
     private String name;
     private String desc;
     private String slogan;
-    private Integer discussionSummary;
+    private Integer discussionCount;
     private LocalDateTime createTime;
 }

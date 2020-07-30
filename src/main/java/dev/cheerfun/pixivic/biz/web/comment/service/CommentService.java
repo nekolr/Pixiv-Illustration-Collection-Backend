@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -44,7 +45,10 @@ public class CommentService {
         dealWaitForUpdateApp();
     }
 
-    @CacheEvict(value = "comments", key = "#comment.appType+#comment.appId")
+    @Caching(evict = {
+            @CacheEvict(value = "comments", key = "#comment.appType+#comment.appId"),
+            @CacheEvict(value = "topCommentsCount", key = "#comment.appType+#comment.appId")
+    })
     public void pushComment(Comment comment) {
         commentMapper.pushComment(comment);
         if (comment.getParentId().compareTo(0) == 0) {
@@ -121,6 +125,11 @@ public class CommentService {
 
     public List<Comment> queryCommentList(String appType, Integer appId) {
         return commentMapper.pullComment(appType, appId);
+    }
+
+    @Cacheable(value = "topCommentsCount", key = "#appType+#appId")
+    public Integer queryTopCommentCount(String appType, Integer appId) {
+        return commentMapper.queryTopCommentCount(appType, appId);
     }
 
     //异步统计评论信息

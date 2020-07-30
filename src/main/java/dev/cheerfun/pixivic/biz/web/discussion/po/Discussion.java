@@ -29,6 +29,7 @@ public class Discussion {
     private Integer totalView;
     private LocalDateTime createTime;
     private LocalDateTime updateTime;
+    private Integer commentCount;
     private List<CollectionTag> tagList;
 
     public Discussion(Integer sectionId, String title, String content, Integer userId, String username, List<CollectionTag> tagList, LocalDateTime now) {
