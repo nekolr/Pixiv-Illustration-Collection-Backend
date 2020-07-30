@@ -1,9 +1,11 @@
 package dev.cheerfun.pixivic.biz.web.discussion.mapper;
 
 import dev.cheerfun.pixivic.biz.web.discussion.po.Discussion;
+import dev.cheerfun.pixivic.biz.web.discussion.po.Section;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -31,10 +33,10 @@ public interface DiscussionMapper {
     @Update({
             "<script>",
             "update discussions set",
-            "<when test='option>0'>\n",
+            "<when test='option&gt;0'>\n",
             "total_up=total_up+1",
             "</when>",
-            "<when test='option<0'>\n",
+            "<when test='option&lt;0'>\n",
             "total_down=total_down+1",
             "</when>",
             "where discussion_id = #{discussionId}",
@@ -57,6 +59,15 @@ public interface DiscussionMapper {
     @Delete("delete from discussions where user_id=#{userId} and discussion_id=#{discussionId}")
     Integer deleteDiscussion(Integer userId, Integer discussionId);
 
-    @Update("update discussions set section_id = #{sectionId},title=#{title},content=#{content},tag_list=#{tagList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler} where discussion_id= #{id} and user_id=#{userId}")
-    Integer updateDiscussion(Discussion discussion);
+    @Update("update discussions set section_id = #{discussion.sectionId},title=#{discussion.title},content=#{discussion.content},tag_list=#{discussion.tagList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler} where discussion_id= #{discussion.id} and user_id=#{discussion.userId} and create_time >= #{localDateTime,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}")
+    Integer updateDiscussion(@Param("discussion") Discussion discussion, LocalDateTime localDateTime);
+
+    @Select("select * from discussion_section where use_flag=1")
+    @Results({
+            @Result(property = "id", column = "section_id"),
+            @Result(property = "discussionCount", column = "discussion_count"),
+            @Result(property = "createTime", column = "create_time", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+    })
+    List<Section> querySectionList();
+
 }

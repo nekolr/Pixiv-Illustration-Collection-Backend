@@ -54,6 +54,11 @@ public class CommentController {
         return ResponseEntity.ok().body(new Result<>("拉取评论成功", commentService.pullComment(commentAppType, commentAppId, page, pageSize)));
     }
 
+    @GetMapping("/{commentAppType}/{commentAppId}/topCommentCount")
+    public ResponseEntity<Result<Integer>> pullCommentCount(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResponseEntity.ok().body(new Result<>("获取顶级评论数量成功", commentService.queryTopCommentCount(commentAppType, commentAppId)));
+    }
+
     @PostMapping("user/likedComments")
     @PermissionRequired
     public ResponseEntity<Result<String>> like(@RequestBody Like like, @RequestHeader("Authorization") String token) {

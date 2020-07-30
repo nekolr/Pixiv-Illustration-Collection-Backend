@@ -1,5 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.discussion.po;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -27,7 +30,11 @@ public class Discussion {
     private Integer totalUp;
     private Integer totalDown;
     private Integer totalView;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime createTime;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime updateTime;
     private Integer commentCount;
     private List<CollectionTag> tagList;

@@ -1,7 +1,12 @@
 package dev.cheerfun.pixivic.biz.web.discussion.service;
 
+import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
+import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
+import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
 import dev.cheerfun.pixivic.biz.web.discussion.mapper.DiscussionMapper;
 import dev.cheerfun.pixivic.biz.web.discussion.po.Discussion;
+import dev.cheerfun.pixivic.biz.web.discussion.po.Section;
+import dev.cheerfun.pixivic.biz.web.discussion.vo.DiscussionVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -24,11 +29,20 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DiscussionService {
     private final DiscussionMapper discussionMapper;
+    private final CommentService commentService;
+    private final SensitiveFilter sensitiveFilter;
 
     //新建
     @Transactional
     @CacheEvict(value = "sectionDiscussionCount", key = "#discussionDTO.sectionId")
     public Boolean createDiscussion(Discussion discussionDTO, Integer userId) {
+        //敏感过滤
+        List<CollectionTag> tagList = discussionDTO.getTagList();
+        if (tagList != null && tagList.size() > 0) {
+            tagList.forEach(e -> {
+                e.setTagName(sensitiveFilter.filter(e.getTagName()));
+            });
+        }
         Discussion discussion = new Discussion(discussionDTO.getSectionId(), discussionDTO.getTitle(), discussionDTO.getContent(), userId, discussionDTO.getUsername(), discussionDTO.getTagList(), LocalDateTime.now());
         if (discussionMapper.createDiscussion(discussion).compareTo(1) == 0) {
             //总数+1
@@ -63,9 +77,9 @@ public class DiscussionService {
     }
 
     //查看缩略列表
-    public List<Discussion> queryList(Integer sectorId, Integer page, Integer pageSize) {
+    public List<DiscussionVO> queryList(Integer sectorId, Integer page, Integer pageSize) {
         List<Integer> idList = discussionMapper.queryList(sectorId, (page - 1) * pageSize, pageSize);
-        return idList.stream().map(e -> queryById(e)).collect(Collectors.toList());
+        return idList.stream().map(e -> new DiscussionVO(queryById(e), commentService.queryTopCommentCount("discussion", e))).collect(Collectors.toList());
     }
 
     //查看缩略列表总数
@@ -94,8 +108,13 @@ public class DiscussionService {
             @CacheEvict(value = "sectionDiscussionCount", allEntries = true)
     })
     public Boolean updateDiscussion(Integer userId, Discussion discussion) {
+        LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(-10);
         discussion.setUserId(userId);
-        return discussionMapper.updateDiscussion(discussion) == 1;
+        return discussionMapper.updateDiscussion(discussion, localDateTime) == 1;
     }
 
+    @Cacheable("section")
+    public List<Section> querySectionList() {
+        return discussionMapper.querySectionList();
+    }
 }
