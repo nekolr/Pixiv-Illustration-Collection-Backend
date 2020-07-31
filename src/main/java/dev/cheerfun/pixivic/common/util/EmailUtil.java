@@ -9,6 +9,8 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
+import javax.mail.internet.AddressException;
+import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -542,18 +544,22 @@ public class EmailUtil {
                 Email email = null;
                 try {
                     email = waitForSendQueue.take();
-                    log.info("开始向" + email.getEmailAddr() + "发送邮件");
-                    MimeMessage message = mailSender.createMimeMessage();
-                    MimeMessageHelper helper = null;
-                    helper = new MimeMessageHelper(message, true);
-                    helper.setFrom("Pixivic.com<oysterqaq@biuz.xyz>");
-                    helper.setTo(email.getEmailAddr());
-                    helper.setSubject("来自Pixivic.com的信息");
-                    helper.setText(p1 + email.getTo() + p2 + email.getFrom() + p3 + email.getContent() + p4 + email.getLink() + p5, true);
-                    mailSender.send(message);
-                    log.info("发送给" + email.getEmailAddr() + "邮件发送成功");
+                    if (isValidEmailAddress(email.getEmailAddr())) {
+                        log.info("开始向" + email.getEmailAddr() + "发送邮件");
+                        MimeMessage message = mailSender.createMimeMessage();
+                        MimeMessageHelper helper = null;
+                        helper = new MimeMessageHelper(message, true);
+                        helper.setFrom("Pixivic.com<oysterqaq@biuz.xyz>");
+                        helper.setTo(email.getEmailAddr());
+                        helper.setSubject("来自Pixivic.com的信息");
+                        helper.setText(p1 + email.getTo() + p2 + email.getFrom() + p3 + email.getContent() + p4 + email.getLink() + p5, true);
+                        mailSender.send(message);
+                        log.info("发送给" + email.getEmailAddr() + "邮件发送成功");
+                    } else {
+                        log.error(email.getEmailAddr() + "非法邮件地址");
+                    }
                 } catch (MessagingException e) {
-                    log.error("发送给" + email.getEmailAddr() + "邮件发送失败" + email.getEmailAddr());
+                    log.error("发送给" + email.getEmailAddr() + "邮件发送失败");
                     e.printStackTrace();
                 } catch (InterruptedException e) {
                     e.printStackTrace();
@@ -563,6 +569,17 @@ public class EmailUtil {
         for (int i = 0; i < 30; i++) {
             mailExecutorService.submit(consumer);
         }
+    }
+
+    public static boolean isValidEmailAddress(String email) {
+        boolean result = true;
+        try {
+            InternetAddress emailAddr = new InternetAddress(email);
+            emailAddr.validate();
+        } catch (AddressException ex) {
+            result = false;
+        }
+        return result;
     }
 
 }
