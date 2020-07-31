@@ -37,6 +37,7 @@ public class Discussion {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime updateTime;
     private Integer commentCount;
+    private Integer option;
     private List<CollectionTag> tagList;
 
     public Discussion(Integer sectionId, String title, String content, Integer userId, String username, List<CollectionTag> tagList, LocalDateTime now) {

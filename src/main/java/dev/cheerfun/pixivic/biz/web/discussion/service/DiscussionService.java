@@ -3,15 +3,19 @@ package dev.cheerfun.pixivic.biz.web.discussion.service;
 import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
 import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
+import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.discussion.mapper.DiscussionMapper;
 import dev.cheerfun.pixivic.biz.web.discussion.po.Discussion;
 import dev.cheerfun.pixivic.biz.web.discussion.po.Section;
 import dev.cheerfun.pixivic.biz.web.discussion.vo.DiscussionVO;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +39,7 @@ public class DiscussionService {
     //新建
     @Transactional
     @CacheEvict(value = "sectionDiscussionCount", key = "#discussionDTO.sectionId")
-    public Boolean createDiscussion(Discussion discussionDTO, Integer userId) {
+    public Discussion createDiscussion(Discussion discussionDTO, Integer userId) {
         //敏感过滤
         List<CollectionTag> tagList = discussionDTO.getTagList();
         if (tagList != null && tagList.size() > 0) {
@@ -48,9 +52,9 @@ public class DiscussionService {
             //总数+1
             discussionMapper.decrSectionDiscussionCount(discussion.getSectionId());
             //发布消息
-            return true;
+            return queryById(discussion.getId());
         }
-        return false;
+        throw new BusinessException(HttpStatus.BAD_REQUEST, "讨论创建失败");
     }
 
     //点赞/踩
@@ -61,14 +65,28 @@ public class DiscussionService {
         //更新total
         if (result == 1) {
             discussionMapper.updateDiscussionTotalUpAndDown(discussionId, option);
+            return true;
         }
-        return true;
+        return false;
+    }
+
+    public Integer queryOption(Integer userId, Integer discussionId) {
+        return discussionMapper.queryOption(userId, discussionId);
     }
 
     //详细
     @Cacheable("discussion")
-    public Discussion queryById(Integer discussionId) {
+    public Discussion queryByIdFromDb(Integer discussionId) {
         return discussionMapper.queryById(discussionId);
+    }
+
+    public Discussion queryById(Integer discussionId) {
+        Discussion discussion = queryByIdFromDb(discussionId);
+        if (AppContext.get() != null) {
+            Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+            discussion.setOption(queryOption(userId, discussionId));
+        }
+        return discussion;
     }
 
     //更新最后回复时间
@@ -107,10 +125,13 @@ public class DiscussionService {
             @CacheEvict(value = "discussion", key = "#discussion.id"),
             @CacheEvict(value = "sectionDiscussionCount", allEntries = true)
     })
-    public Boolean updateDiscussion(Integer userId, Discussion discussion) {
+    public Discussion updateDiscussion(Integer userId, Discussion discussion) {
         LocalDateTime localDateTime = LocalDateTime.now().plusMinutes(-10);
         discussion.setUserId(userId);
-        return discussionMapper.updateDiscussion(discussion, localDateTime) == 1;
+        if (discussionMapper.updateDiscussion(discussion, localDateTime) == 1) {
+            return queryById(discussion.getId());
+        }
+        throw new BusinessException(HttpStatus.BAD_REQUEST, "更新失败");
     }
 
     @Cacheable("section")

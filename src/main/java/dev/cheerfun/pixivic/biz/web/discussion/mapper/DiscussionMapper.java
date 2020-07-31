@@ -10,7 +10,8 @@ import java.util.List;
 
 @Mapper
 public interface DiscussionMapper {
-    @Insert("insert into discussions (section_id,title,content,user_id,username,tag_list) values (#{sectionId},#{title},#{content},#{userId},#{username},#{tagList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler})")
+    @Insert("insert into discussions (section_id,title,content,user_id,username,tag_list,create_time) values (#{sectionId},#{title},#{content},#{userId},#{username},#{tagList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{createTime,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "discussion_id")
     Integer createDiscussion(Discussion discussion);
 
     @Select("select * from discussions where discussion_id=#{discussionId}")
@@ -27,7 +28,7 @@ public interface DiscussionMapper {
     })
     Discussion queryById(Integer discussionId);
 
-    @Insert("insert into user_discussion_option (user_id,discussion_id,`option`) values(#{userId},#{discussionId},#{option})")
+    @Insert("insert ignore into user_discussion_option (user_id,discussion_id,`option`) values(#{userId},#{discussionId},#{option})")
     Integer createOption(Integer userId, Integer discussionId, Integer option);
 
     @Update({
@@ -47,7 +48,7 @@ public interface DiscussionMapper {
     @Update("update discussions set last_reply_time = current_timestamp where discussion_id= #{discussionId}")
     Integer updateSort(Integer discussionId);
 
-    @Select("select discussion_id from discussions where sector_id=#{sectorId} order by last_reply_time desc limit #{currIndex},#{pageSize}")
+    @Select("select discussion_id from discussions where section_id=#{sectorId} order by last_reply_time desc limit #{currIndex},#{pageSize}")
     List<Integer> queryList(Integer sectorId, int currIndex, Integer pageSize);
 
     @Select("select discussion_count from discussion_section where section_id=#{sectionId}")
@@ -69,5 +70,8 @@ public interface DiscussionMapper {
             @Result(property = "createTime", column = "create_time", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
     })
     List<Section> querySectionList();
+
+    @Insert("select `option` from  user_discussion_option where user_id=#{userId} and discussion_id= #{discussionId}")
+    Integer queryOption(Integer userId, Integer discussionId);
 
 }
