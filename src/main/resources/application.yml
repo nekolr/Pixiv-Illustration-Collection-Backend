@@ -10,9 +10,12 @@ spring:
   #  profiles:
   #    active: mac
   mail:
-    host:  smtpdm.aliyun.com
-    username: admin@mail.cheerfun.dev
-    password: CheerfunDEV123
+    #    host:  smtpdm.aliyun.com
+    #    username: admin@mail.cheerfun.dev
+    #    password: CheerfunDEV123
+    host: smtp.office365.com
+    username: oysterqaq@biuz.xyz
+    password: Linhao199741
     protocol: smtp
     properties:
       mail:
@@ -25,10 +28,10 @@ spring:
             enable: true
             required: true
           socketFactory:
-            port: 465
+            port: 587
             class: javax.net.ssl.SSLSocketFactory
     test-connection: true
-    port: 465
+    port: 587
   redis:
     jedis:
       pool:
