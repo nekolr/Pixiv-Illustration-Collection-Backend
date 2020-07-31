@@ -111,7 +111,7 @@ public class TestController {
         return ResponseEntity.ok(new Result<>("测试", null));
     }
 
-   // @PostConstruct
+    //@PostConstruct
     public void recommend() throws TasteException, InterruptedException {
         System.out.println("ceshi");
         for (int i = 0; i < 10; i++) {
