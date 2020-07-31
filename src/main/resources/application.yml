@@ -13,9 +13,6 @@ spring:
     host:  smtpdm.aliyun.com
     username: admin@mail.cheerfun.dev
     password: CheerfunDEV123
-    #    host: smtp.office365.com
-    #    username: oysterqaq@biuz.xyz
-    #    password: Linhao199741
     protocol: smtp
     properties:
       mail:
