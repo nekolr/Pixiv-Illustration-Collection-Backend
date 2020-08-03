@@ -5,12 +5,10 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
-import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.BangumiSearchResponse;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
-import dev.cheerfun.pixivic.biz.web.search.domain.response.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.biz.web.search.dto.PixivSearchSuggestionDTO;
 import dev.cheerfun.pixivic.biz.web.search.dto.SearchSuggestionSyncDTO;
 import dev.cheerfun.pixivic.biz.web.search.dto.TagTranslation;
@@ -20,8 +18,7 @@ import dev.cheerfun.pixivic.biz.web.search.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.biz.web.search.util.SearchUtil;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
-import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
-import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
+import dev.cheerfun.pixivic.common.util.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -47,7 +44,6 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -61,7 +57,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SearchService {
     private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
-    private final RequestUtil requestUtil;
+    private final TranslationUtil translationUtil;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final SearchUtil searchUtil;
@@ -163,7 +159,7 @@ public class SearchService {
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
-        return new SearchSuggestion(translatedByYouDao(keyword), keyword);
+        return new SearchSuggestion(translationUtil.translateToJapaneseByYouDao(keyword), keyword);
     }
 
     @Cacheable(value = "bangumiSearch")
@@ -194,45 +190,10 @@ public class SearchService {
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r ->
                 moeGirlPattern.matcher(r.body()).results().map(result -> {
                     String matchKeyword = result.group();
-                    return new SearchSuggestion(matchKeyword, translatedByYouDao(keyword));
+                    return new SearchSuggestion(matchKeyword, translationUtil.translateToJapaneseByYouDao(keyword));
                 }).collect(Collectors.toList())
         );
 
-    }
-
-    @Cacheable(value = "translated")
-    public String translatedByYouDao(@SensitiveCheck String keyword) {
-        Map<String, String> params = new HashMap<>();
-        String salt = String.valueOf(System.currentTimeMillis());
-        params.put("from", "auto");
-        params.put("to", "ja");
-        params.put("signType", "v3");
-        String curtime = String.valueOf(System.currentTimeMillis() / 1000);
-        params.put("curtime", curtime);
-        String signStr = "6f8d12eb52dab6e2" + YouDaoTranslatedUtil.truncate(keyword) + salt + curtime + "B1VBsUhi3G7u4H17tncOwtGi93J2y1cX";
-        String sign = YouDaoTranslatedUtil.getDigest(signStr);
-        params.put("appKey", "6f8d12eb52dab6e2");
-        params.put("q", URLEncoder.encode(keyword, StandardCharsets.UTF_8));
-        params.put("salt", salt);
-        params.put("sign", sign);
-        HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create("https://openapi.youdao.com/api?" + RequestUtil.getPostEntity(params)))
-                .GET()
-                .build();
-        YoudaoTranslatedResponse youdaoTranslatedResponse = null;
-        try {
-            youdaoTranslatedResponse = (YoudaoTranslatedResponse) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(YoudaoTranslatedResponse.class)).body();
-        } catch (IOException | InterruptedException e) {
-            throw new SearchException(HttpStatus.BAD_REQUEST, e.getMessage());
-        }
-        if (youdaoTranslatedResponse != null) {
-            List<String> keywordTranslated = youdaoTranslatedResponse.getResult();
-            if (keywordTranslated == null) {
-                throw new SearchException(HttpStatus.BAD_REQUEST, "关键词非中文，自动翻译失败");
-            }
-            return keywordTranslated.get(0);
-        }
-        throw new SearchException(HttpStatus.BAD_REQUEST, "自动翻译失败");
     }
 
     public Illustration queryFirstSearchResult(String keyword) throws ExecutionException, InterruptedException {

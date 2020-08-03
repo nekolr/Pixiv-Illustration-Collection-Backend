@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.admin.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
@@ -7,15 +9,11 @@ import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.po.Illustration;
-import dev.cheerfun.pixivic.common.po.Result;
+import dev.cheerfun.pixivic.common.util.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
@@ -31,6 +29,9 @@ import java.util.List;
 @Slf4j
 public class AdminService {
     private final AdminMapper adminMapper;
+    private final TranslationUtil translationUtil;
+    private final ObjectMapper objectMapper;
+    private final IllustrationBizService illustrationBizService;
     private List<String> keyList;
 
     @PostConstruct
@@ -76,4 +77,17 @@ public class AdminService {
     public Integer queryCommentTotal(Comment comment, Integer page, Integer pageSize) {
         return adminMapper.queryCommentTotal(comment, page, pageSize);
     }
+
+    public Illustration queryIllustrationById(Integer illustId) throws JsonProcessingException {
+        Illustration illustration = objectMapper.readValue(objectMapper.writeValueAsString(illustrationBizService.queryIllustrationById(illustId)), Illustration.class);
+        illustration.setTitle("【" + translationUtil.translateToChineseByYouDao(illustration.getTitle()) + "】" + illustration.getTitle());
+        illustration.getTags().forEach(e -> {
+            if (e.getTranslatedName() == null) {
+                e.setTranslatedName(translationUtil.translateToChineseByYouDao(e.getName()));
+            }
+        });
+        illustration.setCaption(translationUtil.translateToChineseByYouDao(illustration.getCaption()) + "<br />" + illustration.getCaption());
+        return illustration;
+    }
+
 }
