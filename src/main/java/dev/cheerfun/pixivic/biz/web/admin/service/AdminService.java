@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
 import dev.cheerfun.pixivic.biz.web.admin.po.UserPO;
+import dev.cheerfun.pixivic.biz.web.admin.repository.CollectionRepository;
 import dev.cheerfun.pixivic.biz.web.admin.repository.CommentRepository;
 import dev.cheerfun.pixivic.biz.web.admin.repository.DiscussionRepository;
 import dev.cheerfun.pixivic.biz.web.admin.repository.UserRepository;
@@ -40,6 +41,7 @@ public class AdminService {
     private final UserRepository userRepository;
     private final DiscussionRepository discussionRepository;
     private final CommentRepository commentRepository;
+    private final CollectionRepository collectionRepository;
     private final IllustrationBizService illustrationBizService;
     private List<String> keyList;
 
@@ -99,9 +101,9 @@ public class AdminService {
         return illustration;
     }
 
-    // @PostConstruct
+    @PostConstruct
     public void test() {
-        discussionRepository.findAll().forEach(System.out::println);
+        collectionRepository.findAll().forEach(System.out::println);
     }
 
 }

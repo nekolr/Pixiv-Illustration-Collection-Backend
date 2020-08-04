@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Data
 @Entity
-@Table(name = "colletions")
+@Table(name = "collections")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CollectionPO {
     @Id
