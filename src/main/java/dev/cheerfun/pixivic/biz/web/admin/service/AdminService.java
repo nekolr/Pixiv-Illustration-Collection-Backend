@@ -6,6 +6,8 @@ import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
 import dev.cheerfun.pixivic.biz.web.admin.po.UserPO;
+import dev.cheerfun.pixivic.biz.web.admin.repository.CommentRepository;
+import dev.cheerfun.pixivic.biz.web.admin.repository.DiscussionRepository;
 import dev.cheerfun.pixivic.biz.web.admin.repository.UserRepository;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
@@ -36,6 +38,8 @@ public class AdminService {
     private final TranslationUtil translationUtil;
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
+    private final DiscussionRepository discussionRepository;
+    private final CommentRepository commentRepository;
     private final IllustrationBizService illustrationBizService;
     private List<String> keyList;
 
@@ -95,17 +99,9 @@ public class AdminService {
         return illustration;
     }
 
-    //@PostConstruct
+    // @PostConstruct
     public void test() {
-        Optional<UserPO> byId = this.userRepository.findById(8);
-        System.out.println(byId);
-        UserPO user = new UserPO();
-        user.setEmail(null);
-        user.setUsername("Kim");
-        user.setEmail("19244295961@qq.com");
-        List<UserPO> kim = this.userRepository.findAll(Example.of(user));
-        kim.forEach(System.out::println);
-
+        discussionRepository.findAll().forEach(System.out::println);
     }
 
 }
