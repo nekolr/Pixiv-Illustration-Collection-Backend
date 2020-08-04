@@ -5,6 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.EnableLoadTimeWeaving;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
@@ -22,6 +23,7 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 @EnableCaching(mode = AdviceMode.ASPECTJ)
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @EnableLoadTimeWeaving(aspectjWeaving = EnableLoadTimeWeaving.AspectJWeaving.ENABLED)
+@EnableJpaRepositories
 public class Application {
     public static void main(String[] args) {
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Referer");

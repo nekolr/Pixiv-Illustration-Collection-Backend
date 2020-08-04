@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
+import dev.cheerfun.pixivic.biz.web.admin.po.UserPO;
+import dev.cheerfun.pixivic.biz.web.admin.repository.UserRepository;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
@@ -13,10 +15,12 @@ import dev.cheerfun.pixivic.common.util.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author OysterQAQ
@@ -31,6 +35,7 @@ public class AdminService {
     private final AdminMapper adminMapper;
     private final TranslationUtil translationUtil;
     private final ObjectMapper objectMapper;
+    private final UserRepository userRepository;
     private final IllustrationBizService illustrationBizService;
     private List<String> keyList;
 
@@ -88,6 +93,19 @@ public class AdminService {
         });
         illustration.setCaption(translationUtil.translateToChineseByYouDao(illustration.getCaption()) + "<br />" + illustration.getCaption());
         return illustration;
+    }
+
+    //@PostConstruct
+    public void test() {
+        Optional<UserPO> byId = this.userRepository.findById(8);
+        System.out.println(byId);
+        UserPO user = new UserPO();
+        user.setEmail(null);
+        user.setUsername("Kim");
+        user.setEmail("19244295961@qq.com");
+        List<UserPO> kim = this.userRepository.findAll(Example.of(user));
+        kim.forEach(System.out::println);
+
     }
 
 }
