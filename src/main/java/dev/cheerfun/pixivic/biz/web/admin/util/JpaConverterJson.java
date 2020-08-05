@@ -16,7 +16,7 @@ import java.io.IOException;
  * @date 2020/8/4 6:41 下午
  * @description JpaConverterJson
  */
-@Converter(autoApply = true)
+@Converter(autoApply = false)//坑
 public class JpaConverterJson implements AttributeConverter<Object, String> {
 
     private final static ObjectMapper objectMapper = new ObjectMapper();

@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.admin.repository;
 
 import dev.cheerfun.pixivic.biz.web.admin.po.UserPO;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
 /**
  * @author OysterQAQ
@@ -9,5 +9,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @date 2020/8/4 5:26 下午
  * @description UserRepository
  */
-public interface UserRepository extends JpaRepository<UserPO, Integer> {
+public interface UserRepository extends CrudRepository<UserPO, Integer> {
 }

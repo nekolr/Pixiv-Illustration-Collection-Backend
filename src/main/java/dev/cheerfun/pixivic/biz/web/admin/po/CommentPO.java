@@ -18,8 +18,7 @@ import java.util.List;
  * @description Comment
  */
 @Data
-@Entity
-@Table(name = "comments")
+@Entity(name = "comments")
 public class CommentPO {
     @Column(name = "app_type")
     private String appType;

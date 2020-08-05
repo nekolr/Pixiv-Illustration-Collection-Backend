@@ -1,9 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.admin.repository;
 
 import dev.cheerfun.pixivic.biz.web.admin.po.CollectionPO;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.CrudRepository;
 
-import java.util.List;
-
-public interface CollectionRepository extends JpaRepository<CollectionPO, Integer> {
+public interface CollectionRepository extends CrudRepository<CollectionPO, Integer> {
 }

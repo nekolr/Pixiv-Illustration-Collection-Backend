@@ -22,8 +22,7 @@ import java.time.LocalDateTime;
  * @description User
  */
 @Data
-@Table(name = "users")
-@Entity
+@Entity(name = "users")
 @AllArgsConstructor
 @NoArgsConstructor
 public class UserPO {

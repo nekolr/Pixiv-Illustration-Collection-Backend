@@ -20,8 +20,7 @@ import java.util.List;
  * @description Discussion
  */
 @Data
-@Entity
-@Table(name = "discussions")
+@Entity(name = "discussions")
 @NoArgsConstructor
 @AllArgsConstructor
 public class DiscussionPO {

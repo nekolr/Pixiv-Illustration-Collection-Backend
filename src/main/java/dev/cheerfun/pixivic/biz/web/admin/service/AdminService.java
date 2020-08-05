@@ -110,7 +110,7 @@ public class AdminService {
 
     @PostConstruct
     public void test() {
-        sectionRepository.findAll().forEach(System.out::println);
+        System.out.println(userRepository.findById(53).get());
     }
 
 }

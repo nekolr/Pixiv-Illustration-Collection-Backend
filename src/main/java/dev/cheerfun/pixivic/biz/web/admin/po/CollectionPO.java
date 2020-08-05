@@ -20,8 +20,7 @@ import java.util.List;
  * @description Collection
  */
 @Data
-@Entity
-@Table(name = "collections")
+@Entity(name = "collections")
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class CollectionPO {
     @Id
