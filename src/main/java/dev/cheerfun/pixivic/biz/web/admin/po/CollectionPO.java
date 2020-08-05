@@ -26,11 +26,13 @@ import java.util.List;
 public class CollectionPO {
     @Id
     @Column(name = "collection_id")
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
     @Column(name = "user_id")
     private Integer userId;
     private String username;
     @Convert(converter = JpaConverterJson.class)
+    @Transient
     private Illustration cover;
     private String title;
     private String caption;

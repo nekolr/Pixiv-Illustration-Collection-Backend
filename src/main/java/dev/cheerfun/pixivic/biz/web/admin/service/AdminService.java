@@ -5,11 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
-import dev.cheerfun.pixivic.biz.web.admin.po.UserPO;
-import dev.cheerfun.pixivic.biz.web.admin.repository.CollectionRepository;
-import dev.cheerfun.pixivic.biz.web.admin.repository.CommentRepository;
-import dev.cheerfun.pixivic.biz.web.admin.repository.DiscussionRepository;
-import dev.cheerfun.pixivic.biz.web.admin.repository.UserRepository;
+import dev.cheerfun.pixivic.biz.web.admin.repository.*;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
@@ -18,12 +14,11 @@ import dev.cheerfun.pixivic.common.util.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author OysterQAQ
@@ -40,6 +35,7 @@ public class AdminService {
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
     private final DiscussionRepository discussionRepository;
+    private final SectionRepository sectionRepository;
     private final CommentRepository commentRepository;
     private final CollectionRepository collectionRepository;
     private final IllustrationBizService illustrationBizService;
@@ -69,6 +65,7 @@ public class AdminService {
         return adminMapper.queryUsersTotal(usersDTO, (page - 1) * pageSize, pageSize);
     }
 
+    @CacheEvict(value = "illust", key = "#illustDTO.id")
     public void updateIllusts(IllustDTO illustDTO) {
         adminMapper.updateIllusts(illustDTO);
     }
@@ -101,9 +98,19 @@ public class AdminService {
         return illustration;
     }
 
+    //画集管理
+
+    //讨论管理
+
+    //板块管理
+
+    //用户管理
+
+    //画作管理
+
     @PostConstruct
     public void test() {
-        collectionRepository.findAll().forEach(System.out::println);
+        sectionRepository.findAll().forEach(System.out::println);
     }
 
 }

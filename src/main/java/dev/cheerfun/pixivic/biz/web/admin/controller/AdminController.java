@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.admin.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
@@ -24,7 +25,7 @@ import java.util.List;
  * @date 2020/4/24 2:46 下午
  * @description AdminController
  */
-@RestController
+//@RestController
 @Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
@@ -38,6 +39,13 @@ public class AdminController {
             log.info("管理员key:" + token + ",开始获取画作(" + illustId + ")详情");
             return ResponseEntity.ok().body(new Result<>("获取画作详情成功", adminService.queryIllustrationById(illustId)));
         }
+        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
+    }
+
+    @PutMapping("/illusts/{illustId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token", required = false) String token, @RequestBody IllustDTO illustDTO) throws JsonProcessingException {
+        adminService.updateIllusts(illustDTO);
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
     }
 
