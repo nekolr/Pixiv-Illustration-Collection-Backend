@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
+import dev.cheerfun.pixivic.biz.web.admin.po.*;
 import dev.cheerfun.pixivic.biz.web.admin.repository.*;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
@@ -15,6 +16,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -99,18 +101,63 @@ public class AdminService {
     }
 
     //画集管理
+    public Page<CollectionPO> queryCollection(CollectionPO collectionPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        return collectionRepository.findAll(Example.of(collectionPO), pageable);
+    }
+
+    public CollectionPO updateCollection(CollectionPO collectionPO) {
+        return collectionRepository.save(collectionPO);
+    }
 
     //讨论管理
+    public Page<DiscussionPO> queryDiscussion(DiscussionPO discussionPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        return discussionRepository.findAll(Example.of(discussionPO), pageable);
+    }
+
+    public DiscussionPO updateDiscussion(DiscussionPO discussionPO) {
+        return discussionRepository.save(discussionPO);
+    }
 
     //板块管理
+    public Page<SectionPO> querySection(SectionPO sectionPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        return sectionRepository.findAll(Example.of(sectionPO), pageable);
+    }
+
+    public SectionPO updateSection(SectionPO sectionPO) {
+        return sectionRepository.save(sectionPO);
+    }
 
     //用户管理
+    public Page<UserPO> queryUsers(UserPO userPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        return userRepository.findAll(Example.of(userPO), pageable);
+    }
 
-    //画作管理
+    public UserPO updateUser(UserPO userPO) {
+        return userRepository.save(userPO);
+    }
 
-    @PostConstruct
+    //评论管理
+    public Page<CommentPO> queryComment(CommentPO commentPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        return commentRepository.findAll(Example.of(commentPO), pageable);
+    }
+
+    public CommentPO updateComment(CommentPO commentPO) {
+        return commentRepository.save(commentPO);
+    }
+
+    //@PostConstruct
     public void test() {
-        System.out.println(userRepository.findById(53).get());
+        discussionRepository.findAll().forEach(System.out::println);
     }
 
 }

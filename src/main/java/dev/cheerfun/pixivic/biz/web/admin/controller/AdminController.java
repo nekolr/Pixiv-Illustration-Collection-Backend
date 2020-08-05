@@ -4,15 +4,14 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
-import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
+import dev.cheerfun.pixivic.biz.web.admin.po.*;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
-import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
-import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -49,40 +48,104 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
     }
 
+    @PostMapping("/collections")
+    public ResponseEntity<Result<List<CollectionPO>>> queryCollection(
+            @RequestBody CollectionPO collectionPO,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "30") Integer pageSize,
+            @RequestParam(defaultValue = "id") String orderBy,
+            @RequestParam(defaultValue = "asc") String orderByMode,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        Page<CollectionPO> collectionPOPage = adminService.queryCollection(collectionPO, page, pageSize, orderBy, orderByMode);
+        return ResponseEntity.ok().body(new Result<>("获取画集列表成功", collectionPOPage.getTotalPages(), collectionPOPage.getContent()));
+    }
+
+    @PutMapping("/collections/{collectionId}")
+    public ResponseEntity<Result<CollectionPO>> updateCollection(
+            @PathVariable Integer collectionId,
+            @RequestBody CollectionPO collectionPO,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("更新画集成功", adminService.updateCollection(collectionPO)));
+    }
+
+    @PostMapping("/discussions")
+    public ResponseEntity<Result<List<DiscussionPO>>> queryDiscussion(
+            @RequestBody DiscussionPO discussionPO,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "30") Integer pageSize,
+            @RequestParam(defaultValue = "id") String orderBy,
+            @RequestParam(defaultValue = "asc") String orderByMode,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        Page<DiscussionPO> discussionPOPage = adminService.queryDiscussion(discussionPO, page, pageSize, orderBy, orderByMode);
+        return ResponseEntity.ok().body(new Result<>("获取讨论列表成功", discussionPOPage.getTotalPages(), discussionPOPage.getContent()));
+    }
+
+    @PutMapping("/discussions/{discussionId}")
+    public ResponseEntity<Result<DiscussionPO>> updateDiscussion(
+            @PathVariable Integer collectionId,
+            @RequestBody DiscussionPO discussionPO,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("更新讨论成功", adminService.updateDiscussion(discussionPO)));
+    }
+
+    @PostMapping("/sections")
+    public ResponseEntity<Result<List<SectionPO>>> querySection(
+            @RequestBody SectionPO sectionPO,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "30") Integer pageSize,
+            @RequestParam(defaultValue = "id") String orderBy,
+            @RequestParam(defaultValue = "asc") String orderByMode,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        Page<SectionPO> sectionPOPage = adminService.querySection(sectionPO, page, pageSize, orderBy, orderByMode);
+        return ResponseEntity.ok().body(new Result<>("获取板块列表成功", sectionPOPage.getTotalPages(), sectionPOPage.getContent()));
+    }
+
+    @PutMapping("/sections/{sectionId}")
+    public ResponseEntity<Result<SectionPO>> updateSection(
+            @PathVariable Integer sectionId,
+            @RequestBody SectionPO sectionPO,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("更新板块成功", adminService.updateSection(sectionPO)));
+    }
+
     @PostMapping("/users")
-    @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<List<User>>> queryUsers(
-            @RequestBody UsersDTO usersDTO,
+    public ResponseEntity<Result<List<UserPO>>> queryUsers(
+            @RequestBody UserPO userPO,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "30") Integer pageSize,
-            @RequestParam(defaultValue = "user_id") String orderBy,
+            @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
             @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("获取用户列表成功", adminService.queryUsersTotal(usersDTO, page, pageSize), adminService.queryUsers(usersDTO, page, pageSize, orderBy, orderByMode)));
+        Page<UserPO> userPOPage = adminService.queryUsers(userPO, page, pageSize, orderBy, orderByMode);
+        return ResponseEntity.ok().body(new Result<>("获取用户列表成功", userPOPage.getTotalPages(), userPOPage.getContent()));
     }
 
-    @PutMapping("/users")
-    @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Boolean>> updateUser(@RequestBody UsersDTO usersDTO, @RequestHeader(value = "Authorization", required = false) String token) {
-        adminService.updateUser(usersDTO);
-        return ResponseEntity.ok().body(new Result<>("更新用户成功", true));
+    @PutMapping("/users/{userId}")
+    public ResponseEntity<Result<UserPO>> updateUser(
+            @PathVariable Integer userId,
+            @RequestBody UserPO userPO,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("更新用户成功", adminService.updateUser(userPO)));
     }
 
-    //@DeleteMapping("/users/{userId}")
-    @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Boolean>> banUser(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token) {
-        adminService.banUser(userId);
-        return ResponseEntity.ok().body(new Result<>("封禁用户成功", true));
-    }
-
-    public ResponseEntity<Result<List<Comment>>> queryComment(
-            @RequestBody Comment comment,
+    @PostMapping("/comments")
+    public ResponseEntity<Result<List<CommentPO>>> queryUsers(
+            @RequestBody CommentPO commentPO,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "30") Integer pageSize,
-            @RequestParam(defaultValue = "comment_id") String orderBy,
+            @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
             @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("获取评论列表成功", adminService.queryCommentTotal(comment, page, pageSize), adminService.queryComment(comment, page, pageSize, orderBy, orderByMode)));
+        Page<CommentPO> commentPOPage = adminService.queryComment(commentPO, page, pageSize, orderBy, orderByMode);
+        return ResponseEntity.ok().body(new Result<>("获取评论列表成功", commentPOPage.getTotalPages(), commentPOPage.getContent()));
+    }
+
+    @PutMapping("/comments/{commentId}")
+    public ResponseEntity<Result<CommentPO>> updateUser(
+            @PathVariable Integer commentId,
+            @RequestBody CommentPO commentPO,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("更新评论成功", adminService.updateComment(commentPO)));
     }
 
 //    @PutMapping("/illusts")

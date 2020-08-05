@@ -30,7 +30,6 @@ public class SectionPO {
     private Integer discussionCount;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
-    @CreatedDate
     @Column(name = "create_time")
     private LocalDateTime createTime;
     @Column(name = "use_flag")

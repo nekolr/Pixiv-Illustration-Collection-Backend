@@ -30,7 +30,6 @@ public class CollectionPO {
     @Column(name = "user_id")
     private Integer userId;
     private String username;
-    @Convert(converter = JpaConverterJson.class)
     @Transient
     private Illustration cover;
     private String title;
