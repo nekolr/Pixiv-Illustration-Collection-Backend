@@ -24,7 +24,7 @@ import java.util.List;
  * @date 2020/4/24 2:46 下午
  * @description AdminController
  */
-//@RestController
+@RestController
 @Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
@@ -68,6 +68,13 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("更新画集成功", adminService.updateCollection(collectionPO)));
     }
 
+    @DeleteMapping("/collections/{collectionId}")
+    public ResponseEntity<Result<Boolean>> deleteCollection(
+            @PathVariable Integer collectionId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("删除画集成功", adminService.deleteCollection(collectionId)));
+    }
+
     @PostMapping("/discussions")
     public ResponseEntity<Result<List<DiscussionPO>>> queryDiscussion(
             @RequestBody DiscussionPO discussionPO,
@@ -82,10 +89,17 @@ public class AdminController {
 
     @PutMapping("/discussions/{discussionId}")
     public ResponseEntity<Result<DiscussionPO>> updateDiscussion(
-            @PathVariable Integer collectionId,
+            @PathVariable Integer discussionId,
             @RequestBody DiscussionPO discussionPO,
             @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("更新讨论成功", adminService.updateDiscussion(discussionPO)));
+    }
+
+    @DeleteMapping("/discussions/{discussionId}")
+    public ResponseEntity<Result<Boolean>> deleteDiscussion(
+            @PathVariable Integer discussionId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("删除讨论成功", adminService.deleteDiscussion(discussionId)));
     }
 
     @PostMapping("/sections")
@@ -108,6 +122,13 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("更新板块成功", adminService.updateSection(sectionPO)));
     }
 
+    @DeleteMapping("/sections/{sectionId}")
+    public ResponseEntity<Result<Boolean>> deleteSection(
+            @PathVariable Integer sectionId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("删除板块成功", adminService.deleteSection(sectionId)));
+    }
+
     @PostMapping("/users")
     public ResponseEntity<Result<List<UserPO>>> queryUsers(
             @RequestBody UserPO userPO,
@@ -128,8 +149,15 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("更新用户成功", adminService.updateUser(userPO)));
     }
 
+    @DeleteMapping("/users/{userId}")
+    public ResponseEntity<Result<Boolean>> deleteUser(
+            @PathVariable Integer userId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("删除用户成功", adminService.deleteUser(userId)));
+    }
+
     @PostMapping("/comments")
-    public ResponseEntity<Result<List<CommentPO>>> queryUsers(
+    public ResponseEntity<Result<List<CommentPO>>> queryComments(
             @RequestBody CommentPO commentPO,
             @RequestParam(defaultValue = "1") Integer page,
             @RequestParam(defaultValue = "30") Integer pageSize,
@@ -141,11 +169,18 @@ public class AdminController {
     }
 
     @PutMapping("/comments/{commentId}")
-    public ResponseEntity<Result<CommentPO>> updateUser(
+    public ResponseEntity<Result<CommentPO>> updateComment(
             @PathVariable Integer commentId,
             @RequestBody CommentPO commentPO,
             @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("更新评论成功", adminService.updateComment(commentPO)));
+    }
+
+    @DeleteMapping("/comments/{commentId}")
+    public ResponseEntity<Result<Boolean>> deleteComment(
+            @PathVariable Integer commentId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("删除评论成功", adminService.deleteComment(adminService.queryCommentById(commentId))));
     }
 
 //    @PutMapping("/illusts")

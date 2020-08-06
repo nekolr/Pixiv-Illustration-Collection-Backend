@@ -91,6 +91,12 @@ public class AdminService {
         return collectionRepository.save(collectionPO);
     }
 
+    @CacheEvict(value = "collections", key = "#collectionId")
+    public Boolean deleteCollection(Integer collectionId) {
+        collectionRepository.deleteById(collectionId);
+        return true;
+    }
+
     //讨论管理
     public Page<DiscussionPO> queryDiscussion(DiscussionPO discussionPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
         Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
@@ -103,9 +109,10 @@ public class AdminService {
         return discussionRepository.save(discussionPO);
     }
 
-    @CacheEvict(value = "sectionDiscussionCount", key = "#discussionPO.sectionId")
-    public void deleteDiscussion(DiscussionPO discussionPO) {
-        discussionRepository.deleteById(discussionPO.getId());
+    @CacheEvict(value = "sectionDiscussionCount", key = "#discussionId")
+    public Boolean deleteDiscussion(Integer discussionId) {
+        discussionRepository.deleteById(discussionId);
+        return true;
     }
 
     //板块管理
@@ -126,8 +133,9 @@ public class AdminService {
     }
 
     @CacheEvict(value = "section", allEntries = true)
-    public void deleteSection(SectionPO sectionPO) {
-        sectionRepository.deleteById(sectionPO.getId());
+    public Boolean deleteSection(Integer sectionId) {
+        sectionRepository.deleteById(sectionId);
+        return true;
     }
 
     //用户管理
@@ -146,10 +154,10 @@ public class AdminService {
         return u;
     }
 
-    @CacheEvict(value = "users", key = "#userPO.id")
-    public void deleteUser(UserPO userPO) {
+    @CacheEvict(value = "users", key = "#userId")
+    public Boolean deleteUser(Integer userId) {
         //清理历史记录
-        illustHistoryService.deleteByUserId(userPO.getId());
+        illustHistoryService.deleteByUserId(userId);
         //以下两个不清理 作为协同过滤数据
         //清理画师收藏
         //清理画作收藏
@@ -158,8 +166,8 @@ public class AdminService {
         //清理讨论
         //清理评论
         //清理推荐
-        userRepository.delete(userPO);
-
+        userRepository.deleteById(userId);
+        return true;
     }
 
     //评论管理
@@ -181,13 +189,18 @@ public class AdminService {
             @CacheEvict(value = "comments", key = "#commentPO.appType+#commentPO.appId"),
             @CacheEvict(value = "topCommentsCount", key = "#commentPO.appType+#commentPO.appId")
     })
-    public void deleteComment(CommentPO commentPO) {
+    public Boolean deleteComment(CommentPO commentPO) {
         commentRepository.deleteById(commentPO.getId());
+        return true;
+    }
+
+    public CommentPO queryCommentById(Integer commentId) {
+        return commentRepository.getOne(commentId);
     }
 
     //@PostConstruct
     public void test() {
-        discussionRepository.findAll().forEach(System.out::println);
+        commentRepository.findAll().forEach(System.out::println);
     }
 
     @CacheEvict(value = "users", key = "#userId")
