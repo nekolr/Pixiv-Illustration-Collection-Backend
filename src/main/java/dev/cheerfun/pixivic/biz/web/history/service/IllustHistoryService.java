@@ -90,4 +90,16 @@ public class IllustHistoryService {
         illustHistoryMapper.truncateTemp();
     }
 
+    @Transactional
+    public Boolean deleteByUserId(Integer userId) {
+        Iterator<RedisClusterNode> iterator = stringRedisTemplate.getConnectionFactory().getClusterConnection().clusterGetNodes().iterator();
+        while (iterator.hasNext()) {
+            RedisClusterNode clusterNode = iterator.next();
+            Set<String> keys = stringRedisTemplate.opsForCluster().keys(clusterNode, RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId);
+            stringRedisTemplate.unlink(keys);
+        }
+        illustHistoryMapper.deleteIllustHistorByUserId(userId);
+        return true;
+    }
+
 }

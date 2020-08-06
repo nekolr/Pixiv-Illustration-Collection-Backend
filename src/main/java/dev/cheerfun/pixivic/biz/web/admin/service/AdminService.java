@@ -6,7 +6,9 @@ import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
 import dev.cheerfun.pixivic.biz.web.admin.po.*;
 import dev.cheerfun.pixivic.biz.web.admin.repository.*;
+import dev.cheerfun.pixivic.biz.web.history.service.IllustHistoryService;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.TranslationUtil;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.*;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -30,6 +33,8 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
 public class AdminService {
+    private final StringRedisTemplate stringRedisTemplate;
+    private final IllustHistoryService illustHistoryService;
     private final AdminMapper adminMapper;
     private final TranslationUtil translationUtil;
     private final ObjectMapper objectMapper;
@@ -132,12 +137,29 @@ public class AdminService {
         return userRepository.findAll(Example.of(userPO), pageable);
     }
 
+    @CacheEvict(value = "users", key = "#userPO.id")
     public UserPO updateUser(UserPO userPO) {
-        return userRepository.save(userPO);
+        UserPO u = userRepository.save(userPO);
+        if (u.getIsBan() == 0) {
+            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(u.getId()));
+        }
+        return u;
     }
 
+    @CacheEvict(value = "users", key = "#userPO.id")
     public void deleteUser(UserPO userPO) {
+        //清理历史记录
+        illustHistoryService.deleteByUserId(userPO.getId());
+        //以下两个不清理 作为协同过滤数据
+        //清理画师收藏
+        //清理画作收藏
+
+        //清理画集
+        //清理讨论
+        //清理评论
+        //清理推荐
         userRepository.delete(userPO);
+
     }
 
     //评论管理
@@ -168,4 +190,9 @@ public class AdminService {
         discussionRepository.findAll().forEach(System.out::println);
     }
 
+    @CacheEvict(value = "users", key = "#userId")
+    public void banUser(Integer userId) {
+        stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userId));
+        adminMapper.banUser(userId);
+    }
 }
