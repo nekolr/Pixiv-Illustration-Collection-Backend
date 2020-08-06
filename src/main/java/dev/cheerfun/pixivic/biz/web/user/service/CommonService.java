@@ -10,29 +10,21 @@ import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
 import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.util.EmailUtil;
 import lombok.RequiredArgsConstructor;
-import org.gm4java.engine.GMException;
-import org.gm4java.engine.GMServiceException;
-import org.gm4java.engine.support.PooledGMService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.HandlerMapping;
 
-import javax.mail.MessagingException;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.file.Files;
-import java.nio.file.OpenOption;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.UUID;
 
 /**
  * @author OysterQAQ
@@ -102,6 +94,7 @@ public class CommonService {
         return user;
     }
 
+    @CacheEvict(value = "users", key = "#userId")
     public User bindQQ(String qqAccessToken, int userId) throws IOException, InterruptedException {
         String qqOpenId = getQQOpenId(qqAccessToken);
         userMapper.setQQOpenId(qqOpenId, userId);
@@ -113,16 +106,19 @@ public class CommonService {
     }
 
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict(value = "users", key = "#userId")
     public User setEmail(String email, int userId) {
         userMapper.setEmail(email, userId);
         return userMapper.queryUserByUserId(userId);
     }
 
     public int setPasswordByEmail(String password, String email) {
-        return userMapper.setPasswordByEmail(passwordUtil.encrypt(password), email);
+        //Integer result = userMapper.setPasswordByEmail(passwordUtil.encrypt(password), email);
+        User user = queryUserByEmail(email);
+        return setPasswordById(passwordUtil.encrypt(password), user.getId());
     }
 
-    public void getResetPasswordEmail(String email) throws MessagingException {
+    public void getResetPasswordEmail(String email) {
         //if (checkEmail(email)) {
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
         emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
@@ -131,7 +127,7 @@ public class CommonService {
         }*/
     }
 
-    public void getCheckEmail(String email, int userId) throws MessagingException {
+    public void getCheckEmail(String email, int userId) {
         User user = userMapper.queryUserByUserId(userId);
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
         emailUtil.sendEmail(email, user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + userId + "&email=" + email);
@@ -153,6 +149,7 @@ public class CommonService {
 
     }
 
+    @CacheEvict(value = "users", key = "#userId")
     public int setPasswordById(String password, int userId) {
         return userMapper.setPasswordById(passwordUtil.encrypt(password), userId);
     }
@@ -170,7 +167,7 @@ public class CommonService {
     }
 
     public Boolean queryEmailIsCheck(int usrId) {
-        User user = userMapper.queryUserByUserId(usrId);
+        User user = queryUser(usrId);
         if (user != null) {
             return user.getIsCheckEmail();
         }
@@ -182,6 +179,7 @@ public class CommonService {
         return user.getIsBindQQ();
     }
 
+    @Cacheable("users")
     public User queryUser(Integer userId) {
         User user = userMapper.queryUserByUserId(userId);
         if (user == null) {
@@ -191,10 +189,21 @@ public class CommonService {
                 user;
     }
 
+    public User queryUserByEmail(String emailAddr) {
+        User user = userMapper.queryUserByEmail(emailAddr);
+        if (user == null) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "用户不存在");
+        }
+        return
+                user;
+    }
+
+    @CacheEvict(value = "users", key = "#userId")
     public void updateUserInfo(int userId, User user) {
         userMapper.updateUserInfo(userId, user.getGender(), user.getSignature(), user.getLocation());
     }
 
+    @CacheEvict(value = "users", key = "#userId")
     public Boolean unbindQQ(int userId) {
         userMapper.unbindQQ(userId);
         return true;

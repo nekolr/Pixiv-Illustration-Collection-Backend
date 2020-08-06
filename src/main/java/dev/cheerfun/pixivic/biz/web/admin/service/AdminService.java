@@ -3,12 +3,9 @@ package dev.cheerfun.pixivic.biz.web.admin.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
-import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
 import dev.cheerfun.pixivic.biz.web.admin.po.*;
 import dev.cheerfun.pixivic.biz.web.admin.repository.*;
-import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
-import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.TranslationUtil;
@@ -16,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
@@ -59,33 +57,9 @@ public class AdminService {
         return keyList.contains(token);
     }
 
-    public List<User> queryUsers(UsersDTO usersDTO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
-        return adminMapper.queryUsers(usersDTO, (page - 1) * pageSize, pageSize, orderBy, orderByMode);
-    }
-
-    public Integer queryUsersTotal(UsersDTO usersDTO, Integer page, Integer pageSize) {
-        return adminMapper.queryUsersTotal(usersDTO, (page - 1) * pageSize, pageSize);
-    }
-
     @CacheEvict(value = "illust", key = "#illustDTO.id")
     public void updateIllusts(IllustDTO illustDTO) {
         adminMapper.updateIllusts(illustDTO);
-    }
-
-    public void updateUser(UsersDTO usersDTO) {
-        adminMapper.updateUser(usersDTO);
-    }
-
-    public void banUser(Integer userId) {
-        adminMapper.banUser(userId);
-    }
-
-    public List<Comment> queryComment(Comment comment, Integer page, Integer pageSize, String orderBy, String orderByMode) {
-        return adminMapper.queryComment(comment, page, pageSize, orderBy, orderByMode);
-    }
-
-    public Integer queryCommentTotal(Comment comment, Integer page, Integer pageSize) {
-        return adminMapper.queryCommentTotal(comment, page, pageSize);
     }
 
     public Illustration queryIllustrationById(Integer illustId) throws JsonProcessingException {
@@ -107,6 +81,7 @@ public class AdminService {
         return collectionRepository.findAll(Example.of(collectionPO), pageable);
     }
 
+    @CacheEvict(value = "collections", key = "#collectionPO.id")
     public CollectionPO updateCollection(CollectionPO collectionPO) {
         return collectionRepository.save(collectionPO);
     }
@@ -118,8 +93,14 @@ public class AdminService {
         return discussionRepository.findAll(Example.of(discussionPO), pageable);
     }
 
+    @CacheEvict(value = "discussions", key = "#discussionPO.id")
     public DiscussionPO updateDiscussion(DiscussionPO discussionPO) {
         return discussionRepository.save(discussionPO);
+    }
+
+    @CacheEvict(value = "sectionDiscussionCount", key = "#discussionPO.sectionId")
+    public void deleteDiscussion(DiscussionPO discussionPO) {
+        discussionRepository.deleteById(discussionPO.getId());
     }
 
     //板块管理
@@ -129,8 +110,19 @@ public class AdminService {
         return sectionRepository.findAll(Example.of(sectionPO), pageable);
     }
 
+    @CacheEvict(value = "section", allEntries = true)
+    public SectionPO addSection(SectionPO sectionPO) {
+        return sectionRepository.save(sectionPO);
+    }
+
+    @CacheEvict(value = "section", allEntries = true)
     public SectionPO updateSection(SectionPO sectionPO) {
         return sectionRepository.save(sectionPO);
+    }
+
+    @CacheEvict(value = "section", allEntries = true)
+    public void deleteSection(SectionPO sectionPO) {
+        sectionRepository.deleteById(sectionPO.getId());
     }
 
     //用户管理
@@ -144,6 +136,10 @@ public class AdminService {
         return userRepository.save(userPO);
     }
 
+    public void deleteUser(UserPO userPO) {
+        userRepository.delete(userPO);
+    }
+
     //评论管理
     public Page<CommentPO> queryComment(CommentPO commentPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
         Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
@@ -151,8 +147,20 @@ public class AdminService {
         return commentRepository.findAll(Example.of(commentPO), pageable);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "comments", key = "#commentPO.appType+#commentPO.appId"),
+            @CacheEvict(value = "topCommentsCount", key = "#commentPO.appType+#commentPO.appId")
+    })
     public CommentPO updateComment(CommentPO commentPO) {
         return commentRepository.save(commentPO);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "comments", key = "#commentPO.appType+#commentPO.appId"),
+            @CacheEvict(value = "topCommentsCount", key = "#commentPO.appType+#commentPO.appId")
+    })
+    public void deleteComment(CommentPO commentPO) {
+        commentRepository.deleteById(commentPO.getId());
     }
 
     //@PostConstruct

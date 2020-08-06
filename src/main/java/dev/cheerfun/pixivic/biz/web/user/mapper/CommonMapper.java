@@ -58,7 +58,6 @@ public interface CommonMapper {
             @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
 
     })
-        //@Cacheable(value = "user", key = "#userId")
     User queryUserByUserId(int userId);
 
     @Select("SELECT * FROM users WHERE qq_open_id=#{qqOpenId}\n")
@@ -101,4 +100,21 @@ public interface CommonMapper {
 
     @Insert("insert into user_upload_image_log (user_id,image_uuid,module_name) values (#{userId},#{uuid},#{moduleName})")
     Integer uploadModuleImageLog(Integer userId, String uuid, String moduleName);
+
+    @Select({
+            "SELECT * FROM users WHERE email= #{emailAddr} ",
+    })
+    @Results({
+            @Result(property = "id", column = "user_id"),
+            @Result(property = "isBan", column = "is_ban"),
+            @Result(property = "permissionLevel", column = "permission_level"),
+            @Result(property = "pixivAccount", column = "pixiv_account"),
+            @Result(property = "pixivPassword", column = "pixiv_password"),
+            @Result(property = "qqOpenId", column = "qq_open_id"),
+            @Result(property = "isCheckEmail", column = "is_check_email"),
+            @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+
+    })
+    User queryUserByEmail(String emailAddr);
 }
