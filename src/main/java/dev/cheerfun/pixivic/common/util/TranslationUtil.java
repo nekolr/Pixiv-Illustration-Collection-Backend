@@ -72,7 +72,7 @@ public class TranslationUtil {
     public String translateToChineseByYouDao(String keyword) {
         Map<String, String> params = new HashMap<>();
         String salt = String.valueOf(System.currentTimeMillis());
-        params.put("from", "auto");
+        params.put("from", "ja");
         params.put("to", "zh-CHS");
         params.put("signType", "v3");
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
