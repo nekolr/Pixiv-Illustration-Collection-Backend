@@ -29,7 +29,6 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
 @RequestMapping("/admin")
-@PermissionRequired(PermissionLevel.ADMIN)
 public class AdminController {
     private final AdminService adminService;
 
@@ -44,12 +43,14 @@ public class AdminController {
     }
 
     @PutMapping("/illusts/{illustId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token", required = false) String token, @RequestBody IllustDTO illustDTO) throws JsonProcessingException {
         adminService.updateIllusts(illustDTO);
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
     }
 
     @PostMapping("/collections")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<List<CollectionPO>>> queryCollection(
             @RequestBody CollectionPO collectionPO,
             @RequestParam(defaultValue = "1") Integer page,
@@ -62,6 +63,7 @@ public class AdminController {
     }
 
     @PutMapping("/collections/{collectionId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<CollectionPO>> updateCollection(
             @PathVariable Integer collectionId,
             @RequestBody CollectionPO collectionPO,
@@ -70,6 +72,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/collections/{collectionId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteCollection(
             @PathVariable Integer collectionId,
             @RequestHeader(value = "Authorization", required = false) String token) {
@@ -77,6 +80,7 @@ public class AdminController {
     }
 
     @PostMapping("/discussions")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<List<DiscussionPO>>> queryDiscussion(
             @RequestBody DiscussionPO discussionPO,
             @RequestParam(defaultValue = "1") Integer page,
@@ -89,6 +93,7 @@ public class AdminController {
     }
 
     @PutMapping("/discussions/{discussionId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<DiscussionPO>> updateDiscussion(
             @PathVariable Integer discussionId,
             @RequestBody DiscussionPO discussionPO,
@@ -97,6 +102,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/discussions/{discussionId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteDiscussion(
             @PathVariable Integer discussionId,
             @RequestHeader(value = "Authorization", required = false) String token) {
@@ -104,6 +110,7 @@ public class AdminController {
     }
 
     @PostMapping("/sections")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<List<SectionPO>>> querySection(
             @RequestBody SectionPO sectionPO,
             @RequestParam(defaultValue = "1") Integer page,
@@ -116,6 +123,7 @@ public class AdminController {
     }
 
     @PutMapping("/sections/{sectionId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<SectionPO>> updateSection(
             @PathVariable Integer sectionId,
             @RequestBody SectionPO sectionPO,
@@ -124,6 +132,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/sections/{sectionId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteSection(
             @PathVariable Integer sectionId,
             @RequestHeader(value = "Authorization", required = false) String token) {
@@ -131,6 +140,7 @@ public class AdminController {
     }
 
     @PostMapping("/users")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<List<UserPO>>> queryUsers(
             @RequestBody UserPO userPO,
             @RequestParam(defaultValue = "1") Integer page,
@@ -143,6 +153,7 @@ public class AdminController {
     }
 
     @PutMapping("/users/{userId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<UserPO>> updateUser(
             @PathVariable Integer userId,
             @RequestBody UserPO userPO,
@@ -151,6 +162,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/users/{userId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteUser(
             @PathVariable Integer userId,
             @RequestHeader(value = "Authorization", required = false) String token) {
@@ -158,6 +170,7 @@ public class AdminController {
     }
 
     @PostMapping("/comments")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<List<CommentPO>>> queryComments(
             @RequestBody CommentPO commentPO,
             @RequestParam(defaultValue = "1") Integer page,
@@ -170,6 +183,7 @@ public class AdminController {
     }
 
     @PutMapping("/comments/{commentId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<CommentPO>> updateComment(
             @PathVariable Integer commentId,
             @RequestBody CommentPO commentPO,
@@ -178,6 +192,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/comments/{commentId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteComment(
             @PathVariable Integer commentId,
             @RequestHeader(value = "Authorization", required = false) String token) {
