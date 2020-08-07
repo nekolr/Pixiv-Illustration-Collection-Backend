@@ -4,11 +4,11 @@ server:
 #    connection-timeout: 5000
 spring:
 #  profiles:
-#    active: mac
-  data:
-    redis:
-      repositories:
-        enabled: false
+  #    active: mac
+  #  data:
+  #    redis:
+  #      repositories:
+  #        enabled: false
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
