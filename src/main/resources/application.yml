@@ -5,10 +5,10 @@ server:
 spring:
 #  profiles:
   #    active: mac
-  #  data:
-  #    redis:
-  #      repositories:
-  #        enabled: false
+  data:
+    redis:
+      repositories:
+        enabled: false
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
