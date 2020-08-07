@@ -3,8 +3,8 @@ server:
 #  tomcat:
 #    connection-timeout: 5000
 spring:
-  profiles:
-    active: mac
+#  profiles:
+  #    active: mac
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
