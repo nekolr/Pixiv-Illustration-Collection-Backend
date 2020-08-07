@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.common.util;
 
-import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
@@ -32,7 +31,7 @@ public class TranslationUtil {
     private final HttpClient httpClient;
 
     @Cacheable(value = "translateToJP")
-    public String translateToJapaneseByYouDao(@SensitiveCheck String keyword) {
+    public String translateToJapaneseByYouDao(String keyword) {
         Map<String, String> params = new HashMap<>();
         String salt = String.valueOf(System.currentTimeMillis());
         params.put("from", "auto");
@@ -70,7 +69,7 @@ public class TranslationUtil {
     }
 
     @Cacheable(value = "translateToCN")
-    public String translateToChineseByYouDao(@SensitiveCheck String keyword) {
+    public String translateToChineseByYouDao(String keyword) {
         Map<String, String> params = new HashMap<>();
         String salt = String.valueOf(System.currentTimeMillis());
         params.put("from", "auto");
