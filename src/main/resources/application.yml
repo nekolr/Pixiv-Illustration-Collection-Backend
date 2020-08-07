@@ -5,9 +5,16 @@ server:
 spring:
 #  profiles:
   #    active: mac
+  data:
+    redis:
+      repositories:
+        enabled: false
   jpa:
     show-sql: true
     database-platform: org.hibernate.dialect.MySQL8Dialect
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
   servlet:
     multipart:
       max-file-size: 20MB
