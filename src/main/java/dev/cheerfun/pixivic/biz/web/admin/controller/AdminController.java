@@ -33,7 +33,6 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/illusts/{illustId}")
-    @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token", required = false) String token) throws JsonProcessingException {
         if (adminService.validateKey(token)) {
             log.info("管理员key:" + token + ",开始获取画作(" + illustId + ")详情");
