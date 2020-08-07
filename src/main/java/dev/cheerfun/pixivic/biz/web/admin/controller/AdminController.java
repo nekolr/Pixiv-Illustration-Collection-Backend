@@ -29,10 +29,12 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
 @RequestMapping("/admin")
+@PermissionRequired(PermissionLevel.ADMIN)
 public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/illusts/{illustId}")
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token", required = false) String token) throws JsonProcessingException {
         if (adminService.validateKey(token)) {
             log.info("管理员key:" + token + ",开始获取画作(" + illustId + ")详情");
@@ -42,7 +44,6 @@ public class AdminController {
     }
 
     @PutMapping("/illusts/{illustId}")
-    @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token", required = false) String token, @RequestBody IllustDTO illustDTO) throws JsonProcessingException {
         adminService.updateIllusts(illustDTO);
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));

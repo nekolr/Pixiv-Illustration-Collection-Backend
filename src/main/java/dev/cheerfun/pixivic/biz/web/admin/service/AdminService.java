@@ -200,6 +200,8 @@ public class AdminService {
 
     //@PostConstruct
     public void test() {
+        stringRedisTemplate.opsForValue().set("a", "b");
+        System.out.println(stringRedisTemplate.opsForValue().get("a"));
         commentRepository.findAll().forEach(System.out::println);
     }
 
