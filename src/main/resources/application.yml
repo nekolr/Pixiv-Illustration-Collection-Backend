@@ -3,16 +3,15 @@ server:
 #  tomcat:
 #    connection-timeout: 5000
 spring:
+  profiles:
+    active: mac
   jpa:
     show-sql: true
-    hibernate:
-      ddl-auto: update
+    database-platform: org.hibernate.dialect.MySQL8Dialect
   servlet:
     multipart:
       max-file-size: 20MB
       max-request-size: 100MB
-  #  profiles:
-  #    active: mac
   mail:
     host: smtpdm.aliyun.com
     username: admin@mail.cheerfun.dev

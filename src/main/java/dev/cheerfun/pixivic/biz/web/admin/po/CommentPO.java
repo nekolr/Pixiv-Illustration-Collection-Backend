@@ -45,7 +45,7 @@ public class CommentPO {
     private LocalDateTime createDate;
     @Column(name = "liked_count")
     private Integer likedCount;
-    @Column(name = "is_like")
+    @Transient
     private Boolean isLike = false;
     @Transient
     private List<CommentPO> subCommentList;

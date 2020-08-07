@@ -3,20 +3,21 @@ package dev.cheerfun.pixivic.biz.web.admin.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
-import dev.cheerfun.pixivic.biz.web.admin.dto.UsersDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
 import dev.cheerfun.pixivic.biz.web.admin.po.*;
 import dev.cheerfun.pixivic.biz.web.admin.repository.*;
-import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
-import dev.cheerfun.pixivic.biz.web.common.po.User;
+import dev.cheerfun.pixivic.biz.web.history.service.IllustHistoryService;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.*;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -32,6 +33,8 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Slf4j
 public class AdminService {
+    private final StringRedisTemplate stringRedisTemplate;
+    private final IllustHistoryService illustHistoryService;
     private final AdminMapper adminMapper;
     private final TranslationUtil translationUtil;
     private final ObjectMapper objectMapper;
@@ -59,33 +62,9 @@ public class AdminService {
         return keyList.contains(token);
     }
 
-    public List<User> queryUsers(UsersDTO usersDTO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
-        return adminMapper.queryUsers(usersDTO, (page - 1) * pageSize, pageSize, orderBy, orderByMode);
-    }
-
-    public Integer queryUsersTotal(UsersDTO usersDTO, Integer page, Integer pageSize) {
-        return adminMapper.queryUsersTotal(usersDTO, (page - 1) * pageSize, pageSize);
-    }
-
     @CacheEvict(value = "illust", key = "#illustDTO.id")
     public void updateIllusts(IllustDTO illustDTO) {
         adminMapper.updateIllusts(illustDTO);
-    }
-
-    public void updateUser(UsersDTO usersDTO) {
-        adminMapper.updateUser(usersDTO);
-    }
-
-    public void banUser(Integer userId) {
-        adminMapper.banUser(userId);
-    }
-
-    public List<Comment> queryComment(Comment comment, Integer page, Integer pageSize, String orderBy, String orderByMode) {
-        return adminMapper.queryComment(comment, page, pageSize, orderBy, orderByMode);
-    }
-
-    public Integer queryCommentTotal(Comment comment, Integer page, Integer pageSize) {
-        return adminMapper.queryCommentTotal(comment, page, pageSize);
     }
 
     public Illustration queryIllustrationById(Integer illustId) throws JsonProcessingException {
@@ -107,8 +86,15 @@ public class AdminService {
         return collectionRepository.findAll(Example.of(collectionPO), pageable);
     }
 
+    @CacheEvict(value = "collections", key = "#collectionPO.id")
     public CollectionPO updateCollection(CollectionPO collectionPO) {
         return collectionRepository.save(collectionPO);
+    }
+
+    @CacheEvict(value = "collections", key = "#collectionId")
+    public Boolean deleteCollection(Integer collectionId) {
+        collectionRepository.deleteById(collectionId);
+        return true;
     }
 
     //讨论管理
@@ -118,8 +104,15 @@ public class AdminService {
         return discussionRepository.findAll(Example.of(discussionPO), pageable);
     }
 
+    @CacheEvict(value = "discussions", key = "#discussionPO.id")
     public DiscussionPO updateDiscussion(DiscussionPO discussionPO) {
         return discussionRepository.save(discussionPO);
+    }
+
+    @CacheEvict(value = "sectionDiscussionCount", key = "#discussionId")
+    public Boolean deleteDiscussion(Integer discussionId) {
+        discussionRepository.deleteById(discussionId);
+        return true;
     }
 
     //板块管理
@@ -129,8 +122,20 @@ public class AdminService {
         return sectionRepository.findAll(Example.of(sectionPO), pageable);
     }
 
+    @CacheEvict(value = "section", allEntries = true)
+    public SectionPO addSection(SectionPO sectionPO) {
+        return sectionRepository.save(sectionPO);
+    }
+
+    @CacheEvict(value = "section", allEntries = true)
     public SectionPO updateSection(SectionPO sectionPO) {
         return sectionRepository.save(sectionPO);
+    }
+
+    @CacheEvict(value = "section", allEntries = true)
+    public Boolean deleteSection(Integer sectionId) {
+        sectionRepository.deleteById(sectionId);
+        return true;
     }
 
     //用户管理
@@ -140,8 +145,29 @@ public class AdminService {
         return userRepository.findAll(Example.of(userPO), pageable);
     }
 
+    @CacheEvict(value = "users", key = "#userPO.id")
     public UserPO updateUser(UserPO userPO) {
-        return userRepository.save(userPO);
+        UserPO u = userRepository.save(userPO);
+        if (u.getIsBan() == 0) {
+            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(u.getId()));
+        }
+        return u;
+    }
+
+    @CacheEvict(value = "users", key = "#userId")
+    public Boolean deleteUser(Integer userId) {
+        //清理历史记录
+        illustHistoryService.deleteByUserId(userId);
+        //以下两个不清理 作为协同过滤数据
+        //清理画师收藏
+        //清理画作收藏
+
+        //清理画集
+        //清理讨论
+        //清理评论
+        //清理推荐
+        userRepository.deleteById(userId);
+        return true;
     }
 
     //评论管理
@@ -151,13 +177,35 @@ public class AdminService {
         return commentRepository.findAll(Example.of(commentPO), pageable);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "comments", key = "#commentPO.appType+#commentPO.appId"),
+            @CacheEvict(value = "topCommentsCount", key = "#commentPO.appType+#commentPO.appId")
+    })
     public CommentPO updateComment(CommentPO commentPO) {
         return commentRepository.save(commentPO);
     }
 
-    //@PostConstruct
-    public void test() {
-        discussionRepository.findAll().forEach(System.out::println);
+    @Caching(evict = {
+            @CacheEvict(value = "comments", key = "#commentPO.appType+#commentPO.appId"),
+            @CacheEvict(value = "topCommentsCount", key = "#commentPO.appType+#commentPO.appId")
+    })
+    public Boolean deleteComment(CommentPO commentPO) {
+        commentRepository.deleteById(commentPO.getId());
+        return true;
     }
 
+    public CommentPO queryCommentById(Integer commentId) {
+        return commentRepository.getOne(commentId);
+    }
+
+    //@PostConstruct
+    public void test() {
+        commentRepository.findAll().forEach(System.out::println);
+    }
+
+    @CacheEvict(value = "users", key = "#userId")
+    public void banUser(Integer userId) {
+        stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userId));
+        adminMapper.banUser(userId);
+    }
 }

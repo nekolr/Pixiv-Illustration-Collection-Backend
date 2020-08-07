@@ -75,7 +75,7 @@ public class DiscussionService {
     }
 
     //详细
-    @Cacheable("discussion")
+    @Cacheable("discussions")
     public Discussion queryByIdFromDb(Integer discussionId) {
         return discussionMapper.queryById(discussionId);
     }

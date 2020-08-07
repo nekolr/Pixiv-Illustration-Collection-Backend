@@ -16,7 +16,10 @@ public interface IllustHistoryMapper {
     Integer insertToTemp(IllustHistory illustHistory);
 
     @Delete("delete from illust_history where create_at < (SELECT DATE_ADD(now(),INTERVAL -6 MONTH))")
-    void deleteIllustHistory();
+    Integer deleteIllustHistory();
+
+    @Delete("delete from illust_history where user_id =#{userId}")
+    Integer deleteIllustHistorByUserId(Integer userId);
 
     @Select("REPLACE INTO illust_history( `user_id`, `illust_id`, `create_at` ) SELECT user_id,illust_id,create_at FROM illust_history_temp where user_id is not null  order by temp_id")
     void tempToIllustHistory();
