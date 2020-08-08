@@ -549,7 +549,7 @@ public class EmailUtil {
                         MimeMessage message = mailSender.createMimeMessage();
                         MimeMessageHelper helper = null;
                         helper = new MimeMessageHelper(message, true);
-                        helper.setFrom("Pixivic.com<admin@mail.cheerfun.dev>");
+                        helper.setFrom("Pixivic.com<admin@cheerfun.dev>");
                         helper.setTo(email.getEmailAddr());
                         helper.setSubject("来自Pixivic.com的信息");
                         helper.setText(p1 + email.getTo() + p2 + email.getFrom() + p3 + email.getContent() + p4 + email.getLink() + p5, true);
@@ -558,10 +558,8 @@ public class EmailUtil {
                     } else {
                         log.error(email.getEmailAddr() + "非法邮件地址");
                     }
-                } catch (MessagingException e) {
+                } catch (Exception e) {
                     log.error("发送给" + email.getEmailAddr() + "邮件发送失败");
-                    e.printStackTrace();
-                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }

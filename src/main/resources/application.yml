@@ -3,8 +3,8 @@ server:
 #  tomcat:
 #    connection-timeout: 5000
 spring:
-#  profiles:
-#    active: mac
+  profiles:
+    active: mac
   data:
     redis:
       repositories:
@@ -20,16 +20,15 @@ spring:
       max-file-size: 20MB
       max-request-size: 100MB
   mail:
-    host: smtpdm.aliyun.com
-    username: admin@mail.cheerfun.dev
-    password: CheerfunDEV123
+    host: mail
+    username: admin@cheerfun.dev
+    password: Cheerfun.dev
     protocol: smtp
     properties:
       mail:
         smtp:
-          connectiontimeout: 3000
-          writetimeout: 3000
-          timeout: 3000
+          connectiontimeout: 5000
+          timeout: 5000
           auth: true
           starttls:
             enable: true
