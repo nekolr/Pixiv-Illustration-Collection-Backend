@@ -83,11 +83,11 @@ public interface CommonMapper {
     @Update("update users set email=#{email} , is_check_email=1 where user_id=#{userId}")
     Integer setEmail(String email, int userId);
 
-    @Update("update users set password=#{password},is_check_email=1 where email=#{email}")
+    @Update("update users set password=#{password} where email=#{email}")
     Integer setPasswordByEmail(String password, String email);
 
-    @Update("update users set password=#{password} where user_id=#{userId}")
-    Integer setPasswordById(String password, int userId);
+    @Update("update users set password=#{password} ,is_check_email=1 where user_id=#{userId}")
+    Integer setPasswordById(String password, Integer userId);
 
     @Update("update users set gender=#{gender} ,signature=#{signature},location=#{location}  where user_id=#{userId}")
     Integer updateUserInfo(int userId, Integer gender, String signature, String location);
