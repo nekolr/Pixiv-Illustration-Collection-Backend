@@ -4,7 +4,7 @@ server:
 #    connection-timeout: 5000
 spring:
 #  profiles:
-  #    active: mac
+#    active: mac
   data:
     redis:
       repositories:
@@ -28,7 +28,7 @@ spring:
       mail:
         smtp:
           connectiontimeout: 50000
-          timeout: 50000
+          timeout: 5000
           auth: true
           starttls:
             enable: true

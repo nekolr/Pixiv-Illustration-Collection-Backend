@@ -39,7 +39,7 @@ public class TranslationUtil {
         params.put("signType", "v3");
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
         params.put("curtime", curtime);
-        String signStr = "6f8d12eb52dab6e2" + YouDaoTranslatedUtil.truncate(keyword) + salt + curtime + "B1VBsUhi3G7u4H17tncOwtGi93J2y1cX";
+        String signStr = "6f8d12eb52dab6e2" + YouDaoTranslatedUtil.truncate(keyword) + salt + curtime + "FCTSvDZueYlrnOYVTgdzHJFR3d9b5lZc";
         String sign = YouDaoTranslatedUtil.getDigest(signStr);
         params.put("appKey", "6f8d12eb52dab6e2");
         params.put("q", URLEncoder.encode(keyword, StandardCharsets.UTF_8));
@@ -77,7 +77,7 @@ public class TranslationUtil {
         params.put("signType", "v3");
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
         params.put("curtime", curtime);
-        String signStr = "6f8d12eb52dab6e2" + YouDaoTranslatedUtil.truncate(keyword) + salt + curtime + "B1VBsUhi3G7u4H17tncOwtGi93J2y1cX";
+        String signStr = "6f8d12eb52dab6e2" + YouDaoTranslatedUtil.truncate(keyword) + salt + curtime + "FCTSvDZueYlrnOYVTgdzHJFR3d9b5lZc";
         String sign = YouDaoTranslatedUtil.getDigest(signStr);
         params.put("appKey", "6f8d12eb52dab6e2");
         params.put("q", URLEncoder.encode(keyword, StandardCharsets.UTF_8));
