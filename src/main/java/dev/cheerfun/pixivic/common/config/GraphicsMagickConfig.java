@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2020/7/27 4:00 下午
  * @description GraphicsMagickConfig
  */
-@Configuration
+//@Configuration
 @Slf4j
 public class GraphicsMagickConfig {
     @Bean
