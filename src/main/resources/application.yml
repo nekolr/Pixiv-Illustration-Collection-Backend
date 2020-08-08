@@ -20,9 +20,9 @@ spring:
       max-file-size: 20MB
       max-request-size: 100MB
   mail:
-    host: mail
-    username: admin@cheerfun.dev
-    password: Cheerfun.dev
+    host: smtp.office365.com
+    username: oysterqaq@biuz.xyz
+    password: Linhao199741
     protocol: smtp
     properties:
       mail:
@@ -34,10 +34,10 @@ spring:
             enable: true
             required: true
           socketFactory:
-            port: 465
+            port: 587
             class: javax.net.ssl.SSLSocketFactory
     test-connection: true
-    port: 465
+    port: 587
   redis:
     jedis:
       pool:
