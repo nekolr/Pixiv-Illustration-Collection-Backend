@@ -162,12 +162,17 @@ public class ArtistBizService {
                 Integer artistId = null;
                 try {
                     artistId = waitForPullArtistInfoQueue.take();
-                    log.info("开始从Pixiv获取画师(id:" + artistId + ")信息");
-                    artistService.pullArtistsInfo(artistId);
-                    log.info("获取画师(id:" + artistId + ")信息完毕");
-                    artistService.pullArtistAllIllust(artistId);
+                    if (!stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_NOT_IN_PIXIV, String.valueOf(artistId))) {
+                        log.info("开始从Pixiv获取画师(id:" + artistId + ")信息");
+                        artistService.pullArtistsInfo(artistId);
+                        log.info("获取画师(id:" + artistId + ")信息完毕");
+                        artistService.pullArtistAllIllust(artistId);
+                    } else {
+                        log.info("画师(id:" + artistId + ")信息在Pixiv上不存在，跳过");
+                    }
                 } catch (Exception exception) {
                     log.error("获取画师(id:" + artistId + ")信息失败");
+                    stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_NOT_IN_PIXIV, String.valueOf(artistId));
                     exception.printStackTrace();
                 }
             }
