@@ -22,7 +22,7 @@ public class ExecutorServiceConfig {
                 40,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024 * 10),
+                new LinkedBlockingQueue<>(1024 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
@@ -36,7 +36,7 @@ public class ExecutorServiceConfig {
                 40,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024),
+                new LinkedBlockingQueue<>(1024 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
@@ -50,7 +50,7 @@ public class ExecutorServiceConfig {
                 5,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024),
+                new LinkedBlockingQueue<>(1024 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
@@ -64,7 +64,7 @@ public class ExecutorServiceConfig {
                 40,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024),
+                new LinkedBlockingQueue<>(1024 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
@@ -78,7 +78,7 @@ public class ExecutorServiceConfig {
                 40,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024 * 10),
+                new LinkedBlockingQueue<>(1024 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
@@ -92,7 +92,7 @@ public class ExecutorServiceConfig {
                 10,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024 * 10),
+                new LinkedBlockingQueue<>(1024 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
