@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -117,11 +118,17 @@ public class TranslationUtil {
                 .GET()
                 .build();
         try {
-            httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
+            String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
+            System.out.println(body);
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
         return "";
+    }
+
+    @PostConstruct
+    public void test() {
+        translateToChineseByBaidu("star");
     }
 
     private Map<String, String> buildParams(String query, String from, String to) {
