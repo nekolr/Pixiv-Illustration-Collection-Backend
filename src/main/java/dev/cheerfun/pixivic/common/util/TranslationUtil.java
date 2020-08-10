@@ -28,6 +28,10 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TranslationUtil {
+
+    public static final String appid = "20200810000539396";
+    public static final String securityKey = "moKfaw4ozBRPNMGTtQzR";
+
     private final HttpClient httpClient;
 
     @Cacheable(value = "translateToJP")
@@ -104,5 +108,20 @@ public class TranslationUtil {
         }
         //throw new SearchException(HttpStatus.BAD_REQUEST, "自动翻译失败");
         return "";
+    }
+
+    private Map<String, String> buildParams(String query, String from, String to) {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("q", query);
+        params.put("from", from);
+        params.put("to", to);
+        params.put("appid", appid);
+        // 随机数
+        String salt = String.valueOf(System.currentTimeMillis());
+        params.put("salt", salt);
+        // 签名
+        String src = appid + query + salt + securityKey; // 加密前的原文
+        params.put("sign", MD5.md5(src));
+        return params;
     }
 }
