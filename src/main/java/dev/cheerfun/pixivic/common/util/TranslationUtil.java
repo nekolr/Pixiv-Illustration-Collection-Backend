@@ -126,9 +126,9 @@ public class TranslationUtil {
         return "";
     }
 
-    @PostConstruct
+    //@PostConstruct
     public void test() {
-        translateToChineseByBaidu("star");
+        translateToChineseByBaidu("オリジナル美少女");
     }
 
     private Map<String, String> buildParams(String query, String from, String to) {
