@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -107,6 +108,19 @@ public class TranslationUtil {
             return keywordTranslated.get(0);
         }
         //throw new SearchException(HttpStatus.BAD_REQUEST, "自动翻译失败");
+        return "";
+    }
+
+    public String translateToChineseByBaidu(String keyword) {
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create("http://api.fanyi.baidu.com/api/trans/vip/translate?" + RequestUtil.getPostEntity(buildParams(keyword, "auto", "zh"))))
+                .GET()
+                .build();
+        try {
+            httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+        }
         return "";
     }
 
