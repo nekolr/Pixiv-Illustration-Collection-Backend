@@ -44,6 +44,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -65,7 +66,12 @@ public class SearchService {
     private final PixivSuggestionMapper pixivSuggestionMapper;
     private final IllustrationMapper illustrationMapper;
     private final IllustrationBizService illustrationBizService;
+    private final ExecutorService saveToDBExecutorService;
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
+
+    public void init() {
+        savePixivSuggestionToDb();
+    }
 
     @Cacheable(value = "candidateWords")
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(@SensitiveCheck String keyword) {
@@ -133,29 +139,35 @@ public class SearchService {
         // throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "暂时不可用");
     }
 
-    @Scheduled(cron = "0 0/5 * * * ? ")
-    void savePixivSuggestionToDb() {
-        final HashMap<String, List<SearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
-        waitSaveToDb.clear();
-        //持久化
-        if (!temp.isEmpty()) {
-            temp.keySet().forEach(e -> {
-                List<Tag> searchSuggestions = temp.get(e).stream().map(t -> new Tag(t.getKeyword(), t.getKeywordTranslated())).collect(Collectors.toList());
-                pixivSuggestionMapper.insert(e, searchSuggestions);
-
-            });
-            //取出没有id的suggest
-            List<Tag> tags = pixivSuggestionMapper.queryByNoSuggestId().stream().map(SearchSuggestionSyncDTO::getSearchSuggestion).collect(Collectors.toList());
-            if (tags.size() > 0) {
-                illustrationMapper.insertTag(tags);
-                //获取标签id并写回
-                tags.forEach(tag -> {
-                    Long tagId = illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName());
-                    pixivSuggestionMapper.updateSuggestionTagId(tag, tagId);
-                });
+    public void savePixivSuggestionToDb() {
+        saveToDBExecutorService.submit(() -> {
+            while (true) {
+                try {
+                    final HashMap<String, List<SearchSuggestion>> temp = new HashMap<>(waitSaveToDb);
+                    waitSaveToDb.clear();
+                    //持久化
+                    if (!temp.isEmpty()) {
+                        temp.keySet().forEach(e -> {
+                            List<Tag> searchSuggestions = temp.get(e).stream().map(t -> new Tag(t.getKeyword(), t.getKeywordTranslated())).collect(Collectors.toList());
+                            pixivSuggestionMapper.insert(e, searchSuggestions);
+                        });
+                        //取出没有id的suggest
+                        List<Tag> tags = pixivSuggestionMapper.queryByNoSuggestId().stream().map(SearchSuggestionSyncDTO::getSearchSuggestion).collect(Collectors.toList());
+                        if (tags.size() > 0) {
+                            illustrationMapper.insertTag(tags);
+                            //获取标签id并写回
+                            tags.forEach(tag -> {
+                                Long tagId = illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName());
+                                pixivSuggestionMapper.updateSuggestionTagId(tag, tagId);
+                            });
+                        }
+                    }
+                    Thread.sleep(1000 * 60 * 5);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        }
-
+        });
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
