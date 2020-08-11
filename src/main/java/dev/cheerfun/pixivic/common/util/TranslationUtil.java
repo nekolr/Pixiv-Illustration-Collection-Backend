@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.common.util;
 
-import dev.cheerfun.pixivic.biz.web.common.util.YouDaoTranslatedUtil;
-import dev.cheerfun.pixivic.biz.web.search.domain.response.YoudaoTranslatedResponse;
+import dev.cheerfun.pixivic.common.util.dto.BaiduTranslatedResponse;
+import dev.cheerfun.pixivic.common.util.dto.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,6 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -118,15 +117,15 @@ public class TranslationUtil {
                 .GET()
                 .build();
         try {
-            String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-            System.out.println(body);
-        } catch (IOException | InterruptedException e) {
+            BaiduTranslatedResponse body = (BaiduTranslatedResponse) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(BaiduTranslatedResponse.class)).body();
+            return body.getTransResult().get(0).getDst();
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return "";
     }
 
-    //@PostConstruct
+    @PostConstruct
     public void test() {
         translateToChineseByBaidu("オリジナル美少女");
     }

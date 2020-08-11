@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.common.util;
+package dev.cheerfun.pixivic.common.util;
 
 import org.springframework.stereotype.Component;
 

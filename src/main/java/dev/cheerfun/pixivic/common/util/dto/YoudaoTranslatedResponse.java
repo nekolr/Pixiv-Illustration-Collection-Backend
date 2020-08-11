@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.search.domain.response;
+package dev.cheerfun.pixivic.common.util.dto;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
