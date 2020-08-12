@@ -5,10 +5,12 @@ import dev.cheerfun.pixivic.biz.web.user.mapper.AnnouncementMapper;
 import dev.cheerfun.pixivic.biz.web.user.po.Announcement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -28,11 +30,44 @@ public class AnnouncementService {
         }
     }
 
-    public List<Announcement> query(int userId, String date) {
-        List<Announcement> announcements = announcementMapper.query(date);
+    public List<Announcement> queryByDate(String date) {
+        List<Announcement> announcements = loadList(queryIdByDate(date));
         if (announcements.size() == 0) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "暂无系统公告");
         }
         return announcements;
     }
+
+    @Cacheable("dailyAnnouncements")
+    public List<Integer> queryIdByDate(String date) {
+        return announcementMapper.queryByDate(date);
+    }
+
+    public List<Announcement> queryList(Integer page, Integer pageSize) {
+        List<Announcement> announcements = loadList(queryIdList(page, pageSize));
+        if (announcements.size() == 0) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "暂无系统公告");
+        }
+        return announcements;
+    }
+
+    @Cacheable("announcementList")
+    public List<Integer> queryIdList(Integer page, Integer pageSize) {
+        return announcementMapper.queryList((page - 1) * pageSize, pageSize);
+    }
+
+    @Cacheable("announcementListCount")
+    public Integer queryListCount() {
+        return announcementMapper.queryListCount();
+    }
+
+    @Cacheable("announcements")
+    public Announcement queryById(Integer id) {
+        return announcementMapper.queryById(id);
+    }
+
+    public List<Announcement> loadList(List<Integer> idList) {
+        return idList.stream().map(this::queryById).collect(Collectors.toList());
+    }
+
 }

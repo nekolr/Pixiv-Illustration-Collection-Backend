@@ -43,6 +43,7 @@ public class AdminService {
     private final SectionRepository sectionRepository;
     private final CommentRepository commentRepository;
     private final CollectionRepository collectionRepository;
+    private final AnnouncementRepository announcementRepository;
     private final IllustrationBizService illustrationBizService;
     private List<String> keyList;
 
@@ -209,5 +210,41 @@ public class AdminService {
     public void banUser(Integer userId) {
         stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userId));
         adminMapper.banUser(userId);
+    }
+
+    public Page<AnnouncementPO> queryAnnouncement(AnnouncementPO announcementPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        return announcementRepository.findAll(Example.of(announcementPO), pageable);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "announcements", key = "#announcementPO.id"),
+            @CacheEvict(value = "dailyAnnouncements", allEntries = true),
+            @CacheEvict(value = "announcementListCount", allEntries = true),
+            @CacheEvict(value = "announcements", allEntries = true)
+    })
+    public AnnouncementPO updateAnnouncement(AnnouncementPO announcementPO) {
+        return announcementRepository.save(announcementPO);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "dailyAnnouncements", allEntries = true),
+            @CacheEvict(value = "announcementListCount", allEntries = true),
+            @CacheEvict(value = "announcements", allEntries = true)
+    })
+    public AnnouncementPO createAnnouncement(AnnouncementPO announcementPO) {
+        return announcementRepository.save(announcementPO);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "announcements", key = "#announcementPO.id"),
+            @CacheEvict(value = "dailyAnnouncements", allEntries = true),
+            @CacheEvict(value = "announcementListCount", allEntries = true),
+            @CacheEvict(value = "announcements", allEntries = true)
+    })
+    public Boolean deleteAnnouncement(Integer announcementId) {
+        announcementRepository.deleteById(announcementId);
+        return true;
     }
 }

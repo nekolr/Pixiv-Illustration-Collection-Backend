@@ -198,6 +198,44 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("删除评论成功", adminService.deleteComment(adminService.queryCommentById(commentId))));
     }
 
+    @PostMapping("/announcements")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<List<AnnouncementPO>>> queryAnnouncements(
+            @RequestBody AnnouncementPO announcementPO,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "30") Integer pageSize,
+            @RequestParam(defaultValue = "id") String orderBy,
+            @RequestParam(defaultValue = "asc") String orderByMode,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        Page<AnnouncementPO> announcementPOS = adminService.queryAnnouncement(announcementPO, page, pageSize, orderBy, orderByMode);
+        return ResponseEntity.ok().body(new Result<>("获取公告列表成功", announcementPOS.getTotalPages(), announcementPOS.getContent()));
+    }
+
+    @PutMapping("/announcements/{announcementId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<AnnouncementPO>> updateAnnouncement(
+            @PathVariable Integer announcementId,
+            @RequestBody AnnouncementPO announcementPO,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("更新公告成功", adminService.updateAnnouncement(announcementPO)));
+    }
+
+    @PostMapping("/announcements")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<AnnouncementPO>> createAnnouncement(
+            @RequestBody AnnouncementPO announcementPO,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("发布公告成功", adminService.createAnnouncement(announcementPO)));
+    }
+
+    @DeleteMapping("/announcements/{announcementId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> deleteAnnouncement(
+            @PathVariable Integer announcementId,
+            @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("删除公告成功", adminService.deleteAnnouncement(announcementId)));
+    }
+
 //    @PutMapping("/illusts")
 //    public ResponseEntity<Result<User>> updateIllusts(@RequestBody @Valid IllustDTO illustDTO, @RequestHeader(value = "Authorization", required = false) String token) {
 //        adminService.updateIllusts(illustDTO);

@@ -2,6 +2,8 @@ package dev.cheerfun.pixivic.biz.web.user.po;
 
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 /**
  * @author OysterQAQ
  * @version 1.0
@@ -10,9 +12,10 @@ import lombok.Data;
  */
 @Data
 public class Announcement {
-    private int announcementId;
+    private Integer id;
     private String title;
     private String content;
-    private String date;
-    private int isPop;//0\1
+    private LocalDateTime startDate;
+    private LocalDateTime endDate;
+    private LocalDateTime createDate;
 }

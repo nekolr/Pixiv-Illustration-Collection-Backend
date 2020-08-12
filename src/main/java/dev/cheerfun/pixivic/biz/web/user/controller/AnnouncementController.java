@@ -4,14 +4,13 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.user.po.Announcement;
 import dev.cheerfun.pixivic.biz.web.user.service.AnnouncementService;
-import dev.cheerfun.pixivic.common.constant.AuthConstant;
-import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -33,10 +32,13 @@ public class AnnouncementController {
         return ResponseEntity.ok().body(new Result<>("公告发布成功"));
     }
 
-    @GetMapping
-    @PermissionRequired
-    public ResponseEntity<Result<List<Announcement>>> query(@RequestHeader("Authorization") String token, @RequestParam String date) {
-        return ResponseEntity.ok().body(new Result<>("获取系统公告成功", announcementService.query((int) AppContext.get().get(AuthConstant.USER_ID), date)));
+    @GetMapping("/today")
+    public ResponseEntity<Result<List<Announcement>>> queryByDate() {
+        return ResponseEntity.ok().body(new Result<>("获取系统公告成功", announcementService.queryByDate(LocalDate.now().toString())));
     }
 
+    @GetMapping
+    public ResponseEntity<Result<List<Announcement>>> queryList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResponseEntity.ok().body(new Result<>("获取系统公告成功", announcementService.queryByDate(LocalDate.now().toString())));
+    }
 }
