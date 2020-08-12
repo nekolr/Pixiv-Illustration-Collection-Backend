@@ -69,7 +69,7 @@ public class AdminService {
 
     public Illustration queryIllustrationById(Integer illustId) throws JsonProcessingException {
         Illustration illustration = objectMapper.readValue(objectMapper.writeValueAsString(illustrationBizService.queryIllustrationById(illustId)), Illustration.class);
-        illustration.setTitle("【" + translationUtil.translateToChineseByYouDao(illustration.getTitle()) + "】" + illustration.getTitle());
+        illustration.setTitle("【" + translationUtil.translateToChineseByAzure(illustration.getTitle()) + "】" + illustration.getTitle());
         /*illustration.getTags().forEach(e -> {
             if (e.getTranslatedName() == null || "".equals(e.getTranslatedName())) {
                 e.setTranslatedName(translationUtil.translateToChineseByYouDao(e.getName()));

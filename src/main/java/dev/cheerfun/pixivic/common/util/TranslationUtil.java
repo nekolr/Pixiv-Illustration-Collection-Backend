@@ -1,5 +1,9 @@
 package dev.cheerfun.pixivic.common.util;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
+import dev.cheerfun.pixivic.common.util.dto.AzureTranslatedResponse;
 import dev.cheerfun.pixivic.common.util.dto.BaiduTranslatedResponse;
 import dev.cheerfun.pixivic.common.util.dto.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
@@ -15,6 +19,7 @@ import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
@@ -34,6 +39,7 @@ public class TranslationUtil {
     public static final String securityKey = "moKfaw4ozBRPNMGTtQzR";
 
     private final HttpClient httpClient;
+    private final ObjectMapper objectMapper;
 
     @Cacheable(value = "translateToJP")
     public String translateToJapaneseByYouDao(String keyword) {
@@ -125,9 +131,28 @@ public class TranslationUtil {
         return "";
     }
 
+    public String translateToChineseByAzure(String keyword) {
+        HttpRequest httpRequest = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-Hans"))
+                .header("Ocp-Apim-Subscription-Key", "834a11346f9247c3a569e8f8d3851ea9")
+                .header("Ocp-Apim-Subscription-Region", "eastasia")
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString("[{\n\t\"Text\": \"" + keyword + "\"\n}]"))
+                .build();
+        try {
+            String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
+            List<AzureTranslatedResponse> azureTranslatedResponses = objectMapper.readValue(body, new TypeReference<List<AzureTranslatedResponse>>() {
+            });
+            return azureTranslatedResponses.get(0).getTransResult().get(0).getDst();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
     @PostConstruct
     public void test() {
-        translateToChineseByBaidu("オリジナル美少女");
+        System.out.println(translateToChineseByAzure("オリジナル美少女"));
     }
 
     private Map<String, String> buildParams(String query, String from, String to) {

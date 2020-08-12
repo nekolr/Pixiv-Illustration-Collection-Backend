@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.common.util.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;
 
 /**
@@ -10,6 +11,8 @@ import lombok.Data;
  */
 @Data
 public class TransResult {
+    @JsonAlias({"src"})
     private String src;
+    @JsonAlias({"dst", "text"})
     private String dst;
 }
