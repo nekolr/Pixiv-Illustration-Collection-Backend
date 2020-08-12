@@ -220,7 +220,7 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("更新公告成功", adminService.updateAnnouncement(announcementPO)));
     }
 
-    @PostMapping("/announcements")
+    @PutMapping("/announcements")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<AnnouncementPO>> createAnnouncement(
             @RequestBody AnnouncementPO announcementPO,

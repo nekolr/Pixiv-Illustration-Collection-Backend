@@ -89,7 +89,6 @@ public class OauthManager {
                 OathRespBody body;
                 String body1 = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
                 System.out.println(body1);
-
                 //body = (OathRespBody) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(OathRespBody.class)).body();
                 body = objectMapper.readValue(body1, new TypeReference<OathRespBody>() {
                 });

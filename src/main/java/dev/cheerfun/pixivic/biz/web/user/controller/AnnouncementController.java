@@ -21,7 +21,7 @@ import java.util.List;
  */
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@RequestMapping("/announcement")
+@RequestMapping("/announcements")
 public class AnnouncementController {
     private final AnnouncementService announcementService;
 
@@ -34,11 +34,11 @@ public class AnnouncementController {
 
     @GetMapping("/today")
     public ResponseEntity<Result<List<Announcement>>> queryByDate() {
-        return ResponseEntity.ok().body(new Result<>("获取系统公告成功", announcementService.queryByDate(LocalDate.now().toString())));
+        return ResponseEntity.ok().body(new Result<>("获取当天系统公告成功", announcementService.queryByDate(LocalDate.now().toString())));
     }
 
     @GetMapping
     public ResponseEntity<Result<List<Announcement>>> queryList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize) {
-        return ResponseEntity.ok().body(new Result<>("获取系统公告成功", announcementService.queryByDate(LocalDate.now().toString())));
+        return ResponseEntity.ok().body(new Result<>("获取系统公告列表成功", announcementService.queryByDate(LocalDate.now().toString())));
     }
 }
