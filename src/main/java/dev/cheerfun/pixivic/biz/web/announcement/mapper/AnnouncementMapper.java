@@ -1,6 +1,6 @@
-package dev.cheerfun.pixivic.biz.web.user.mapper;
+package dev.cheerfun.pixivic.biz.web.announcement.mapper;
 
-import dev.cheerfun.pixivic.biz.web.user.po.Announcement;
+import dev.cheerfun.pixivic.biz.web.announcement.po.Announcement;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

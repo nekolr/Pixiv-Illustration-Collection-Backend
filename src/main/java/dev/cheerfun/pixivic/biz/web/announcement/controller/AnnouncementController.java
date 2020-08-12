@@ -1,9 +1,9 @@
-package dev.cheerfun.pixivic.biz.web.user.controller;
+package dev.cheerfun.pixivic.biz.web.announcement.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
-import dev.cheerfun.pixivic.biz.web.user.po.Announcement;
-import dev.cheerfun.pixivic.biz.web.user.service.AnnouncementService;
+import dev.cheerfun.pixivic.biz.web.announcement.po.Announcement;
+import dev.cheerfun.pixivic.biz.web.announcement.service.AnnouncementService;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

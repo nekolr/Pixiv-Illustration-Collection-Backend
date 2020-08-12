@@ -1,8 +1,8 @@
-package dev.cheerfun.pixivic.biz.web.user.service;
+package dev.cheerfun.pixivic.biz.web.announcement.service;
 
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
-import dev.cheerfun.pixivic.biz.web.user.mapper.AnnouncementMapper;
-import dev.cheerfun.pixivic.biz.web.user.po.Announcement;
+import dev.cheerfun.pixivic.biz.web.announcement.mapper.AnnouncementMapper;
+import dev.cheerfun.pixivic.biz.web.announcement.po.Announcement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
