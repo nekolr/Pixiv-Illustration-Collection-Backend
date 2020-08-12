@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.common.util;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.common.util.dto.AzureTranslatedResponse;
 import dev.cheerfun.pixivic.common.util.dto.BaiduTranslatedResponse;
 import dev.cheerfun.pixivic.common.util.dto.YoudaoTranslatedResponse;
@@ -13,7 +12,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -117,6 +115,7 @@ public class TranslationUtil {
         return "";
     }
 
+    @Cacheable(value = "translateToCNByBaidu")
     public String translateToChineseByBaidu(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create("http://api.fanyi.baidu.com/api/trans/vip/translate?" + RequestUtil.getPostEntity(buildParams(keyword, "auto", "zh"))))
@@ -131,6 +130,7 @@ public class TranslationUtil {
         return "";
     }
 
+    @Cacheable(value = "translateToCNByAzure")
     public String translateToChineseByAzure(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-Hans"))
@@ -149,7 +149,6 @@ public class TranslationUtil {
         }
         return "";
     }
-
 
     private Map<String, String> buildParams(String query, String from, String to) {
         Map<String, String> params = new HashMap<String, String>();
