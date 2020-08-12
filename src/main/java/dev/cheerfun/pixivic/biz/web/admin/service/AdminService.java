@@ -70,11 +70,11 @@ public class AdminService {
     public Illustration queryIllustrationById(Integer illustId) throws JsonProcessingException {
         Illustration illustration = objectMapper.readValue(objectMapper.writeValueAsString(illustrationBizService.queryIllustrationById(illustId)), Illustration.class);
         illustration.setTitle("【" + translationUtil.translateToChineseByAzure(illustration.getTitle()) + "】" + illustration.getTitle());
-        /*illustration.getTags().forEach(e -> {
+        illustration.getTags().forEach(e -> {
             if (e.getTranslatedName() == null || "".equals(e.getTranslatedName())) {
-                e.setTranslatedName(translationUtil.translateToChineseByYouDao(e.getName()));
+                e.setTranslatedName(translationUtil.translateToChineseByAzure(e.getName()));
             }
-        });*/
+        });
         // illustration.setCaption(translationUtil.translateToChineseByYouDao(illustration.getCaption()) + "<br />" + illustration.getCaption());
         return illustration;
     }
