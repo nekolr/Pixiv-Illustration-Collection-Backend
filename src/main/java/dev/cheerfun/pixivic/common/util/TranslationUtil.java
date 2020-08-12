@@ -150,10 +150,6 @@ public class TranslationUtil {
         return "";
     }
 
-    @PostConstruct
-    public void test() {
-        System.out.println(translateToChineseByAzure("オリジナル美少女"));
-    }
 
     private Map<String, String> buildParams(String query, String from, String to) {
         Map<String, String> params = new HashMap<String, String>();
