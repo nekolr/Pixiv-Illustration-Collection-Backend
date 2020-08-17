@@ -83,7 +83,6 @@ public class CommentService {
                 .limit(pageSize).collect(Collectors.toList());
     }
 
-    @Cacheable(value = "comments", key = "#appType+#appId")
     public List<Comment> pullComment(String appType, Integer appId) {
         List<Comment> comments = queryCommentList(appType, appId);
         if (comments.size() == 0) {
@@ -122,7 +121,7 @@ public class CommentService {
         result.sort(Comparator.comparingInt(Comment::getId));
         return result;
     }
-
+    @Cacheable(value = "comments", key = "#appType+#appId")
     public List<Comment> queryCommentList(String appType, Integer appId) {
         return commentMapper.pullComment(appType, appId);
     }
