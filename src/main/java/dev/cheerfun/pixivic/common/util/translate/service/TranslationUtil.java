@@ -161,7 +161,9 @@ public class TranslationUtil {
                 } else {
                     List<AzureTranslatedResponse> azureTranslatedResponses = objectMapper.readValue(body, new TypeReference<List<AzureTranslatedResponse>>() {
                     });
-                    return azureTranslatedResponses.get(0).getTransResult().get(0).getDst();
+                    if (azureTranslatedResponses != null && azureTranslatedResponses.size() > 0) {
+                        return azureTranslatedResponses.get(0).getTransResult().get(0).getDst();
+                    }
                 }
             }
         } catch (InterruptedException | IOException e) {
