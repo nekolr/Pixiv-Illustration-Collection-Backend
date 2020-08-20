@@ -8,6 +8,7 @@ import dev.cheerfun.pixivic.common.util.dto.YoudaoTranslatedResponse;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
@@ -30,6 +31,7 @@ import java.util.Map;
  * @description TranslationUtil
  */
 @Component
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TranslationUtil {
 
@@ -100,7 +102,7 @@ public class TranslationUtil {
         try {
             youdaoTranslatedResponse = (YoudaoTranslatedResponse) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(YoudaoTranslatedResponse.class)).body();
         } catch (IOException | InterruptedException e) {
-            //throw new SearchException(HttpStatus.BAD_REQUEST, e.getMessage());
+            log.error("调用翻译api失败");
             return "";
         }
         if (youdaoTranslatedResponse != null) {
@@ -125,7 +127,7 @@ public class TranslationUtil {
             BaiduTranslatedResponse body = (BaiduTranslatedResponse) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(BaiduTranslatedResponse.class)).body();
             return body.getTransResult().get(0).getDst();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("调用翻译api失败");
         }
         return "";
     }
@@ -145,7 +147,7 @@ public class TranslationUtil {
             });
             return azureTranslatedResponses.get(0).getTransResult().get(0).getDst();
         } catch (Exception e) {
-            e.printStackTrace();
+            log.error("调用翻译api失败");
         }
         return "";
     }
