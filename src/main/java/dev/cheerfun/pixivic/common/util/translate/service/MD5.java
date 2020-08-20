@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.common.util;
+package dev.cheerfun.pixivic.common.util.translate.service;
 
 import java.io.*;
 import java.security.MessageDigest;

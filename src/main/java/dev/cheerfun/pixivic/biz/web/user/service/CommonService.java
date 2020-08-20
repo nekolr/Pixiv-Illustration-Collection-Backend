@@ -8,7 +8,7 @@ import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.mapper.CommonMapper;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
 import dev.cheerfun.pixivic.common.po.Picture;
-import dev.cheerfun.pixivic.common.util.EmailUtil;
+import dev.cheerfun.pixivic.common.util.email.EmailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;

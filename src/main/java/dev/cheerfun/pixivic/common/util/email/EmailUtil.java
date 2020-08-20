@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.common.util;
+package dev.cheerfun.pixivic.common.util.email;
 
 import dev.cheerfun.pixivic.common.po.Email;
 import lombok.extern.slf4j.Slf4j;

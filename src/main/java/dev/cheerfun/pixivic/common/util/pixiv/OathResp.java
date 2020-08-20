@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.common.util.dto.pixiv;
+package dev.cheerfun.pixivic.common.util.pixiv;
 
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;

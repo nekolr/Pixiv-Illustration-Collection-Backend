@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.domain;
 
-import dev.cheerfun.pixivic.common.util.dto.pixiv.OathResp;
-import dev.cheerfun.pixivic.common.util.dto.pixiv.OathRespBody;
+import dev.cheerfun.pixivic.common.util.pixiv.OathResp;
+import dev.cheerfun.pixivic.common.util.pixiv.OathRespBody;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import io.github.bucket4j.Bandwidth;
 import io.github.bucket4j.Bucket;

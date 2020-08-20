@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.basic.verification.aop;
 
 import dev.cheerfun.pixivic.basic.verification.exception.VerificationCheckException;
-import dev.cheerfun.pixivic.common.util.JoinPointArgUtil;
+import dev.cheerfun.pixivic.common.util.aop.JoinPointArgUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;

@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.common.util.translate.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.common.util.MD5;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import dev.cheerfun.pixivic.common.util.translate.domain.AzureApiKey;

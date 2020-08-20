@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.biz.notify.sender.impl;
 
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.biz.notify.sender.NotifySender;
-import dev.cheerfun.pixivic.common.util.EmailUtil;
+import dev.cheerfun.pixivic.common.util.email.EmailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

@@ -1,6 +1,5 @@
-package dev.cheerfun.pixivic.common.util;
+package dev.cheerfun.pixivic.common.util.aop;
 
-import dev.cheerfun.pixivic.common.util.dto.JoinPointArg;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;

@@ -2,10 +2,7 @@ package dev.cheerfun.pixivic.common.util.pixiv;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.analysis.track.domain.Track;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
-import dev.cheerfun.pixivic.common.util.dto.pixiv.OathRespBody;
-import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

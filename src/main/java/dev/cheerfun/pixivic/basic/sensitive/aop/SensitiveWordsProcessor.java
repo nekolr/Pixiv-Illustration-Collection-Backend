@@ -2,8 +2,8 @@ package dev.cheerfun.pixivic.basic.sensitive.aop;
 
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
-import dev.cheerfun.pixivic.common.util.JoinPointArgUtil;
-import dev.cheerfun.pixivic.common.util.dto.JoinPointArg;
+import dev.cheerfun.pixivic.common.util.aop.JoinPointArgUtil;
+import dev.cheerfun.pixivic.common.util.aop.JoinPointArg;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;

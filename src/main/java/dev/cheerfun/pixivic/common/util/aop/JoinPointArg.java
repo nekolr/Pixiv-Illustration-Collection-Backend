@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.common.util.dto;
+package dev.cheerfun.pixivic.common.util.aop;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

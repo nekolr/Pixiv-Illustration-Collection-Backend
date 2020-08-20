@@ -17,7 +17,7 @@ import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
 import dev.cheerfun.pixivic.common.po.Result;
-import dev.cheerfun.pixivic.common.util.EmailUtil;
+import dev.cheerfun.pixivic.common.util.email.EmailUtil;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthManager;
 import lombok.RequiredArgsConstructor;
 import org.apache.mahout.cf.taste.common.TasteException;
@@ -26,7 +26,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.time.LocalDate;

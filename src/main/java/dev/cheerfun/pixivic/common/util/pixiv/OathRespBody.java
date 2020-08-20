@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.common.util.dto.pixiv;
+package dev.cheerfun.pixivic.common.util.pixiv;
 
 import lombok.Data;
 
