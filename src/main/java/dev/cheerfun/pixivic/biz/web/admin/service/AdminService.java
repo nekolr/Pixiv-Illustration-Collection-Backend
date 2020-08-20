@@ -13,6 +13,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
@@ -76,7 +77,7 @@ public class AdminService {
                 e.setTranslatedName(translationUtil.translateToChineseByAzureForAdmin(e.getName()));
             }
         });
-        illustration.setCaption(translationUtil.translateToChineseByAzureForAdminWithoutCache(illustration.getCaption()) + "|" + illustration.getCaption());
+        illustration.setCaption(translationUtil.translateToChineseByAzureForAdminWithoutCache(Jsoup.parse(illustration.getCaption()).text()) + "|" + illustration.getCaption());
         return illustration;
     }
 
