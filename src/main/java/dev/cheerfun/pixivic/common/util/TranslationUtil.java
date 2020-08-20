@@ -41,6 +41,7 @@ public class TranslationUtil {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
 
+
     @Cacheable(value = "translateToJP")
     public String translateToJapaneseByYouDao(String keyword) {
         Map<String, String> params = new HashMap<>();
@@ -136,8 +137,8 @@ public class TranslationUtil {
     public String translateToChineseByAzure(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create("https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-Hans"))
-                .header("Ocp-Apim-Subscription-Key", "834a11346f9247c3a569e8f8d3851ea9")
-                .header("Ocp-Apim-Subscription-Region", "eastasia")
+                .header("Ocp-Apim-Subscription-Key", "08f436ddeadb414a846f562bae2902ad")
+                .header("Ocp-Apim-Subscription-Region", "global")
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString("[{\n\t\"Text\": \"" + keyword + "\"\n}]"))
                 .build();
