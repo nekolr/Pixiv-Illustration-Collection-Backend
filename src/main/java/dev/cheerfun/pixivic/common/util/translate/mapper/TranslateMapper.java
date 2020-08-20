@@ -22,6 +22,6 @@ public interface TranslateMapper {
     @Update("update azure_tran_keys set use_flag = 1 where 1=1")
     void resetStatus();
 
-    @Update("update azure_tran_keys set use_flag = 1 where key_id=#{id}")
+    @Update("update azure_tran_keys set use_flag = 0 where key_id=#{id}")
     void ban(Integer id);
 }

@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.common.util.translate.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.common.util.MD5;
@@ -138,8 +137,8 @@ public class TranslationUtil {
 
     @Cacheable(value = "translateToCNByAzure")
     public String translateToChineseByAzure(String keyword) {
-        AzureApiKey key = azureApiKeyManager.getKey();
         try {
+            AzureApiKey key = azureApiKeyManager.getKey();
             if (key != null) {
                 HttpRequest httpRequest = HttpRequest.newBuilder()
                         .uri(URI.create("https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-Hans"))
@@ -149,13 +148,16 @@ public class TranslationUtil {
                         .POST(HttpRequest.BodyPublishers.ofString("[{\n\t\"Text\": \"" + keyword + "\"\n}]"))
                         .build();
                 String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-                List<AzureTranslatedResponse> azureTranslatedResponses = objectMapper.readValue(body, new TypeReference<List<AzureTranslatedResponse>>() {
-                });
-                return azureTranslatedResponses.get(0).getTransResult().get(0).getDst();
+                if (body.contains("error")) {
+                    log.error(key.getKey() + "已经失效");
+                    azureApiKeyManager.ban(key);
+                } else {
+                    List<AzureTranslatedResponse> azureTranslatedResponses = objectMapper.readValue(body, new TypeReference<List<AzureTranslatedResponse>>() {
+                    });
+                    return azureTranslatedResponses.get(0).getTransResult().get(0).getDst();
+                }
             }
-        } catch (JsonProcessingException e) {
-            azureApiKeyManager.ban(key);
-        } catch (Exception e) {
+        } catch (InterruptedException | IOException e) {
             log.error("调用翻译api失败");
         }
         return "";
