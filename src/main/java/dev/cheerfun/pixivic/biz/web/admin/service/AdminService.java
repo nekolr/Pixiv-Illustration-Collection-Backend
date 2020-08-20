@@ -10,7 +10,7 @@ import dev.cheerfun.pixivic.biz.web.history.service.IllustHistoryService;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
-import dev.cheerfun.pixivic.common.util.TranslationUtil;
+import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,7 +76,7 @@ public class AdminService {
                 e.setTranslatedName(translationUtil.translateToChineseByAzure(e.getName()));
             }
         });
-        // illustration.setCaption(translationUtil.translateToChineseByYouDao(illustration.getCaption()) + "<br />" + illustration.getCaption());
+        //illustration.setCaption(translationUtil.translateToChineseByAzure(illustration.getCaption()) + "<br />" + illustration.getCaption());
         return illustration;
     }
 

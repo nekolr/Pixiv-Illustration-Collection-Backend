@@ -13,7 +13,7 @@ import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidates
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
-import dev.cheerfun.pixivic.common.util.TranslationUtil;
+import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

@@ -1,12 +1,15 @@
-package dev.cheerfun.pixivic.common.util;
+package dev.cheerfun.pixivic.common.util.translate.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.common.util.dto.AzureTranslatedResponse;
-import dev.cheerfun.pixivic.common.util.dto.BaiduTranslatedResponse;
-import dev.cheerfun.pixivic.common.util.dto.YoudaoTranslatedResponse;
+import dev.cheerfun.pixivic.common.util.MD5;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
+import dev.cheerfun.pixivic.common.util.translate.domain.AzureApiKey;
+import dev.cheerfun.pixivic.common.util.translate.dto.AzureTranslatedResponse;
+import dev.cheerfun.pixivic.common.util.translate.dto.BaiduTranslatedResponse;
+import dev.cheerfun.pixivic.common.util.translate.dto.YoudaoTranslatedResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +43,7 @@ public class TranslationUtil {
 
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-
+    private final AzureApiKeyManager azureApiKeyManager;
 
     @Cacheable(value = "translateToJP")
     public String translateToJapaneseByYouDao(String keyword) {
@@ -135,18 +138,23 @@ public class TranslationUtil {
 
     @Cacheable(value = "translateToCNByAzure")
     public String translateToChineseByAzure(String keyword) {
-        HttpRequest httpRequest = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-Hans"))
-                .header("Ocp-Apim-Subscription-Key", "08f436ddeadb414a846f562bae2902ad")
-                .header("Ocp-Apim-Subscription-Region", "global")
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString("[{\n\t\"Text\": \"" + keyword + "\"\n}]"))
-                .build();
+        AzureApiKey key = azureApiKeyManager.getKey();
         try {
-            String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-            List<AzureTranslatedResponse> azureTranslatedResponses = objectMapper.readValue(body, new TypeReference<List<AzureTranslatedResponse>>() {
-            });
-            return azureTranslatedResponses.get(0).getTransResult().get(0).getDst();
+            if (key != null) {
+                HttpRequest httpRequest = HttpRequest.newBuilder()
+                        .uri(URI.create("https://api.cognitive.microsofttranslator.com/translate?api-version=3.0&to=zh-Hans"))
+                        .header("Ocp-Apim-Subscription-Key", key.getKey())
+                        .header("Ocp-Apim-Subscription-Region", key.getRegion())
+                        .header("Content-Type", "application/json")
+                        .POST(HttpRequest.BodyPublishers.ofString("[{\n\t\"Text\": \"" + keyword + "\"\n}]"))
+                        .build();
+                String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
+                List<AzureTranslatedResponse> azureTranslatedResponses = objectMapper.readValue(body, new TypeReference<List<AzureTranslatedResponse>>() {
+                });
+                return azureTranslatedResponses.get(0).getTransResult().get(0).getDst();
+            }
+        } catch (JsonProcessingException e) {
+            azureApiKeyManager.ban(key);
         } catch (Exception e) {
             log.error("调用翻译api失败");
         }

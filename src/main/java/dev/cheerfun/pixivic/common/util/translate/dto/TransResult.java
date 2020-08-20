@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.common.util.dto;
+package dev.cheerfun.pixivic.common.util.translate.dto;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import lombok.Data;

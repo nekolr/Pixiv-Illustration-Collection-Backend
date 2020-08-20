@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.common.util;
+package dev.cheerfun.pixivic.common.util.translate.service;
 
 import org.springframework.stereotype.Component;
 
