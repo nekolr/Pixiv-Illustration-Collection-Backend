@@ -155,7 +155,7 @@ public class TranslationUtil {
                         .POST(HttpRequest.BodyPublishers.ofString("[{\n\t\"Text\": \"" + keyword + "\"\n}]"))
                         .build();
                 String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-                if (body.contains("error")) {
+                if (body.contains("403001")) {
                     log.error(key.getKey() + "已经失效");
                     azureApiKeyManager.ban(key);
                 } else {
