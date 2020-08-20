@@ -76,7 +76,7 @@ public class AdminService {
                 e.setTranslatedName(translationUtil.translateToChineseByAzure(e.getName()));
             }
         });
-        //illustration.setCaption(translationUtil.translateToChineseByAzure(illustration.getCaption()) + "<br />" + illustration.getCaption());
+        illustration.setCaption(translationUtil.translateToChineseByAzure(illustration.getCaption()) + "<br />" + illustration.getCaption());
         return illustration;
     }
 
