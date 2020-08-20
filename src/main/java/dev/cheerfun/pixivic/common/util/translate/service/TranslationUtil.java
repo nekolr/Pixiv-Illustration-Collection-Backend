@@ -135,6 +135,14 @@ public class TranslationUtil {
     }
 
     @Cacheable(value = "translateToCNByAzure")
+    public String translateToChineseByAzureForAdmin(String keyword) {
+        return translateToChineseByAzure(keyword);
+    }
+
+    public String translateToChineseByAzureForAdminWithoutCache(String keyword) {
+        return translateToChineseByAzure(keyword);
+    }
+
     public String translateToChineseByAzure(String keyword) {
         try {
             AzureApiKey key = azureApiKeyManager.getKey();
