@@ -166,7 +166,7 @@ public class TranslationUtil {
                     }
                 }
             }
-        } catch (InterruptedException | IOException e) {
+        } catch (Exception e) {
             log.error("调用翻译api失败");
         }
         return "";
