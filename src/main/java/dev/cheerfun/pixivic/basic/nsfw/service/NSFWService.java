@@ -25,7 +25,7 @@ public class NSFWService {
 
     public void check() throws IOException {
         NativeImageLoader loader = new NativeImageLoader(224, 224, 3);
-        INDArray[] output = model.output(loader.asMatrix(new File("/Users/oysterqaq/Desktop/t-1.jpg"), false));
+        INDArray[] output = model.output(loader.asMatrix(new File("/Users/oysterqaq/Desktop/t-1.jpg"), false).div(255));
         System.out.println(output);
     }
 
