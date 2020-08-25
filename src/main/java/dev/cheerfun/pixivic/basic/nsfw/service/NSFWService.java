@@ -19,7 +19,7 @@ import java.util.Arrays;
  * @date 2020/8/24 6:34 下午
  * @description NSFWService
  */
-@Service
+//@Service
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NSFWService {

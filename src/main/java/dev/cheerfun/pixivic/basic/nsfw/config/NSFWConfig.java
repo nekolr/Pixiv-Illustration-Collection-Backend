@@ -22,7 +22,7 @@ import static org.opencv.imgproc.Imgproc.COLOR_BGR2RGB;
  * @description NSFWConfig
  */
 @Slf4j
-@Configuration
+//@Configuration
 public class NSFWConfig {
     @Value("${nsfw.modelPath}")
     private String modelPath;
