@@ -213,20 +213,15 @@
             <version>${deeplearning4j.version}</version>
         </dependency>
         <dependency>
-            <groupId>org.deeplearning4j</groupId>
-            <artifactId>deeplearning4j-core</artifactId>
-            <version>${deeplearning4j.version}</version>
-        </dependency>
-        <dependency>
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-native-platform</artifactId>
             <version>${deeplearning4j.version}</version>
         </dependency>
-        <!--        <dependency>
-                    <groupId>org.tensorflow</groupId>
-                    <artifactId>tensorflow</artifactId>
-                    <version>1.15.0</version>
-                </dependency>-->
+        <dependency>
+            <groupId>org.datavec</groupId>
+            <artifactId>datavec-data-image</artifactId>
+            <version>${deeplearning4j.version}</version>
+        </dependency>
         <dependency>
             <groupId>jdk.tools</groupId>
             <artifactId>jdk.tools</artifactId>
