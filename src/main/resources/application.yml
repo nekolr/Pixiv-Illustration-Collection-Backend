@@ -118,3 +118,5 @@ sitemap:
   remoteSavePath: /home/PIC/sitemap
 graphicsMagick:
   path: /usr/bin/gm
+nsfw:
+  modelPath: /home/PIC/nsfw.299x299.h5

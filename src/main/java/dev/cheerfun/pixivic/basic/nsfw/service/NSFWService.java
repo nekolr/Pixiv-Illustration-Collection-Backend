@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.basic.nsfw.service;
 
+import dev.cheerfun.pixivic.basic.nsfw.domain.AnalysisResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.datavec.image.loader.NativeImageLoader;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @author OysterQAQ
@@ -22,11 +24,11 @@ import java.io.IOException;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NSFWService {
     private final ComputationGraph model;
+    private final NativeImageLoader loader;
 
-    public void check() throws IOException {
-        NativeImageLoader loader = new NativeImageLoader(224, 224, 3);
-        INDArray[] output = model.output(loader.asMatrix(new File("/Users/oysterqaq/Desktop/t-1.jpg"), false).div(255));
-        System.out.println(output);
+    public AnalysisResult compute(String path) throws IOException {
+        INDArray output = model.outputSingle(loader.asMatrix(new File(path), false).div(255));
+        return new AnalysisResult(output.data().asFloat());
     }
 
 }

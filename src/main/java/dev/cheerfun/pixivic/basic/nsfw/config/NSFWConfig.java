@@ -1,6 +1,8 @@
 package dev.cheerfun.pixivic.basic.nsfw.config;
 
 import lombok.extern.slf4j.Slf4j;
+import org.datavec.image.loader.NativeImageLoader;
+import org.datavec.image.transform.ColorConversionTransform;
 import org.deeplearning4j.nn.graph.ComputationGraph;
 import org.deeplearning4j.nn.modelimport.keras.KerasModelImport;
 import org.deeplearning4j.nn.modelimport.keras.exceptions.InvalidKerasConfigurationException;
@@ -10,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import java.io.IOException;
+
+import static org.opencv.imgproc.Imgproc.COLOR_BGR2RGB;
 
 /**
  * @author OysterQAQ
@@ -36,4 +40,17 @@ public class NSFWConfig {
         log.info("初始化nsfw模型成功");
         return model;
     }
+
+    @Bean
+    public NativeImageLoader nativeImageLoader() {
+        ComputationGraph model = null;
+        try {
+            NativeImageLoader loader = new NativeImageLoader(224, 224, 3, new ColorConversionTransform(COLOR_BGR2RGB));
+            return loader;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
 }
