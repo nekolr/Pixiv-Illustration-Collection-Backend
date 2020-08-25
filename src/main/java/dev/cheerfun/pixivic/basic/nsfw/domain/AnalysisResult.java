@@ -35,4 +35,8 @@ public class AnalysisResult {
         bd = bd.setScale(decimalPlace, BigDecimal.ROUND_HALF_UP);
         return bd.floatValue();
     }
+
+    public boolean isSave() {
+        return hentai < 50 && porn < 50 & sexy < 50;
+    }
 }
