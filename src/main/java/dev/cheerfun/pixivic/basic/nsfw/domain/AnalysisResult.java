@@ -16,11 +16,11 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class AnalysisResult {
-    private Integer drawings;
-    private Integer hentai;
-    private Integer neutral;
-    private Integer porn;
-    private Integer sexy;
+    private float drawings;
+    private float hentai;
+    private float neutral;
+    private float porn;
+    private float sexy;
 
     public AnalysisResult(float[] socre) {
         this.drawings = round(socre[0] * 100, 2);
