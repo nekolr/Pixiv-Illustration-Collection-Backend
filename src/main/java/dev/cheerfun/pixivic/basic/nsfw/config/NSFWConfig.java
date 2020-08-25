@@ -45,7 +45,7 @@ public class NSFWConfig {
     public NativeImageLoader nativeImageLoader() {
         ComputationGraph model = null;
         try {
-            NativeImageLoader loader = new NativeImageLoader(224, 224, 3, new ColorConversionTransform(COLOR_BGR2RGB));
+            NativeImageLoader loader = new NativeImageLoader(299, 299, 3, new ColorConversionTransform(COLOR_BGR2RGB));
             return loader;
         } catch (Exception e) {
             e.printStackTrace();
