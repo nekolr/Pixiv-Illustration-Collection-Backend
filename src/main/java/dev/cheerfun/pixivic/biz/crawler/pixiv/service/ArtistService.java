@@ -6,7 +6,6 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.ArtistDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.ArtistMapper;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.remote.PixivService;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
@@ -45,9 +44,7 @@ public class ArtistService {
     private final ArtistMapper artistMapper;
     private final IllustrationService illustrationService;
     private final StringRedisTemplate stringRedisTemplate;
-    private final PixivService pixivService;
     private ReentrantLock lock = new ReentrantLock();
-    private final Random random = new Random(21);
 
     private List<Integer> waitForReDownload = new ArrayList<>();
 
