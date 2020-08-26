@@ -78,7 +78,7 @@ spring:
         enabled: false
   cache:
     caffeine:
-      spec: maximumSize=1024,expireAfterAccess=1800s
+      spec: maximumSize=2048,expireAfterAccess=1800s
     type: caffeine
 management:
   endpoints:
