@@ -25,4 +25,6 @@
 
 #### Api Doc
 
-[https://github.com/OysterQAQ/Pixiv-Illustration-Collection-Backend/blob/master/Pixivic.com%20Api%20Doc.html](
+[html](https://github.com/OysterQAQ/Pixiv-Illustration-Collection-Backend/blob/master/Pixivic.com Api Doc.html)
+
+[md](
