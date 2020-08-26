@@ -9,7 +9,7 @@
 
 ### 架构图
 
-![](https://s1.ax1x.com/2020/08/26/dRaQHS.png)
+![](https://s1.ax1x.com/2020/08/26/dRaz5Q.png)
 
 ### Bright Point
 
