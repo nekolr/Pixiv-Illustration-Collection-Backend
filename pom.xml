@@ -167,6 +167,11 @@
             <version>${druid.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+            <version>${caffeine.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.github.vladimir-bukhtoyarov</groupId>
             <artifactId>bucket4j-core</artifactId>
             <version>${bucket4j-core.version}</version>
@@ -189,6 +194,13 @@
             <version>${gm4java.version}</version>
         </dependency>
         <dependency>
+            <groupId>jdk.tools</groupId>
+            <artifactId>jdk.tools</artifactId>
+            <version>12</version>
+            <scope>system</scope>
+            <systemPath>${java.home}/lib/tools.jar</systemPath>
+        </dependency>
+        <!--      不要删除  <dependency>
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-modelimport</artifactId>
             <version>${deeplearning4j.version}</version>
@@ -202,14 +214,7 @@
             <groupId>org.datavec</groupId>
             <artifactId>datavec-data-image</artifactId>
             <version>${deeplearning4j.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>jdk.tools</groupId>
-            <artifactId>jdk.tools</artifactId>
-            <version>12</version>
-            <scope>system</scope>
-            <systemPath>${java.home}/lib/tools.jar</systemPath>
-        </dependency>
+        </dependency>-->
     </dependencies>
     <build>
         <plugins>
