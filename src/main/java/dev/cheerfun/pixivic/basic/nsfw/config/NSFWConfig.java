@@ -43,7 +43,6 @@ public class NSFWConfig {
 
     @Bean
     public NativeImageLoader nativeImageLoader() {
-        ComputationGraph model = null;
         try {
             NativeImageLoader loader = new NativeImageLoader(299, 299, 3, new ColorConversionTransform(COLOR_BGR2RGB));
             return loader;
