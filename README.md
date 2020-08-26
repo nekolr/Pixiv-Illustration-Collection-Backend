@@ -9,7 +9,7 @@
 
 ### 架构图
 
-![](https://cdn.jsdelivr.net/gh/OysterQAQ/Blog-Image/Nginx.png)
+![](https://s1.ax1x.com/2020/08/26/dRakAe.png)
 
 ### Bright Point
 
