@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic;
 
+import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
+
 import java.io.IOException;
 import java.util.concurrent.TimeoutException;
 
@@ -30,16 +32,7 @@ public class Consumer {
                 System.out.println(new String(output.bytesValue(), "UTF-8"));
             }
         }*/
-
-        int a = 123265;
-        int b = 2;
-        long l = System.currentTimeMillis();
-        System.out.println(l);
-        for (int i = 0; i < 10000; i++) {
-            b = a * b * a;
-        }
-        System.out.println(b);
-        System.out.println(System.currentTimeMillis() - l);
+        System.out.println(new PasswordUtil().encrypt("12345678"));
     }
 }
 
