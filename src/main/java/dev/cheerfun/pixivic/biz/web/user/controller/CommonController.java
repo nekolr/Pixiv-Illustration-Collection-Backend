@@ -8,6 +8,7 @@ import dev.cheerfun.pixivic.biz.web.user.dto.ResetPasswordDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignInDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
+import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Picture;
@@ -37,6 +38,7 @@ import java.io.IOException;
 @RequestMapping("/users")
 public class CommonController {
     private final CommonService userService;
+    private final PasswordUtil passwordUtil;
     private final JWTUtil jwtUtil;
 
     @GetMapping("/{userId}")
@@ -140,7 +142,7 @@ public class CommonController {
     @PutMapping("/{userId}/password")
     @PermissionRequired
     public ResponseEntity<Result> setPassword(@RequestHeader("Authorization") String token, @RequestBody ResetPasswordDTO item) {
-        userService.setPasswordById(item.getPassword(), (int) AppContext.get().get(AuthConstant.USER_ID));
+        userService.setPasswordById(passwordUtil.encrypt(item.getPassword()), (int) AppContext.get().get(AuthConstant.USER_ID));
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }
 
