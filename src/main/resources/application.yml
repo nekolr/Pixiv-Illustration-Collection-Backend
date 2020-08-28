@@ -4,7 +4,7 @@ server:
 #    connection-timeout: 5000
 spring:
 #  profiles:
-  #    active: mac
+#    active: mac
   data:
     redis:
       repositories:
@@ -20,9 +20,9 @@ spring:
       max-file-size: 20MB
       max-request-size: 100MB
   mail:
-    host: smtp.office365.com
-    username: oysterqaq@biuz.xyz
-    password: jC6~t@v(4x=DT9_
+    host: mail
+    username: admin@cheerfun.dev
+    password: Cheerfun.dev
     protocol: smtp
     properties:
       mail:
@@ -34,10 +34,10 @@ spring:
             enable: true
             required: true
           socketFactory:
-            port: 587
+            port: 465
             class: javax.net.ssl.SSLSocketFactory
     test-connection: true
-    port: 587
+    port: 465
   redis:
     jedis:
       pool:
