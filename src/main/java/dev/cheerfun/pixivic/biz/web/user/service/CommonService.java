@@ -113,7 +113,6 @@ public class CommonService {
     }
 
     public int setPasswordByEmail(String password, String email) {
-        //Integer result = userMapper.setPasswordByEmail(passwordUtil.encrypt(password), email);
         System.out.println("开始重置" + email + "的密码为" + password);
         User user = queryUserByEmail(email);
         if (user != null) {
@@ -156,7 +155,7 @@ public class CommonService {
 
     @CacheEvict(value = "users", key = "#userId")
     public int setPasswordById(String password, Integer userId) {
-        return userMapper.setPasswordById(password, userId);
+        return userMapper.setPasswordById(passwordUtil.encrypt(password), userId);
     }
 
     public String getQQOpenId(String qqAccessToken) throws IOException, InterruptedException {
