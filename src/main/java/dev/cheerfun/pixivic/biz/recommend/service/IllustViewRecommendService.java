@@ -57,20 +57,19 @@ public class IllustViewRecommendService extends RecommendService {
 
     @Override
     protected boolean dealRecommender(Recommender recommender) throws TasteException {
-        //清理所有推荐
-        Iterator<RedisClusterNode> iterator = stringRedisTemplate.getConnectionFactory().getClusterConnection().clusterGetNodes().iterator();
-        while (iterator.hasNext()) {
-            RedisClusterNode clusterNode = iterator.next();
-            Set<String> keys = stringRedisTemplate.opsForCluster().keys(clusterNode, RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST + "*");
-            stringRedisTemplate.unlink(keys);
-        }
-        // stringRedisTemplate.unlink(RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST + "*");
         //根据活跃度分级生成
         LocalDate now = LocalDate.now();
         String today = now.plusDays(2).toString();
         String threeDaysAgo = now.plusDays(-3).toString();
         String sixDaysAgo = now.plusDays(-6).toString();
         String twentyDaysAgo = now.plusDays(-12).toString();
+
+        //清理推荐
+        //不活跃用户推荐删除
+        recommendMapper.queryUserIdByDateBefore(twentyDaysAgo).forEach(e -> {
+            stringRedisTemplate.delete(RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST + e);
+        });
+
       /*  近三天有行为
 
         生成30*30个推荐查看作品
