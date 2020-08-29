@@ -41,12 +41,12 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
     }
 
-/*    @PutMapping("/illusts/{illustId}")
+    @PutMapping("/illusts/{illustId}")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token", required = false) String token, @RequestBody IllustDTO illustDTO) throws JsonProcessingException {
         adminService.updateIllusts(illustDTO);
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
-    }*/
+    }
 
     @PostMapping("/collections")
     @PermissionRequired(PermissionLevel.ADMIN)
@@ -70,13 +70,13 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("更新画集成功", adminService.updateCollection(collectionPO)));
     }
 
-/*    @DeleteMapping("/collections/{collectionId}")
+    @DeleteMapping("/collections/{collectionId}")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteCollection(
             @PathVariable Integer collectionId,
             @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("删除画集成功", adminService.deleteCollection(collectionId)));
-    }*/
+    }
 
     @PostMapping("/discussions")
     @PermissionRequired(PermissionLevel.ADMIN)
@@ -151,22 +151,22 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("获取用户列表成功", userPOPage.getTotalPages(), userPOPage.getContent()));
     }
 
-/*    @PutMapping("/users/{userId}")
+    @PostMapping("/banUsers/{userId}")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<UserPO>> updateUser(
+    public ResponseEntity<Result<UserPO>> banUser(
             @PathVariable Integer userId,
             @RequestBody UserPO userPO,
             @RequestHeader(value = "Authorization", required = false) String token) {
-        return ResponseEntity.ok().body(new Result<>("更新用户成功", adminService.updateUser(userPO)));
-    }*/
+        return ResponseEntity.ok().body(new Result<>("封禁用户成功", adminService.updateUser(userPO)));
+    }
 
-/*    @DeleteMapping("/users/{userId}")
+    @DeleteMapping("/users/{userId}")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteUser(
             @PathVariable Integer userId,
             @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("删除用户成功", adminService.deleteUser(userId)));
-    }*/
+    }
 
     @PostMapping("/comments")
     @PermissionRequired(PermissionLevel.ADMIN)

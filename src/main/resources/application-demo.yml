@@ -3,8 +3,8 @@ server:
 #  tomcat:
 #    connection-timeout: 5000
 spring:
-#  profiles:
-#    active: mac
+  #  profiles:
+  #    active: mac
   data:
     redis:
       repositories:
@@ -20,9 +20,9 @@ spring:
       max-file-size: 20MB
       max-request-size: 100MB
   mail:
-    host: mail
-    username: admin@cheerfun.dev
-    password: Cheerfun.dev
+    host:
+    username:
+    password:
     protocol: smtp
     properties:
       mail:
@@ -34,10 +34,10 @@ spring:
             enable: true
             required: true
           socketFactory:
-            port: 465
+            port: 587
             class: javax.net.ssl.SSLSocketFactory
     test-connection: true
-    port: 465
+    port: 587
   redis:
     jedis:
       pool:
@@ -60,7 +60,7 @@ spring:
   datasource:
     url: jdbc:mysql://mysql:3306/pixivic?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
     username: root
-    password: Cheerfun.dev
+    password:
     type: com.alibaba.druid.pool.DruidDataSource
     initialSize: 5
     minIdle: 5
@@ -89,14 +89,14 @@ management:
     health:
       show-details: always
 jjwt:
-  secret: 生蚝QAQ只是一位兴趣使然的面向ACG编程人员♥♥♥♥♥♥♥♥♥♥♥♥
+  secret:
   expirationTime: 864000
   refreshInterval: 1800000
 pixiv:
   oauth:
-    client_id: KzEZED7aC0vird8jWyHM38mXjNTY
-    client_secret: W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP
-    device_token: fb12e7c1945000850deb5f7001c02745
+    client_id:
+    client_secret:
+    device_token:
     config: /home/PIC/user2.json
 saucenao:
   token:

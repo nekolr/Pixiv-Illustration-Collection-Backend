@@ -149,11 +149,11 @@ public class AdminService {
 
     @CacheEvict(value = "users", key = "#userPO.id")
     public UserPO updateUser(UserPO userPO) {
-        UserPO u = userRepository.save(userPO);
-        if (u.getIsBan() == 0) {
-            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(u.getId()));
+        //UserPO u = userRepository.save(userPO);
+        if (userPO.getIsBan() == 0) {
+            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userPO.getId()));
         }
-        return u;
+        return userPO;
     }
 
     @CacheEvict(value = "users", key = "#userId")
