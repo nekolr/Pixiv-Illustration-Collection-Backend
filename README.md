@@ -3,9 +3,25 @@
 </p>
 
 
- ## 前言
+ ## 简介
+ 
+ #### 她是谁
+ 
+ Pixivic.com目前是一个以瀑布流为主要展示方式的pixiv画作搜索平台，她并不存储画作图片本身，仅仅是依赖于画作元数据对画作进行处理，提供类似热门搜索、个人推荐、相关画作、历史记录等功能。基于这些工具功能基础上，她也提供了周边用户相关的功能，例如收藏、关注、评论。
+ 
+ #### 她的外表
+ 
+ APP：
+ 
+ ![mi head](https://cdn.jsdelivr.net/gh/OysterQAQ/Blog-Image/mi%20head.png)
+ 
+ PC：
+ 
+ ![截屏2020-07-16 下午4.21.36](https://cdn.jsdelivr.net/gh/OysterQAQ/Blog-Image/%E6%88%AA%E5%B1%8F2020-07-16%20%E4%B8%8B%E5%8D%884.21.36.png)
+ 
+ 
 
-## About Code
+## 技术
 
 ### 架构图
 
