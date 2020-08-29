@@ -58,7 +58,7 @@ public class AdminController {
             @RequestParam(defaultValue = "asc") String orderByMode,
             @RequestHeader(value = "Authorization", required = false) String token) {
         Page<CollectionPO> collectionPOPage = adminService.queryCollection(collectionPO, page, pageSize, orderBy, orderByMode);
-        return ResponseEntity.ok().body(new Result<>("获取画集列表成功", collectionPOPage.getTotalPages(), collectionPOPage.getContent()));
+        return ResponseEntity.ok().body(new Result<>("获取画集列表成功", collectionPOPage.getTotalElements(), collectionPOPage.getContent()));
     }
 
     @PutMapping("/collections/{collectionId}")
@@ -88,7 +88,7 @@ public class AdminController {
             @RequestParam(defaultValue = "asc") String orderByMode,
             @RequestHeader(value = "Authorization", required = false) String token) {
         Page<DiscussionPO> discussionPOPage = adminService.queryDiscussion(discussionPO, page, pageSize, orderBy, orderByMode);
-        return ResponseEntity.ok().body(new Result<>("获取讨论列表成功", discussionPOPage.getTotalPages(), discussionPOPage.getContent()));
+        return ResponseEntity.ok().body(new Result<>("获取讨论列表成功", discussionPOPage.getTotalElements(), discussionPOPage.getContent()));
     }
 
     @PutMapping("/discussions/{discussionId}")
@@ -118,7 +118,7 @@ public class AdminController {
             @RequestParam(defaultValue = "asc") String orderByMode,
             @RequestHeader(value = "Authorization", required = false) String token) {
         Page<SectionPO> sectionPOPage = adminService.querySection(sectionPO, page, pageSize, orderBy, orderByMode);
-        return ResponseEntity.ok().body(new Result<>("获取板块列表成功", sectionPOPage.getTotalPages(), sectionPOPage.getContent()));
+        return ResponseEntity.ok().body(new Result<>("获取板块列表成功", sectionPOPage.getTotalElements(), sectionPOPage.getContent()));
     }
 
     @PutMapping("/sections/{sectionId}")
@@ -148,7 +148,7 @@ public class AdminController {
             @RequestParam(defaultValue = "asc") String orderByMode,
             @RequestHeader(value = "Authorization", required = false) String token) {
         Page<UserPO> userPOPage = adminService.queryUsers(userPO, page, pageSize, orderBy, orderByMode);
-        return ResponseEntity.ok().body(new Result<>("获取用户列表成功", userPOPage.getTotalPages(), userPOPage.getContent()));
+        return ResponseEntity.ok().body(new Result<>("获取用户列表成功", userPOPage.getTotalElements(), userPOPage.getContent()));
     }
 
     @PostMapping("/banUsers/{userId}")
@@ -178,7 +178,7 @@ public class AdminController {
             @RequestParam(defaultValue = "asc") String orderByMode,
             @RequestHeader(value = "Authorization", required = false) String token) {
         Page<CommentPO> commentPOPage = adminService.queryComment(commentPO, page, pageSize, orderBy, orderByMode);
-        return ResponseEntity.ok().body(new Result<>("获取评论列表成功", commentPOPage.getTotalPages(), commentPOPage.getContent()));
+        return ResponseEntity.ok().body(new Result<>("获取评论列表成功", commentPOPage.getTotalElements(), commentPOPage.getContent()));
     }
 
     @PutMapping("/comments/{commentId}")
@@ -208,7 +208,7 @@ public class AdminController {
             @RequestParam(defaultValue = "asc") String orderByMode,
             @RequestHeader(value = "Authorization", required = false) String token) {
         Page<AnnouncementPO> announcementPOS = adminService.queryAnnouncement(announcementPO, page, pageSize, orderBy, orderByMode);
-        return ResponseEntity.ok().body(new Result<>("获取公告列表成功", announcementPOS.getTotalPages(), announcementPOS.getContent()));
+        return ResponseEntity.ok().body(new Result<>("获取公告列表成功", announcementPOS.getTotalElements(), announcementPOS.getContent()));
     }
 
     @PutMapping("/announcements/{announcementId}")
