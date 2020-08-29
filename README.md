@@ -26,7 +26,7 @@
  
  PC：
  
- ![](https://cdn.jsdelivr.net/gh/OysterQAQ/Blog-Image/%E6%88%AA%E5%B1%8F2020-07-16%20%E4%B8%8B%E5%8D%884.21.36.png)
+ ![](https://s1.ax1x.com/2020/08/29/dTylB8.png)
  
  
 
