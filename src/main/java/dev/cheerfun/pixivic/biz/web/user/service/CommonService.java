@@ -155,7 +155,7 @@ public class CommonService {
 
     @CacheEvict(value = "users", key = "#userId")
     public int setPasswordById(String password, Integer userId) {
-        return userMapper.setPasswordById(passwordUtil.encrypt(password), userId);
+        return userMapper.setPasswordById(password, userId);
     }
 
     public String getQQOpenId(String qqAccessToken) throws IOException, InterruptedException {
