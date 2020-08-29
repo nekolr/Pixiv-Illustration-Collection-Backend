@@ -26,7 +26,7 @@
  
  PC：
  
- ![截屏2020-07-16 下午4.21.36](https://cdn.jsdelivr.net/gh/OysterQAQ/Blog-Image/%E6%88%AA%E5%B1%8F2020-07-16%20%E4%B8%8B%E5%8D%884.21.36.png)
+ ![](https://cdn.jsdelivr.net/gh/OysterQAQ/Blog-Image/%E6%88%AA%E5%B1%8F2020-07-16%20%E4%B8%8B%E5%8D%884.21.36.png)
  
  
 
