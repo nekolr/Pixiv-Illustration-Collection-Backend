@@ -297,7 +297,7 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("发布广告成功", adminService.createAdvertisement(advertisementPO)));
     }
 
-    @DeleteMapping("/announcements/{adId}")
+    @DeleteMapping("/ads/{adId}")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteAdvertisement(
             @PathVariable Integer adId,
