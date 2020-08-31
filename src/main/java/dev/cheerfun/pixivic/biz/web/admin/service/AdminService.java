@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author OysterQAQ
@@ -155,11 +156,19 @@ public class AdminService {
 
     @CacheEvict(value = "users", key = "#userPO.id")
     public UserPO updateUser(UserPO userPO) {
-        //UserPO u = userRepository.save(userPO);
-        if (userPO.getIsBan() == 0) {
-            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userPO.getId()));
+        Optional<UserPO> user = userRepository.findById(userPO.getId());
+        if (user.isPresent()) {
+            if (userPO.getIsBan() == 0) {
+                stringRedisTemplate.opsForSet().add(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userPO.getId()));
+            } else {
+                stringRedisTemplate.opsForSet().remove(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(userPO.getId()));
+            }
+            UserPO result = user.get();
+            result.setIsBan(userPO.getIsBan());
+            userRepository.save(result);
+            return result;
         }
-        return userPO;
+        return null;
     }
 
     @CacheEvict(value = "users", key = "#userId")

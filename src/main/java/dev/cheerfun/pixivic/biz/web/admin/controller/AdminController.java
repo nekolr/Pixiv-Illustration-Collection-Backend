@@ -160,6 +160,15 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("封禁用户成功", adminService.updateUser(userPO)));
     }
 
+    @DeleteMapping("/banUsers/{userId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<UserPO>> releaseUser(
+            @PathVariable Integer userId,
+            @RequestBody UserPO userPO,
+            @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("封禁用户成功", adminService.updateUser(userPO)));
+    }
+
     @DeleteMapping("/users/{userId}")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteUser(
@@ -304,5 +313,7 @@ public class AdminController {
             @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("删除广告成功", adminService.deleteAdvertisement(adId)));
     }
+
+    //app版本管理
 
 }
