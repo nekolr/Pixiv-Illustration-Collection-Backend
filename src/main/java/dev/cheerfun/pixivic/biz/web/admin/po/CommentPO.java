@@ -20,13 +20,13 @@ import java.util.List;
 @Data
 @Entity(name = "comments")
 public class CommentPO {
+    @Id
+    @Column(name = "comment_id")
+    private Integer id;
     @Column(name = "app_type")
     private String appType;
     @Column(name = "app_id")
     private Integer appId;
-    @Id
-    @Column(name = "comment_id")
-    private Integer id;
     @Column(name = "parent_id")
     private Integer parentId;
     @Column(name = "reply_from")
