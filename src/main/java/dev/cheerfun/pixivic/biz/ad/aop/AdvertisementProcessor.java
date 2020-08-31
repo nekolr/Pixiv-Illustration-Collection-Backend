@@ -43,7 +43,7 @@ public class AdvertisementProcessor {
     }
 
     @PostConstruct
-    public void init() {
+    public synchronized void init() {
         randomList = new ArrayList<>();
         List<AdvertisementInfo> advertisementInfos = advertisementMapper.queryAllEnableAdvertisementInfo();
         //构造randomList

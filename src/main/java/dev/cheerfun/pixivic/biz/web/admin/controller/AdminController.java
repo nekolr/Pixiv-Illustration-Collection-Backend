@@ -266,4 +266,43 @@ public class AdminController {
 //        return null;
 //    }
 
+    //广告管理
+    @PostMapping("/ads")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<List<AdvertisementPO>>> queryAdvertisements(
+            @RequestBody AdvertisementPO advertisementPO,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "30") Integer pageSize,
+            @RequestParam(defaultValue = "id") String orderBy,
+            @RequestParam(defaultValue = "asc") String orderByMode,
+            @RequestHeader(value = "Authorization") String token) {
+        Page<AdvertisementPO> advertisementPOS = adminService.queryAdvertisements(advertisementPO, page, pageSize, orderBy, orderByMode);
+        return ResponseEntity.ok().body(new Result<>("获取广告列表成功", advertisementPOS.getTotalElements(), advertisementPOS.getContent()));
+    }
+
+    @PutMapping("/ads/{adId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<AdvertisementPO>> updateAdvertisement(
+            @PathVariable Integer adId,
+            @RequestBody AdvertisementPO advertisementPO,
+            @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("更新广告成功", adminService.updateAdvertisement(advertisementPO)));
+    }
+
+    @PutMapping("/ads")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<AdvertisementPO>> createAdvertisement(
+            @RequestBody AdvertisementPO advertisementPO,
+            @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("发布广告成功", adminService.createAdvertisement(advertisementPO)));
+    }
+
+    @DeleteMapping("/announcements/{adId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> deleteAdvertisement(
+            @PathVariable Integer adId,
+            @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("删除广告成功", adminService.deleteAdvertisement(adId)));
+    }
+
 }

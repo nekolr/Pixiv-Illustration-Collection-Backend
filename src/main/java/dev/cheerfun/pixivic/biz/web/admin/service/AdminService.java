@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.admin.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.biz.ad.aop.AdvertisementProcessor;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
 import dev.cheerfun.pixivic.biz.web.admin.po.*;
@@ -48,7 +49,9 @@ public class AdminService {
     private final CommentRepository commentRepository;
     private final CollectionRepository collectionRepository;
     private final AnnouncementRepository announcementRepository;
+    private final AdvertisementRepository advertisementRepository;
     private final IllustrationBizService illustrationBizService;
+    private final AdvertisementProcessor advertisementProcessor;
     private List<String> keyList;
 
     @PostConstruct
@@ -263,6 +266,30 @@ public class AdminService {
                 cacheManager.getCache(region).evict(key);
             }
         }
+        return true;
+    }
+
+    public Page<AdvertisementPO> queryAdvertisements(AdvertisementPO advertisementPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        return advertisementRepository.findAll(Example.of(advertisementPO), pageable);
+    }
+
+    public AdvertisementPO updateAdvertisement(AdvertisementPO advertisementPO) {
+        AdvertisementPO result = advertisementRepository.save(advertisementPO);
+        advertisementProcessor.init();
+        return result;
+    }
+
+    public AdvertisementPO createAdvertisement(AdvertisementPO advertisementPO) {
+        AdvertisementPO result = advertisementRepository.save(advertisementPO);
+        advertisementProcessor.init();
+        return result;
+    }
+
+    public Boolean deleteAdvertisement(Integer adId) {
+        advertisementRepository.deleteById(adId);
+        advertisementProcessor.init();
         return true;
     }
 }
