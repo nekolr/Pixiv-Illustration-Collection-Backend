@@ -21,7 +21,7 @@ public class Result<T> {
     @JsonIgnore
     private HttpStatus httpStatus;
     private String message;
-    private Integer total;
+    private Long total;
     private T data;
 
     public Result(String message, T data) {
@@ -38,9 +38,15 @@ public class Result<T> {
         this.message = message;
     }
 
-    public Result(String message, Integer total, T data) {
+    public Result(String message, Long total, T data) {
         this.message = message;
         this.total = total;
+        this.data = data;
+    }
+
+    public Result(String message, Integer total, T data) {
+        this.message = message;
+        this.total = Long.valueOf(total);
         this.data = data;
     }
 
