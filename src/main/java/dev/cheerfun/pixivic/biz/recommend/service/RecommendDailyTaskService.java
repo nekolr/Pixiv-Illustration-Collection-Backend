@@ -23,7 +23,7 @@ public class RecommendDailyTaskService {
     private final RecommendService artistRecommendService;
     private final CacheManager cacheManager;
 
-    @Scheduled(cron = "0 0 3 * * ?")
+    @Scheduled(cron = "0 0 4 * * ?")
     public void genarateTask() throws TasteException {
         clearCache();
         illustBookmarkRecommendService.recommend();

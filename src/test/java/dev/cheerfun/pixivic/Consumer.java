@@ -32,7 +32,7 @@ public class Consumer {
                 System.out.println(new String(output.bytesValue(), "UTF-8"));
             }
         }*/
-        System.out.println(new PasswordUtil().encrypt("12345678"));
+        System.out.println(new PasswordUtil().encrypt("w1s1r22WSR"));
     }
 }
 

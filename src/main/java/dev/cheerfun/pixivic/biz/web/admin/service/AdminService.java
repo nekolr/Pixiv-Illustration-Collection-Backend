@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.*;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author OysterQAQ
@@ -37,6 +39,7 @@ public class AdminService {
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustHistoryService illustHistoryService;
     private final AdminMapper adminMapper;
+    private final CacheManager cacheManager;
     private final TranslationUtil translationUtil;
     private final ObjectMapper objectMapper;
     private final UserRepository userRepository;
@@ -246,6 +249,20 @@ public class AdminService {
     })
     public Boolean deleteAnnouncement(Integer announcementId) {
         announcementRepository.deleteById(announcementId);
+        return true;
+    }
+
+    public Boolean deleteCache(String region, String key) {
+        if (region == null) {
+            cacheManager.getCacheNames()
+                    .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
+        } else {
+            if (key == null) {
+                cacheManager.getCache(region).clear();
+            } else {
+                cacheManager.getCache(region).evict(key);
+            }
+        }
         return true;
     }
 }

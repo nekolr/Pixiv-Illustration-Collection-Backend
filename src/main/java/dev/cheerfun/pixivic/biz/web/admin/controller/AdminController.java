@@ -33,7 +33,7 @@ public class AdminController {
     private final AdminService adminService;
 
     @GetMapping("/illusts/{illustId}")
-    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token", required = false) String token) throws JsonProcessingException {
+    public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token) throws JsonProcessingException {
         if (adminService.validateKey(token)) {
             log.info("管理员key:" + token + ",开始获取画作(" + illustId + ")详情");
             return ResponseEntity.ok().body(new Result<>("获取画作详情成功", adminService.queryIllustrationById(illustId)));
@@ -43,7 +43,7 @@ public class AdminController {
 
     @PutMapping("/illusts/{illustId}")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token", required = false) String token, @RequestBody IllustDTO illustDTO) throws JsonProcessingException {
+    public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token, @RequestBody IllustDTO illustDTO) throws JsonProcessingException {
         adminService.updateIllusts(illustDTO);
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
     }
@@ -56,7 +56,7 @@ public class AdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         Page<CollectionPO> collectionPOPage = adminService.queryCollection(collectionPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取画集列表成功", collectionPOPage.getTotalElements(), collectionPOPage.getContent()));
     }
@@ -66,7 +66,7 @@ public class AdminController {
     public ResponseEntity<Result<CollectionPO>> updateCollection(
             @PathVariable Integer collectionId,
             @RequestBody CollectionPO collectionPO,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("更新画集成功", adminService.updateCollection(collectionPO)));
     }
 
@@ -74,7 +74,7 @@ public class AdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteCollection(
             @PathVariable Integer collectionId,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("删除画集成功", adminService.deleteCollection(collectionId)));
     }
 
@@ -86,7 +86,7 @@ public class AdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         Page<DiscussionPO> discussionPOPage = adminService.queryDiscussion(discussionPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取讨论列表成功", discussionPOPage.getTotalElements(), discussionPOPage.getContent()));
     }
@@ -96,7 +96,7 @@ public class AdminController {
     public ResponseEntity<Result<DiscussionPO>> updateDiscussion(
             @PathVariable Integer discussionId,
             @RequestBody DiscussionPO discussionPO,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("更新讨论成功", adminService.updateDiscussion(discussionPO)));
     }
 
@@ -104,7 +104,7 @@ public class AdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteDiscussion(
             @PathVariable Integer discussionId,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("删除讨论成功", adminService.deleteDiscussion(discussionId)));
     }
 
@@ -116,7 +116,7 @@ public class AdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         Page<SectionPO> sectionPOPage = adminService.querySection(sectionPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取板块列表成功", sectionPOPage.getTotalElements(), sectionPOPage.getContent()));
     }
@@ -126,7 +126,7 @@ public class AdminController {
     public ResponseEntity<Result<SectionPO>> updateSection(
             @PathVariable Integer sectionId,
             @RequestBody SectionPO sectionPO,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("更新板块成功", adminService.updateSection(sectionPO)));
     }
 
@@ -134,7 +134,7 @@ public class AdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteSection(
             @PathVariable Integer sectionId,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("删除板块成功", adminService.deleteSection(sectionId)));
     }
 
@@ -146,7 +146,7 @@ public class AdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         Page<UserPO> userPOPage = adminService.queryUsers(userPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取用户列表成功", userPOPage.getTotalElements(), userPOPage.getContent()));
     }
@@ -156,7 +156,7 @@ public class AdminController {
     public ResponseEntity<Result<UserPO>> banUser(
             @PathVariable Integer userId,
             @RequestBody UserPO userPO,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("封禁用户成功", adminService.updateUser(userPO)));
     }
 
@@ -164,7 +164,7 @@ public class AdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteUser(
             @PathVariable Integer userId,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("删除用户成功", adminService.deleteUser(userId)));
     }
 
@@ -176,7 +176,7 @@ public class AdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         Page<CommentPO> commentPOPage = adminService.queryComment(commentPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取评论列表成功", commentPOPage.getTotalElements(), commentPOPage.getContent()));
     }
@@ -186,7 +186,7 @@ public class AdminController {
     public ResponseEntity<Result<CommentPO>> updateComment(
             @PathVariable Integer commentId,
             @RequestBody CommentPO commentPO,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("更新评论成功", adminService.updateComment(commentPO)));
     }
 
@@ -194,7 +194,7 @@ public class AdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteComment(
             @PathVariable Integer commentId,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("删除评论成功", adminService.deleteComment(adminService.queryCommentById(commentId))));
     }
 
@@ -206,7 +206,7 @@ public class AdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         Page<AnnouncementPO> announcementPOS = adminService.queryAnnouncement(announcementPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取公告列表成功", announcementPOS.getTotalElements(), announcementPOS.getContent()));
     }
@@ -216,7 +216,7 @@ public class AdminController {
     public ResponseEntity<Result<AnnouncementPO>> updateAnnouncement(
             @PathVariable Integer announcementId,
             @RequestBody AnnouncementPO announcementPO,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("更新公告成功", adminService.updateAnnouncement(announcementPO)));
     }
 
@@ -224,7 +224,7 @@ public class AdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<AnnouncementPO>> createAnnouncement(
             @RequestBody AnnouncementPO announcementPO,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("发布公告成功", adminService.createAnnouncement(announcementPO)));
     }
 
@@ -232,12 +232,36 @@ public class AdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteAnnouncement(
             @PathVariable Integer announcementId,
-            @RequestHeader(value = "Authorization", required = false) String token) {
+            @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("删除公告成功", adminService.deleteAnnouncement(announcementId)));
     }
 
+    @DeleteMapping("/caches/{region}/{key}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> deleteCache(
+            @PathVariable String region,
+            @PathVariable String key,
+            @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("删除缓存成功", adminService.deleteCache(region, key)));
+    }
+
+    @DeleteMapping("/caches/{region}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> deleteAllCache(
+            @PathVariable String region,
+            @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("删除缓存成功", adminService.deleteCache(region, null)));
+    }
+
+    @DeleteMapping("/caches")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> deleteAllCache(
+            @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("删除缓存成功", adminService.deleteCache(null, null)));
+    }
+
 //    @PutMapping("/illusts")
-//    public ResponseEntity<Result<User>> updateIllusts(@RequestBody @Valid IllustDTO illustDTO, @RequestHeader(value = "Authorization", required = false) String token) {
+//    public ResponseEntity<Result<User>> updateIllusts(@RequestBody @Valid IllustDTO illustDTO, @RequestHeader(value = "Authorization") String token) {
 //        adminService.updateIllusts(illustDTO);
 //        return null;
 //    }
