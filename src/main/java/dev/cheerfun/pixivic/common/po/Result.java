@@ -46,7 +46,9 @@ public class Result<T> {
 
     public Result(String message, Integer total, T data) {
         this.message = message;
-        this.total = Long.valueOf(total);
+        if (total != null) {
+            this.total = Long.valueOf(total);
+        }
         this.data = data;
     }
 
