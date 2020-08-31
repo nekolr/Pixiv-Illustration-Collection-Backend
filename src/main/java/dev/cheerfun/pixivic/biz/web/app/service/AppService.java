@@ -21,7 +21,7 @@ import java.util.List;
 public class AppService {
     private final AppMapper appMapper;
 
-    public AppVersionInfo queryLatest(String version) {
+    public AppVersionInfo queryLatestByVersion(String version) {
         //输入当前版本并查询是否最新版本，如果有更新就返回对应信息
         AppVersionInfo appVersionInfo = queryLatest();
         if (appVersionInfo != null) {
