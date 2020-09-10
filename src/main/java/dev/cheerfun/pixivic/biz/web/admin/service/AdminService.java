@@ -78,13 +78,19 @@ public class AdminService {
 
     public Illustration queryIllustrationById(Integer illustId) throws JsonProcessingException {
         Illustration illustration = objectMapper.readValue(objectMapper.writeValueAsString(illustrationBizService.queryIllustrationById(illustId)), Illustration.class);
-        illustration.setTitle("【" + translationUtil.translateToChineseByAzureForAdmin(illustration.getTitle()) + "】" + illustration.getTitle());
+        String title = translationUtil.translateToChineseByAzureForAdmin(illustration.getTitle());
+        if (!"".equals(title)) {
+            illustration.setTitle("【" + title + "】" + illustration.getTitle());
+        }
         illustration.getTags().forEach(e -> {
             if (e.getTranslatedName() == null || "".equals(e.getTranslatedName())) {
                 e.setTranslatedName(translationUtil.translateToChineseByAzureForAdmin(e.getName()));
             }
         });
-        illustration.setCaption(translationUtil.translateToChineseByAzureForAdminWithoutCache(Jsoup.parse(illustration.getCaption()).text()) + "|" + illustration.getCaption());
+        String caption = translationUtil.translateToChineseByAzureForAdminWithoutCache(Jsoup.parse(illustration.getCaption()).text());
+        if (!"".equals(caption)) {
+            illustration.setCaption(caption + "|" + illustration.getCaption());
+        }
         return illustration;
     }
 

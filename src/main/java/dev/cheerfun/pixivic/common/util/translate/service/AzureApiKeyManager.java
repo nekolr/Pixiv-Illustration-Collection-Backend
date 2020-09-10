@@ -40,9 +40,9 @@ public class AzureApiKeyManager {
             log.info("开始初始化az翻译api管理类");
             random = new Random(21);
             //如果是一号，把所有key置为有效
-            if (LocalDate.now().getDayOfMonth() == 1) {
+            //if (LocalDate.now().getDayOfMonth() == 1) {
                 translateMapper.resetStatus();
-            }
+            //}
             availableList = translateMapper.queryAll();
             availableListSize = availableList.size();
             unAvailableList = new ArrayList<>();
