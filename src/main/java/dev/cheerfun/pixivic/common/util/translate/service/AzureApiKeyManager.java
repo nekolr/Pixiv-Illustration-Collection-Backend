@@ -76,4 +76,15 @@ public class AzureApiKeyManager {
         }
     }
 
+    public void invalid(AzureApiKey azureApiKey) {
+        writeLock.lock();
+        try {
+            translateMapper.invalid(azureApiKey.getId());
+            availableList = translateMapper.queryAll();
+            availableListSize = availableList.size();
+        } finally {
+            writeLock.unlock();
+        }
+    }
+
 }

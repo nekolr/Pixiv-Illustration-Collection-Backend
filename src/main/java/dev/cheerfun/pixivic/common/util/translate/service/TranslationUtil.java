@@ -155,10 +155,14 @@ public class TranslationUtil {
                         .POST(HttpRequest.BodyPublishers.ofString("[{\n\t\"Text\": \"" + keyword + "\"\n}]"))
                         .build();
                 String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-                if (body.contains("403001") || body.contains("401000")) {
-                    log.error(key.getKey() + "已经失效");
+                if (body.contains("403001")) {
+                    log.error(key.getKey() + "已经到达限额");
                     azureApiKeyManager.ban(key);
-                } else {
+                } else if (body.contains("401000")) {
+                    log.error(key.getKey() + "已经失效");
+                    azureApiKeyManager.invalid(key);
+                }
+                {
                     List<AzureTranslatedResponse> azureTranslatedResponses = objectMapper.readValue(body, new TypeReference<List<AzureTranslatedResponse>>() {
                     });
                     if (azureTranslatedResponses != null && azureTranslatedResponses.size() > 0) {
