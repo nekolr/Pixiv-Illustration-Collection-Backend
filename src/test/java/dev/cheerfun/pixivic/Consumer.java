@@ -19,6 +19,7 @@ import java.util.concurrent.TimeoutException;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
+        System.out.println(10000 * 1000 / 1024 / 1024);
         System.out.println(4 * 1000 * 10000 / 1024 / 1024);
       /*  try (Graph g = new Graph()) {
             final String value = "Hello from " + TensorFlow.version();
