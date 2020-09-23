@@ -13,6 +13,6 @@ import java.util.List;
 @Data
 public class NotifyBanSetting {
     private Integer userId;
-    private List<String> banNotifyActionType;//屏蔽通知事件类型
+    private List<String> banObjectType;//屏蔽通知事件类型
     private Integer isBanEmail;
 }

@@ -11,4 +11,6 @@ public class ObjectType {
     public final static String COMMENT = "comment";
     public final static String ILLUST = "illust";
     public final static String COLLECTION = "collection";
+    public final static String DISCUSSION = "discussion";
+    public final static String USER = "user";
 }

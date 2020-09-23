@@ -41,8 +41,8 @@ public class CommentController {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         comment.init(commentAppType, commentAppId, userId);
         commentService.pushComment(comment);
-//        //如果不是顶层(即存在被回复人)产生通知事件
-        if (comment.getReplyTo() != 0) {
+        //如果不是顶层(即存在被回复人)产生通知事件
+        if ((ObjectType.ILLUST.equals(commentAppType) && comment.getReplyTo() != 0) || !ObjectType.ILLUST.equals(commentAppType)) {
             eventPublisher.publish(new Event(userId, comment.getReplyFromName(), ActionType.REPLIED, ObjectType.COMMENT, comment.getParentId(), LocalDateTime.now()));
         }
         return ResponseEntity.ok().body(new Result<>("评论成功"));

@@ -21,6 +21,6 @@ public class UserSettingUtil {
     @Cacheable("userNotifySetting")
     public Boolean checkUserSetting(Integer ownerId, String objectType) {
         NotifyBanSetting notifyBanSetting = notifyMapper.queryUserBanSetting(ownerId);
-        return notifyBanSetting == null || !notifyBanSetting.getBanNotifyActionType().contains(objectType);
+        return notifyBanSetting == null || !notifyBanSetting.getBanObjectType().contains(objectType);
     }
 }
