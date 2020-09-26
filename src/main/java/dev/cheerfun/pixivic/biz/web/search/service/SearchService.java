@@ -86,7 +86,7 @@ public class SearchService {
                     }
                     return pixivSearchCandidatesResponse;
                 });*/
-        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "暂时不可用");
+        throw new BusinessException(HttpStatus.BAD_REQUEST, "暂时不可用");
     }
 
     @Cacheable(value = "searchSuggestions")
@@ -103,7 +103,7 @@ public class SearchService {
                     }
                     return CompletableFuture.completedFuture(searchSuggestions);
                 });*/
-        throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "暂时不可用");
+        throw new BusinessException(HttpStatus.BAD_REQUEST, "暂时不可用");
 
     }
 

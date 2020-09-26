@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic;
 
+import com.google.common.collect.Lists;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -10,6 +12,7 @@ import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -19,6 +22,11 @@ import java.util.concurrent.TimeoutException;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
+        Map<String, String> collect =
+                Arrays.stream("a=a&b=b&c=c".split("&"))
+                        .map(e -> Arrays.asList(e.split("=")))
+                        .collect(Collectors.toMap(e -> e.get(0), e -> e.get(1)));
+        System.out.println(collect);
         System.out.println(10000 * 1000 / 1024 / 1024);
         System.out.println(4 * 1000 * 10000 / 1024 / 1024);
       /*  try (Graph g = new Graph()) {
