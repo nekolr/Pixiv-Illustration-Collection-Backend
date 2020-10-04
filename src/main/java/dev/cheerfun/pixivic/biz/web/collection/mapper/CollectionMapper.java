@@ -80,11 +80,11 @@ public interface CollectionMapper {
     @Update("update collections set illust_count=illust_count-1 where collection_id=#{collectionId}")
     void decrCollectionIllustCount(Integer collectionId);
 
-    @Update("update collections set illust_count=illust_count+1 where collection_id=#{collectionId}")
-    void incrCollectionIllustCount(Integer collectionId);
+    @Update("update collections set illust_count=illust_count+#{sum} where collection_id=#{collectionId}")
+    void incrCollectionIllustCount(Integer collectionId, int sum);
 
     @Insert("insert into collection_illust_relation  (collection_id, illust_id,order_num) values (#{collectionId}, #{illustrationId},(select illust_count from collections where collection_id=#{collectionId}))")
-    void addIllustrationToCollection(Integer collectionId, Integer illustrationId);
+    Integer addIllustrationToCollection(Integer collectionId, Integer illustrationId);
 
     @Select("   SELECT IFNULL(( " +
             "                    SELECT 1 " +
@@ -116,10 +116,10 @@ public interface CollectionMapper {
             "= #{isPublic}",
             "</if>",
             "</if>",
-            "and user_id=#{userId} order by create_time limit #{currIndex},#{pageSize}",
+            "and user_id=#{userId} order by #{orderBy} limit #{currIndex},#{pageSize}",
             "</script>"
     })
-    List<Integer> queryUserCollection(Integer userId, Integer currIndex, Integer pageSize, Integer isSelf, Integer isPublic);
+    List<Integer> queryUserCollection(Integer userId, Integer currIndex, Integer pageSize, Integer isSelf, Integer isPublic, String orderBy);
 
     @Select("select * from collections where collection_id=#{collectionId} and use_flag=1")
     @Results({

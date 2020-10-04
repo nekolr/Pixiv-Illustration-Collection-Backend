@@ -70,10 +70,11 @@ public class CollectionController {
     //将画作添加进画集
     @PostMapping("/collections/{collectionId}/illustrations")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> addIllustrationToCollection(@PathVariable Integer collectionId, @RequestBody Illustration illustration, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<List<Integer>>> addIllustrationToCollection(@PathVariable Integer collectionId, @RequestBody List<Integer> illustrationIds, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-        return ResponseEntity.ok().body(new Result<>("添加画作成功", collectionService.addIllustrationToCollection(userId, collectionId, illustration)));
+        return ResponseEntity.ok().body(new Result<>("添加画作成功，重复作品如下", collectionService.addIllustrationToCollection(userId, collectionId, illustrationIds)));
     }
+
 
     //从画集中删除画作
     @DeleteMapping("/collections/{collectionId}/illustrations/{illustrationId}")
@@ -102,7 +103,7 @@ public class CollectionController {
     //查询用户画集
     @GetMapping("/users/{userId}/collections")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(15) Integer pageSize, @RequestParam(required = false) Integer isPublic) {
+    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(15) Integer pageSize, @RequestParam(required = false) Integer isPublic, @RequestParam(value = "orderBy", defaultValue = "create_time") String orderBy) {
         //是否登陆，是否查看本人画集
         Map<String, Object> context = AppContext.get();
         Integer isSelf = 0;
@@ -119,7 +120,10 @@ public class CollectionController {
                 throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人非公开画作");
             }
         }
-        return ResponseEntity.ok().body(new Result<>("获取用户画集成功", collectionService.queryCollectionSummary(userId, isPublic), collectionService.queryUserCollection(userId, isSelf, isPublic, page, pageSize)));
+        if ("updateTime".equals(orderBy)) {
+            orderBy = "update_time";
+        }
+        return ResponseEntity.ok().body(new Result<>("获取用户画集成功", collectionService.queryCollectionSummary(userId, isPublic), collectionService.queryUserCollection(userId, isSelf, isPublic, page, pageSize, orderBy)));
     }
 
     //查看画集详情
@@ -155,7 +159,7 @@ public class CollectionController {
 
     //搜索画集
     @GetMapping("/collections")
-    public ResponseEntity<Result<List<Collection>>> searchCollection(@RequestBody UpdateIllustrationOrderDTO updateIllustrationOrderDTO, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<List<Collection>>> searchCollection(@RequestBody UpdateIllustrationOrderDTO updateIllustrationOrderDTO, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam("mode") String mode) {
         return null;
     }
 

@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -116,21 +117,28 @@ public class CollectionService {
 
     @Transactional
     @CacheEvict(value = "collections", key = "#collectionId")
-    public Boolean addIllustrationToCollection(Integer userId, Integer collectionId, Illustration illustration) {
+    public List<Integer> addIllustrationToCollection(Integer userId, Integer collectionId, List<Integer> illustrationIds) {
+        //List<Integer> success=new ArrayList<>();
+        List<Integer> failed = new ArrayList<>();
         //校验collectionId是否属于用户
         checkCollectionAuth(collectionId, userId);
         Collection collection = queryCollectionByIdFromDb(collectionId);
         //插入
-        try {
-            collectionMapper.incrCollectionIllustCount(collectionId);
-            collectionMapper.addIllustrationToCollection(collectionId, illustration.getId());
-            if (collection.getIllustCount() == 0) {
-                collectionMapper.updateCollectionCover(collectionId, illustrationBizService.queryIllustrationById(illustration.getId()));
+        int sum = 0;
+        for (Integer illustrationId : illustrationIds) {
+            try {
+                collectionMapper.addIllustrationToCollection(collectionId, illustrationId);
+                sum++;
+            } catch (DuplicateKeyException e) {
+                log.info("画作：" + illustrationId + "在画集：" + collectionId + "中已经存在");
+                failed.add(illustrationId);
             }
-        } catch (DuplicateKeyException e) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "画作在该画集中已经存在");
         }
-        return true;
+        collectionMapper.incrCollectionIllustCount(collectionId, sum);
+        if (collection.getIllustCount() == 0) {
+            collectionMapper.updateCollectionCover(collectionId, illustrationBizService.queryIllustrationById(illustrationIds.get(0)));
+        }
+        return failed;
     }
 
     @Transactional
@@ -239,8 +247,8 @@ public class CollectionService {
         return collectionMapper.queryIllustrationOrder(collectionId, illustrationId);
     }
 
-    public List<Collection> queryUserCollection(Integer userId, Integer isSelf, Integer isPublic, Integer page, Integer pageSize) {
-        List<Integer> collectionIdList = collectionMapper.queryUserCollection(userId, (page - 1) * pageSize, pageSize, isSelf, isPublic);
+    public List<Collection> queryUserCollection(Integer userId, Integer isSelf, Integer isPublic, Integer page, Integer pageSize, String orderBy) {
+        List<Integer> collectionIdList = collectionMapper.queryUserCollection(userId, (page - 1) * pageSize, pageSize, isSelf, isPublic, orderBy);
         return queryCollectionById(collectionIdList);
     }
 
@@ -365,4 +373,9 @@ public class CollectionService {
         }
         return collection;
     }
+
+    public List<Collection> searchCollection(String keyword, String mode) {
+        return null;
+    }
+
 }
