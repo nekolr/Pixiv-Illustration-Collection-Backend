@@ -5,24 +5,22 @@ import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
+import dev.cheerfun.pixivic.biz.web.collection.dto.CollectionDigest;
 import dev.cheerfun.pixivic.biz.web.collection.dto.UpdateIllustrationOrderDTO;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
 import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
-import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 /**
@@ -75,7 +73,6 @@ public class CollectionController {
         return ResponseEntity.ok().body(new Result<>("添加画作成功，重复作品如下", collectionService.addIllustrationToCollection(userId, collectionId, illustrationIds)));
     }
 
-
     //从画集中删除画作
     @DeleteMapping("/collections/{collectionId}/illustrations/{illustrationId}")
     @PermissionRequired
@@ -104,26 +101,18 @@ public class CollectionController {
     @GetMapping("/users/{userId}/collections")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(15) Integer pageSize, @RequestParam(required = false) Integer isPublic, @RequestParam(value = "orderBy", defaultValue = "create_time") String orderBy) {
-        //是否登陆，是否查看本人画集
-        Map<String, Object> context = AppContext.get();
-        Integer isSelf = 0;
-        if (context != null && context.get(AuthConstant.USER_ID) != null) {
-            if ((int) context.get(AuthConstant.USER_ID) == userId) {
-                isSelf = 1;
-            } else {
-                if (isPublic == null || isPublic == 0) {
-                    throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人非公开画作");
-                }
-            }
-        } else {
-            if (isPublic == null || isPublic == 0) {
-                throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人非公开画作");
-            }
-        }
+        Integer isSelf = collectionService.checkUserAuth(isPublic, userId);
         if ("updateTime".equals(orderBy)) {
             orderBy = "update_time";
         }
         return ResponseEntity.ok().body(new Result<>("获取用户画集成功", collectionService.queryCollectionSummary(userId, isPublic), collectionService.queryUserCollection(userId, isSelf, isPublic, page, pageSize, orderBy)));
+    }
+
+    //查询用户所有画集名字
+    @GetMapping("/users/{userId}/collectionsDigest")
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<List<CollectionDigest>>> queryUserCollectionNameList(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(required = false) Integer isPublic) {
+        return ResponseEntity.ok().body(new Result<>("获取用户画集名称列表成功", collectionService.queryUserCollectionNameList((Integer) AppContext.get().get(AuthConstant.USER_ID), isPublic)));
     }
 
     //查看画集详情

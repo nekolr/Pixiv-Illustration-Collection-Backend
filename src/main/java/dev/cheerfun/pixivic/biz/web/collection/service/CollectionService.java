@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.collection.service;
 
 import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
+import dev.cheerfun.pixivic.biz.web.collection.dto.CollectionDigest;
 import dev.cheerfun.pixivic.biz.web.collection.dto.UpdateIllustrationOrderDTO;
 import dev.cheerfun.pixivic.biz.web.collection.mapper.CollectionMapper;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
@@ -51,6 +52,10 @@ public class CollectionService {
     private final IllustrationBizService illustrationBizService;
     private final CollectionTagSearchUtil collectionTagSearchUtil;
 
+    @Caching(evict = {
+            @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-0'"),
+            @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-1'"),
+    })
     public Integer createCollection(Integer userId, Collection collection) {
         //去除敏感词
         List<CollectionTag> tagList = collection.getTagList();
@@ -98,7 +103,9 @@ public class CollectionService {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "collections", key = "#collectionId")
+            @CacheEvict(value = "collections", key = "#collectionId"),
+            @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-0'"),
+            @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-1'"),
     })
     public Boolean deleteCollection(Integer userId, Integer collectionId) {
         //删除收藏、点赞、浏览量数据
@@ -376,6 +383,36 @@ public class CollectionService {
 
     public List<Collection> searchCollection(String keyword, String mode) {
         return null;
+    }
+
+    public Integer checkUserAuth(Integer isPublic, Integer userId) {
+        //是否登陆，是否查看本人画集
+        Integer isSelf = 0;
+        Map<String, Object> context = AppContext.get();
+        if (context != null && context.get(AuthConstant.USER_ID) != null) {
+            if ((int) context.get(AuthConstant.USER_ID) == userId) {
+                isSelf = 1;
+            } else {
+                if (isPublic == null || isPublic == 0) {
+                    throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人非公开画作");
+                }
+            }
+        } else {
+            if (isPublic == null || isPublic == 0) {
+                throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人非公开画作");
+            }
+        }
+        return isSelf;
+    }
+
+    public List<CollectionDigest> queryUserCollectionNameList(Integer userId, Integer isPublic) {
+        List<Integer> collectionIdList = queryUserCollectionNameListFromDb(userId, isPublic);
+        return queryCollectionById(collectionIdList).stream().map(CollectionDigest::castByCollection).collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "user_collection_digest_list", key = "#userId+'-'+#isPublic")
+    public List<Integer> queryUserCollectionNameListFromDb(Integer userId, Integer isPublic) {
+        return collectionMapper.queryUserCollection(userId, 0, 200, 1, isPublic, "create_time");
     }
 
 }
