@@ -91,6 +91,14 @@ public class CollectionController {
         return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.updateIllustrationOrder(collectionId, illustIdList, userId)));
     }
 
+    //画集画作拖动排序
+    @PutMapping("/collections/{collectionId}/illustrations/orderByDrag")
+    @PermissionRequired
+    public ResponseEntity<Result<Boolean>> updateIllustrationOrderByDrag(@PathVariable Integer collectionId, @RequestBody UpdateIllustrationOrderDTO updateIllustrationOrderDTO, @RequestHeader(value = "Authorization") String token) {
+        Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+        return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.updateIllustrationOrder(collectionId, updateIllustrationOrderDTO, userId)));
+    }
+
     //查询用户画集
     @GetMapping("/users/{userId}/collections")
     @PermissionRequired(PermissionLevel.ANONYMOUS)

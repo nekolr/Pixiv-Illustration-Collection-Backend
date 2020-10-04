@@ -13,6 +13,7 @@ import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -40,6 +41,7 @@ import static dev.cheerfun.pixivic.common.constant.RedisKeyConstant.COLLECTION_R
  * @description CollectionService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CollectionService {
     private final CollectionMapper collectionMapper;
@@ -220,7 +222,7 @@ public class CollectionService {
                         collectionMapper.reOrderIllustration(collectionId);
                     }
                 }
-                System.out.println("耗时：" + (System.currentTimeMillis() - start));
+                log.info("耗时：" + (System.currentTimeMillis() - start));
                 return true;
             } catch (Exception exception) {
                 exception.printStackTrace();
