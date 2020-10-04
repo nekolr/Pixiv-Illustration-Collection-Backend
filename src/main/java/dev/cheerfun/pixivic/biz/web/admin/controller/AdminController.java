@@ -166,7 +166,7 @@ public class AdminController {
             @PathVariable Integer userId,
             @RequestBody UserPO userPO,
             @RequestHeader(value = "Authorization") String token) {
-        return ResponseEntity.ok().body(new Result<>("封禁用户成功", adminService.updateUser(userPO)));
+        return ResponseEntity.ok().body(new Result<>("解封用户成功", adminService.updateUser(userPO)));
     }
 
     @DeleteMapping("/users/{userId}")
