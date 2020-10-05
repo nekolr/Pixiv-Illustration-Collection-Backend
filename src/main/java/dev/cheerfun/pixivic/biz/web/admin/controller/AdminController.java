@@ -316,4 +316,12 @@ public class AdminController {
 
     //app版本管理
 
+    //推荐管理
+    @DeleteMapping("/recommendation/viewIllust")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> deleteViewIllustRecommendation(
+            @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("删除可能想看推荐成功", adminService.deleteViewIllustRecommendation()));
+    }
+
 }

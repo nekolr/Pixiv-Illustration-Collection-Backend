@@ -20,13 +20,12 @@ import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.data.domain.*;
+import org.springframework.data.redis.connection.RedisClusterNode;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * @author OysterQAQ
@@ -305,6 +304,16 @@ public class AdminService {
     public Boolean deleteAdvertisement(Integer adId) {
         advertisementRepository.deleteById(adId);
         advertisementProcessor.init();
+        return true;
+    }
+
+    public Boolean deleteViewIllustRecommendation() {
+        Iterator<RedisClusterNode> iterator = stringRedisTemplate.getConnectionFactory().getClusterConnection().clusterGetNodes().iterator();
+        while (iterator.hasNext()) {
+            RedisClusterNode clusterNode = iterator.next();
+            Set<String> keys = stringRedisTemplate.opsForCluster().keys(clusterNode, RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST + "*");
+            stringRedisTemplate.unlink(keys);
+        }
         return true;
     }
 }

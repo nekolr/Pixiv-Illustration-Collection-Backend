@@ -106,7 +106,8 @@ public class IllustBookmarkRecommendService extends RecommendService {
     private void dealPerUser(List<Integer> u, Recommender recommender, Integer size) {
         u.forEach(e -> {
             try {
-                List<RecommendedItem> recommend = recommender.recommend(e, 10 * size);
+                List<RecommendedItem> recommend = recommender.recommend(e, 35 * size);
+                //重置分数
                 Set<ZSetOperations.TypedTuple<String>> typedTuples = recommend.stream().map(recommendedItem -> {
                             Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, recommendedItem.getItemID());
                             if (score == null) {
