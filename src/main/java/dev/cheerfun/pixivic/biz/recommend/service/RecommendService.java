@@ -41,7 +41,11 @@ public abstract class RecommendService {
 
     public boolean recommend() throws TasteException {
         log.info("开始生成推荐，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
-        boolean result = dealRecommender(generateRecommender(generetaDataModel()));
+        DataModel dataModel = generetaDataModel();
+        log.info("生成数据模型结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
+        Recommender recommender = generateRecommender(dataModel);
+        log.info("生成推荐器结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
+        boolean result = dealRecommender(recommender);
         log.info("生成推荐结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
         System.gc();
         log.info("垃圾清理结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
