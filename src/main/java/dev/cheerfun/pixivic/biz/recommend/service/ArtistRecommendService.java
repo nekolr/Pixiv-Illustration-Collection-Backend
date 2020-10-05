@@ -60,8 +60,8 @@ public class ArtistRecommendService extends RecommendService {
         String today = now.plusDays(2).toString();
         String threeDaysAgo = now.plusDays(-3).toString();
         String sixDaysAgo = now.plusDays(-6).toString();
-        String twentyDaysAgo = now.plusDays(-12).toString();
-
+        String twelveDaysAgo = now.plusDays(-12).toString();
+        String twentyDaysAgo = now.plusDays(-20).toString();
         //清理推荐
         //不活跃用户推荐删除
         recommendMapper.queryUserIdByDateBefore(twentyDaysAgo).forEach(e -> {
@@ -95,7 +95,7 @@ public class ArtistRecommendService extends RecommendService {
         生成30*10个推荐收藏作品
 
         生成10*10个推荐画师*/
-        List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twentyDaysAgo, sixDaysAgo);
+        List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
         dealPerUser(u3, recommender, 10);
         return true;
     }

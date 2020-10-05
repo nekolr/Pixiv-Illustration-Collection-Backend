@@ -90,7 +90,7 @@ public class BusinessService {
     public void bookmark(int userId, String username, int illustId) {
         bookmarkOperation(userId, username, illustId, 1, 0);
         recommendBizService.deleteFromRecommendationSet(userId, RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST, illustId);
-        recommendBizService.deleteFromRecommendationSet(userId, RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST, illustId);
+        //recommendBizService.deleteFromRecommendationSet(userId, RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST, illustId);
     }
 
     public void cancelBookmark(int userId, int illustId, int relationId) {

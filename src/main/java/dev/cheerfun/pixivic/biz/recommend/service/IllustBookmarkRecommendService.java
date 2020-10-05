@@ -63,7 +63,8 @@ public class IllustBookmarkRecommendService extends RecommendService {
         String today = now.plusDays(2).toString();
         String threeDaysAgo = now.plusDays(-3).toString();
         String sixDaysAgo = now.plusDays(-6).toString();
-        String twentyDaysAgo = now.plusDays(-12).toString();
+        String twelveDaysAgo = now.plusDays(-12).toString();
+        String twentyDaysAgo = now.plusDays(-20).toString();
 
         //清理推荐
         //不活跃用户推荐删除
@@ -75,31 +76,33 @@ public class IllustBookmarkRecommendService extends RecommendService {
 
         生成30*30个推荐查看作品
 
-        生成30*30个推荐收藏作品
+        生成35*30个推荐收藏作品
 
         生成10*30个推荐画师*/
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
         dealPerUser(u1, recommender, 30);
+        System.gc();
      /*
         3-6天
 
         生成30*10个推荐查看作品
 
-        生成30*10个推荐收藏作品
+        生成35*15个推荐收藏作品
 
         生成10*10个推荐画师*/
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
         dealPerUser(u2, recommender, 15);
-
+        System.gc();
      /*   6-12天
 
         生成30*10个推荐查看作品
 
-        生成30*10个推荐收藏作品
+        生成35*10个推荐收藏作品
 
         生成10*10个推荐画师*/
-        List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twentyDaysAgo, sixDaysAgo);
+        List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
         dealPerUser(u3, recommender, 10);
+        System.gc();
         return true;
     }
 
