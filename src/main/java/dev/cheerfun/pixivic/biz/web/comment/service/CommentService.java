@@ -95,12 +95,12 @@ public class CommentService {
         if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
             isLikedList = comments.stream().map(e -> {
                 //拼接点赞数
-                e.setLikedCount((Integer) stringRedisTemplate.opsForHash().get(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, e.getAppType() + ':' + e.getAppId() + ":" + e.getId()));
+                e.setLikedCount(Integer.valueOf((String) stringRedisTemplate.opsForHash().get(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, e.getAppType() + ':' + e.getAppId() + ":" + e.getId())));
                 return stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.LIKE_REDIS_PRE + AppContext.get().get(AuthConstant.USER_ID), String.valueOf(e.toStringForQueryLike()));
             }).collect(Collectors.toList());
         } else {
             isLikedList = comments.stream().map(e -> {
-                e.setLikedCount((Integer) stringRedisTemplate.opsForHash().get(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, e.getAppType() + ':' + e.getAppId() + ":" + e.getId()));
+                e.setLikedCount(Integer.valueOf((String) stringRedisTemplate.opsForHash().get(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, e.getAppType() + ':' + e.getAppId() + ":" + e.getId())));
                 return false;
             }).collect(Collectors.toList());
         }
