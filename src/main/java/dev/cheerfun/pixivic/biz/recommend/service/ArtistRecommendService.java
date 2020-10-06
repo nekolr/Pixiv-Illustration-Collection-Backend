@@ -101,11 +101,11 @@ public class ArtistRecommendService extends RecommendService {
     }
 
     private void dealPerUser(List<Integer> u, Recommender recommender, Integer size) {
-        u.forEach(e -> {
+        u.stream().parallel().forEach(e -> {
             try {
                 Set<ZSetOperations.TypedTuple<String>> typedTuples = recommender.recommend(e, 30 * size).stream()
                         .map(recommendedItem -> {
-                            Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_ARTIST + e, recommendedItem.getItemID());
+                            Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_ARTIST + e, String.valueOf(recommendedItem.getItemID()));
                             if (score == null) {
                                 score = (double) recommendedItem.getValue();
                             }
