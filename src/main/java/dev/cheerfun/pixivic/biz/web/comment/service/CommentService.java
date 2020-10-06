@@ -94,10 +94,15 @@ public class CommentService {
         List<Object> isLikedList;
         if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
             isLikedList = comments.stream().map(e -> {
+                //拼接点赞数
+                e.setLikedCount((Integer) stringRedisTemplate.opsForHash().get(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, e.getAppType() + ':' + e.getAppId() + ":" + e.getId()));
                 return stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.LIKE_REDIS_PRE + AppContext.get().get(AuthConstant.USER_ID), String.valueOf(e.toStringForQueryLike()));
             }).collect(Collectors.toList());
         } else {
-            isLikedList = comments.stream().map(e -> false).collect(Collectors.toList());
+            isLikedList = comments.stream().map(e -> {
+                e.setLikedCount((Integer) stringRedisTemplate.opsForHash().get(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, e.getAppType() + ':' + e.getAppId() + ":" + e.getId()));
+                return false;
+            }).collect(Collectors.toList());
         }
         //顶级评论
         mayByParentId[0] = comments.stream().collect(Collectors.groupingBy(e -> {
