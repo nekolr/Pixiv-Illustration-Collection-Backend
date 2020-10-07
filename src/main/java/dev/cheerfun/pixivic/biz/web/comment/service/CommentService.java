@@ -121,7 +121,7 @@ public class CommentService {
             }
         }
         //最新消息逆序
-        Collections.reverse(result);
+        result.sort(Comparator.comparingInt(e -> -e.getId()));
         return result;
     }
     @Cacheable(value = "comments", key = "#appType+#appId")
