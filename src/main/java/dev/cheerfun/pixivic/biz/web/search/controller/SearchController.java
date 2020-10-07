@@ -80,7 +80,7 @@ public class SearchController {
     @WithUserInfo
     @WithAdvertisement
     @PermissionRequired
-    //@RateLimit
+    @RateLimit
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
             @SensitiveCheck
             @RequestParam
