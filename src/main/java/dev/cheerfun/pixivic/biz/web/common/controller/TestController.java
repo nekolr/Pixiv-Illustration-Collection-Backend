@@ -62,7 +62,7 @@ public class TestController {
 
     //@PermissionRequired(PermissionLevel.VIP)
     @PostMapping("/test")
-    @RateLimit
+    //@RateLimit
     //@PermissionRequired
     public ResponseEntity<String> test(@RequestBody @SensitiveCheck SignUpDTO signUpDTO,/*@RequestHeader("Authorization")  String token,*/@RequestParam @SensitiveCheck String content, @RequestParam @SensitiveCheck String title) throws InterruptedException, ExecutionException, IOException {
         // trendingTagsService.dailyTask();
