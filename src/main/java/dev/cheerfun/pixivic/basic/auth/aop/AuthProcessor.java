@@ -91,7 +91,7 @@ public class AuthProcessor {
             AppContext.remove();
             //直接修改返回值的token为更新后的token，若之后在业务逻辑中有更改，则在threadlocal中放入NEW_TOKEN就行
             if (proceed instanceof CompletableFuture) {
-                CompletableFuture<ResponseEntity> response = (CompletableFuture<ResponseEntity>) joinPoint.proceed();
+                CompletableFuture<ResponseEntity> response = (CompletableFuture<ResponseEntity>) proceed;
                 return response.thenApply(e -> dealReturn(e, claims));
             }
             return dealReturn((ResponseEntity) proceed, claims);

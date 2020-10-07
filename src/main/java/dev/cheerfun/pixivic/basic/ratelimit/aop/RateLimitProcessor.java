@@ -47,15 +47,15 @@ public class RateLimitProcessor implements HandlerInterceptor {
 
     private static Bucket standardBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(2000, Refill.intervally(2000, Duration.ofMinutes(10))))
-                .addLimit(Bandwidth.classic(240, Refill.intervally(120, Duration.ofSeconds(20))))
+                .addLimit(Bandwidth.classic(1200, Refill.intervally(1200, Duration.ofMinutes(10))))
+                .addLimit(Bandwidth.classic(120, Refill.intervally(120, Duration.ofSeconds(20))))
                 .build();
     }
 
     private static Bucket emailCheckBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(2000, Refill.intervally(2000, Duration.ofMinutes(10))))
-                .addLimit(Bandwidth.classic(240, Refill.intervally(120, Duration.ofSeconds(20))))
+                .addLimit(Bandwidth.classic(1200, Refill.intervally(1200, Duration.ofMinutes(10))))
+                .addLimit(Bandwidth.classic(120, Refill.intervally(120, Duration.ofSeconds(20))))
                 .build();
     }
 
@@ -73,33 +73,37 @@ public class RateLimitProcessor implements HandlerInterceptor {
     @Around(value = "pointCut()")
     public Object handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
         Bucket requestBucket;
-        //if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
-        Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-        Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
-        if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
-            requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
-        } else if (permissionLevel == PermissionLevel.VIP) {
-            requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> premiumBucket());
+        if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
+            Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+            Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
+            if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
+                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
+            } else if (permissionLevel == PermissionLevel.VIP) {
+                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> premiumBucket());
+            } else {
+                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
+            }
+            ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
+            if (probe.isConsumed()) {
+                return joinPoint.proceed();
+            }
+            //如果超出 redis中递增次数
+            log.info("用户:" + userId + "触发限流机制");
+            if (stringRedisTemplate.opsForHash().increment(RedisKeyConstant.ACCOUNT_BAN_COUNT_MAP, String.valueOf(userId), 1) > 30) {
+                log.info("用户:" + userId + "触发限流机制过多，进行屏蔽");
+                //数据库修改屏蔽
+                adminService.banUser(userId);
+            }
         } else {
-            requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
-        }
-        ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
-        if (probe.isConsumed()) {
-            return joinPoint.proceed();
-        }
-        //如果超出 redis中递增次数
-        log.info("用户:" + userId + "触发限流机制");
-        if (stringRedisTemplate.opsForHash().increment(RedisKeyConstant.ACCOUNT_BAN_COUNT_MAP, String.valueOf(userId), 1) > 30) {
-            log.info("用户:" + userId + "触发限流机制过多，进行屏蔽");
-            //数据库修改屏蔽
-            adminService.banUser(userId);
-        }
-     /*   } else {
             requestBucket = this.freeBucket;
             ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
             if (probe.isConsumed()) {
                 return joinPoint.proceed();
             }
+        }
+
+/*        if (userId != null && permissionLevel != null) {
+
         }*/
 
         throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
