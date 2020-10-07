@@ -10,12 +10,16 @@ import dev.cheerfun.pixivic.biz.analysis.tag.service.TrendingTagsService;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.search.domain.response.PixivSearchCandidatesResponse;
+import dev.cheerfun.pixivic.biz.web.search.exception.SearchException;
 import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -74,7 +78,7 @@ public class SearchController {
     @GetMapping("/illustrations")
     @WithUserInfo
     @WithAdvertisement
-    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    @PermissionRequired
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
             @SensitiveCheck
             @RequestParam
