@@ -60,11 +60,9 @@ public class RateLimitProcessor implements HandlerInterceptor {
     }
 
     private static Bucket premiumBucket() {
-        Bandwidth limit = Bandwidth
-                .simple(1800, Duration.ofMinutes(1))
-                .withInitialTokens(1800);
         return Bucket4j.builder()
-                .addLimit(limit)
+                .addLimit(Bandwidth.classic(3200, Refill.intervally(3200, Duration.ofMinutes(10))))
+                .addLimit(Bandwidth.classic(320, Refill.intervally(320, Duration.ofSeconds(20))))
                 .build();
     }
 
