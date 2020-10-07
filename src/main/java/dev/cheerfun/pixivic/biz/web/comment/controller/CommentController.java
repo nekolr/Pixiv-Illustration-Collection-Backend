@@ -36,7 +36,7 @@ public class CommentController {
 
     @PostMapping("/{commentAppType}/{commentAppId}/comments")
     @PermissionRequired
-    @RateLimit
+    //@RateLimit
     public ResponseEntity<Result<String>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @SensitiveCheck Comment comment, @RequestHeader("Authorization") String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         comment.init(commentAppType, commentAppId, userId);

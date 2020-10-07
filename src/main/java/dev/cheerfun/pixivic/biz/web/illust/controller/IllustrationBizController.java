@@ -50,7 +50,7 @@ public class IllustrationBizController {
     }
 
     @GetMapping("/illusts/{illustId}")
-    @RateLimit
+    //@RateLimit
     @PermissionRequired
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationByIdWithUserInfo(illustId)));
@@ -59,7 +59,7 @@ public class IllustrationBizController {
     @GetMapping("/illusts/{illustId}/related")
     @WithUserInfo
     @PermissionRequired
-    @RateLimit
+    //@RateLimit
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         return searchService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
     }

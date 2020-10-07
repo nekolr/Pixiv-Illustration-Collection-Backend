@@ -31,7 +31,7 @@ public class DiscussionController {
 
     @PostMapping("/sections/{sectionId}/discussions")
     @PermissionRequired
-    @RateLimit
+    //@RateLimit
     public ResponseEntity<Result<Discussion>> createDiscussion(@PathVariable Integer sectionId, @RequestBody @SensitiveCheck Discussion discussion, @RequestHeader("Authorization") String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         discussion.setSectionId(sectionId);
