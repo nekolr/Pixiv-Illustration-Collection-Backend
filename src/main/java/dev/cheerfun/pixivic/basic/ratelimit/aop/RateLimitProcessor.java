@@ -42,24 +42,20 @@ public class RateLimitProcessor implements HandlerInterceptor {
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
     //未登录用户
     private final Bucket freeBucket = Bucket4j.builder()
-            .addLimit(Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(1))))
+            .addLimit(Bandwidth.classic(300, Refill.intervally(300, Duration.ofMinutes(1))))
             .build();
 
     private static Bucket standardBucket() {
-        Bandwidth limit = Bandwidth
-                .simple(180, Duration.ofMinutes(1))
-                .withInitialTokens(180);
         return Bucket4j.builder()
-                .addLimit(limit)
+                .addLimit(Bandwidth.classic(300, Refill.intervally(300, Duration.ofMinutes(1))))
+                .addLimit(Bandwidth.classic(100, Refill.intervally(100, Duration.ofSeconds(20))))
                 .build();
     }
 
     private static Bucket emailCheckBucket() {
-        Bandwidth limit = Bandwidth
-                .simple(180, Duration.ofMinutes(1))
-                .withInitialTokens(180);
         return Bucket4j.builder()
-                .addLimit(limit)
+                .addLimit(Bandwidth.classic(300, Refill.intervally(300, Duration.ofMinutes(1))))
+                .addLimit(Bandwidth.classic(100, Refill.intervally(100, Duration.ofSeconds(20))))
                 .build();
     }
 
@@ -81,6 +77,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
         Bucket requestBucket;
         if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
             Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+            System.out.println(userId);
             Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
             if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
                 requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
