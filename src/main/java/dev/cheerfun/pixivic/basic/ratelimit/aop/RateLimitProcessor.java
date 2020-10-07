@@ -73,34 +73,35 @@ public class RateLimitProcessor implements HandlerInterceptor {
     @Around(value = "pointCut()")
     public Object handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
         Bucket requestBucket;
-        if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
-            Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-            Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
-            if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
-                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
-            } else if (permissionLevel == PermissionLevel.VIP) {
-                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> premiumBucket());
-            } else {
-                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
-            }
-            ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
-            if (probe.isConsumed()) {
-                return joinPoint.proceed();
-            }
-            //如果超出 redis中递增次数
-            log.info("用户:" + userId + "触发限流机制");
-            if (stringRedisTemplate.opsForHash().increment(RedisKeyConstant.ACCOUNT_BAN_COUNT_MAP, String.valueOf(userId), 1) > 30) {
-                log.info("用户:" + userId + "触发限流机制过多，进行屏蔽");
-                //数据库修改屏蔽
-                adminService.banUser(userId);
-            }
+        //if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
+        Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+        Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
+        if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
+            requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
+        } else if (permissionLevel == PermissionLevel.VIP) {
+            requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> premiumBucket());
         } else {
+            requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
+        }
+        ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
+        if (probe.isConsumed()) {
+            return joinPoint.proceed();
+        }
+        //如果超出 redis中递增次数
+        log.info("用户:" + userId + "触发限流机制");
+        if (stringRedisTemplate.opsForHash().increment(RedisKeyConstant.ACCOUNT_BAN_COUNT_MAP, String.valueOf(userId), 1) > 30) {
+            log.info("用户:" + userId + "触发限流机制过多，进行屏蔽");
+            //数据库修改屏蔽
+            adminService.banUser(userId);
+        }
+     /*   } else {
             requestBucket = this.freeBucket;
             ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
             if (probe.isConsumed()) {
                 return joinPoint.proceed();
             }
-        }
+        }*/
+
         throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
     }
 }

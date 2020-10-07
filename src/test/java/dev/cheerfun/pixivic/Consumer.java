@@ -24,24 +24,9 @@ import java.util.stream.Collectors;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        Bucket bucket = Bucket4j.builder()
-                .addLimit(Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(1))))
-                .addLimit(Bandwidth.classic(5, Refill.intervally(5, Duration.ofSeconds(20))))
-                .build();
-        Bucket bucket2 = Bucket4j.builder()
-                .addLimit(Bandwidth.classic(10, Refill.intervally(10, Duration.ofMinutes(1))))
-                .addLimit(Bandwidth.classic(5, Refill.intervally(5, Duration.ofSeconds(20))))
-                .build();
-        for (int i = 1; i <= 10; i++) {
-            ConsumptionProbe probe = bucket.tryConsumeAndReturnRemaining(1);
-            if (probe.isConsumed()) {
-                System.out.println("消费成功");
-            } else {
-                System.out.println("消费失败");
-            }
+        for (int i = 1; i < 120; i++) {
+            System.out.println("\":sazi-" + i + ":\": \"" + "sticker/sazi/sazi-" + i + ".jpg" + "\",");
         }
-        System.out.println(bucket.tryConsume(1));
-        System.out.println(bucket2.tryConsume(1) + "-");
     }
 
     public static float round(float d, int decimalPlace) {
