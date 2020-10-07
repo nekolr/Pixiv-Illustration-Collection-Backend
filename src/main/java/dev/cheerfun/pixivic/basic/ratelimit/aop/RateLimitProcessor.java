@@ -75,7 +75,6 @@ public class RateLimitProcessor implements HandlerInterceptor {
         Bucket requestBucket;
         if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
             Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-            System.out.println(userId);
             Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
             if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
                 requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
