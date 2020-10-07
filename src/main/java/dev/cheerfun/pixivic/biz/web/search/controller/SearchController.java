@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.search.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.biz.analysis.tag.po.TrendingTags;
@@ -79,6 +80,7 @@ public class SearchController {
     @WithUserInfo
     @WithAdvertisement
     @PermissionRequired
+    @RateLimit
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
             @SensitiveCheck
             @RequestParam
