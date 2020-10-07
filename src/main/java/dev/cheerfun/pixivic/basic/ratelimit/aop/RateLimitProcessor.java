@@ -101,11 +101,6 @@ public class RateLimitProcessor implements HandlerInterceptor {
                 return joinPoint.proceed();
             }
         }
-
-/*        if (userId != null && permissionLevel != null) {
-
-        }*/
-
         throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
     }
 }
