@@ -21,7 +21,6 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class Event implements Serializable {
     private Integer userId;
-    private String userName;
     private String action;
     private String objectType;
     private Integer objectId;

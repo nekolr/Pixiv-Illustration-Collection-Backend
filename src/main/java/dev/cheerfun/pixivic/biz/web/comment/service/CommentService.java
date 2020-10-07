@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
 import dev.cheerfun.pixivic.biz.web.comment.exception.CommentException;
 import dev.cheerfun.pixivic.biz.web.comment.mapper.CommentMapper;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
+import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -120,7 +121,7 @@ public class CommentService {
             }
         }
         //最新消息逆序
-        result.sort(Comparator.comparingInt(Comment::getId));
+        Collections.reverse(result);
         return result;
     }
     @Cacheable(value = "comments", key = "#appType+#appId")
@@ -154,4 +155,18 @@ public class CommentService {
         });
     }
 
+    public Comment pullCommentById(Integer commentId) {
+        Comment comment = queryCommentById(commentId);
+        List<Comment> comments = pullComment(comment.getAppType(), comment.getAppId());
+        Optional<Comment> first = comments.stream().filter(e -> commentId.compareTo(e.getId()) == 0).findFirst();
+        if (first.isPresent()) {
+            return first.get();
+        }
+        throw new BusinessException(HttpStatus.NOT_FOUND, "评论不存在");
+    }
+
+    @Cacheable("comment")
+    public Comment queryCommentById(Integer commentId) {
+        return commentMapper.queryCommentById(commentId);
+    }
 }

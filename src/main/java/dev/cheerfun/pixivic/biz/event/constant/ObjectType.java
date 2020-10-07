@@ -8,9 +8,10 @@ package dev.cheerfun.pixivic.biz.event.constant;
  */
 
 public class ObjectType {
-    public final static String COMMENT = "comment";
-    public final static String ILLUST = "illust";
-    public final static String COLLECTION = "collection";
-    public final static String DISCUSSION = "discussion";
-    public final static String USER = "user";
+    public final static String COMMENT = "comments";
+    public final static String ILLUST = "illusts";
+    public final static String ARTIST = "artists";
+    public final static String COLLECTION = "collections";
+    public final static String DISCUSSION = "discussions";
+    public final static String USER = "users";
 }

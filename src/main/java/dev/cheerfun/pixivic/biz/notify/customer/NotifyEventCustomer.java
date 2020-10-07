@@ -6,6 +6,9 @@ import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.biz.notify.po.NotifySettingConfig;
 import dev.cheerfun.pixivic.biz.notify.sender.NotifySenderManager;
 import dev.cheerfun.pixivic.biz.notify.util.UserSettingUtil;
+import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
+import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
+import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,12 @@ public abstract class NotifyEventCustomer {
     @Autowired
     protected NotifyMapper notifyMapper;
     @Autowired
+    protected CommonService userCommonService;
+    @Autowired
+    protected CollectionService collectionService;
+    @Autowired
+    protected CommentService commentService;
+    @Autowired
     protected NotifySenderManager notifySenderManager;
     @Autowired
     protected UserSettingUtil userSettingUtil;
@@ -28,7 +37,7 @@ public abstract class NotifyEventCustomer {
     @Autowired
     protected StringRedisTemplate stringRedisTemplate;
 
-    //@PostConstruct
+    @PostConstruct
     void init() {
         notifySettingMap = notifyMapper.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
     }
@@ -68,8 +77,8 @@ public abstract class NotifyEventCustomer {
 
     protected abstract Boolean send(NotifyRemind notifyRemind);
 
-    protected String queryTemplate(Event event) {
-        NotifySettingConfig notifySettingConfig = notifySettingMap.get(event.getObjectType() + ":" + event.getAction());
+    protected String queryTemplate(String objectType, String objectAction) {
+        NotifySettingConfig notifySettingConfig = notifySettingMap.get(objectType + ":" + objectAction);
         return notifySettingConfig.getMessageTemplate();
     }
 

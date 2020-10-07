@@ -28,6 +28,6 @@ public class EventPublisher {
 
     //@Scheduled(cron = "0/10 * * * * ?")
     public void publish() {
-        this.rabbitTemplate.convertAndSend(RabbitmqConstant.FANOUT_EXCHANGE, ObjectType.COMMENT, new Event(1, "test", ActionType.RELEASE, ObjectType.COLLECTION, 1, LocalDateTime.now()));
+        //this.rabbitTemplate.convertAndSend(RabbitmqConstant.FANOUT_EXCHANGE, ObjectType.COMMENT, new Event(1, "test", ActionType.RELEASE, ObjectType.COLLECTION, 1, LocalDateTime.now()));
     }
 }

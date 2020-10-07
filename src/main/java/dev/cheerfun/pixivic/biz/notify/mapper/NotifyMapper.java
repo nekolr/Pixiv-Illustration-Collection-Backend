@@ -12,11 +12,8 @@ import java.util.List;
 @Mapper
 public interface NotifyMapper {
 
-    @Insert("insert into notify_remind (sender_id,sender_name,sender_action,object_id,object_type,recipient_id,create_date) value (#{senderId},#{senderName},#{senderAction},#{objectId},#{objectType},#{recipientId},#{createDate})")
+    @Insert("insert into notify_remind (sender_id,sender_name,sender_action,object_id,object_type,recipient_id,message,create_date) value (#{senderId},#{senderName},#{senderAction},#{objectId},#{objectType},#{recipientId},#{message},#{createDate})")
     Integer insertNotifyRemind(NotifyRemind notifyRemind);
-
-    @Select("select reply_from from comments where comment_id=#{objectId}")
-    Integer queryCommentOwner(Integer objectId);
 
     @Select("select * from notify_ban_setting where user_id = #{userId}")
     @Results({
@@ -39,19 +36,5 @@ public interface NotifyMapper {
     })
     List<NotifySettingConfig> queryNotifySettingConfig();
 
-    @Select("select * from comments where comment_id = #{commentId} ")
-    @Results({
-            @Result(property = "id", column = "comment_id"),
-            @Result(property = "appType", column = "app_type"),
-            @Result(property = "appId", column = "app_id"),
-            @Result(property = "parentId", column = "parent_id"),
-            @Result(property = "replyTo", column = "reply_to"),
-            @Result(property = "replyToName", column = "reply_to_name"),
-            @Result(property = "replyFrom", column = "reply_from"),
-            @Result(property = "replyFromName", column = "reply_from_name"),
-            @Result(property = "createDate", column = "create_Date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "likedCount", column = "liked_count")
-    })
-    Comment queryCommentById(Integer commentId);
 
 }

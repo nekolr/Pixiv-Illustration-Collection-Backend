@@ -8,6 +8,7 @@ import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
 import dev.cheerfun.pixivic.biz.event.domain.Event;
 import dev.cheerfun.pixivic.biz.event.publisher.EventPublisher;
 import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
+import dev.cheerfun.pixivic.biz.web.comment.constant.CommentAppType;
 import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
@@ -42,8 +43,8 @@ public class CommentController {
         comment.init(commentAppType, commentAppId, userId);
         commentService.pushComment(comment);
         //如果不是顶层(即存在被回复人)产生通知事件
-        if ((ObjectType.ILLUST.equals(commentAppType) && comment.getReplyTo() != 0) || !ObjectType.ILLUST.equals(commentAppType)) {
-            eventPublisher.publish(new Event(userId, comment.getReplyFromName(), ActionType.REPLIED, ObjectType.COMMENT, comment.getParentId(), LocalDateTime.now()));
+        if (comment.getReplyTo() != 0 || (comment.getReplyTo() == 0 && !CommentAppType.ILLUST.equals(commentAppType))) {
+            eventPublisher.publish(new Event(userId, ActionType.PUBLISH, ObjectType.COMMENT, comment.getId(), LocalDateTime.now()));
         }
         return ResponseEntity.ok().body(new Result<>("评论成功"));
     }
@@ -65,7 +66,7 @@ public class CommentController {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         commentService.likeComment(like, userId);
         //产生通知事件
-        //notifyEventService.pushNotifyEvent(new NotifyEvent(userId, NotifyActionType.REPLIED, like.getCommentId(), NotifyObjectType.COMMENT, LocalDateTime.now()));
+        eventPublisher.publish(new Event(userId, ActionType.LIKE, ObjectType.COMMENT, like.getCommentId(), LocalDateTime.now()));
         return ResponseEntity.ok().body(new Result<>("点赞成功"));
     }
 
@@ -75,4 +76,11 @@ public class CommentController {
         commentService.cancelLikeComment((int) AppContext.get().get(AuthConstant.USER_ID), new Like(commentAppType, commentAppId, commentId));
         return ResponseEntity.ok().body(new Result<>("取消点赞成功"));
     }
+
+    @GetMapping("/comments/{commentId}")
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<Comment>> pullCommentById(@PathVariable Integer commentId, @RequestHeader(value = "Authorization", required = false) String token) {
+        return ResponseEntity.ok().body(new Result<>("拉取单条评论成功", commentService.pullCommentById(commentId)));
+    }
+
 }

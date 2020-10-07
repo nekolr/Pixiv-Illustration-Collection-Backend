@@ -7,8 +7,11 @@ package dev.cheerfun.pixivic.biz.notify.constant;
  * @description NotifyActionType
  */
 public class ActionType {
-    public final static String REPLIED = "replied";
-    public final static String LIKED = "liked";
-    public final static String FOLLOWED = "followed";
-    public final static String RELEASED = "released";
+    public final static String REPLY = "reply";
+    public final static String COMMENT = "comment";
+    public final static String LIKE = "like";
+    public final static String BOOKMARK = "bookmark";
+    public final static String PUBLISH = "publish";
+    public final static String FOLLOW = "follow";
+    public final static String RELEASE = "release";
 }

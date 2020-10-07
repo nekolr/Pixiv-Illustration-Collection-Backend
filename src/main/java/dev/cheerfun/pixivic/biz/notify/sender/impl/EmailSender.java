@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
  * @date 2020/3/18 11:34 上午
  * @description EmailSender
  */
-@Component("email")
+@Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class EmailSender implements NotifySender {
     private final EmailUtil emailUtil;

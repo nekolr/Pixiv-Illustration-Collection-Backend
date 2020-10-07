@@ -19,7 +19,7 @@ public class NotifySenderManager {
     private final Map<String, NotifySender> notifySenderMap;
 
     public Boolean send(NotifyRemind notifyRemind, String notifySender) {
-        return notifySenderMap.get(notifySender).send(notifyRemind);
+        return notifySenderMap.get(notifySender + "MessageSender").send(notifyRemind);
     }
 
     public Boolean send(NotifyRemind notifyRemind, String... notifySenders) {

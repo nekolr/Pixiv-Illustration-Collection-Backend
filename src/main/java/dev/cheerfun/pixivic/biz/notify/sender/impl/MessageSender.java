@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
  * @date 2020/3/18 11:35 上午
  * @description MessageSender
  */
-@Component("message")
+@Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MessageSender implements NotifySender {
     @Override

@@ -43,7 +43,8 @@ public class IllustNotifyEventCustomer extends NotifyEventCustomer {
 
     @Override
     protected NotifyRemind generateRemind(Event event, Integer sendTo) {
-        return new NotifyRemind(null, event.getUserId(), event.getUserName(), ActionType.RELEASED, event.getObjectId(), event.getObjectType(), sendTo, queryTemplate(event), LocalDateTime.now(), NotifyStatus.UNREAD, null);
+        // return new NotifyRemind(null, event.getUserId(), event.getUserName(), ActionType.RELEASE, event.getObjectId(), event.getObjectType(), sendTo, queryTemplate(event), LocalDateTime.now(), NotifyStatus.UNREAD, null);
+        return null;
     }
 
     @Override
