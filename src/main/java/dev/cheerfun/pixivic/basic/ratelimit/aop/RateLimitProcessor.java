@@ -47,14 +47,14 @@ public class RateLimitProcessor implements HandlerInterceptor {
 
     private static Bucket standardBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(1200, Refill.intervally(1200, Duration.ofMinutes(10))))
+                .addLimit(Bandwidth.classic(1500, Refill.intervally(1200, Duration.ofMinutes(10))))
                 .addLimit(Bandwidth.classic(240, Refill.intervally(120, Duration.ofSeconds(20))))
                 .build();
     }
 
     private static Bucket emailCheckBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(1200, Refill.intervally(1200, Duration.ofMinutes(10))))
+                .addLimit(Bandwidth.classic(1500, Refill.intervally(1200, Duration.ofMinutes(10))))
                 .addLimit(Bandwidth.classic(240, Refill.intervally(120, Duration.ofSeconds(20))))
                 .build();
     }
