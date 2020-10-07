@@ -47,13 +47,13 @@ public class RateLimitProcessor implements HandlerInterceptor {
 
     private static Bucket standardBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(100, Refill.intervally(100, Duration.ofMinutes(1))))
+                .addLimit(Bandwidth.classic(180, Refill.intervally(180, Duration.ofMinutes(1))))
                 .build();
     }
 
     private static Bucket emailCheckBucket() {
         return Bucket4j.builder()
-                .addLimit(Bandwidth.classic(100, Refill.intervally(100, Duration.ofMinutes(1))))
+                .addLimit(Bandwidth.classic(200, Refill.intervally(180, Duration.ofMinutes(1))))
                 .build();
     }
 
@@ -70,7 +70,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
     @Around(value = "pointCut()")
     public Object handleRateLimit(ProceedingJoinPoint joinPoint) throws Throwable {
         Bucket requestBucket;
-        if (AppContext.get() != null) {
+        if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
             Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
             Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
             if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
