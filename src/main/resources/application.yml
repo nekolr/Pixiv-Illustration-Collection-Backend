@@ -4,7 +4,7 @@ server:
 #    connection-timeout: 5000
 spring:
 #  profiles:
-#    active: mac
+  #    active: mac
   data:
     redis:
       repositories:
