@@ -4,7 +4,6 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
-import dev.cheerfun.pixivic.common.util.translate.service.YouDaoTranslatedUtil;
 import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
 import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
@@ -13,6 +12,7 @@ import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
+import dev.cheerfun.pixivic.common.util.translate.service.YouDaoTranslatedUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,6 +103,10 @@ public class IllustrationBizService {
 
     @Cacheable(value = "illust")
     public Illustration queryIllustrationById(Integer illustId) {
+        //判断是否在封禁集合中
+        if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId))) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
+        }
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
             log.info("画作：" + illustId + "不存在，加入队列等待爬取");

@@ -43,9 +43,29 @@ public class AdminController {
 
     @PutMapping("/illusts/{illustId}")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token, @RequestBody IllustDTO illustDTO) throws JsonProcessingException {
+    public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token, @RequestBody IllustDTO illustDTO) {
         adminService.updateIllusts(illustDTO);
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
+    }
+
+    @PostMapping("/blockIllusts")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> blockIllustrationById(@RequestHeader(value = "Token") String token, @RequestBody IllustDTO illustDTO) {
+        adminService.blockIllustrationById(illustDTO);
+        return ResponseEntity.ok().body(new Result<>("封禁画作成功", true));
+    }
+
+    @GetMapping("/blockIllusts")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<List<Integer>>> queryBlockIllust(@RequestParam(required = false) Integer illustId, @RequestHeader(value = "Token") String token) {
+        return ResponseEntity.ok().body(new Result<>("获取封禁画作成功", adminService.queryBlockIllust(illustId)));
+    }
+
+    @DeleteMapping("/blockIllusts/{illustId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> removeIllustFromBlockIllust(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token) {
+        adminService.removeIllustFromBlockIllust(illustId);
+        return ResponseEntity.ok().body(new Result<>("移除封禁画作成功", true));
     }
 
     @PostMapping("/collections")

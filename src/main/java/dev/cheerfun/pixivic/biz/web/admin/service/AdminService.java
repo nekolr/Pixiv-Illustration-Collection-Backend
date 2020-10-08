@@ -14,7 +14,6 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.jsoup.Jsoup;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
@@ -25,6 +24,7 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.util.*;
 
 /**
@@ -315,5 +315,26 @@ public class AdminService {
             stringRedisTemplate.unlink(keys);
         }
         return true;
+    }
+
+    @Transactional
+    public void blockIllustrationById(IllustDTO illustDTO) {
+        if (adminMapper.blockIllustrationById(illustDTO.getId()) == 1) {
+            stringRedisTemplate.opsForSet().add(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustDTO.getId()));
+        }
+    }
+
+    public List<Integer> queryBlockIllust(Integer illustId) {
+        if (illustId != null) {
+            return adminMapper.queryBlockIllustById(illustId);
+        }
+        return adminMapper.queryBlockIllust();
+    }
+
+    @Transactional
+    public void removeIllustFromBlockIllust(Integer illustId) {
+        if (adminMapper.removeIllustFromBlockIllust(illustId) == 1) {
+            stringRedisTemplate.opsForSet().remove(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId));
+        }
     }
 }
