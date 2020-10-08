@@ -43,27 +43,27 @@ public class AdminController {
 
     @PutMapping("/illusts/{illustId}")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token, @RequestBody IllustDTO illustDTO) {
+    public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Authorization") String token, @RequestBody IllustDTO illustDTO) {
         adminService.updateIllusts(illustDTO);
-        return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
+        return ResponseEntity.ok().body(new Result<>("更新画作等级成功", null));
     }
 
     @PostMapping("/blockIllusts")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Boolean>> blockIllustrationById(@RequestHeader(value = "Token") String token, @RequestBody IllustDTO illustDTO) {
-        adminService.blockIllustrationById(illustDTO);
+    public ResponseEntity<Result<Boolean>> blockIllustrationById(@RequestHeader(value = "Authorization") String token, @RequestBody List<Integer> illustIdList) {
+        adminService.blockIllustrationById(illustIdList);
         return ResponseEntity.ok().body(new Result<>("封禁画作成功", true));
     }
 
     @GetMapping("/blockIllusts")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<List<Integer>>> queryBlockIllust(@RequestParam(required = false) Integer illustId, @RequestHeader(value = "Token") String token) {
+    public ResponseEntity<Result<List<Integer>>> queryBlockIllust(@RequestParam(required = false) Integer illustId, @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("获取封禁画作成功", adminService.queryBlockIllust(illustId)));
     }
 
     @DeleteMapping("/blockIllusts/{illustId}")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Boolean>> removeIllustFromBlockIllust(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token) {
+    public ResponseEntity<Result<Boolean>> removeIllustFromBlockIllust(@PathVariable Integer illustId, @RequestHeader(value = "Authorization") String token) {
         adminService.removeIllustFromBlockIllust(illustId);
         return ResponseEntity.ok().body(new Result<>("移除封禁画作成功", true));
     }

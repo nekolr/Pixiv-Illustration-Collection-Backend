@@ -318,9 +318,11 @@ public class AdminService {
     }
 
     @Transactional
-    public void blockIllustrationById(IllustDTO illustDTO) {
-        if (adminMapper.blockIllustrationById(illustDTO.getId()) == 1) {
-            stringRedisTemplate.opsForSet().add(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustDTO.getId()));
+    public void blockIllustrationById(List<Integer> illustIdList) {
+        for (Integer illustId : illustIdList) {
+            if (adminMapper.blockIllustrationById(illustId) == 1) {
+                stringRedisTemplate.opsForSet().add(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId));
+            }
         }
     }
 
