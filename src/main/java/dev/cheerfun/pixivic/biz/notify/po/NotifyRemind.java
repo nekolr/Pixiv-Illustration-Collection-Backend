@@ -7,6 +7,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -18,11 +19,12 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class NotifyRemind {
     private Integer id;
-    private Integer senderId;
-    private String senderName;
-    private String senderAction;
-    private Integer objectId;
+    private Integer type;//用于点赞、收藏的合并处理
+    private List<Actor> actors;
+    private Integer actorCount;
     private String objectType;
+    private Integer objectId;
+    private String objectTitle;
     private Integer recipientId;
     private String message;
     @JsonSerialize(using = LocalDateTimeSerializer.class)

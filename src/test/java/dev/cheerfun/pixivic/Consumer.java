@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic;
 
 import com.google.common.collect.Lists;
 import io.github.bucket4j.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,9 +25,7 @@ import java.util.stream.Collectors;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        for (int i = 1; i < 120; i++) {
-            System.out.println("\":sazi-" + i + ":\": \"" + "sticker/sazi/sazi-" + i + ".jpg" + "\",");
-        }
+        System.out.println(StringUtils.abbreviate("绿头发不就是我吗？韧带梆硬的我绿头发不就是我吗？韧带梆硬的我绿头发不就是我吗？韧带梆硬的我", 30));
     }
 
     public static float round(float d, int decimalPlace) {

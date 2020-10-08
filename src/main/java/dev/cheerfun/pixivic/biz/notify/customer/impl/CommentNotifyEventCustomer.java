@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyChannel;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyStatus;
 import dev.cheerfun.pixivic.biz.notify.customer.NotifyEventCustomer;
+import dev.cheerfun.pixivic.biz.notify.po.Actor;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.comment.constant.CommentAppType;
@@ -15,6 +16,9 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -36,26 +40,20 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
     @Override
     protected Integer querySendTo(Event event) {
         Comment comment = commentService.queryCommentById(event.getObjectId());
+        //根据不同动作进行处理
         switch (event.getAction()) {
             case ActionType.LIKE:
-                return null;
+                return queryUserIdByAppTypeAndAppId(event.getObjectType(), event.getObjectId());
             case ActionType.PUBLISH:
                 if (comment.getParentId().compareTo(0) == 0) {
                     //如果是顶级评论则找到appid的所有者
-                    switch (comment.getAppType()) {
-                        case CommentAppType.COLLECTION: {
-                            Collection collection = collectionService.queryCollectionByIdFromDb(comment.getAppId());
-                            return collection.getUserId();
-                        }
-                        default:
-                            return 0;
-                    }
+                    return queryUserIdByAppTypeAndAppId(comment.getAppType(), comment.getAppId());
                 } else {
                     //如果非顶级则找回复者
                     return comment.getReplyTo();
                 }
             default:
-                return null;
+                return 0;
         }
     }
 
@@ -64,24 +62,41 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
         Comment comment = commentService.queryCommentById(event.getObjectId());
         String username = userCommonService.queryUser(event.getUserId()).getUsername();
         //查出对应comment对象的评论主体并生成提醒
-        String message;
-        String objectType;
-        Integer objectId;
-        String action;
-        if (comment.getParentId().compareTo(0) == 0) {
-            //如果是顶级评论则找到apptype
-            message = queryTemplate(comment.getAppType(), ActionType.COMMENT);
-            objectType = comment.getAppType();
-            objectId = comment.getAppId();
-            action = ActionType.COMMENT;
-        } else {
-            //如果非顶级
-            objectType = event.getObjectType();
-            objectId = event.getObjectId();
-            message = queryTemplate(ObjectType.COMMENT, ActionType.REPLY);
-            action = ActionType.REPLY;
+        String message = null;
+        String objectType = null;
+        String objectTitle = null;
+        Integer objectId = null;
+        Integer type = null;
+        List<Actor> actorList = new ArrayList<>();
+        switch (event.getAction()) {
+            case ActionType.LIKE:
+                type = remindTypeMap.get(ActionType.LIKE);
+                objectType = event.getObjectType();
+                objectId = event.getObjectId();
+                message = queryTemplate(comment.getAppType(), ActionType.LIKE);
+                //需要进行合并，查找之前的点赞记录 根据create判断是否有需要合并的 合并的时候从头部插入 返回的时候仅仅返回前几个
+                break;
+            case ActionType.PUBLISH:
+                if (comment.getParentId().compareTo(0) == 0) {
+                    //如果是顶级评论则找到apptype
+                    type = remindTypeMap.get(ActionType.COMMENT);
+                    objectType = comment.getAppType();
+                    objectId = comment.getAppId();
+                    message = queryTemplate(comment.getAppType(), ActionType.COMMENT);
+                } else {
+                    //如果非顶级
+                    type = remindTypeMap.get(ActionType.REPLY);
+                    objectType = event.getObjectType();
+                    objectId = event.getObjectId();
+                    message = queryTemplate(ObjectType.COMMENT, ActionType.REPLY);
+                    type = remindTypeMap.get(ActionType.REPLY);
+                }
+                break;
+            default:
+                break;
         }
-        return new NotifyRemind(null, event.getUserId(), username, event.getAction(), objectId, objectType, sendTo, message, event.getCreateDate(), NotifyStatus.UNREAD, null);
+        objectTitle = generateTitle(objectType, objectId);
+        return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, event.getCreateDate(), NotifyStatus.UNREAD, null);
     }
 
     @Override

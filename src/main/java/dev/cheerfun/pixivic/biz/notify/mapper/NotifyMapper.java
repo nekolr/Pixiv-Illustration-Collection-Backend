@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface NotifyMapper {
 
-    @Insert("insert into notify_remind (sender_id,sender_name,sender_action,object_id,object_type,recipient_id,message,create_date) value (#{senderId},#{senderName},#{senderAction},#{objectId},#{objectType},#{recipientId},#{message},#{createDate})")
+    @Insert("insert into notify_remind (remind_type,actors,object_id,object_type,object_title,recipient_id,message,create_date) value (#{type},#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{objectId},#{objectType},#{objectTitle},#{recipientId},#{message},#{createDate})")
     Integer insertNotifyRemind(NotifyRemind notifyRemind);
 
     @Select("select * from notify_ban_setting where user_id = #{userId}")
