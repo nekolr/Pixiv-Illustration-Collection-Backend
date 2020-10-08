@@ -74,6 +74,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                 objectType = event.getObjectType();
                 objectId = event.getObjectId();
                 message = queryTemplate(comment.getAppType(), ActionType.LIKE);
+
                 //需要进行合并，查找之前的点赞记录 根据create判断是否有需要合并的 合并的时候从头部插入 返回的时候仅仅返回前几个
                 break;
             case ActionType.PUBLISH:
@@ -91,6 +92,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                     message = queryTemplate(ObjectType.COMMENT, ActionType.REPLY);
                     type = remindTypeMap.get(ActionType.REPLY);
                 }
+                actorList.add(Actor.castFromUser(userCommonService.queryUser(event.getUserId())));
                 break;
             default:
                 break;

@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Mapper
@@ -36,5 +37,6 @@ public interface NotifyMapper {
     })
     List<NotifySettingConfig> queryNotifySettingConfig();
 
+    List<NotifyRemind> queryRemindByDate(Integer objectId, Integer type, LocalDateTime localDateTime);
 
 }

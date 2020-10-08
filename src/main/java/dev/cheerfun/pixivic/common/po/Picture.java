@@ -16,7 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Picture {
-    private static final String WEB_PRE_PATH = "https://pic.cheerfun.dev/";
+    private static final String WEB_PRE_PATH = "https://static.pixivic.net/avatar/299x299";
     private String uuid;
     private Integer uploadFrom;
     private String original;

@@ -35,8 +35,8 @@ import java.net.http.HttpResponse;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonService {
-    private final static String AVATAR_PRE = "https://pic.pixivic.com/";
-    private final static String AVATAR_POS = ".png";
+    private final static String AVATAR_PRE = "https://static.pixivic.net/avatar/299x299/";
+    private final static String AVATAR_POS = ".jpg";
     private final static String PIXIVIC = "Pixivic酱";
     private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
