@@ -109,6 +109,10 @@ public class IllustrationBizService {
         return illustration;
     }
 
+    public List<Illustration> queryIllustrationByIdList(List<Integer> illustId) {
+        return illustId.stream().map(this::queryIllustrationByIdFromDb).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
     @Cacheable(value = "illust")
     public Illustration queryIllustrationByIdFromDb(Integer illustId) {
         //判断是否在封禁集合中

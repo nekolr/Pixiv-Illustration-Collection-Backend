@@ -223,13 +223,9 @@ public class BusinessService {
                 .limit(pageSize).collect(Collectors.toList());
         List<Illustration> illustrations = null;
         if (illustIdList.size() != 0) {
-            illustrations = queryIllustrationByIllustIdList(illustIdList);
+            illustrations = illustrationBizService.queryIllustrationByIllustIdList(illustIdList);
         }
         return illustrations;
-    }
-
-    public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {
-        return illustIdList.stream().parallel().map(illustrationBizService::queryIllustrationByIdFromDb).collect(Collectors.toList());
     }
 
     @Cacheable(value = "followedLatest", key = "#userId+#type")
