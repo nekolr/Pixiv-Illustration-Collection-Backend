@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dev.cheerfun.pixivic.biz.notify.po.Actor;
 import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -29,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @MappedJdbcTypes(value = {JdbcType.OTHER}, includeNullJdbcType = true)
-@MappedTypes({ArtistPreView.class, Artist.class, ArrayList.class, Tag.class, ImageUrl.class, SearchSuggestion.class, List.class, Illustration.class})
+@MappedTypes({ArtistPreView.class, Artist.class, ArrayList.class, Tag.class, ImageUrl.class, SearchSuggestion.class, List.class, Illustration.class, Actor.class})
 public class JsonTypeHandler<T> extends BaseTypeHandler<T> {
 
     private static ObjectMapper objectMapper = new ObjectMapper();

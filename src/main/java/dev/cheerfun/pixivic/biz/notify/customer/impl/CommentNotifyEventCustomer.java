@@ -74,7 +74,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                 type = remindTypeMap.get(ActionType.LIKE);
                 objectType = ObjectType.COMMENT;
                 objectId = event.getObjectId();
-                message = queryTemplate(comment.getAppType(), ActionType.LIKE);
+                message = queryTemplate(ObjectType.COMMENT, ActionType.LIKE);
                 //需要进行合并，查找之前的点赞记录 根据create判断是否有需要合并的 合并的时候从头部插入 返回的时候仅仅返回前几个
                 List<NotifyRemind> notifyReminds = notifyRemindService.queryRecentlyRemind(sendTo, type, LocalDateTime.now().plusHours(-24));
                 if (notifyReminds.size() > 0) {
@@ -90,6 +90,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                         return notifyRemind;
                     }
                 }
+                actorList.add(Actor.castFromUser(userCommonService.queryUser(event.getUserId())));
                 break;
             case ActionType.PUBLISH:
                 if (comment.getParentId().compareTo(0) == 0) {

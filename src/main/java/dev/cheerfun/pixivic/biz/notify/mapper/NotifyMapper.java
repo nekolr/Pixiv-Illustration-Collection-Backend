@@ -12,7 +12,7 @@ import java.util.List;
 @Mapper
 public interface NotifyMapper {
 
-    @Insert("insert into notify_remind (remind_type,actors,object_id,object_type,object_title,recipient_id,message,create_date) value (#{type},#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{objectId},#{objectType},#{objectTitle},#{recipientId},#{message},#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Insert("insert into notify_remind (remind_type,remind_actors,actor_count,object_id,object_type,object_title,recipient_id,message,create_date) value (#{type},#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{actorCount},#{objectId},#{objectType},#{objectTitle},#{recipientId},#{message},#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     Integer insertNotifyRemind(NotifyRemind notifyRemind);
 
     @Select("select * from notify_ban_setting where user_id = #{userId}")
@@ -44,14 +44,14 @@ public interface NotifyMapper {
             @Result(property = "id", column = "remindId"),
             @Result(property = "type", column = "remind_type"),
             @Result(property = "recipientId", column = "recipient_id"),
-            @Result(property = "actors", column = "actors", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "actors", column = "remind_actors", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "actorCount", column = "actor_count"),
             @Result(property = "objectId", column = "object_id"),
             @Result(property = "objectType", column = "object_type"),
             @Result(property = "objectTitle", column = "object_title"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
             @Result(property = "status", column = "read_status"),
-            @Result(property = "readAt", column = "read_at", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+            @Result(property = "readAt", column = "read_at")
     })
     NotifyRemind queryNotifyRemindById(Integer remindId);
 

@@ -57,11 +57,11 @@ public class CommentService {
     @Transactional(rollbackFor = Exception.class)
     public void likeComment(Like like, int userId) {
         Long add = stringRedisTemplate.opsForSet().add(RedisKeyConstant.LIKE_REDIS_PRE + userId, like.toString());
-        if (add != null && add != 0L) {
-            stringRedisTemplate.opsForHash().increment(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, like.toString(), 1);
-        } else {
-            throw new CommentException(HttpStatus.BAD_REQUEST, "用户评论点赞关系请求错误");
-        }
+        //if (add != null && add != 0L) {
+        stringRedisTemplate.opsForHash().increment(RedisKeyConstant.LIKE_COUNT_MAP_REDIS_PRE, like.toString(), 1);
+        //   } else {
+        //      throw new CommentException(HttpStatus.BAD_REQUEST, "用户评论点赞关系请求错误");
+        //   }
 
     }
 
