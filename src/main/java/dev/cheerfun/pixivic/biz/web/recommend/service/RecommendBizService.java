@@ -39,7 +39,7 @@ public class RecommendBizService {
         Set<ZSetOperations.TypedTuple<String>> illustIdList = stringRedisTemplate.opsForZSet().reverseRangeWithScores(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + userId, pageSize * (page - 1), page * pageSize);
         if (illustIdList != null && illustIdList.size() > 0) {
             //异步降级
-            List<Illustration> illustrationList = illustIdList.stream().map(e -> illustrationBizService.queryIllustrationById(Integer.parseInt(e.getValue()))).collect(Collectors.toList());
+            List<Illustration> illustrationList = illustIdList.stream().map(e -> illustrationBizService.queryIllustrationByIdFromDb(Integer.parseInt(e.getValue()))).collect(Collectors.toList());
             downGrade(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + userId, illustIdList);
             return illustrationList;
         }
@@ -50,7 +50,7 @@ public class RecommendBizService {
         Set<ZSetOperations.TypedTuple<String>> illustIdList = stringRedisTemplate.opsForZSet().reverseRangeWithScores(RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST + userId, pageSize * (page - 1), page * pageSize);
         if (illustIdList != null && illustIdList.size() > 0) {
             //异步降级
-            List<Illustration> illustrationList = illustIdList.stream().map(e -> illustrationBizService.queryIllustrationById(Integer.parseInt(e.getValue()))).collect(Collectors.toList());
+            List<Illustration> illustrationList = illustIdList.stream().map(e -> illustrationBizService.queryIllustrationByIdFromDb(Integer.parseInt(e.getValue()))).collect(Collectors.toList());
             downGrade(RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST + userId, illustIdList);
             return illustrationList;
         }

@@ -131,7 +131,7 @@ public class ArtistBizService {
             waitForPullArtistQueue.offer(key);
         }
         List<Integer> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
-        return illustrations.stream().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList());
+        return illustrations.stream().map(illustrationBizService::queryIllustrationByIdFromDb).collect(Collectors.toList());
     }
 
     public void dealWaitForPullArtistQueue() {

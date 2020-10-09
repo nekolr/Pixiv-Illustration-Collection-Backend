@@ -111,7 +111,7 @@ public abstract class NotifyEventCustomer {
     protected String queryTitleByAppTypeAndAppId(String appType, Integer appId) {
         switch (appType) {
             case ObjectType.ILLUST:
-                Illustration illustration = illustrationBizService.queryIllustrationById(appId);
+                Illustration illustration = illustrationBizService.queryIllustrationByIdFromDb(appId);
                 return illustration.getTitle();
             case ObjectType.COLLECTION:
                 Collection collection = collectionService.queryCollectionByIdFromDb(appId);

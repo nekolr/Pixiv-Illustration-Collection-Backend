@@ -101,18 +101,24 @@ public class IllustrationBizService {
         return illustration;
     }
 
-    @Cacheable(value = "illust")
     public Illustration queryIllustrationById(Integer illustId) {
+        Illustration illustration = queryIllustrationByIdFromDb(illustId);
+        if (illustration == null) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
+        }
+        return illustration;
+    }
+
+    @Cacheable(value = "illust")
+    public Illustration queryIllustrationByIdFromDb(Integer illustId) {
         //判断是否在封禁集合中
         if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId))) {
-            throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
+            return null;
         }
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
             log.info("画作：" + illustId + "不存在，加入队列等待爬取");
             waitForPullIllustQueue.offer(illustId);
-            throw new BusinessException(HttpStatus.NOT_FOUND, "画作不存在或为限制级图片");
-            /* */
         }
         return illustration;
     }

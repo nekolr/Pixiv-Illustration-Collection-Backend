@@ -229,7 +229,7 @@ public class BusinessService {
     }
 
     public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {
-        return illustIdList.stream().parallel().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList());
+        return illustIdList.stream().parallel().map(illustrationBizService::queryIllustrationByIdFromDb).collect(Collectors.toList());
     }
 
     @Cacheable(value = "followedLatest", key = "#userId+#type")
