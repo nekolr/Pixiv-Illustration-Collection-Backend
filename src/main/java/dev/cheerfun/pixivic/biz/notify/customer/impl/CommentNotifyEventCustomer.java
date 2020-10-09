@@ -82,9 +82,11 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                     if (oldRemind.isPresent()) {
                         NotifyRemind notifyRemind = oldRemind.get();
                         //不能单纯add 需要考虑重复问题
-                        notifyRemind.getActors().add(Actor.castFromUser(userCommonService.queryUser(sendTo)));
-                        notifyRemind.setCreateDate(event.getCreateDate());
-                        notifyRemind.setActorCount(notifyRemind.getActors().size());
+                        if (notifyRemind.getActors().stream().noneMatch(a -> a.getUserId().compareTo(sendTo) == 0)) {
+                            notifyRemind.getActors().add(Actor.castFromUser(userCommonService.queryUser(sendTo)));
+                            notifyRemind.setCreateDate(event.getCreateDate());
+                            notifyRemind.setActorCount(notifyRemind.getActors().size());
+                        }
                         return notifyRemind;
                     }
                 }

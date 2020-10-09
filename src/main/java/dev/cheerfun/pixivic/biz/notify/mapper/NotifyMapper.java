@@ -36,7 +36,7 @@ public interface NotifyMapper {
     })
     List<NotifySettingConfig> queryNotifySettingConfig();
 
-    @Select("select remind_id from notify_remind where recipient_id=#{recipientId} and remind_type=#{type} and create_date >=#{localDateTime,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}")
+    @Select("select remind_id from notify_remind where recipient_id=#{recipientId} and remind_type=#{type} and create_date >=#{localDateTime,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler} order by create_date desc")
     List<Integer> queryRecentlyRemind(Integer recipientId, Integer type, LocalDateTime localDateTime);
 
     @Select("select * from notify_remind where remind_id =#{#remindId}")
