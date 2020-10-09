@@ -139,7 +139,7 @@ public interface AdminMapper {
     })
     Integer queryCommentTotal(Comment comment, Integer page, Integer pageSize);
 
-    @Insert("insert ingore into block_illust_set (illust_id,create_date) values (#{illustId},now())")
+    @Insert("insert ignore into block_illust_set (illust_id,create_date) values (#{illustId},now())")
     Integer blockIllustrationById(Integer illustId);
 
     @Select("select illust_id from block_illust_set")
