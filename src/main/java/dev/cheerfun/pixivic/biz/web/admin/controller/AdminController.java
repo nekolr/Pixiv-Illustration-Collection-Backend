@@ -68,6 +68,26 @@ public class AdminController {
         return ResponseEntity.ok().body(new Result<>("移除封禁画作成功", true));
     }
 
+    @PostMapping("/blockArtists")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> blockArtistById(@RequestHeader(value = "Authorization") String token, @RequestBody List<Integer> artistIdList) {
+        adminService.blockArtistById(artistIdList);
+        return ResponseEntity.ok().body(new Result<>("封禁画师成功", true));
+    }
+
+    @GetMapping("/blockArtists")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<List<Integer>>> queryBlockArtist(@RequestParam(required = false) Integer artistId, @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("获取封禁画师成功", adminService.queryBlockArtist(artistId)));
+    }
+
+    @DeleteMapping("/blockArtists/{artistId}")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> removeArtistFromBlockArtist(@PathVariable Integer artistId, @RequestHeader(value = "Authorization") String token) {
+        adminService.removeArtistFromBlockArtist(artistId);
+        return ResponseEntity.ok().body(new Result<>("移除封禁画师成功", true));
+    }
+
     @PostMapping("/collections")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<List<CollectionPO>>> queryCollection(

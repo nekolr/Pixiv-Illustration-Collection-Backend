@@ -318,12 +318,16 @@ public class AdminService {
     }
 
     @Transactional
-    @CacheEvict(value = "illust", key = "#illustId")
     public void blockIllustrationById(List<Integer> illustIdList) {
         for (Integer illustId : illustIdList) {
-            if (adminMapper.blockIllustrationById(illustId) == 1) {
-                stringRedisTemplate.opsForSet().add(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId));
-            }
+            blockIllustrationById(illustId);
+        }
+    }
+
+    @CacheEvict(value = "illust", key = "#illustId")
+    public void blockIllustrationById(Integer illustId) {
+        if (adminMapper.blockIllustrationById(illustId) == 1) {
+            stringRedisTemplate.opsForSet().add(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId));
         }
     }
 
@@ -339,6 +343,35 @@ public class AdminService {
     public void removeIllustFromBlockIllust(Integer illustId) {
         if (adminMapper.removeIllustFromBlockIllust(illustId) == 1) {
             stringRedisTemplate.opsForSet().remove(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId));
+        }
+    }
+
+    @Transactional
+    public void blockArtistById(List<Integer> artistIdList) {
+        for (Integer artistId : artistIdList) {
+            if (adminMapper.blockArtistById(artistId) == 1) {
+                stringRedisTemplate.opsForSet().add(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId));
+                //查找出画师的所有画作 都加入屏蔽列表
+                blockIllustrationById(adminMapper.queryIllustrationsByArtistId(artistId));
+            }
+        }
+    }
+
+    public List<Integer> queryBlockArtist(Integer artistId) {
+        if (artistId != null) {
+            return adminMapper.queryBlockArtistById(artistId);
+        }
+        return adminMapper.queryBlockArtist();
+
+    }
+
+    public void removeArtistFromBlockArtist(Integer artistId) {
+        if (adminMapper.removeArtistFromBlockArtist(artistId) == 1) {
+            stringRedisTemplate.opsForSet().remove(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId));
+            List<Integer> illustIdList = adminMapper.queryIllustrationsByArtistId(artistId);
+            for (Integer illustId : illustIdList) {
+                removeIllustFromBlockIllust(illustId);
+            }
         }
     }
 }

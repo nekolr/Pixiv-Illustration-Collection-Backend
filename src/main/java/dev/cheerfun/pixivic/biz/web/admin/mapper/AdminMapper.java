@@ -139,7 +139,7 @@ public interface AdminMapper {
     })
     Integer queryCommentTotal(Comment comment, Integer page, Integer pageSize);
 
-    @Insert("insert into block_illust_set (illust_id,create_date) values (#{illustId},now())")
+    @Insert("insert ingore into block_illust_set (illust_id,create_date) values (#{illustId},now())")
     Integer blockIllustrationById(Integer illustId);
 
     @Select("select illust_id from block_illust_set")
@@ -150,4 +150,19 @@ public interface AdminMapper {
 
     @Delete("delete from block_illust_set where illust_id =#{illustId}")
     Integer removeIllustFromBlockIllust(Integer illustId);
+
+    @Insert("insert into block_artist_set (artist_id,create_date) values (#{artistId},now())")
+    int blockArtistById(Integer artistId);
+
+    @Select("select illust_id from illusts where artist_id = #{artistId}")
+    List<Integer> queryIllustrationsByArtistId(Integer artistId);
+
+    @Select("select artist_id from block_artist_set where artist_id=#{artistId}")
+    List<Integer> queryBlockArtistById(Integer artistId);
+
+    @Select("select artist_id from block_artist_set")
+    List<Integer> queryBlockArtist();
+
+    @Delete("delete from block_artist_set where artist_id =#{artistId}")
+    int removeArtistFromBlockArtist(Integer artistId);
 }
