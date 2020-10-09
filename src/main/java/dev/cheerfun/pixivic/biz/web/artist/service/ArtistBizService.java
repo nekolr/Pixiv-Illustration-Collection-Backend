@@ -107,6 +107,9 @@ public class ArtistBizService {
 
     @Cacheable(value = "artist")
     public Artist queryArtistById(Integer artistId) {
+        if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId))) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
+        }
         Artist artist = artistBizMapper.queryArtistById(artistId);
         if (artist == null) {
             waitForPullArtistInfoQueue.offer(artistId);

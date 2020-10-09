@@ -346,14 +346,19 @@ public class AdminService {
         }
     }
 
-    @Transactional
     public void blockArtistById(List<Integer> artistIdList) {
         for (Integer artistId : artistIdList) {
-            if (adminMapper.blockArtistById(artistId) == 1) {
-                stringRedisTemplate.opsForSet().add(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId));
-                //查找出画师的所有画作 都加入屏蔽列表
-                blockIllustrationById(adminMapper.queryIllustrationsByArtistId(artistId));
-            }
+            blockArtistById(artistId);
+        }
+    }
+
+    @Transactional
+    @CacheEvict(value = "artist", key = "#artistId")
+    public void blockArtistById(Integer artistId) {
+        if (adminMapper.blockArtistById(artistId) == 1) {
+            stringRedisTemplate.opsForSet().add(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId));
+            //查找出画师的所有画作 都加入屏蔽列表
+            blockIllustrationById(adminMapper.queryIllustrationsByArtistId(artistId));
         }
     }
 
@@ -365,6 +370,7 @@ public class AdminService {
 
     }
 
+    @CacheEvict(value = "artist", key = "#artistId")
     public void removeArtistFromBlockArtist(Integer artistId) {
         if (adminMapper.removeArtistFromBlockArtist(artistId) == 1) {
             stringRedisTemplate.opsForSet().remove(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId));
