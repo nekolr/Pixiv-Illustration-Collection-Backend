@@ -27,7 +27,7 @@ public class CollectionNotifyEventCustomer extends NotifyEventCustomer {
     @Override
     protected Object querySendTo(Event event) {
         //如果是发布 则找出所有关注发布者的用户
-        //如果是收藏评论则找出发布者
+        //如果是收藏点赞则找出发布者
         return null;
     }
 

@@ -318,6 +318,7 @@ public class AdminService {
     }
 
     @Transactional
+    @CacheEvict(value = "illust", key = "#illustId")
     public void blockIllustrationById(List<Integer> illustIdList) {
         for (Integer illustId : illustIdList) {
             if (adminMapper.blockIllustrationById(illustId) == 1) {
@@ -334,6 +335,7 @@ public class AdminService {
     }
 
     @Transactional
+    @CacheEvict(value = "illust", key = "#illustId")
     public void removeIllustFromBlockIllust(Integer illustId) {
         if (adminMapper.removeIllustFromBlockIllust(illustId) == 1) {
             stringRedisTemplate.opsForSet().remove(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId));

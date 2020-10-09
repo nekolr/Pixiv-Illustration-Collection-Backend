@@ -29,16 +29,8 @@ public interface ArtistBizMapper {
     })
     List<UserListDTO> queryUserListFollowedArtist(Integer artistId, int currIndex, Integer pageSize);
 
-    @Select("select * from illusts where artist_id = #{artistId} and type = #{type} order by create_date desc  limit #{currIndex} , #{pageSize}")
-    @Results({
-            @Result(property = "id", column = "illust_id"),
-            @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
-            @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = JsonTypeHandler.class),
-            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class),
-            @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
-            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
-    })
-    List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize);
+    @Select("select illust_id from illusts where artist_id = #{artistId} and type = #{type} order by create_date desc  limit #{currIndex} , #{pageSize}")
+    List<Integer> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize);
 
     @Select("select illust_sum,manga_sum from artist_summary where artist_id=#{artistId}")
     @Results({

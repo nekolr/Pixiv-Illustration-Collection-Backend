@@ -62,6 +62,10 @@ public class NotifyRemindService {
         return notifyMapper.insertNotifyRemind(notifyRemind);
     }
 
+    public void updateRemindSummary(NotifyRemind notifyRemind) {
+        notifyMapper.updateRemindSummary(notifyRemind);
+    }
+
     //消息已读使用队列来移步更新，同步更新内存 因此不需要清理缓存
 
 }

@@ -127,8 +127,8 @@ public class ArtistBizService {
         if (currIndex == 0 && pageSize == 30) {
             waitForPullArtistQueue.offer(key);
         }
-        List<Illustration> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
-        return illustrations;
+        List<Integer> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
+        return illustrations.stream().map(illustrationBizService::queryIllustrationById).collect(Collectors.toList());
     }
 
     public void dealWaitForPullArtistQueue() {
