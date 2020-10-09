@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.biz.notify.mapper.NotifyMapper;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.biz.notify.po.NotifySettingConfig;
 import dev.cheerfun.pixivic.biz.notify.sender.NotifySenderManager;
+import dev.cheerfun.pixivic.biz.notify.service.NotifyRemindService;
 import dev.cheerfun.pixivic.biz.notify.util.UserSettingUtil;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
@@ -31,8 +32,6 @@ import java.util.stream.Collectors;
 @Service
 public abstract class NotifyEventCustomer {
     @Autowired
-    protected NotifyMapper notifyMapper;
-    @Autowired
     protected CommonService userCommonService;
     @Autowired
     protected CollectionService collectionService;
@@ -40,6 +39,8 @@ public abstract class NotifyEventCustomer {
     protected IllustrationBizService illustrationBizService;
     @Autowired
     protected CommentService commentService;
+    @Autowired
+    protected NotifyRemindService notifyRemindService;
     @Autowired
     protected NotifySenderManager notifySenderManager;
     @Autowired
@@ -56,7 +57,7 @@ public abstract class NotifyEventCustomer {
         remindTypeMap.put(ActionType.REPLY, 1);
         remindTypeMap.put(ActionType.LIKE, 2);
         remindTypeMap.put(ActionType.BOOKMARK, 3);
-        notifySettingMap = notifyMapper.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
+        notifySettingMap = notifyRemindService.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
     }
 
     protected void process(Event event) {

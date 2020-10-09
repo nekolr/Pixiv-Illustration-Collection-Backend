@@ -8,8 +8,6 @@ import dev.cheerfun.pixivic.biz.notify.constant.NotifyStatus;
 import dev.cheerfun.pixivic.biz.notify.customer.NotifyEventCustomer;
 import dev.cheerfun.pixivic.biz.notify.po.Actor;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
-import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
-import dev.cheerfun.pixivic.biz.web.comment.constant.CommentAppType;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import lombok.RequiredArgsConstructor;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -17,8 +15,10 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author OysterQAQ
@@ -43,7 +43,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
         //根据不同动作进行处理
         switch (event.getAction()) {
             case ActionType.LIKE:
-                return queryUserIdByAppTypeAndAppId(event.getObjectType(), event.getObjectId());
+                return queryUserIdByAppTypeAndAppId(ObjectType.COMMENT, event.getObjectId());
             case ActionType.PUBLISH:
                 if (comment.getParentId().compareTo(0) == 0) {
                     //如果是顶级评论则找到appid的所有者
@@ -68,14 +68,26 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
         Integer objectId = null;
         Integer type = null;
         List<Actor> actorList = new ArrayList<>();
+        //根据不同动作进行处理
         switch (event.getAction()) {
             case ActionType.LIKE:
                 type = remindTypeMap.get(ActionType.LIKE);
-                objectType = event.getObjectType();
+                objectType = ObjectType.COMMENT;
                 objectId = event.getObjectId();
                 message = queryTemplate(comment.getAppType(), ActionType.LIKE);
-
                 //需要进行合并，查找之前的点赞记录 根据create判断是否有需要合并的 合并的时候从头部插入 返回的时候仅仅返回前几个
+                List<NotifyRemind> notifyReminds = notifyRemindService.queryRecentlyRemind(sendTo, type, LocalDateTime.now().plusHours(-24));
+                if (notifyReminds.size() > 0) {
+                    Optional<NotifyRemind> oldRemind = notifyReminds.stream().filter(e -> event.getObjectType().equals(ObjectType.COMMENT) && event.getObjectId().compareTo(e.getObjectId()) == 0).findFirst();
+                    if (oldRemind.isPresent()) {
+                        NotifyRemind notifyRemind = oldRemind.get();
+                        //不能单纯add 需要考虑重复问题
+                        notifyRemind.getActors().add(Actor.castFromUser(userCommonService.queryUser(sendTo)));
+                        notifyRemind.setCreateDate(event.getCreateDate());
+                        notifyRemind.setActorCount(notifyRemind.getActors().size());
+                        return notifyRemind;
+                    }
+                }
                 break;
             case ActionType.PUBLISH:
                 if (comment.getParentId().compareTo(0) == 0) {

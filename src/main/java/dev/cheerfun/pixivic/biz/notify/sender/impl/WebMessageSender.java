@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.notify.sender.impl;
 import dev.cheerfun.pixivic.biz.notify.mapper.NotifyMapper;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.biz.notify.sender.NotifySender;
+import dev.cheerfun.pixivic.biz.notify.service.NotifyRemindService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -16,13 +17,17 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class WebMessageSender implements NotifySender {
-    private final NotifyMapper notifyMapper;
+    private final NotifyRemindService notifyRemindService;
 
     @Override
     public Boolean send(NotifyRemind notifyRemind) {
         //直接持久化到数据库
         System.out.println(notifyRemind);
-        notifyMapper.insertNotifyRemind(notifyRemind);
-        return null;
+        if (notifyRemind.getId() != null) {
+            notifyRemindService.updateRemindActorAndCreateDate(notifyRemind);
+        } else {
+            notifyRemindService.insertNotifyRemind(notifyRemind);
+        }
+        return true;
     }
 }

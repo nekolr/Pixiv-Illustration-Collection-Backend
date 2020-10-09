@@ -10,6 +10,7 @@ public class ActionType {
     public final static String REPLY = "reply";
     public final static String COMMENT = "comment";
     public final static String LIKE = "like";
+    public final static String CANCEL = "cancel";
     public final static String BOOKMARK = "bookmark";
     public final static String FOLLOW = "follow";
     public final static String RELEASE = "release";
