@@ -106,7 +106,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": true,
         "res_body_is_json_schema": false,
@@ -129,7 +129,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1587711708,
-        "up_time": 1587711829,
+        "up_time": 1599826949,
         "req_query": [],
         "req_headers": [
           {
@@ -572,7 +572,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": false,
         "res_body_is_json_schema": true,
@@ -595,7 +595,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584630775,
-        "up_time": 1584630822,
+        "up_time": 1599826939,
         "req_query": [],
         "req_headers": [
           {
@@ -649,7 +649,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": false,
         "res_body_is_json_schema": true,
@@ -672,7 +672,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584630965,
-        "up_time": 1584631010,
+        "up_time": 1599826943,
         "req_query": [],
         "req_headers": [
           {
@@ -743,263 +743,6 @@
     "add_time": 1587716025,
     "up_time": 1587716025,
     "list": [
-      {
-        "query_path": {
-          "path": "/admin/comments/{commentId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "undone",
-        "type": "var",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": false,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 711,
-        "method": "PUT",
-        "catid": 91,
-        "title": "更新评论",
-        "path": "/admin/comments/{commentId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f48c976793c4c6d2f1649c4",
-            "name": "commentId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1598605652,
-        "up_time": 1598605686,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5f48c976793c4c6d2f1649c5",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"type\":\"object\",\"title\":\"empty object\",\"properties\":{},\"description\":\"评论对象\"}",
-        "req_body_type": "json",
-        "res_body": ""
-      },
-      {
-        "query_path": {
-          "path": "/admin/users/{userId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "undone",
-        "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": false,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 717,
-        "method": "DELETE",
-        "catid": 91,
-        "title": "删除用户",
-        "path": "/admin/users/{userId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f48c9b0793c4c6d2f1649c6",
-            "name": "userId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1598605744,
-        "up_time": 1598605744,
-        "req_query": [],
-        "req_headers": [],
-        "req_body_form": [],
-        "__v": 0
-      },
-      {
-        "query_path": {
-          "path": "/admin/comments/{commentId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "undone",
-        "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": false,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 705,
-        "method": "DELETE",
-        "catid": 91,
-        "title": "删除评论",
-        "path": "/admin/comments/{commentId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f48c93a793c4c6d2f1649c2",
-            "name": "commentId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1598605626,
-        "up_time": 1598605626,
-        "req_query": [],
-        "req_headers": [],
-        "req_body_form": [],
-        "__v": 0
-      },
-      {
-        "query_path": {
-          "path": "/admin/banUsers/{userId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": false,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 729,
-        "method": "POST",
-        "catid": 91,
-        "title": "封禁用户",
-        "path": "/admin/banUsers/{userId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f48cdda793c4c6d2f1649cd",
-            "name": "userId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1598606667,
-        "up_time": 1598606810,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5f48cdda793c4c6d2f1649ce",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"用户id\"},\"isBan\":{\"type\":\"number\",\"description\":\"0封禁 1正常\"}}}",
-        "req_body_type": "json",
-        "res_body": ""
-      },
-      {
-        "query_path": {
-          "path": "/admin/collections/{collectionId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 675,
-        "method": "PUT",
-        "catid": 91,
-        "title": "更新画集",
-        "path": "/admin/collections/{collectionId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f2bae32793c4c6d2f1649b5",
-            "name": "collectionId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1596698005,
-        "up_time": 1596698162,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5f2bae32793c4c6d2f1649b6",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}}}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalPeopleSeen\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}}}",
-        "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"null\"},\"tagName\":{\"type\":\"string\"}}}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalPeopleSeen\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}}}}}"
-      },
-      {
-        "query_path": {
-          "path": "/admin/collections/{collectionId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "undone",
-        "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 681,
-        "method": "DELETE",
-        "catid": 91,
-        "title": "删除画集",
-        "path": "/admin/collections/{collectionId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f2bb739793c4c6d2f1649bd",
-            "name": "collectionId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1596700447,
-        "up_time": 1596700473,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5f2bb739793c4c6d2f1649be",
-            "name": "Content-Type",
-            "value": "application/x-www-form-urlencoded"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_type": "form",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
-      },
       {
         "query_path": {
           "path": "/admin/users",
@@ -1078,11 +821,401 @@
       },
       {
         "query_path": {
+          "path": "/{moduleName}/image/{uuid}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 753,
+        "method": "DELETE",
+        "catid": 91,
+        "title": "删除图片",
+        "path": "/{moduleName}/image/{uuid}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f64a2da793c4c6d2f1649f4",
+            "name": "moduleName",
+            "desc": "模块名"
+          },
+          {
+            "_id": "5f64a2da793c4c6d2f1649f3",
+            "name": "uuid",
+            "desc": "图片uuid"
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1600430057,
+        "up_time": 1600430810,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f64a2da793c4c6d2f1649f5",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/collections/{collectionId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 681,
+        "method": "DELETE",
+        "catid": 91,
+        "title": "删除画集",
+        "path": "/admin/collections/{collectionId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f2bb739793c4c6d2f1649bd",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1596700447,
+        "up_time": 1599826953,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f2bb739793c4c6d2f1649be",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/comments/{commentId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 705,
+        "method": "DELETE",
+        "catid": 91,
+        "title": "删除评论",
+        "path": "/admin/comments/{commentId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f48c93a793c4c6d2f1649c2",
+            "name": "commentId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1598605626,
+        "up_time": 1599826955,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0
+      },
+      {
+        "query_path": {
           "path": "/admin/banUsers/{userId}",
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 729,
+        "method": "POST",
+        "catid": 91,
+        "title": "封禁用户",
+        "path": "/admin/banUsers/{userId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f48cdda793c4c6d2f1649cd",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1598606667,
+        "up_time": 1598606810,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f48cdda793c4c6d2f1649ce",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"用户id\"},\"isBan\":{\"type\":\"number\",\"description\":\"0封禁 1正常\"}}}",
+        "req_body_type": "json",
+        "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/admin/blockIllusts",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 771,
+        "method": "POST",
+        "catid": 91,
+        "title": "封禁画作",
+        "path": "/admin/blockIllusts",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602145507,
+        "up_time": 1602145687,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f7ecd97793c4c6d2f164a01",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"number\"},\"description\":\"id数组\"}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/blockArtists",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 789,
+        "method": "POST",
+        "catid": 91,
+        "title": "封禁画师",
+        "path": "/admin/blockArtists",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602253613,
+        "up_time": 1602253727,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f80739f793c4c6d2f164a08",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"画师id\"}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/collections/{collectionId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 675,
+        "method": "PUT",
+        "catid": 91,
+        "title": "更新画集",
+        "path": "/admin/collections/{collectionId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f2bae32793c4c6d2f1649b5",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1596698005,
+        "up_time": 1596698162,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f2bae32793c4c6d2f1649b6",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}}}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalPeopleSeen\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"null\"},\"tagName\":{\"type\":\"string\"}}}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalPeopleSeen\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/comments/{commentId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 711,
+        "method": "PUT",
+        "catid": 91,
+        "title": "更新评论",
+        "path": "/admin/comments/{commentId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f48c976793c4c6d2f1649c4",
+            "name": "commentId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1598605652,
+        "up_time": 1599826956,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f48c976793c4c6d2f1649c5",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"type\":\"object\",\"title\":\"empty object\",\"properties\":{},\"description\":\"评论对象\"}",
+        "req_body_type": "json",
+        "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/admin/users/{userId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 717,
+        "method": "DELETE",
+        "catid": 91,
+        "title": "删除用户",
+        "path": "/admin/users/{userId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f48c9b0793c4c6d2f1649c6",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1598605744,
+        "up_time": 1599826957,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0
+      },
+      {
+        "query_path": {
+          "path": "/admin/banUsers/{userId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": true,
         "res_body_is_json_schema": false,
@@ -1105,7 +1238,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1598868186,
-        "up_time": 1598868215,
+        "up_time": 1599826961,
         "req_query": [],
         "req_headers": [
           {
@@ -1194,11 +1327,103 @@
       },
       {
         "query_path": {
+          "path": "/blockIllusts/{illustId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 783,
+        "method": "DELETE",
+        "catid": 91,
+        "title": "移除封禁画作",
+        "path": "/blockIllusts/{illustId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f7ece27793c4c6d2f164a05",
+            "name": "illustId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602145812,
+        "up_time": 1602145831,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f7ece27793c4c6d2f164a06",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/blockArtists/{artistId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 801,
+        "method": "DELETE",
+        "catid": 91,
+        "title": "移除封禁画师",
+        "path": "/admin/blockArtists/{artistId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f80744a793c4c6d2f164a0c",
+            "name": "artistId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602253885,
+        "up_time": 1602253898,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f80744a793c4c6d2f164a0d",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
           "path": "/caches/{region}/{key}",
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": false,
         "res_body_is_json_schema": false,
@@ -1228,7 +1453,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1598862746,
-        "up_time": 1598862803,
+        "up_time": 1599826959,
         "req_query": [],
         "req_headers": [
           {
@@ -1244,6 +1469,84 @@
         "markdown": "",
         "req_body_type": "form",
         "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/admin/blockIllusts",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 777,
+        "method": "GET",
+        "catid": 91,
+        "title": "获取封禁画作",
+        "path": "/admin/blockIllusts",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602145730,
+        "up_time": 1602145790,
+        "req_query": [
+          {
+            "required": "0",
+            "_id": "5f7ecdfe793c4c6d2f164a03",
+            "name": "illustId",
+            "desc": "传入则进行id筛选"
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"number\"}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/blockArtists",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 795,
+        "method": "GET",
+        "catid": 91,
+        "title": "获取封禁画师",
+        "path": "/admin/blockArtists",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602253740,
+        "up_time": 1602253848,
+        "req_query": [
+          {
+            "required": "0",
+            "_id": "5f807418793c4c6d2f164a0a",
+            "name": "artistId",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"number\"}}}}"
       },
       {
         "query_path": {
@@ -1428,6 +1731,53 @@
       },
       {
         "query_path": {
+          "path": "/collections/{collectionId}/illustrations/orderByDrag",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 759,
+        "method": "PUT",
+        "catid": 99,
+        "title": "拖动更新画集内画作排序",
+        "path": "/collections/{collectionId}/illustrations/orderByDrag",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f7993bc793c4c6d2f1649f9",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1601803102,
+        "up_time": 1601803196,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f7993bc793c4c6d2f1649fa",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"upIllustrationId\":{\"type\":\"number\",\"description\":\"拖动的画作id\"},\"lowIllustrationId\":{\"type\":\"number\",\"description\":\"拖动后画作存放位置的前一个画作的id\"},\"reOrderIllustrationId\":{\"type\":\"number\",\"description\":\"拖动后画作存放位置的后一个画作的id\"}}}",
+        "req_body_type": "json",
+        "res_body": ""
+      },
+      {
+        "query_path": {
           "path": "/collections/{collectionId}/illustrations/order",
           "params": []
         },
@@ -1442,12 +1792,12 @@
         "_id": 487,
         "method": "PUT",
         "catid": 99,
-        "title": "排序画集画作",
+        "title": "排序画集画作(全量)",
         "path": "/collections/{collectionId}/illustrations/order",
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5ed9990774367310d57d4d12",
+            "_id": "5f7992d2793c4c6d2f1649f6",
             "name": "collectionId",
             "desc": ""
           }
@@ -1455,12 +1805,12 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1588514574,
-        "up_time": 1591318791,
+        "up_time": 1601802962,
         "req_query": [],
         "req_headers": [
           {
             "required": "1",
-            "_id": "5ed9990774367310d57d4d13",
+            "_id": "5f7992d2793c4c6d2f1649f7",
             "name": "Content-Type",
             "value": "application/json"
           }
@@ -1567,7 +1917,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": false,
         "res_body_is_json_schema": true,
@@ -1590,7 +1940,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1588571684,
-        "up_time": 1588571845,
+        "up_time": 1599826950,
         "req_query": [
           {
             "required": "1",
@@ -1764,7 +2114,7 @@
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5eaec4b774367310d57d4ce3",
+            "_id": "5f79b11d793c4c6d2f1649fb",
             "name": "collectionId",
             "desc": ""
           }
@@ -1772,12 +2122,12 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1588511663,
-        "up_time": 1588511927,
+        "up_time": 1601810717,
         "req_query": [],
         "req_headers": [
           {
             "required": "1",
-            "_id": "5eaec4b774367310d57d4ce4",
+            "_id": "5f79b11d793c4c6d2f1649fc",
             "name": "Content-Type",
             "value": "application/json"
           }
@@ -1786,9 +2136,54 @@
         "__v": 0,
         "desc": "",
         "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"illust_id\":{\"type\":\"number\",\"description\":\"画作id\"}}}",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"画作id数组例如[1,2,3,4]\"}}",
         "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"因为重复而添加失败的画作id\"}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/users/{userId}/collectionsDigest",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 765,
+        "method": "GET",
+        "catid": 99,
+        "title": "用户获取自己的画集摘要列表（用于快速添加）",
+        "path": "/users/{userId}/collectionsDigest",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f79cff4793c4c6d2f1649fe",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1601818482,
+        "up_time": 1601818612,
+        "req_query": [
+          {
+            "required": "0",
+            "_id": "5f79cff4793c4c6d2f1649ff",
+            "name": "isPublic",
+            "desc": "不传就是全部 传了就是对应值"
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"画集id\"},\"title\":{\"type\":\"string\",\"description\":\"画集title\"}}}}"
       },
       {
         "query_path": {
@@ -1945,12 +2340,12 @@
         "_id": 603,
         "method": "GET",
         "catid": 110,
-        "title": "获取可能想看的画作",
+        "title": "获取可能想看的画作（废弃）",
         "path": "/https://api.pixivic.com/users/{userId}/recommendViewIllusts",
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5f0eae56793c4c6d2f16497d",
+            "_id": "5f7ae6be793c4c6d2f164a00",
             "name": "userId",
             "desc": ""
           }
@@ -1958,7 +2353,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1594797585,
-        "up_time": 1594797654,
+        "up_time": 1601889982,
         "req_query": [],
         "req_headers": [],
         "req_body_form": [],
@@ -2211,7 +2606,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "static",
         "req_body_is_json_schema": false,
         "res_body_is_json_schema": true,
@@ -2228,7 +2623,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1596177788,
-        "up_time": 1596177830,
+        "up_time": 1599826952,
         "req_query": [],
         "req_headers": [],
         "req_body_form": [],
@@ -2408,6 +2803,76 @@
         "desc": "",
         "markdown": "",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"title\":{\"type\":\"string\",\"description\":\"标题\"},\"content\":{\"type\":\"string\",\"description\":\"内容\"},\"startDate\":{\"type\":\"string\"},\"endDate\":{\"type\":\"string\"},\"createDate\":{\"type\":\"string\",\"description\":\"创建日期\"}}}}}}"
+      }
+    ]
+  },
+  {
+    "index": 0,
+    "name": "图片模块",
+    "desc": "该模块域名为https://upload.pixivic.net",
+    "add_time": 1600425514,
+    "up_time": 1600425514,
+    "list": [
+      {
+        "query_path": {
+          "path": "/{moduleName}/image",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 747,
+        "method": "POST",
+        "catid": 122,
+        "title": "按照模块上传图片",
+        "path": "/{moduleName}/image",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f649e73793c4c6d2f1649ea",
+            "name": "moduleName",
+            "desc": "模块名（头像：avatar、画集：collection、评论：comment、讨论：discussion）"
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1600425547,
+        "up_time": 1600429683,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f649e73793c4c6d2f1649ec",
+            "name": "Content-Type",
+            "value": "multipart/form-data"
+          },
+          {
+            "required": "1",
+            "_id": "5f649e73793c4c6d2f1649eb",
+            "name": "Authorization",
+            "value": "",
+            "desc": "token"
+          }
+        ],
+        "req_body_form": [
+          {
+            "required": "1",
+            "_id": "5f649e73793c4c6d2f1649ed",
+            "name": "file",
+            "type": "file",
+            "desc": "图片文件（小于10m）"
+          }
+        ],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"uuid\":{\"type\":\"string\",\"description\":\"图片uuid\"},\"uploadFrom\":{\"type\":\"number\",\"description\":\"上传者\"},\"original\":{\"type\":\"string\",\"description\":\"原图\"},\"large\":{\"type\":\"string\",\"description\":\"大图\"},\"medium\":{\"type\":\"string\",\"description\":\"小图\"},\"squareMedium\":{\"type\":\"string\",\"description\":\"方图（头像模块只返回方图、评论模块只返回小图和方图、画集模块所有图片都返回、讨论模块返回大小方图）\"},\"moduleName\":{\"type\":\"string\",\"description\":\"模块名\"}}}}}"
       }
     ]
   },
@@ -2892,7 +3357,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "static",
         "req_body_is_json_schema": true,
         "res_body_is_json_schema": true,
@@ -2909,7 +3374,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584631858,
-        "up_time": 1584632020,
+        "up_time": 1599826931,
         "req_query": [],
         "req_headers": [
           {
@@ -4326,7 +4791,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": true,
         "res_body_is_json_schema": true,
@@ -4354,7 +4819,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584634510,
-        "up_time": 1595596590,
+        "up_time": 1599826946,
         "req_query": [],
         "req_headers": [
           {
@@ -4384,7 +4849,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "static",
         "req_body_is_json_schema": true,
         "res_body_is_json_schema": true,
@@ -4401,7 +4866,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584634718,
-        "up_time": 1584634760,
+        "up_time": 1599826948,
         "req_query": [],
         "req_headers": [
           {
@@ -4561,7 +5026,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": false,
         "res_body_is_json_schema": true,
@@ -4584,7 +5049,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584634375,
-        "up_time": 1584634392,
+        "up_time": 1599826942,
         "req_query": [],
         "req_headers": [],
         "req_body_form": [],
@@ -4608,7 +5073,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": false,
         "res_body_is_json_schema": true,
@@ -4631,7 +5096,7 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584634419,
-        "up_time": 1584634486,
+        "up_time": 1599826945,
         "req_query": [
           {
             "required": "1",
