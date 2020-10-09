@@ -41,7 +41,7 @@ public interface NotifyMapper {
 
     @Select("select * from notify_remind where remind_id =#{#remindId}")
     @Results({
-            @Result(property = "id", column = "remindId"),
+            @Result(property = "id", column = "remind_id"),
             @Result(property = "type", column = "remind_type"),
             @Result(property = "recipientId", column = "recipient_id"),
             @Result(property = "actors", column = "remind_actors", javaType = List.class, typeHandler = JsonTypeHandler.class),
@@ -55,7 +55,7 @@ public interface NotifyMapper {
     })
     NotifyRemind queryNotifyRemindById(Integer remindId);
 
-    @Update("update notify_remind set actors=#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler} , create_date=#{createDate} where remind_id=#{id}")
+    @Update("update notify_remind set remind_actors=#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler} , create_date=#{createDate} where remind_id=#{id}")
     void updateRemindActorAndCreateDate(NotifyRemind notifyRemind);
 
 }
