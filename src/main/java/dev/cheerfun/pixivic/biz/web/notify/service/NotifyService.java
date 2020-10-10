@@ -7,4 +7,5 @@ package dev.cheerfun.pixivic.biz.web.notify.service;
  * @description NotifyService
  */
 public class NotifyService {
+
 }
