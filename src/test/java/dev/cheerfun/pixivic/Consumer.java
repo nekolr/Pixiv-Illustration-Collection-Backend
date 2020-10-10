@@ -25,7 +25,8 @@ import java.util.stream.Collectors;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        System.out.println(StringUtils.abbreviate("绿头发不就是我吗？韧带梆硬的我绿头发不就是我吗？韧带梆硬的我绿头发不就是我吗？韧带梆硬的我", 30));
+        System.out.println(864000L * 1000 * 3 / 1000 / 60 / 60 / 24);
+        System.out.println(864000L / 5);
     }
 
     public static float round(float d, int decimalPlace) {
