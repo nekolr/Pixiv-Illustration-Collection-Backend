@@ -2,6 +2,10 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
+import dev.cheerfun.pixivic.biz.event.domain.Event;
+import dev.cheerfun.pixivic.biz.event.publisher.EventPublisher;
+import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
@@ -24,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -39,6 +44,7 @@ import java.util.List;
 @RequestMapping("/users")
 public class BusinessController {
     private final BusinessService businessService;
+    private final EventPublisher eventPublisher;
 
     @PostMapping("/bookmarked")
     public ResponseEntity<Result<String>> bookmark(@RequestBody @Valid BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
@@ -125,7 +131,9 @@ public class BusinessController {
 
     @PostMapping("/bookmarked/collections")
     public ResponseEntity<Result<String>> bookmarkCollection(@RequestBody @Valid BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
-        businessService.bookmarkCollection((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkCollectionRelation.getUsername(), bookmarkCollectionRelation.getCollectionId());
+        Integer userId = (int) AppContext.get().get(AuthConstant.USER_ID);
+        businessService.bookmarkCollection(userId, bookmarkCollectionRelation.getUsername(), bookmarkCollectionRelation.getCollectionId());
+        eventPublisher.publish(new Event(userId, ActionType.BOOKMARK, ObjectType.COLLECTION, bookmarkCollectionRelation.getCollectionId(), LocalDateTime.now()));
         return ResponseEntity.ok().body(new Result<>("收藏画集成功"));
     }
 
@@ -143,7 +151,9 @@ public class BusinessController {
 
     @PostMapping("/liked/collections")
     public ResponseEntity<Result<String>> likeCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
-        businessService.likeCollection((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkCollectionRelation.getCollectionId());
+        Integer userId = (int) AppContext.get().get(AuthConstant.USER_ID);
+        businessService.likeCollection(userId, bookmarkCollectionRelation.getCollectionId());
+        eventPublisher.publish(new Event(userId, ActionType.LIKE, ObjectType.COLLECTION, bookmarkCollectionRelation.getCollectionId(), LocalDateTime.now()));
         return ResponseEntity.ok().body(new Result<>("点赞画集成功"));
     }
 

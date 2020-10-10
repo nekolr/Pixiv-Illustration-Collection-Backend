@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
 import dev.cheerfun.pixivic.biz.event.domain.Event;
 import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
 import dev.cheerfun.pixivic.biz.notify.mapper.NotifyMapper;
+import dev.cheerfun.pixivic.biz.notify.po.Actor;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.biz.notify.po.NotifySettingConfig;
 import dev.cheerfun.pixivic.biz.notify.sender.NotifySenderManager;
@@ -23,10 +24,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -141,6 +140,24 @@ public abstract class NotifyEventCustomer {
                 return 0;
         }
 
+    }
+
+    public NotifyRemind checkCanMerge(Integer sendTo, Integer type, Event event, String objectType) {
+        List<NotifyRemind> notifyReminds = notifyRemindService.queryRecentlyRemind(sendTo, type, LocalDateTime.now().plusHours(-24));
+        if (notifyReminds.size() > 0) {
+            Optional<NotifyRemind> oldRemind = notifyReminds.stream().filter(e -> event.getObjectType().equals(objectType) && event.getObjectId().compareTo(e.getObjectId()) == 0).findFirst();
+            if (oldRemind.isPresent()) {
+                NotifyRemind notifyRemind = oldRemind.get();
+                //不能单纯add 需要考虑重复问题
+                if (notifyRemind.getActors().stream().noneMatch(a -> a.getUserId().compareTo(sendTo) == 0)) {
+                    notifyRemind.getActors().add(Actor.castFromUser(userCommonService.queryUser(event.getUserId())));
+                    notifyRemind.setCreateDate(event.getCreateDate());
+                    notifyRemind.setActorCount(notifyRemind.getActors().size());
+                }
+                return notifyRemind;
+            }
+        }
+        return null;
     }
 
 }

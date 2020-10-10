@@ -60,7 +60,6 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
     @Override
     protected NotifyRemind generateRemind(Event event, Integer sendTo) {
         Comment comment = commentService.queryCommentById(event.getObjectId());
-        String username = userCommonService.queryUser(event.getUserId()).getUsername();
         //查出对应comment对象的评论主体并生成提醒
         String message = null;
         String objectType = null;
@@ -76,7 +75,11 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                 objectId = event.getObjectId();
                 message = queryTemplate(ObjectType.COMMENT, ActionType.LIKE);
                 //需要进行合并，查找之前的点赞记录 根据create判断是否有需要合并的 合并的时候从头部插入 返回的时候仅仅返回前几个
-                List<NotifyRemind> notifyReminds = notifyRemindService.queryRecentlyRemind(sendTo, type, LocalDateTime.now().plusHours(-24));
+                NotifyRemind notifyRemind = checkCanMerge(sendTo, type, event, objectType);
+                if (notifyRemind != null) {
+                    return notifyRemind;
+                }
+/*                List<NotifyRemind> notifyReminds = notifyRemindService.queryRecentlyRemind(sendTo, type, LocalDateTime.now().plusHours(-24));
                 if (notifyReminds.size() > 0) {
                     Optional<NotifyRemind> oldRemind = notifyReminds.stream().filter(e -> event.getObjectType().equals(ObjectType.COMMENT) && event.getObjectId().compareTo(e.getObjectId()) == 0).findFirst();
                     if (oldRemind.isPresent()) {
@@ -89,8 +92,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                         }
                         return notifyRemind;
                     }
-                }
-                actorList.add(Actor.castFromUser(userCommonService.queryUser(event.getUserId())));
+                }*/
                 break;
             case ActionType.PUBLISH:
                 if (comment.getParentId().compareTo(0) == 0) {
@@ -107,11 +109,11 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                     message = queryTemplate(ObjectType.COMMENT, ActionType.REPLY);
                     type = remindTypeMap.get(ActionType.REPLY);
                 }
-                actorList.add(Actor.castFromUser(userCommonService.queryUser(event.getUserId())));
                 break;
             default:
                 break;
         }
+        actorList.add(Actor.castFromUser(userCommonService.queryUser(event.getUserId())));
         objectTitle = generateTitle(objectType, objectId);
         return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, event.getCreateDate(), NotifyStatus.UNREAD, null);
     }

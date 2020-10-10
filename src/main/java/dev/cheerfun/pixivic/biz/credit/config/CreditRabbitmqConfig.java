@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2020/4/17 9:31 下午
  * @description CreditRabbitmqConfig
  */
-@Configuration
+//@Configuration
 public class CreditRabbitmqConfig {
     @Bean("creditFanOutExchange")
     FanoutExchange creditFanOutExchange() {
