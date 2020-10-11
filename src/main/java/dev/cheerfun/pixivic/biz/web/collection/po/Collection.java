@@ -18,7 +18,6 @@ import java.util.List;
  * @description Collection
  */
 @Data
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class Collection {
     private Integer id;
     private Integer userId;

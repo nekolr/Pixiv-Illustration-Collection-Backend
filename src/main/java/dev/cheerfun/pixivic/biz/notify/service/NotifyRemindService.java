@@ -62,6 +62,7 @@ public class NotifyRemindService {
         return notifyMapper.insertNotifyRemind(notifyRemind);
     }
 
+    @CacheEvict(value = "remindSummary", key = "#notifyRemind.recipientId")
     public void updateRemindSummary(NotifyRemind notifyRemind) {
         notifyMapper.updateRemindSummary(notifyRemind);
     }

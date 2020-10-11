@@ -74,7 +74,7 @@ public class CollectionNotifyEventCustomer extends NotifyEventCustomer {
             default:
                 return null;
         }
-        return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, null, event.getCreateDate(), NotifyStatus.UNREAD, null);
+        return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, null, event.getCreateDate(), NotifyStatus.UNREAD);
     }
 
     @Override

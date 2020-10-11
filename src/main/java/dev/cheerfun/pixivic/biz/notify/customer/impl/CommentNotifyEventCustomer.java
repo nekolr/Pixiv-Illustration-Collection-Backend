@@ -100,7 +100,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
         }
         actorList.add(Actor.castFromUser(userCommonService.queryUser(event.getUserId())));
         objectTitle = generateTitle(objectType, objectId);
-        return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, extend, event.getCreateDate(), NotifyStatus.UNREAD, null);
+        return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, extend, event.getCreateDate(), NotifyStatus.UNREAD);
     }
 
     @Override

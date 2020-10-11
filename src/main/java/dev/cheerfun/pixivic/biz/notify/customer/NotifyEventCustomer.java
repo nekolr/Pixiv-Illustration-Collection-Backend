@@ -143,7 +143,7 @@ public abstract class NotifyEventCustomer {
     }
 
     public NotifyRemind checkCanMerge(Integer sendTo, Integer type, Event event, String objectType) {
-        List<NotifyRemind> notifyReminds = notifyRemindService.queryRecentlyRemind(sendTo, type, LocalDateTime.now().plusHours(-24));
+        List<NotifyRemind> notifyReminds = notifyRemindService.queryRecentlyRemind(sendTo, type, LocalDateTime.now().plusHours(-5));
         if (notifyReminds.size() > 0) {
             Optional<NotifyRemind> oldRemind = notifyReminds.stream().filter(e -> event.getObjectType().equals(objectType) && event.getObjectId().compareTo(e.getObjectId()) == 0).findFirst();
             if (oldRemind.isPresent()) {

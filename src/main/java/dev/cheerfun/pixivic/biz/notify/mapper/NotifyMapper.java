@@ -50,8 +50,7 @@ public interface NotifyMapper {
             @Result(property = "objectType", column = "object_type"),
             @Result(property = "objectTitle", column = "object_title"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "status", column = "read_status"),
-            @Result(property = "readAt", column = "read_at")
+            @Result(property = "status", column = "read_status")
     })
     NotifyRemind queryNotifyRemindById(Integer remindId);
 

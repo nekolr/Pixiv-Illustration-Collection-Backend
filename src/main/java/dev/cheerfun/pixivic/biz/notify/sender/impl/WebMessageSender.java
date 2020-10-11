@@ -32,7 +32,6 @@ public class WebMessageSender implements NotifySender {
             notifyRemindService.insertNotifyRemind(notifyRemind);
         }
         //汇总记录累加
-        //首先查看记录是否存在
         notifyRemindService.updateRemindSummary(notifyRemind);
         return true;
     }
