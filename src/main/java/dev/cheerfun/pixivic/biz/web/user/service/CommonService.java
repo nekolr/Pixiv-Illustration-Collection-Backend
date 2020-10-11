@@ -65,8 +65,6 @@ public class CommonService {
         userMapper.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS, user.getId());
         //初始化汇总表
         userMapper.initSummary(user.getId());
-        //初始化消息汇总表
-
         user.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS);
         return user;
     }

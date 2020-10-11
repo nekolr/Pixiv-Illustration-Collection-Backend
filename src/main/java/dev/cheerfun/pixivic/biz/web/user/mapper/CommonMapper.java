@@ -117,4 +117,5 @@ public interface CommonMapper {
 
     })
     User queryUserByEmail(String emailAddr);
+
 }

@@ -53,6 +53,7 @@ public class CollectionNotifyEventCustomer extends NotifyEventCustomer {
     @Override
     protected NotifyRemind generateRemind(Event event, Integer sendTo) {
         String message = queryTemplate(event.getObjectType(), event.getAction());
+        String extend = null;
         String objectType = event.getObjectType();
         Integer objectId = event.getObjectId();
         String objectTitle = generateTitle(objectType, objectId);
@@ -73,7 +74,7 @@ public class CollectionNotifyEventCustomer extends NotifyEventCustomer {
             default:
                 return null;
         }
-        return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, event.getCreateDate(), NotifyStatus.UNREAD, null);
+        return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, null, event.getCreateDate(), NotifyStatus.UNREAD, null);
     }
 
     @Override

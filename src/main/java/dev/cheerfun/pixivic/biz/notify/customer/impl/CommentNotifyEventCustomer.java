@@ -15,10 +15,8 @@ import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * @author OysterQAQ
@@ -62,6 +60,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
         Comment comment = commentService.queryCommentById(event.getObjectId());
         //查出对应comment对象的评论主体并生成提醒
         String message = null;
+        String extend = null;
         String objectType = null;
         String objectTitle = null;
         Integer objectId = null;
@@ -79,20 +78,6 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                 if (notifyRemind != null) {
                     return notifyRemind;
                 }
-/*                List<NotifyRemind> notifyReminds = notifyRemindService.queryRecentlyRemind(sendTo, type, LocalDateTime.now().plusHours(-24));
-                if (notifyReminds.size() > 0) {
-                    Optional<NotifyRemind> oldRemind = notifyReminds.stream().filter(e -> event.getObjectType().equals(ObjectType.COMMENT) && event.getObjectId().compareTo(e.getObjectId()) == 0).findFirst();
-                    if (oldRemind.isPresent()) {
-                        NotifyRemind notifyRemind = oldRemind.get();
-                        //不能单纯add 需要考虑重复问题
-                        if (notifyRemind.getActors().stream().noneMatch(a -> a.getUserId().compareTo(sendTo) == 0)) {
-                            notifyRemind.getActors().add(Actor.castFromUser(userCommonService.queryUser(event.getUserId())));
-                            notifyRemind.setCreateDate(event.getCreateDate());
-                            notifyRemind.setActorCount(notifyRemind.getActors().size());
-                        }
-                        return notifyRemind;
-                    }
-                }*/
                 break;
             case ActionType.PUBLISH:
                 if (comment.getParentId().compareTo(0) == 0) {
@@ -105,9 +90,8 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
                     //如果非顶级
                     type = remindTypeMap.get(ActionType.REPLY);
                     objectType = event.getObjectType();
-                    objectId = event.getObjectId();
+                    objectId = comment.getParentId();
                     message = queryTemplate(ObjectType.COMMENT, ActionType.REPLY);
-                    type = remindTypeMap.get(ActionType.REPLY);
                 }
                 break;
             default:
@@ -115,7 +99,8 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
         }
         actorList.add(Actor.castFromUser(userCommonService.queryUser(event.getUserId())));
         objectTitle = generateTitle(objectType, objectId);
-        return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, event.getCreateDate(), NotifyStatus.UNREAD, null);
+        extend = generateTitle(ActionType.COMMENT, comment.getId());
+        return new NotifyRemind(null, type, actorList, actorList.size(), objectType, objectId, objectTitle, sendTo, message, extend, event.getCreateDate(), NotifyStatus.UNREAD, null);
     }
 
     @Override
