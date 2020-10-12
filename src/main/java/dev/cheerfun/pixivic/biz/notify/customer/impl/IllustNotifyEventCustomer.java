@@ -1,10 +1,8 @@
 package dev.cheerfun.pixivic.biz.notify.customer.impl;
 
-import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
-import dev.cheerfun.pixivic.biz.event.domain.Event;
-import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
+import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
+import dev.cheerfun.pixivic.basic.event.domain.Event;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyChannel;
-import dev.cheerfun.pixivic.biz.notify.constant.NotifyStatus;
 import dev.cheerfun.pixivic.biz.notify.customer.NotifyEventCustomer;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
@@ -12,7 +10,6 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;

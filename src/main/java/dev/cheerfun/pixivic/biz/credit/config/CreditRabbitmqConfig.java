@@ -1,9 +1,7 @@
 package dev.cheerfun.pixivic.biz.credit.config;
 
-import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 
 /**
  * @author OysterQAQ

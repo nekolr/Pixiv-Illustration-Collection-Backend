@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.event.constant;
+package dev.cheerfun.pixivic.basic.event.constant;
 
 /**
  * @author OysterQAQ

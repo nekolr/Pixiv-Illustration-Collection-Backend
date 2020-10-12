@@ -1,6 +1,6 @@
-package dev.cheerfun.pixivic.biz.event.config;
+package dev.cheerfun.pixivic.basic.event.config;
 
-import dev.cheerfun.pixivic.biz.event.constant.RabbitmqConstant;
+import dev.cheerfun.pixivic.basic.event.constant.RabbitmqConstant;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.notify.config;
 
-import dev.cheerfun.pixivic.biz.event.constant.ObjectType;
+import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
 import dev.cheerfun.pixivic.biz.notify.constant.RabbitmqConstant;
 import org.springframework.amqp.core.*;
 import org.springframework.context.annotation.Bean;

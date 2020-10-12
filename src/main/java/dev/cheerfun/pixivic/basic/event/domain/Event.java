@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.event.domain;
+package dev.cheerfun.pixivic.basic.event.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
