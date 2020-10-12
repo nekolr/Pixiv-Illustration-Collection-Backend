@@ -27,7 +27,6 @@ public class AzureApiKeyManager {
     private List<AzureApiKey> availableList;
     private Integer availableListSize;
     private Random random;
-    private List<AzureApiKey> unAvailableList;
     private final TranslateMapper translateMapper;
     ReentrantReadWriteLock lock = new ReentrantReadWriteLock(false);
     final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
@@ -45,7 +44,6 @@ public class AzureApiKeyManager {
             //}
             availableList = translateMapper.queryAll();
             availableListSize = availableList.size();
-            unAvailableList = new ArrayList<>();
             log.info("az翻译api管理类初始化完毕");
         } catch (Exception exception) {
             log.error("az翻译api管理类初始化失败");
