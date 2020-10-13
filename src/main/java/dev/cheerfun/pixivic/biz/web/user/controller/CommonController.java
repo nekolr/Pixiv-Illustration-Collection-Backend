@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.biz.web.user.dto.SignInDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
+import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Picture;
@@ -20,7 +21,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.mail.MessagingException;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -38,6 +38,7 @@ import java.io.IOException;
 @RequestMapping("/users")
 public class CommonController {
     private final CommonService userService;
+    private final VIPUserService vipUserService;
     private final PasswordUtil passwordUtil;
     private final JWTUtil jwtUtil;
 
@@ -93,7 +94,7 @@ public class CommonController {
 
     @DeleteMapping("/{userId}/qqAccessToken")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> unbindQQ(@PathVariable("userId") int userId, @RequestHeader("Authorization") String token) throws IOException, InterruptedException {
+    public ResponseEntity<Result<Boolean>> unbindQQ(@PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("解绑QQ成功", userService.unbindQQ((int) AppContext.get().get(AuthConstant.USER_ID))));
     }
 
@@ -147,14 +148,14 @@ public class CommonController {
     }
 
     @GetMapping("/emails/{email:.+}/resetPasswordEmail")
-    public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email") @Email String email) throws MessagingException {
+    public ResponseEntity<Result> getResetPasswordEmail(@PathVariable("email") @Email String email) {
         userService.getResetPasswordEmail(email);
         return ResponseEntity.ok().body(new Result<>("发送密码重置邮件成功"));
     }
 
     @GetMapping("/emails/{email:.+}/checkEmail")
     @PermissionRequired
-    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") @Email String email, @RequestHeader("Authorization") String token) throws MessagingException {
+    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") @Email String email, @RequestHeader("Authorization") String token) {
         userService.checkEmail(email);
         userService.getCheckEmail(email, (int) AppContext.get().get(AuthConstant.USER_ID));
         return ResponseEntity.ok().body(new Result<>("发送邮箱验证邮件成功"));
@@ -170,6 +171,13 @@ public class CommonController {
     public ResponseEntity<Result<Boolean>> uploadModuleImageLog(@RequestBody Picture picture) {
         //userService.uploadModuleImageLog(moduleName, (int) AppContext.get().get(AuthConstant.USER_ID));
         return ResponseEntity.ok().body(new Result<>("记录用户上传图片日志成功", userService.uploadModuleImageLog(picture)));
+    }
+
+    @PutMapping("/{userId}/permissionLevel")
+    @PermissionRequired
+    public ResponseEntity<Result<Boolean>> updatePermissionLevel(@RequestParam String exchangeCode, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(userService.queryUser(userId))).body(new Result<>("兑换成功", vipUserService.exchangeVIP((int) AppContext.get().get(AuthConstant.USER_ID), exchangeCode)));
+
     }
 
 }
