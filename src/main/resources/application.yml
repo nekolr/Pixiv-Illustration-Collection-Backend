@@ -120,3 +120,7 @@ graphicsMagick:
   path: /usr/bin/gm
 nsfw:
   modelPath: /home/PIC/nsfw.299x299.h5
+chacha20:
+  key: 生蚝是位兴趣使然的OTAKU
+  nonce: PIXIVICJUST4
+  counter: 21
