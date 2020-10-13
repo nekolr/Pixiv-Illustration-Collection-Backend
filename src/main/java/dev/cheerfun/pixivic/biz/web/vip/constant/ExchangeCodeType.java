@@ -7,9 +7,9 @@ package dev.cheerfun.pixivic.biz.web.vip.constant;
  * @description ExchangeCodeType
  */
 public class ExchangeCodeType {
-    private final static byte ONE_DAY = 1;
-    private final static byte THREE_DAYS = 3;
-    private final static byte SEVEN_DAYS = 7;
-    private final static byte FIFTEEN_DAYS = 15;
-    private final static byte THIRTY_DAYS = 30;
+    public final static byte ONE_DAY = 1;
+    public final static byte THREE_DAYS = 3;
+    public final static byte SEVEN_DAYS = 7;
+    public final static byte FIFTEEN_DAYS = 15;
+    public final static byte THIRTY_DAYS = 30;
 }

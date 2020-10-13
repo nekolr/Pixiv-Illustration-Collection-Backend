@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.vip.service;
 
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
+import dev.cheerfun.pixivic.biz.web.vip.constant.ExchangeCodeType;
 import dev.cheerfun.pixivic.biz.web.vip.mapper.ExchangeCodeMapper;
 import dev.cheerfun.pixivic.biz.web.vip.po.ExchangeCode;
 import dev.cheerfun.pixivic.biz.web.vip.util.ExchangeCodeUtil;
@@ -12,9 +13,9 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.transaction.Transactional;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
