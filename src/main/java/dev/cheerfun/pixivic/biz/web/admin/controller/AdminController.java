@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.po.*;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ import java.util.List;
 @RequestMapping("/admin")
 public class AdminController {
     private final AdminService adminService;
+    private final VIPUserService vipUserService;
 
     @GetMapping("/illusts/{illustId}")
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token) throws JsonProcessingException {
@@ -362,6 +364,13 @@ public class AdminController {
     public ResponseEntity<Result<Boolean>> deleteViewIllustRecommendation(
             @RequestHeader(value = "Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("删除可能想看推荐成功", adminService.deleteViewIllustRecommendation()));
+    }
+
+    //生成兑换码
+    @GetMapping("/exchangeCode")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<List<String>>> getCheckEmail(@RequestParam byte type, @RequestParam Integer sum, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("生成兑换码成功", vipUserService.generateExchangeCode(type, sum)));
     }
 
 }
