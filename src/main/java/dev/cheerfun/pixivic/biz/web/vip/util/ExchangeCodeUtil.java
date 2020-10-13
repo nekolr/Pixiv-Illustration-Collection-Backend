@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.vip.util;
 
 import com.google.common.io.BaseEncoding;
+import dev.cheerfun.pixivic.biz.web.vip.po.ExchangeCode;
 import dev.cheerfun.pixivic.common.util.encrypt.CRC8;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -46,7 +47,6 @@ public class ExchangeCodeUtil {
         System.arraycopy(ciphertext, 0, result, 0, ciphertext.length);
         result[5] = checksum;
         System.out.println("最终结果为" + Arrays.toString(result));
-
         String encode = baseEncoding.encode(result);
         System.out.println("最终结果base16编码后为" + encode);
         return encode;

@@ -150,4 +150,5 @@ public interface BusinessMapper {
 
     @Select("select collection_id from user_collection_bookmarked where user_id = #{userId} order by create_time desc limit #{currIndex},#{pageSize}")
     List<Integer> queryBookmarkCollection(Integer userId, int currIndex, Integer pageSize);
+
 }

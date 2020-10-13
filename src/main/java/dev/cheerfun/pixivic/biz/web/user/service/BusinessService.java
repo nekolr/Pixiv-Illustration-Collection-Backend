@@ -1,11 +1,13 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import com.google.common.collect.Lists;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
+import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.recommend.service.RecommendBizService;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
@@ -46,6 +48,7 @@ public class BusinessService {
     private final BusinessMapper businessMapper;
     private final IllustrationBizService illustrationBizService;
     private final ArtistBizService artistBizService;
+    private final CommonService commonService;
     private final CollectionService collectionService;
     private final RecommendBizService recommendBizService;
 

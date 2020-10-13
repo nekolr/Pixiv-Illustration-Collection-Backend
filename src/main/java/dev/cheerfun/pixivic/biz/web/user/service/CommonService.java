@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.domain.EmailBindingVerificationCode;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
@@ -25,6 +26,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDateTime;
 
 /**
  * @author OysterQAQ
@@ -217,34 +219,19 @@ public class CommonService {
         return userMapper.uploadModuleImageLog(picture.getUploadFrom(), picture.getUuid(), picture.getModuleName()) == 1;
     }
 
-   /* public Picture uploadModuleImage(String moduleName, MultipartFile file, int userId) {
-        if (file == null) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "文件为空");
+    @CacheEvict(value = "users", key = "#userId")
+    @Transactional
+    public Boolean updateUserPermissionLevel(Integer userId, byte type) {
+        User user = queryUser(userId);
+        //首先查询用户是否会员且未过期
+        if (user.getPermissionLevel() == PermissionLevel.VIP && user.getPermissionLevelExpireDate() != null && user.getPermissionLevelExpireDate().isAfter(LocalDateTime.now())) {
+            //如果是则叠加
+            userMapper.extendPermissionLevelExpirationTime(userId, user.getPermissionLevelExpireDate().plusDays(type));
+            return true;
+        } else {
+            //如果不是则过期时间为当前时间加上type
+            userMapper.updatePermissionLevelExpirationTime(userId, PermissionLevel.VIP, LocalDateTime.now().plusDays(type));
+            return true;
         }
-        String webDir = "/Users/oysterqaq/Desktop";
-        String imageUUID = UUID.randomUUID().toString();
-        String originalFileName = Paths.get(webDir, moduleName, imageUUID + ".jpg").toString();
-        String targetFileName = Paths.get(webDir, moduleName, imageUUID).toString();
-        try {
-            byte[] bytes = file.getBytes();
-            Files.write(Paths.get(originalFileName), bytes, StandardOpenOption.CREATE);
-            //gm处理
-            //900一个档次
-            pooledGMService.execute("convert " + originalFileName + " -thumbnail \"1200x1200>\" " + targetFileName + "_1200.jpg");
-            //500一个档次
-            pooledGMService.execute("convert " + originalFileName + " -thumbnail \"600x600>\" " + targetFileName + "_600.jpg");
-            //500方图
-            pooledGMService.execute("convert -size 200x200 " + originalFileName + "  -thumbnail 500x500^ -gravity center -extent 500x500 +profile \"*\" " + targetFileName + "_500_s.jpg");
-            //http调用记录用户上传记录
-            return new Picture(imageUUID, userId);
-        } catch (IOException | GMException | GMServiceException e) {
-            e.printStackTrace();
-//            try {
-//                Files.delete(Paths.get(originalFileName));
-//            } catch (IOException ioException) {
-//                ioException.printStackTrace();
-//            }
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "文件上传失败");
-        }
-    }*/
+    }
 }

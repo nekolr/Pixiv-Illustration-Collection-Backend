@@ -32,4 +32,7 @@ public class RedisKeyConstant {
     public final static String VERIFICATION_CODE = "v:";
     public final static String BLOCK_ARTISTS_SET = "bas";
     public final static String BLOCK_ILLUSTS_SET = "bis";
+    public final static String VIP_CODE_SERIAL_NUMBER = "v:c:sn";
+    public final static String VIP_CODE_USAGE_RECORD_BITMAP = "v:c:u:r:b";
+
 }

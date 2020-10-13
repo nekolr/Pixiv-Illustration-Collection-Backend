@@ -3,6 +3,8 @@ package dev.cheerfun.pixivic.biz.web.user.mapper;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import org.apache.ibatis.annotations.*;
 
+import java.time.LocalDateTime;
+
 @Mapper
 public interface CommonMapper {
     @Select({
@@ -39,7 +41,8 @@ public interface CommonMapper {
             @Result(property = "qqOpenId", column = "qq_open_id"),
             @Result(property = "isCheckEmail", column = "is_check_email"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
     })
     User queryUserByusernameAndPassword(String username, String password);
 
@@ -55,7 +58,8 @@ public interface CommonMapper {
             @Result(property = "qqOpenId", column = "qq_open_id"),
             @Result(property = "isCheckEmail", column = "is_check_email"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
 
     })
     User queryUserByUserId(int userId);
@@ -70,7 +74,8 @@ public interface CommonMapper {
             @Result(property = "qqOpenId", column = "qq_open_id"),
             @Result(property = "isCheckEmail", column = "is_check_email"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
     })
     User getUserByQQOpenId(String qqOpenId);
 
@@ -113,9 +118,14 @@ public interface CommonMapper {
             @Result(property = "qqOpenId", column = "qq_open_id"),
             @Result(property = "isCheckEmail", column = "is_check_email"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
-
+            @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
     })
     User queryUserByEmail(String emailAddr);
 
+    @Update("update users set permission_level_expire_date = #{plusDays,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler} where user_id=#{userId}")
+    void extendPermissionLevelExpirationTime(Integer userId, LocalDateTime plusDays);
+
+    @Update("update users set permission_level_expire_date = #{plusDays,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler},permission_level=#{permissionLevel} where user_id=#{userId}")
+    void updatePermissionLevelExpirationTime(Integer userId, int permissionLevel, LocalDateTime plusDays);
 }
