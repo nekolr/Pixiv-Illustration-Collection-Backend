@@ -123,9 +123,13 @@ public interface CommonMapper {
     })
     User queryUserByEmail(String emailAddr);
 
-    @Update("update users set permission_level_expire_date = #{plusDays,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler} where user_id=#{userId}")
-    void extendPermissionLevelExpirationTime(Integer userId, LocalDateTime plusDays);
+    @Update("update users set permission_level_expire_date = date_add(permission_level_expire_date, interval #{type} day) where user_id=#{userId}")
+    void extendPermissionLevelExpirationTime(Integer userId, byte type);
 
     @Update("update users set permission_level_expire_date = #{plusDays,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler},permission_level=#{permissionLevel} where user_id=#{userId}")
     void updatePermissionLevelExpirationTime(Integer userId, int permissionLevel, LocalDateTime plusDays);
+
+    @Update("update users set permission_level=2 where permission_level=3 and permission_level_expire_date<=now()")
+    void refreshUserPermissionLevel();
+
 }

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -58,6 +59,9 @@ public class VIPUserService {
     //使用验证码
     @Transactional
     public Boolean exchangeVIP(Integer userId, String exchangeStringCode) {
+        if (exchangeStringCode.length() != 16) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码无效");
+        }
         //校验转化
         ExchangeCode exchangeCode = exchangeCodeUtil.validateExchangeCode(exchangeStringCode);
         if (exchangeCode == null) {
@@ -76,7 +80,12 @@ public class VIPUserService {
         //返回
         return true;
     }
-
     //根据编号查询验证码
 
+    //每天晚上四点定时刷新用户角色
+    @Scheduled(cron = "0 0 4 * * ?")
+    public void refreshUserPermissionLevel() {
+        //更新已经过期的会员
+        commonService.refreshUserPermissionLevel();
+    }
 }
