@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.basic.event.publisher;
 
 import dev.cheerfun.pixivic.basic.event.constant.RabbitmqConstant;
 import dev.cheerfun.pixivic.basic.event.domain.Event;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -13,17 +14,18 @@ import org.springframework.stereotype.Component;
  * @description NotifyEventSender
  */
 @Component
+@Slf4j
 public class EventPublisher {
     @Autowired
     private AmqpTemplate rabbitTemplate;
 
     public void publish(Event event) {
         //发布事件
-        this.rabbitTemplate.convertAndSend(RabbitmqConstant.FANOUT_EXCHANGE, event.getObjectType(), event);
-    }
-
-    //@Scheduled(cron = "0/10 * * * * ?")
-    public void publish() {
-        //this.rabbitTemplate.convertAndSend(RabbitmqConstant.FANOUT_EXCHANGE, ObjectType.COMMENT, new Event(1, "test", ActionType.RELEASE, ObjectType.COLLECTION, 1, LocalDateTime.now()));
+        try {
+            this.rabbitTemplate.convertAndSend(RabbitmqConstant.FANOUT_EXCHANGE, event.getObjectType(), event);
+        } catch (Exception e) {
+            log.error("发布事件失败");
+            e.printStackTrace();
+        }
     }
 }

@@ -37,6 +37,9 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
 
     @Override
     protected Integer querySendTo(Event event) {
+        if (event.getObjectType().equals(ObjectType.ILLUST)) {
+            return null;
+        }
         Comment comment = commentService.queryCommentById(event.getObjectId());
         //根据不同动作进行处理
         switch (event.getAction()) {
