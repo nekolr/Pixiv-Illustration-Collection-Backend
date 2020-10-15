@@ -3,8 +3,8 @@ server:
 #  tomcat:
 #    connection-timeout: 5000
 spring:
-#  profiles:
-#    active: mac
+  profiles:
+    active: mac
   data:
     redis:
       repositories:

@@ -132,4 +132,6 @@ public interface CommonMapper {
     @Update("update users set permission_level=2 where permission_level=3 and permission_level_expire_date<=now()")
     void refreshUserPermissionLevel();
 
+    @Update("update users set star=star+#{star} where user_id=#{userId}")
+    int modifyUserPoint(Integer userId, int star);
 }

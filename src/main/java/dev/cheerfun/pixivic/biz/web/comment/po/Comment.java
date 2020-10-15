@@ -18,9 +18,9 @@ import java.util.List;
  */
 @Data
 public class Comment {
+    private Integer id;
     private String appType;
     private Integer appId;
-    private Integer id;
     private Integer parentId;
     private Integer replyFrom;
     private String replyFromName;

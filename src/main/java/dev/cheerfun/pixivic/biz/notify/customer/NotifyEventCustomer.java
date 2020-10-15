@@ -14,6 +14,8 @@ import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
+import dev.cheerfun.pixivic.biz.web.discussion.po.Discussion;
+import dev.cheerfun.pixivic.biz.web.discussion.service.DiscussionService;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -37,6 +39,8 @@ public abstract class NotifyEventCustomer {
     protected IllustrationBizService illustrationBizService;
     @Autowired
     protected CommentService commentService;
+    @Autowired
+    protected DiscussionService discussionService;
     @Autowired
     protected NotifyRemindService notifyRemindService;
     @Autowired
@@ -135,6 +139,9 @@ public abstract class NotifyEventCustomer {
             case ObjectType.COMMENT:
                 Comment comment = commentService.queryCommentById(appId);
                 return comment.getReplyFrom();
+            case ObjectType.DISCUSSION:
+                Discussion discussion = discussionService.queryByIdFromDb(appId);
+                return discussion.getUserId();
             default:
                 return 0;
         }

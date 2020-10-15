@@ -239,4 +239,8 @@ public class CommonService {
     public void refreshUserPermissionLevel() {
         userMapper.refreshUserPermissionLevel();
     }
+
+    public Boolean modifyUserPoint(Integer userId, int star) {
+        return userMapper.modifyUserPoint(userId, star) == 1;
+    }
 }
