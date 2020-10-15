@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.vip.service;
 
+import dev.cheerfun.pixivic.biz.proxy.service.VIPProxyServerService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import dev.cheerfun.pixivic.biz.web.vip.constant.ExchangeCodeType;
@@ -88,4 +89,5 @@ public class VIPUserService {
         //更新已经过期的会员
         commonService.refreshUserPermissionLevel();
     }
+
 }

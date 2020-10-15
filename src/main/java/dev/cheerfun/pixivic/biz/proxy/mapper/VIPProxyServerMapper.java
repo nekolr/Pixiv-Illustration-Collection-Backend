@@ -23,5 +23,5 @@ public interface VIPProxyServerMapper {
     List<VIPProxyServer> queryAllServer();
 
     @Insert("insert into vip_proxy_servers (server_address,create_date) values(#{serverAddress},now())")
-    void addServer(VIPProxyServer vipProxyServer);
+    void addServer(String vipProxyServer);
 }

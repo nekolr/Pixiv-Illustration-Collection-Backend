@@ -94,7 +94,7 @@ public class VIPProxyServerService {
         vipProxyServerMapper.ban(vipProxyServer.getId());
     }
 
-    public void addServer(VIPProxyServer vipProxyServer) {
+    public void addServer(String vipProxyServer) {
         writeLock.lock();
         try {
             vipProxyServerMapper.addServer(vipProxyServer);

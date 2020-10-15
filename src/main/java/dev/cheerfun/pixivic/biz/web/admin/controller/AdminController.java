@@ -3,6 +3,8 @@ package dev.cheerfun.pixivic.biz.web.admin.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.biz.proxy.po.VIPProxyServer;
+import dev.cheerfun.pixivic.biz.proxy.service.VIPProxyServerService;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.po.*;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
@@ -33,6 +35,7 @@ import java.util.List;
 public class AdminController {
     private final AdminService adminService;
     private final VIPUserService vipUserService;
+    private final VIPProxyServerService vipProxyServerService;
 
     @GetMapping("/illusts/{illustId}")
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token) throws JsonProcessingException {
@@ -371,6 +374,21 @@ public class AdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<List<String>>> getCheckEmail(@RequestParam byte type, @RequestParam Integer sum, @RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("生成兑换码成功", vipUserService.generateExchangeCode(type, sum)));
+    }
+
+    //添加高速服务器
+    @PostMapping("/vipProxyServer")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result> addVipProxyServer(@RequestParam String url, @RequestHeader("Authorization") String token) {
+        vipProxyServerService.addServer(url);
+        return ResponseEntity.ok().body(new Result<>("添加高速服务器成功"));
+    }
+
+    //获取高速服务器
+    @GetMapping("/vipProxyServer")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<List<VIPProxyServer>>> queryVipProxyServer(@RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("获取高速服务器成功", vipProxyServerService.queryAllServer()));
     }
 
 }
