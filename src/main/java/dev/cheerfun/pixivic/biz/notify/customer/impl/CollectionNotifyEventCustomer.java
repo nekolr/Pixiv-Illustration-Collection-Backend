@@ -39,6 +39,7 @@ public class CollectionNotifyEventCustomer extends NotifyEventCustomer {
             case ActionType.PUBLISH:
                 break;
             case ActionType.LIKE:
+            case ActionType.REWARD:
             case ActionType.BOOKMARK:
                 return queryUserIdByAppTypeAndAppId(ObjectType.COLLECTION, event.getObjectId());
             default:
@@ -67,6 +68,8 @@ public class CollectionNotifyEventCustomer extends NotifyEventCustomer {
                 }
                 break;
             case ActionType.BOOKMARK:
+                break;
+            case ActionType.REWARD:
                 break;
             default:
                 return null;

@@ -59,6 +59,7 @@ public abstract class NotifyEventCustomer {
         remindTypeMap.put(ActionType.REPLY, 1);
         remindTypeMap.put(ActionType.LIKE, 2);
         remindTypeMap.put(ActionType.BOOKMARK, 3);
+        remindTypeMap.put(ActionType.REWARD, 3);
         notifySettingMap = notifyRemindService.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
     }
 

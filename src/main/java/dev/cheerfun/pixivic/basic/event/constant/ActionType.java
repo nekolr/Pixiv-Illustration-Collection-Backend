@@ -14,4 +14,5 @@ public class ActionType {
     public final static String BOOKMARK = "bookmark";
     public final static String FOLLOW = "follow";
     public final static String PUBLISH = "publish";
+    public final static String REWARD = "reward";
 }

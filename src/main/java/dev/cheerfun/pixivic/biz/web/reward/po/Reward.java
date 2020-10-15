@@ -26,6 +26,7 @@ public class Reward {
     private LocalDateTime createDate;
 
     public void init(int userId) {
+        id = null;
         from = userId;
         createDate = LocalDateTime.now();
     }

@@ -46,12 +46,12 @@ public class RewardService {
     })
     public void pushReward(Reward reward) {
         //校验用户积分是否足够
-        if (checkUserPoint(reward.getFrom(), reward.getPrice())) {
+        if (reward.getPrice() != null && reward.getPrice() > 0 && checkUserPoint(reward.getFrom(), reward.getPrice())) {
             //扣除积分
             commonService.modifyUserPoint(reward.getFrom(), -reward.getPrice());
             //找到目标对象的拥有者
             Integer userId = queryUserIdByAppTypeAndAppId(reward.getAppType(), reward.getAppId());
-            if (userId != null) {
+            if (userId != null && userId.compareTo(reward.getFrom()) != 0) {
                 //给目标对象加分
                 commonService.modifyUserPoint(reward.getFrom(), reward.getPrice());
                 reward.setTo(userId);
@@ -59,10 +59,10 @@ public class RewardService {
                 rewardmapper.insertReward(reward);
                 //更新reward汇总表
                 rewardmapper.updateSummary(reward);
-            } else {
-                throw new BusinessException(HttpStatus.BAD_REQUEST, "打赏对象不存在");
+                return;
             }
         }
+        throw new BusinessException(HttpStatus.BAD_REQUEST, "打赏失败");
     }
 
     private Boolean checkUserPoint(Integer from, Integer price) {

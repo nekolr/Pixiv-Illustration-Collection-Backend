@@ -240,6 +240,7 @@ public class CommonService {
         userMapper.refreshUserPermissionLevel();
     }
 
+    @CacheEvict(value = "users", key = "#userId")
     public Boolean modifyUserPoint(Integer userId, int star) {
         return userMapper.modifyUserPoint(userId, star) == 1;
     }
