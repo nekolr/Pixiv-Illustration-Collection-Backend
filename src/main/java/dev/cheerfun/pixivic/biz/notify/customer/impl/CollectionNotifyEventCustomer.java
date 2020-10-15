@@ -1,8 +1,8 @@
 package dev.cheerfun.pixivic.biz.notify.customer.impl;
 
+import dev.cheerfun.pixivic.basic.event.constant.ActionType;
 import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
 import dev.cheerfun.pixivic.basic.event.domain.Event;
-import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyChannel;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyStatus;
 import dev.cheerfun.pixivic.biz.notify.customer.NotifyEventCustomer;

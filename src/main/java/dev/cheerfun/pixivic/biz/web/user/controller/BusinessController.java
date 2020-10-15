@@ -2,10 +2,10 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.basic.event.constant.ActionType;
 import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
 import dev.cheerfun.pixivic.basic.event.domain.Event;
 import dev.cheerfun.pixivic.basic.event.publisher.EventPublisher;
-import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;

@@ -1,13 +1,9 @@
 package dev.cheerfun.pixivic.biz.notify.sender;
 
-import dev.cheerfun.pixivic.biz.notify.constant.ActionType;
 import dev.cheerfun.pixivic.biz.notify.po.NotifyRemind;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import javax.annotation.PostConstruct;
-import java.util.HashMap;
 import java.util.Map;
 
 /**
