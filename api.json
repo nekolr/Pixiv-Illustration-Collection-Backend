@@ -8,7 +8,7 @@
     "list": [
       {
         "query_path": {
-          "path": "/users/token",
+          "path": "/users",
           "params": []
         },
         "edit_uid": 0,
@@ -19,47 +19,47 @@
         "api_opened": false,
         "index": 0,
         "tag": [],
-        "_id": 55,
+        "_id": 47,
         "method": "POST",
         "catid": 11,
-        "title": "用户登录",
-        "path": "/users/token",
+        "title": "用户注册",
+        "path": "/users",
         "project_id": 12,
         "req_params": [],
         "res_body_type": "json",
         "uid": 22,
-        "add_time": 1584610786,
-        "up_time": 1584630105,
+        "add_time": 1584610317,
+        "up_time": 1584610766,
         "req_query": [
           {
             "required": "1",
-            "_id": "5e73895974367310d57d4c03",
+            "_id": "5e733dce74367310d57d4c00",
             "name": "vid",
             "desc": "验证码id"
           },
           {
             "required": "1",
-            "_id": "5e73895974367310d57d4c02",
+            "_id": "5e733dce74367310d57d4bff",
             "name": "value",
             "example": "",
-            "desc": "验证码"
+            "desc": "验证码值"
           }
         ],
         "req_headers": [
           {
             "required": "1",
-            "_id": "5e73895974367310d57d4c04",
+            "_id": "5e733dce74367310d57d4c01",
             "name": "Content-Type",
             "value": "application/json"
           }
         ],
         "req_body_form": [],
         "__v": 0,
-        "desc": "<p>响应头会返回<span class=\"colour\" style=\"color: rgb(80, 80, 80);\">Authorization</span></p>\n",
-        "markdown": "响应头会返回<span class=\"colour\" style=\"color: rgb(80, 80, 80);\">Authorization</span>",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名或者邮箱\"},\"password\":{\"type\":\"string\",\"description\":\"密码\"}}}",
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名(4-10位)\"},\"email\":{\"type\":\"string\",\"description\":\"邮箱\"},\"password\":{\"type\":\"string\",\"description\":\"密码(8-20位)\"}}}",
         "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"用户id\"},\"username\":{\"type\":\"string\",\"description\":\"用户名\"},\"email\":{\"type\":\"string\",\"description\":\"邮箱地址\"},\"avatar\":{\"type\":\"string\",\"description\":\"头像url\"},\"gender\":{\"type\":\"null\",\"description\":\"性别\"},\"signature\":{\"type\":\"null\",\"description\":\"个性签名\"},\"location\":{\"type\":\"null\",\"description\":\"地理位置\"},\"star\":{\"type\":\"number\",\"description\":\"积分\"},\"isCheckEmail\":{\"type\":\"boolean\",\"description\":\"是否校验邮箱\"},\"isBindQQ\":{\"type\":\"boolean\",\"description\":\"是否绑定qq\"}},\"description\":\"用户信息\"}}}"
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"string\",\"description\":\"token\"}}}"
       },
       {
         "query_path": {
@@ -93,6 +93,44 @@
             "desc": "回调返回的qqtoken"
           }
         ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/users/emails/{emailAddr}/resetPasswordEmail",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 71,
+        "method": "GET",
+        "catid": 11,
+        "title": "发送密码重置邮件",
+        "path": "/users/emails/{emailAddr}/resetPasswordEmail",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5e738b6374367310d57d4c0d",
+            "name": "emailAddr",
+            "desc": "邮箱地址"
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1584630576,
+        "up_time": 1584630627,
+        "req_query": [],
         "req_headers": [],
         "req_body_form": [],
         "__v": 0,
@@ -310,62 +348,7 @@
       },
       {
         "query_path": {
-          "path": "/users",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "static",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 47,
-        "method": "POST",
-        "catid": 11,
-        "title": "用户注册",
-        "path": "/users",
-        "project_id": 12,
-        "req_params": [],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1584610317,
-        "up_time": 1584610766,
-        "req_query": [
-          {
-            "required": "1",
-            "_id": "5e733dce74367310d57d4c00",
-            "name": "vid",
-            "desc": "验证码id"
-          },
-          {
-            "required": "1",
-            "_id": "5e733dce74367310d57d4bff",
-            "name": "value",
-            "example": "",
-            "desc": "验证码值"
-          }
-        ],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5e733dce74367310d57d4c01",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名(4-10位)\"},\"email\":{\"type\":\"string\",\"description\":\"邮箱\"},\"password\":{\"type\":\"string\",\"description\":\"密码(8-20位)\"}}}",
-        "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"string\",\"description\":\"token\"}}}"
-      },
-      {
-        "query_path": {
-          "path": "/users/emails/{emailAddr}/resetPasswordEmail",
+          "path": "/users/{userId}/permissionLevel",
           "params": []
         },
         "edit_uid": 0,
@@ -376,30 +359,101 @@
         "api_opened": false,
         "index": 0,
         "tag": [],
-        "_id": 71,
-        "method": "GET",
+        "_id": 831,
+        "method": "PUT",
         "catid": 11,
-        "title": "发送密码重置邮件",
-        "path": "/users/emails/{emailAddr}/resetPasswordEmail",
+        "title": "兑换会员码",
+        "path": "/users/{userId}/permissionLevel",
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5e738b6374367310d57d4c0d",
-            "name": "emailAddr",
-            "desc": "邮箱地址"
+            "_id": "5f870efa793c4c6d2f164a1f",
+            "name": "userId",
+            "desc": ""
           }
         ],
         "res_body_type": "json",
         "uid": 22,
-        "add_time": 1584630576,
-        "up_time": 1584630627,
-        "req_query": [],
-        "req_headers": [],
+        "add_time": 1602686685,
+        "up_time": 1602686714,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f870efa793c4c6d2f164a20",
+            "name": "exchangeCode",
+            "example": "兑换码",
+            "desc": ""
+          }
+        ],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f870efa793c4c6d2f164a21",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
         "req_body_form": [],
         "__v": 0,
         "desc": "",
         "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}"
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/users/token",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 55,
+        "method": "POST",
+        "catid": 11,
+        "title": "用户登录",
+        "path": "/users/token",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1584610786,
+        "up_time": 1584630105,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5e73895974367310d57d4c03",
+            "name": "vid",
+            "desc": "验证码id"
+          },
+          {
+            "required": "1",
+            "_id": "5e73895974367310d57d4c02",
+            "name": "value",
+            "example": "",
+            "desc": "验证码"
+          }
+        ],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5e73895974367310d57d4c04",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "<p>响应头会返回<span class=\"colour\" style=\"color: rgb(80, 80, 80);\">Authorization</span></p>\n",
+        "markdown": "响应头会返回<span class=\"colour\" style=\"color: rgb(80, 80, 80);\">Authorization</span>",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名或者邮箱\"},\"password\":{\"type\":\"string\",\"description\":\"密码\"}}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"用户id\"},\"username\":{\"type\":\"string\",\"description\":\"用户名\"},\"email\":{\"type\":\"string\",\"description\":\"邮箱地址\"},\"avatar\":{\"type\":\"string\",\"description\":\"头像url\"},\"gender\":{\"type\":\"null\",\"description\":\"性别\"},\"signature\":{\"type\":\"null\",\"description\":\"个性签名\"},\"location\":{\"type\":\"null\",\"description\":\"地理位置\"},\"star\":{\"type\":\"number\",\"description\":\"积分\"},\"isCheckEmail\":{\"type\":\"boolean\",\"description\":\"是否校验邮箱\"},\"isBindQQ\":{\"type\":\"boolean\",\"description\":\"是否绑定qq\"}},\"description\":\"用户信息\"}}}"
       },
       {
         "query_path": {
@@ -1082,6 +1136,53 @@
       },
       {
         "query_path": {
+          "path": "/admin/vipProxyServer",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 843,
+        "method": "POST",
+        "catid": 91,
+        "title": "新增高速服务器",
+        "path": "/admin/vipProxyServer",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602759766,
+        "up_time": 1602759794,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f882c72793c4c6d2f164a22",
+            "name": "url",
+            "desc": "服务器前缀"
+          }
+        ],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f882c72793c4c6d2f164a23",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}"
+      },
+      {
+        "query_path": {
           "path": "/admin/collections/{collectionId}",
           "params": []
         },
@@ -1469,6 +1570,38 @@
         "markdown": "",
         "req_body_type": "form",
         "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/admin/vipProxyServer",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 837,
+        "method": "GET",
+        "catid": 91,
+        "title": "获取vip高速服务器列表",
+        "path": "/admin/vipProxyServer",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602759724,
+        "up_time": 1602759735,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"null\"},\"serverAddress\":{\"type\":\"string\"},\"useFlag\":{\"type\":\"number\"},\"createDate\":{\"type\":\"string\"}}}}}}"
       },
       {
         "query_path": {
@@ -2873,6 +3006,255 @@
         "markdown": "",
         "req_body_type": "form",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"uuid\":{\"type\":\"string\",\"description\":\"图片uuid\"},\"uploadFrom\":{\"type\":\"number\",\"description\":\"上传者\"},\"original\":{\"type\":\"string\",\"description\":\"原图\"},\"large\":{\"type\":\"string\",\"description\":\"大图\"},\"medium\":{\"type\":\"string\",\"description\":\"小图\"},\"squareMedium\":{\"type\":\"string\",\"description\":\"方图（头像模块只返回方图、评论模块只返回小图和方图、画集模块所有图片都返回、讨论模块返回大小方图）\"},\"moduleName\":{\"type\":\"string\",\"description\":\"模块名\"}}}}}"
+      }
+    ]
+  },
+  {
+    "index": 0,
+    "name": "消息模块",
+    "desc": null,
+    "add_time": 1602420138,
+    "up_time": 1602420138,
+    "list": [
+      {
+        "query_path": {
+          "path": "/users/{userId}/remindSummary",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 813,
+        "method": "GET",
+        "catid": 125,
+        "title": "获取各消息分类未读数",
+        "path": "/users/{userId}/remindSummary",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f8303e3793c4c6d2f164a1b",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602421607,
+        "up_time": 1602421731,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"type\":{\"type\":\"number\",\"description\":\"类型\"},\"unread\":{\"type\":\"number\",\"description\":\"未读消息数\"}},\"description\":\"可能回缺少一两个type 注意空指针\"}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/users/{userId}/unreadRemindsCount",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 819,
+        "method": "GET",
+        "catid": 125,
+        "title": "获取总未读消息数量",
+        "path": "/users/{userId}/unreadRemindsCount",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f8303d9793c4c6d2f164a1a",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602421693,
+        "up_time": 1602421721,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"number\",\"description\":\"数量\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/users/{userId}/reminds",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 807,
+        "method": "GET",
+        "catid": 125,
+        "title": "获取某个分类下的消息列表",
+        "path": "/users/{userId}/reminds",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f83010b793c4c6d2f164a15",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602420284,
+        "up_time": 1602421003,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f83010b793c4c6d2f164a16",
+            "name": "type",
+            "example": "1",
+            "desc": "类型 分别有1（评论与回复）2（点赞）3（收藏）4（关注）"
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"消息id\"},\"type\":{\"type\":\"number\",\"description\":\"类型\"},\"actors\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"userId\":{\"type\":\"number\",\"description\":\"用户id\"},\"username\":{\"type\":\"string\",\"description\":\"用户名\"}},\"required\":[\"userId\",\"username\"]},\"description\":\"动作实施者列表（“谁做了什么的“中的谁 这里是小a）\"},\"actorCount\":{\"type\":\"number\",\"description\":\"动作实施者个数\"},\"objectType\":{\"type\":\"string\",\"description\":\"作用对象类型（这里是评论类型 comments）\"},\"objectId\":{\"type\":\"number\",\"description\":\"作用对象id（这里是评论的id）\"},\"objectTitle\":{\"type\":\"string\",\"description\":\"作用对象标题（现在几点）\"},\"recipientId\":{\"type\":\"number\",\"description\":\"消息接受者id\"},\"message\":{\"type\":\"string\",\"description\":\"消息模版（回复了你的评论）\"},\"extend\":{\"type\":\"null\",\"description\":\"（现在6点）\"},\"createDate\":{\"type\":\"string\",\"description\":\"创建时间\"},\"status\":{\"type\":\"number\",\"description\":\"是否已读 0未读 1已读\"}}},\"description\":\"以下以 (小a)(回复了你的评论)(\\\"现在几点\\\")  (回复的内容为：\\\"现在6点\\\")  作为例子讲解\"}}}"
+      }
+    ]
+  },
+  {
+    "index": 0,
+    "name": "打赏模块",
+    "desc": null,
+    "add_time": 1602766974,
+    "up_time": 1602766974,
+    "list": [
+      {
+        "query_path": {
+          "path": "/{appType}/{appId}/rewards",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 849,
+        "method": "POST",
+        "catid": 128,
+        "title": "打赏",
+        "path": "/{appType}/{appId}/rewards",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f8848bc793c4c6d2f164a27",
+            "name": "appType",
+            "desc": ""
+          },
+          {
+            "_id": "5f8848bc793c4c6d2f164a26",
+            "name": "appId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602766990,
+        "up_time": 1602767036,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f8848bc793c4c6d2f164a28",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"appType\":{\"type\":\"string\",\"description\":\"对象类型\"},\"appId\":{\"type\":\"number\",\"description\":\"对象id\"},\"from\":{\"type\":\"number\",\"description\":\"打赏者\"},\"fromName\":{\"type\":\"string\",\"description\":\"打赏名称\"},\"price\":{\"type\":\"number\",\"description\":\"打赏金额\"}}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/{appType}/{appId}/rewards",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 855,
+        "method": "GET",
+        "catid": 128,
+        "title": "拉取打赏信息",
+        "path": "/{appType}/{appId}/rewards",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f88492d793c4c6d2f164a2c",
+            "name": "appType",
+            "desc": ""
+          },
+          {
+            "_id": "5f88492d793c4c6d2f164a2b",
+            "name": "appId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602767078,
+        "up_time": 1602767149,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f88492d793c4c6d2f164a2e",
+            "name": "page",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f88492d793c4c6d2f164a2d",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"total\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"appType\":{\"type\":\"string\"},\"appId\":{\"type\":\"number\"},\"from\":{\"type\":\"number\"},\"fromName\":{\"type\":\"string\"},\"to\":{\"type\":\"number\"},\"price\":{\"type\":\"number\"},\"createDate\":{\"type\":\"string\"}},\"required\":[\"id\",\"appType\",\"appId\",\"from\",\"fromName\",\"to\",\"price\",\"createDate\"]}}}}"
       }
     ]
   },
@@ -4720,6 +5102,44 @@
         "markdown": "",
         "req_body_type": "form",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/comments/{commentId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 825,
+        "method": "GET",
+        "catid": 59,
+        "title": "拉取单条评论",
+        "path": "/comments/{commentId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f8305e0793c4c6d2f164a1d",
+            "name": "commentId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602422226,
+        "up_time": 1602422240,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"appType\":{\"type\":\"string\"},\"appId\":{\"type\":\"number\"},\"id\":{\"type\":\"number\"},\"parentId\":{\"type\":\"number\"},\"replyFrom\":{\"type\":\"number\"},\"replyFromName\":{\"type\":\"string\"},\"replyTo\":{\"type\":\"number\"},\"replyToName\":{\"type\":\"string\"},\"platform\":{\"type\":\"string\"},\"content\":{\"type\":\"string\"},\"createDate\":{\"type\":\"string\"},\"likedCount\":{\"type\":\"number\"},\"isLike\":{\"type\":\"boolean\"},\"subCommentList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"appType\":{\"type\":\"string\"},\"appId\":{\"type\":\"number\"},\"id\":{\"type\":\"number\"},\"parentId\":{\"type\":\"number\"},\"replyFrom\":{\"type\":\"number\"},\"replyFromName\":{\"type\":\"string\"},\"replyTo\":{\"type\":\"number\"},\"replyToName\":{\"type\":\"string\"},\"platform\":{\"type\":\"string\"},\"content\":{\"type\":\"string\"},\"createDate\":{\"type\":\"string\"},\"likedCount\":{\"type\":\"number\"},\"isLike\":{\"type\":\"boolean\"},\"subCommentList\":{\"type\":\"null\"}}}}}}}}"
       },
       {
         "query_path": {
