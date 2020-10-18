@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -29,7 +30,7 @@ public class Collection {
     private String caption;
     private List<CollectionTag> tagList;
     private Integer illustCount;
-    private List<Illustration> illustrationList;
+    private List<ImageUrl> illustrationList;
     private Integer isPublic;
     private Integer useFlag;
     private Integer forbidComment;

@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.collection.mapper;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
 import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 
@@ -140,8 +141,8 @@ public interface CollectionMapper {
     @Select("select collection_id from collections where use_flag=1 and  is_public=1 order by total_bookmark limit #{currIndex},#{pageSize} ")
     List<Integer> queryPopPublicCollection(int currIndex, Integer pageSize);
 
-    @Update("update collections set cover=#{illustration,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler} where collection_id=#{collectionId}")
-    Integer updateCollectionCover(Integer collectionId, Illustration illustration);
+    @Update("update collections set cover=#{imageUrlList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler} where collection_id=#{collectionId}")
+    Integer updateCollectionCover(Integer collectionId, List<ImageUrl> imageUrlList);
 
     @Delete("delete from user_collection_bookmarked where collection_id = #{collectionId}")
     Integer deleteCollectionBookmark(Integer collectionId);

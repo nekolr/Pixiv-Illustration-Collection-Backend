@@ -14,6 +14,7 @@ import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
+import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -79,6 +80,14 @@ public class CollectionController {
     public ResponseEntity<Result<Boolean>> deleteIllustrationFromCollection(@PathVariable Integer collectionId, @PathVariable Integer illustrationId, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("删除画作成功", collectionService.deleteIllustrationFromCollection(userId, collectionId, illustrationId)));
+    }
+
+    //更改画集封面
+    @PutMapping("/collections/{collectionId}/cover")
+    @PermissionRequired
+    public ResponseEntity<Result<Boolean>> updateCollectionCover(@PathVariable Integer collectionId, @RequestBody List<ImageUrl> imageUrlList, @RequestHeader(value = "Authorization") String token) {
+        Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+        return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.updateCollectionCover(userId, collectionId, imageUrlList)));
     }
 
     //画集画作排序

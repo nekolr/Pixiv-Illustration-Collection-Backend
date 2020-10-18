@@ -13,6 +13,7 @@ import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -143,7 +144,10 @@ public class CollectionService {
         }
         collectionMapper.incrCollectionIllustCount(collectionId, sum);
         if (collection.getIllustCount() == 0) {
-            collectionMapper.updateCollectionCover(collectionId, illustrationBizService.queryIllustrationById(illustrationIds.get(0)));
+            List<ImageUrl> imageUrls = illustrationBizService.queryIllustrationById(illustrationIds.get(0)).getImageUrls();
+            List<ImageUrl> temp = new ArrayList<>();
+            temp.add(imageUrls.get(0));
+            collectionMapper.updateCollectionCover(collectionId, temp);
         }
         return failed;
     }
@@ -413,6 +417,13 @@ public class CollectionService {
     @Cacheable(value = "user_collection_digest_list", key = "#userId+'-'+#isPublic")
     public List<Integer> queryUserCollectionNameListFromDb(Integer userId, Integer isPublic) {
         return collectionMapper.queryUserCollection(userId, 0, 200, 1, isPublic, "create_time");
+    }
+
+    @CacheEvict(value = "collections", key = "#collectionId")
+    public Boolean updateCollectionCover(Integer userId, Integer collectionId, List<ImageUrl> imageUrlList) {
+        checkCollectionAuth(collectionId, userId);
+        collectionMapper.updateCollectionCover(collectionId, imageUrlList);
+        return true;
     }
 
 }
