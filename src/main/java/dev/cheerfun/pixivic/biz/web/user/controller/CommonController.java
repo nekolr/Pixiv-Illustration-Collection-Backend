@@ -175,9 +175,11 @@ public class CommonController {
 
     @PutMapping("/{userId}/permissionLevel")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> updatePermissionLevel(@RequestParam String exchangeCode, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<User>> updatePermissionLevel(@RequestParam String exchangeCode, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
         Integer uid = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(userService.queryUser(uid))).body(new Result<>("兑换成功", vipUserService.exchangeVIP(uid, exchangeCode)));
+        User user = userService.queryUser(uid);
+        vipUserService.exchangeVIP(uid, exchangeCode);
+        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("兑换成功", user));
     }
 
     //绑定pixiv账户
