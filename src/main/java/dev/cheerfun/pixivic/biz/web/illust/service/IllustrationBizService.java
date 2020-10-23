@@ -110,7 +110,7 @@ public class IllustrationBizService {
     }
 
     public List<Illustration> queryIllustrationByIdList(List<Integer> illustId) {
-        return illustId.stream().map(this::queryIllustrationByIdFromDb).filter(Objects::nonNull).collect(Collectors.toList());
+        return illustId.stream().parallel().map(this::queryIllustrationByIdFromDb).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     @Cacheable(value = "illust")
@@ -124,6 +124,11 @@ public class IllustrationBizService {
             log.info("画作：" + illustId + "不存在，加入队列等待爬取");
             waitForPullIllustQueue.offer(illustId);
         }
+        return illustration;
+    }
+
+    public Illustration queryIllustrationByIdFromDbWithoutCache(Integer illustId) {
+        Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         return illustration;
     }
 
