@@ -29,4 +29,7 @@ public interface WallpaperMapper {
 
     @Select("select illust_id from wallpapers where tag_id =#{tagId} and wallpaper_type =#{type} and illust_id < #{offset} limit #{pageSize}")
     List<Integer> queryIllustIdByTag(Integer tagId, Integer type, Integer offset, Integer pageSize);
+
+    @Select("select count(*) from wallpapers where tag_id =#{tagId} and wallpaper_type =#{type} ")
+    Integer queryIllustCountByTag(Integer tagId, Integer type);
 }
