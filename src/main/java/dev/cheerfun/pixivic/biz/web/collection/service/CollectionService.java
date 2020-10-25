@@ -283,7 +283,9 @@ public class CollectionService {
 
     public Collection queryCollectionById(Integer collectionId) {
         Collection collection = queryCollectionByIdFromDb(collectionId);
-        pullStaticInfo(collection);
+        if (collection != null) {
+            pullStaticInfo(collection);
+        }
         return collection;
     }
 
