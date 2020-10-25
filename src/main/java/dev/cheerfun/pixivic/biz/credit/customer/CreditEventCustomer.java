@@ -65,6 +65,7 @@ public class CreditEventCustomer {
             }
         } catch (Exception e) {
             log.error("积分模块消息消费失败");
+            log.error(event.toString());
             e.printStackTrace();
         }
 

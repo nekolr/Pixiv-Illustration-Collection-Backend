@@ -19,6 +19,7 @@ import dev.cheerfun.pixivic.biz.web.discussion.service.DiscussionService;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import dev.cheerfun.pixivic.common.po.Illustration;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -30,6 +31,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
+@Slf4j
 public abstract class NotifyEventCustomer {
     @Autowired
     protected CommonService userCommonService;
@@ -88,7 +90,8 @@ public abstract class NotifyEventCustomer {
                 }
             }
         } catch (Exception e) {
-            System.err.println("消息消费出错，详情:");
+            log.error("消息消费出错，详情:");
+            log.error(event.toString());
             e.printStackTrace();
         }
 
