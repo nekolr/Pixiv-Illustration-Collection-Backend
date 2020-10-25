@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.proxy.po;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.AllArgsConstructor;
@@ -21,7 +22,9 @@ import java.time.LocalDateTime;
 public class VIPProxyServer {
     private Integer id;
     private String serverAddress;
+    @JsonIgnore
     private Integer useFlag;
+    @JsonIgnore
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime createDate;
