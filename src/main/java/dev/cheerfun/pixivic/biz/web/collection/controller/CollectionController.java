@@ -85,9 +85,9 @@ public class CollectionController {
     //更改画集封面
     @PutMapping("/collections/{collectionId}/cover")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> updateCollectionCover(@PathVariable Integer collectionId, @RequestBody List<ImageUrl> imageUrlList, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> updateCollectionCover(@PathVariable Integer collectionId, @RequestBody List<Integer> illustIdList, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-        return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.updateCollectionCover(userId, collectionId, imageUrlList)));
+        return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.updateCollectionCover(userId, collectionId, illustIdList)));
     }
 
     //画集画作排序

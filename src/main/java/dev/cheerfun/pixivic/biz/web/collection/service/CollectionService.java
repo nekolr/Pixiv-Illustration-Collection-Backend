@@ -420,8 +420,9 @@ public class CollectionService {
     }
 
     @CacheEvict(value = "collections", key = "#collectionId")
-    public Boolean updateCollectionCover(Integer userId, Integer collectionId, List<ImageUrl> imageUrlList) {
+    public Boolean updateCollectionCover(Integer userId, Integer collectionId, List<Integer> illustIdList) {
         checkCollectionAuth(collectionId, userId);
+        List<ImageUrl> imageUrlList = illustIdList.stream().limit(5).map(e -> illustrationBizService.queryIllustrationByIdFromDb(e).getImageUrls().get(0)).collect(Collectors.toList());
         collectionMapper.updateCollectionCover(collectionId, imageUrlList);
         return true;
     }
