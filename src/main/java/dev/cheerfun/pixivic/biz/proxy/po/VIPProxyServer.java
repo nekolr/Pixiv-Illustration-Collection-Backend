@@ -20,12 +20,11 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class VIPProxyServer {
+    @JsonIgnore
     private Integer id;
     private String serverAddress;
     @JsonIgnore
     private Integer useFlag;
     @JsonIgnore
-    @JsonSerialize(using = LocalDateTimeSerializer.class)
-    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime createDate;
 }
