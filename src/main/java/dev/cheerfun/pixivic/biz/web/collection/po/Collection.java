@@ -23,14 +23,14 @@ public class Collection {
     private Integer id;
     private Integer userId;
     private String username;
-    private Illustration cover;
+    private ImageUrl cover;
     @SensitiveCheck
     private String title;
     @SensitiveCheck
     private String caption;
     private List<CollectionTag> tagList;
     private Integer illustCount;
-    private List<ImageUrl> illustrationList;
+    private List<Illustration> illustrationList;
     private Integer isPublic;
     private Integer useFlag;
     private Integer forbidComment;
