@@ -23,7 +23,7 @@ public class Collection {
     private Integer id;
     private Integer userId;
     private String username;
-    private ImageUrl cover;
+    private List<ImageUrl> cover;
     @SensitiveCheck
     private String title;
     @SensitiveCheck
