@@ -71,7 +71,8 @@ public class CollectionController {
     @PermissionRequired
     public ResponseEntity<Result<List<Integer>>> addIllustrationToCollection(@PathVariable Integer collectionId, @RequestBody List<Integer> illustrationIds, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-        return ResponseEntity.ok().body(new Result<>("添加画作成功，重复作品如下", collectionService.addIllustrationToCollection(userId, collectionId, illustrationIds)));
+        List<Integer> illustIdList = collectionService.addIllustrationToCollection(userId, collectionId, illustrationIds);
+        return ResponseEntity.ok().body(new Result<>("添加画作成功" + (illustIdList.size() > 0 ? "重复作品如下" : ""), illustIdList));
     }
 
     //从画集中删除画作
