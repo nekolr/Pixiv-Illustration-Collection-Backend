@@ -127,7 +127,7 @@ public interface CollectionMapper {
             @Result(property = "userId", column = "user_id"),
             @Result(property = "id", column = "collection_id"),
             @Result(property = "tagList", column = "tag_list", javaType = List.class, typeHandler = JsonTypeHandler.class),
-            @Result(property = "cover", column = "cover", javaType = ImageUrl.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "cover", column = "cover", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "createTime", column = "create_time", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
     })
     Collection queryCollectionById(Integer collectionId);

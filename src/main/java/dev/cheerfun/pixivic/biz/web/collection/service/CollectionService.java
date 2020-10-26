@@ -151,8 +151,7 @@ public class CollectionService {
         if (collection.getIllustCount() == 0) {
             List<ImageUrl> imageUrls = illustrationBizService.queryIllustrationById(illustrationIds.get(0)).getImageUrls();
             List<ImageUrl> temp = new ArrayList<>();
-            temp.add(objectMapper.convertValue(imageUrls.get(0), new TypeReference<ImageUrl>() {
-            }));
+            temp.add(imageUrls.get(0));
             collectionMapper.updateCollectionCover(collectionId, temp);
         }
         return failed;
@@ -297,7 +296,10 @@ public class CollectionService {
 
     @Cacheable(value = "collections", key = "#collectionId")
     public Collection queryCollectionByIdFromDb(Integer collectionId) {
-        return collectionMapper.queryCollectionById(collectionId);
+        Collection collection = collectionMapper.queryCollectionById(collectionId);
+        collection = objectMapper.convertValue(collection, new TypeReference<Collection>() {
+        });
+        return collection;
     }
 
     public List<Collection> queryCollectionById(List<Integer> collectionId) {
