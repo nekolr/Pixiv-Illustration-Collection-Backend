@@ -58,6 +58,7 @@ public class CollectionService {
 
     @Caching(evict = {
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-0'"),
+            @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-null'"),
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-1'"),
     })
     public Integer createCollection(Integer userId, Collection collection) {
@@ -109,6 +110,7 @@ public class CollectionService {
     @Caching(evict = {
             @CacheEvict(value = "collections", key = "#collectionId"),
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-0'"),
+            @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-null'"),
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-1'"),
     })
     public Boolean deleteCollection(Integer userId, Integer collectionId) {

@@ -41,7 +41,8 @@ import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Encrypt;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        System.out.println(172800 / 2);
+        Integer a = null;
+        System.out.println(a);
         System.out.println(172800 / 60 / 60 / 24);
         System.out.println(1800000L / 1000 / 60);
 
