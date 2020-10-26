@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.collection.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.biz.web.collection.dto.CollectionDigest;
 import dev.cheerfun.pixivic.biz.web.collection.dto.UpdateIllustrationOrderDTO;
@@ -48,6 +50,7 @@ import static dev.cheerfun.pixivic.common.constant.RedisKeyConstant.COLLECTION_R
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CollectionService {
     private final CollectionMapper collectionMapper;
+    private final ObjectMapper objectMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final SensitiveFilter sensitiveFilter;
     private final IllustrationBizService illustrationBizService;
@@ -146,7 +149,8 @@ public class CollectionService {
         if (collection.getIllustCount() == 0) {
             List<ImageUrl> imageUrls = illustrationBizService.queryIllustrationById(illustrationIds.get(0)).getImageUrls();
             List<ImageUrl> temp = new ArrayList<>();
-            temp.add(imageUrls.get(0));
+            temp.add(objectMapper.convertValue(imageUrls.get(0), new TypeReference<ImageUrl>() {
+            }));
             collectionMapper.updateCollectionCover(collectionId, temp);
         }
         return failed;
