@@ -151,7 +151,8 @@ public class CollectionService {
         if (collection.getIllustCount() == 0) {
             List<ImageUrl> imageUrls = illustrationBizService.queryIllustrationById(illustrationIds.get(0)).getImageUrls();
             List<ImageUrl> temp = new ArrayList<>();
-            temp.add(imageUrls.get(0));
+            temp.add(objectMapper.convertValue(imageUrls.get(0), new TypeReference<ImageUrl>() {
+            }));
             collectionMapper.updateCollectionCover(collectionId, temp);
         }
         return failed;
