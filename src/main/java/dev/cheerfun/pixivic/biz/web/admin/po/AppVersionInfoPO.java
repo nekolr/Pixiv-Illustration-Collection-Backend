@@ -1,10 +1,11 @@
 package dev.cheerfun.pixivic.biz.web.admin.po;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -17,10 +18,13 @@ import java.time.LocalDateTime;
 @Entity(name = "app_version_info")
 public class AppVersionInfoPO {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "app_version_info_id")
     private Integer id;
     private String version;
     @Column(name = "release_date")
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime releaseDate;
     @Column(name = "update_log")
     private String updateLog;

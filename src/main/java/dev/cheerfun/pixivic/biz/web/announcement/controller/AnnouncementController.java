@@ -25,12 +25,6 @@ import java.util.List;
 public class AnnouncementController {
     private final AnnouncementService announcementService;
 
-    @PostMapping
-    @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<String>> send(@RequestHeader("Authorization") String token, @RequestBody Announcement announcement) {
-        announcementService.send(announcement);
-        return ResponseEntity.ok().body(new Result<>("公告发布成功"));
-    }
 
     @GetMapping("/today")
     public ResponseEntity<Result<List<Announcement>>> queryByDate() {

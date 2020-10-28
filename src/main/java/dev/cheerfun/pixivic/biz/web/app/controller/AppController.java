@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
+
 /**
  * @author OysterQAQ
  * @version 1.0
@@ -25,6 +27,12 @@ public class AppController {
 
     @GetMapping("/latest")
     public ResponseEntity<Result<AppVersionInfo>> queryLatest(@RequestParam String version) {
-        return ResponseEntity.ok().body(new Result<>("查询是否有最新版本成功", appService.queryLatestByVersion(version)));
+        AppVersionInfo appVersionInfo = appService.queryLatestByVersion(version);
+        return ResponseEntity.ok().body(new Result<>(appVersionInfo == null ? "已经是最新版" : "查询是否有最新版本成功", appVersionInfo));
+    }
+
+    @GetMapping("/versions")
+    public ResponseEntity<Result<List<AppVersionInfo>>> queryVersionList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize) {
+        return ResponseEntity.ok().body(new Result<>("查询app版本列表成功", appService.queryCount(), appService.queryList(page, pageSize)));
     }
 }

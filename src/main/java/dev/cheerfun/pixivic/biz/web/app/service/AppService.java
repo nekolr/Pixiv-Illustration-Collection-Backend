@@ -38,9 +38,14 @@ public class AppService {
         return appMapper.queryLatest();
     }
 
-    @Cacheable(value = "latestAppVersion", key = "#page+'-'+#pageSize")
+    @Cacheable(value = "appVersionList", key = "#page+'-'+#pageSize")
     public List<AppVersionInfo> queryList(Integer page, Integer pageSize) {
         return appMapper.queryList((page - 1) * pageSize, pageSize);
+    }
+
+    @Cacheable(value = "appVersionCount")
+    public Integer queryCount() {
+        return appMapper.queryCount();
     }
 
     public int versionCompare(String v1, String v2) {

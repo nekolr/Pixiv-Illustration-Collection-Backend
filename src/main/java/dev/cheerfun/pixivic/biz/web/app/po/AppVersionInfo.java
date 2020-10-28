@@ -1,5 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.app.po;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -14,6 +17,8 @@ import java.time.LocalDateTime;
 public class AppVersionInfo {
     private Integer id;
     private String version;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime releaseDate;
     private String updateLog;
     private String androidLink;

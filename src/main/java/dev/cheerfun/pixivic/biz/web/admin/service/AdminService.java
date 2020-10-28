@@ -50,6 +50,7 @@ public class AdminService {
     private final CollectionRepository collectionRepository;
     private final AnnouncementRepository announcementRepository;
     private final AdvertisementRepository advertisementRepository;
+    private final AppVersionInfoRepository appVersionInfoRepository;
     private final IllustrationBizService illustrationBizService;
     private final AdvertisementProcessor advertisementProcessor;
     private List<String> keyList;
@@ -379,5 +380,39 @@ public class AdminService {
                 removeIllustFromBlockIllust(illustId);
             }
         }
+    }
+
+    public Page<AppVersionInfoPO> queryAppVersionInfo(AppVersionInfoPO appVersionInfoPO, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        Sort sort = Sort.by(Sort.Direction.fromString(orderByMode), orderBy);
+        Pageable pageable = PageRequest.of(page - 1, pageSize, sort);
+        return appVersionInfoRepository.findAll(Example.of(appVersionInfoPO), pageable);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "latestAppVersion", allEntries = true),
+            @CacheEvict(value = "appVersionList", allEntries = true),
+            @CacheEvict(value = "appVersionCount", allEntries = true)
+    })
+    public AppVersionInfoPO updateAppVersionInfo(AppVersionInfoPO appVersionInfoPO) {
+        return appVersionInfoRepository.save(appVersionInfoPO);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "latestAppVersion", allEntries = true),
+            @CacheEvict(value = "appVersionList", allEntries = true),
+            @CacheEvict(value = "appVersionCount", allEntries = true)
+    })
+    public AppVersionInfoPO createAppVersionInfo(AppVersionInfoPO appVersionInfoPO) {
+        return appVersionInfoRepository.save(appVersionInfoPO);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "latestAppVersion", allEntries = true),
+            @CacheEvict(value = "appVersionList", allEntries = true),
+            @CacheEvict(value = "appVersionCount", allEntries = true)
+    })
+    public Boolean deleteAppVersionInfo(Integer appVersionInfoId) {
+        appVersionInfoRepository.deleteById(appVersionInfoId);
+        return true;
     }
 }
