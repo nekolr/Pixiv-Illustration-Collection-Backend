@@ -317,6 +317,11 @@ public class CollectionService {
         return queryCollectionById(collectionIdList);
     }
 
+    @Cacheable("publicCollectionCount")
+    public Integer queryPublicCollectionCount() {
+        return collectionMapper.queryPublicCollectionCount();
+    }
+
     @Cacheable("collection_tag_search")
     public CompletableFuture<List<CollectionTag>> autocompleteCollectionTag(String keyword) {
         return collectionTagSearchUtil.search(keyword);
@@ -433,7 +438,12 @@ public class CollectionService {
     @CacheEvict(value = "collections", key = "#collectionId")
     public Boolean updateCollectionCover(Integer userId, Integer collectionId, List<Integer> illustIdList) {
         checkCollectionAuth(collectionId, userId);
-        List<ImageUrl> imageUrlList = illustIdList.stream().limit(5).map(e -> illustrationBizService.queryIllustrationByIdFromDb(e).getImageUrls().get(0)).collect(Collectors.toList());
+        List<ImageUrl> imageUrlList = illustIdList.stream().limit(5).map(e -> {
+            Illustration illustration = illustrationBizService.queryIllustrationByIdFromDb(e);
+            return objectMapper.convertValue(illustration
+                    .getImageUrls().get(0), new TypeReference<ImageUrl>() {
+            });
+        }).collect(Collectors.toList());
         collectionMapper.updateCollectionCover(collectionId, imageUrlList);
         return true;
     }

@@ -222,4 +222,8 @@ public interface CollectionMapper {
             "</script>"
     })
     void insertIllustrationByIndexToCollection(Integer collectionId, List<Integer> illustIdList);
+
+    @Select("select count(*) from collections where ")
+    Integer queryPublicCollectionCount();
+
 }
