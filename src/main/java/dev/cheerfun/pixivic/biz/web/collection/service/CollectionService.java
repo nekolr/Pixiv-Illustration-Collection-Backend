@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -438,12 +439,15 @@ public class CollectionService {
     @CacheEvict(value = "collections", key = "#collectionId")
     public Boolean updateCollectionCover(Integer userId, Integer collectionId, List<Integer> illustIdList) {
         checkCollectionAuth(collectionId, userId);
-        List<ImageUrl> imageUrlList = illustIdList.stream().limit(5).map(e -> {
+        List<ImageUrl> imageUrlList = illustIdList.stream().map(e -> {
             Illustration illustration = illustrationBizService.queryIllustrationByIdFromDb(e);
-            return objectMapper.convertValue(illustration
-                    .getImageUrls().get(0), new TypeReference<ImageUrl>() {
-            });
-        }).collect(Collectors.toList());
+            if (illustration != null) {
+                return objectMapper.convertValue(illustration
+                        .getImageUrls().get(0), new TypeReference<ImageUrl>() {
+                });
+            }
+            return null;
+        }).filter(Objects::nonNull).limit(5).collect(Collectors.toList());
         collectionMapper.updateCollectionCover(collectionId, imageUrlList);
         return true;
     }
