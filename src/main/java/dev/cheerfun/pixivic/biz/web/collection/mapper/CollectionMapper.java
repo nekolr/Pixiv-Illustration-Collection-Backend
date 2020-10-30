@@ -159,14 +159,14 @@ public interface CollectionMapper {
     @Update("update collections set total_liked=total_liked-1 where collection_id =  #{collectionId} ")
     Integer decrCollectionTotalLike(Integer collectionId);
 
-    @Update("update user_summary\n" +
+    @Update("update user_collection_summary\n" +
             "set private_collection_sum=(select count(*)\n" +
             "                            from collections\n" +
             "                            where use_flag = 1 and is_public = 1 and collections.user_id = #{userId})\n" +
             "where user_id = #{userId}")
     Integer dealUserPublicCollectionSummary(Integer userId);
 
-    @Update("update user_summary\n" +
+    @Update("update user_collection_summary\n" +
             "set private_collection_sum=(select count(*)\n" +
             "                            from collections\n" +
             "                            where use_flag = 1 and is_public = 0 and collections.user_id = #{userId})\n" +
@@ -185,7 +185,7 @@ public interface CollectionMapper {
             "<if test=\"isPublic==null\">\n",
             "public_collection_sum+private_collection_sum",
             "</if>",
-            "from user_summary where user_id=#{userId}",
+            "from user_collection_summary where user_id=#{userId}",
             "</script>"
     })
     Integer queryCollectionSummary(Integer userId, Integer isPublic);
@@ -197,13 +197,13 @@ public interface CollectionMapper {
             "where collection_id = #{collectionId}")
     Integer dealStaticInfo(Integer collectionId, Integer totalBookmarked, Integer totalLiked, Integer totalPeopleSeen);
 
-    @Update("update user_summary\n" +
+    @Update("update user_collection_summary\n" +
             "set bookmark_collection_sum = bookmark_collection_sum + #{modify}\n" +
             "where user_id = #{userId}")
     Integer modifyUserTotalBookmarkCollection(Integer userId, int modify);
 
     @Select("select bookmark_collection_sum\n" +
-            "from user_summary\n" +
+            "from user_collection_summary\n" +
             "where user_id = #{userId}")
     Integer queryUserTotalBookmarkCollection(Integer userId);
 

@@ -39,6 +39,10 @@ public class Discussion {
     private Integer commentCount;
     private Integer option;
     private List<CollectionTag> tagList;
+    private Integer bounty;
+    @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
+    private LocalDateTime latestReplyTime;//按照最后回复时间来排序
 
     public Discussion(Integer sectionId, String title, String content, Integer userId, String username, List<CollectionTag> tagList, LocalDateTime now) {
         this.sectionId = sectionId;

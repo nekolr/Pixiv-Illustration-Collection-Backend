@@ -82,4 +82,10 @@ public class DiscussionController {
         return ResponseEntity.ok().body(new Result<>("获取板块列表成功", sectionList));
     }
 
+    //更新最后回复时间（限制在发布时间一周内，防止挖坟）
+
+    //觉得欢乐
+
+    //选择最佳答案给悬赏（只能是顶级评论）
+
 }

@@ -182,6 +182,8 @@ public class CommonController {
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("兑换成功", user));
     }
 
+    //签到 返回占卜结果
+
     //绑定pixiv账户
 
 }
