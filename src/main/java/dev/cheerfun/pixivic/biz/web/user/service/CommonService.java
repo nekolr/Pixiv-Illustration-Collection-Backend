@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.user.service;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.domain.EmailBindingVerificationCode;
+import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
@@ -27,6 +28,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDateTime;
+import java.util.List;
 
 /**
  * @author OysterQAQ
@@ -244,4 +246,5 @@ public class CommonService {
     public Boolean modifyUserPoint(Integer userId, int star) {
         return userMapper.modifyUserPoint(userId, star) == 1;
     }
+
 }

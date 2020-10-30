@@ -9,6 +9,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -60,7 +62,7 @@ public class CreditEventCustomer {
                     //用户积分增加
                     creditMapper.increaseUserScore(event.getUserId(), score);
                     //积分纪录增加
-                    creditMapper.insertCreditLog(new CreditHistory(null, event.getUserId(), event.getObjectType(), event.getObjectId(), event.getAction(), 1, score, creditConfig.getDesc(), null));
+                    insertCreditLog(new CreditHistory(null, event.getUserId(), event.getObjectType(), event.getObjectId(), event.getAction(), 1, score, creditConfig.getDesc(), null));
                 }
             }
         } catch (Exception e) {
@@ -69,6 +71,13 @@ public class CreditEventCustomer {
             e.printStackTrace();
         }
 
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "userRecentlyCreditHistoryList", key = "#creditHistory.userId")
+    })
+    public void insertCreditLog(CreditHistory creditHistory) {
+        creditMapper.insertCreditLog(creditHistory);
     }
 
     protected boolean limitCheck(Integer userId, String objectType, String action, Integer limitNum) {

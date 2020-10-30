@@ -223,7 +223,7 @@ public interface CollectionMapper {
     })
     void insertIllustrationByIndexToCollection(Integer collectionId, List<Integer> illustIdList);
 
-    @Select("select count(*) from collections where ")
+    @Select("select count(*) from collections where use_flag = 1 and is_public = 0 ")
     Integer queryPublicCollectionCount();
 
 }

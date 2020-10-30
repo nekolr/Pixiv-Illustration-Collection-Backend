@@ -61,6 +61,7 @@ public class CollectionService {
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-0'"),
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-null'"),
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-1'"),
+            @CacheEvict("publicCollectionCount")
     })
     public Integer createCollection(Integer userId, Collection collection) {
         //去除敏感词
@@ -91,7 +92,8 @@ public class CollectionService {
 
     @Transactional
     @Caching(evict = {
-            @CacheEvict(value = "collections", key = "#collection.id")
+            @CacheEvict(value = "collections", key = "#collection.id"),
+            @CacheEvict("publicCollectionCount")
     })
     public Boolean updateCollection(Integer userId, Collection collection) {
         if (collection.getId() == null) {
@@ -110,6 +112,7 @@ public class CollectionService {
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "collections", key = "#collectionId"),
+            @CacheEvict("publicCollectionCount"),
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-0'"),
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-null'"),
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-1'"),

@@ -141,13 +141,13 @@ public class CollectionController {
     //最新公开画集列表
     @GetMapping("/collections/latest")
     public ResponseEntity<Result<List<Collection>>> queryLatestPublicCollection(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize) {
-        return ResponseEntity.ok().body(new Result<>("获取最新公开画集成功", collectionService.queryLatestPublicCollection(page, pageSize)));
+        return ResponseEntity.ok().body(new Result<>("获取最新公开画集成功", collectionService.queryPublicCollectionCount(), collectionService.queryLatestPublicCollection(page, pageSize)));
     }
 
     //最热门画集列表
     @GetMapping("/collections/pop")
     public ResponseEntity<Result<List<Collection>>> querypopPublicCollection(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize) {
-        return ResponseEntity.ok().body(new Result<>("获取最热门公开画集成功", collectionService.queryPopPublicCollection(page, pageSize)));
+        return ResponseEntity.ok().body(new Result<>("获取最热门公开画集成功", collectionService.queryPublicCollectionCount(), collectionService.queryPopPublicCollection(page, pageSize)));
 
     }
 

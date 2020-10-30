@@ -1,9 +1,11 @@
 package dev.cheerfun.pixivic.biz.web.user.mapper;
 
+import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Mapper
 public interface CommonMapper {
@@ -134,4 +136,5 @@ public interface CommonMapper {
 
     @Update("update users set star=star+#{star} where user_id=#{userId}")
     int modifyUserPoint(Integer userId, int star);
+
 }

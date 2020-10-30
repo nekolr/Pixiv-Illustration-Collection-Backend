@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
+import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.ResetPasswordDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignInDTO;
@@ -22,9 +23,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Email;
+import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.IOException;
+import java.util.List;
 
 /**
  * @author OysterQAQ
