@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 
 @Mapper
 public interface SentenceMapper {
-    @Insert("insert into sentences (content,`from`,from_who) values(#{content},#{from},#{fromWho})")
+    @Insert("insert ignore into sentences (content,`from`,from_who) values(#{content},#{from},#{fromWho})")
     void insertSentence(Sentence e);
 
 }

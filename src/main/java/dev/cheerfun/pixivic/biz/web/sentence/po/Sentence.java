@@ -2,7 +2,9 @@ package dev.cheerfun.pixivic.biz.web.sentence.po;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonSetter;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * @author OysterQAQ
@@ -11,6 +13,8 @@ import lombok.Data;
  * @description Sentence
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class Sentence {
     @JsonIgnore
     private Integer id;
