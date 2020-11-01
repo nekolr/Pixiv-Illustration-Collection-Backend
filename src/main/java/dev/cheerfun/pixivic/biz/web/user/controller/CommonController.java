@@ -186,6 +186,7 @@ public class CommonController {
     }
 
     //签到 返回占卜结果
+    //签到基准积分为10分 连续签到一天加1分 最多连续7天
 
     //绑定pixiv账户
 

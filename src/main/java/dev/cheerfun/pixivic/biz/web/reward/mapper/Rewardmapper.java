@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.reward.mapper;
 
+import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.web.reward.po.Reward;
 import org.apache.ibatis.annotations.*;
 
@@ -42,4 +43,8 @@ public interface Rewardmapper {
 
     @Select("select reward_count from reward_summary where reward_app_type = #{appType} and reward_app_id = #{appId} ")
     Integer pullRewardCount(String appType, int appId);
+
+    @Insert("insert into user_credit_log (user_id,object_type,object_id,`action`,credit_option,credit_score,credit_desc) values(#{userId},#{objectType},#{objectId},#{action},#{creditOption},#{creditScore},#{creditDesc})")
+    Integer insertCreditLog(CreditHistory creditHistory);
+
 }

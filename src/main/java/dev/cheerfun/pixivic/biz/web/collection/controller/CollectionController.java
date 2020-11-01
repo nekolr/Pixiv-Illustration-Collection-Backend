@@ -83,6 +83,14 @@ public class CollectionController {
         return ResponseEntity.ok().body(new Result<>("删除画作成功", collectionService.deleteIllustrationFromCollection(userId, collectionId, illustrationId)));
     }
 
+    //从画集中删除画作
+    @DeleteMapping("/collections/{collectionId}/illustrations")
+    @PermissionRequired
+    public ResponseEntity<Result<Boolean>> deleteIllustrationFromCollection(@PathVariable Integer collectionId, @RequestBody List<Integer> illustrationIdList, @RequestHeader(value = "Authorization") String token) {
+        Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+        return ResponseEntity.ok().body(new Result<>("批量删除画作成功", collectionService.deleteIllustrationFromCollection(userId, collectionId, illustrationIdList)));
+    }
+
     //更改画集封面
     @PutMapping("/collections/{collectionId}/cover")
     @PermissionRequired

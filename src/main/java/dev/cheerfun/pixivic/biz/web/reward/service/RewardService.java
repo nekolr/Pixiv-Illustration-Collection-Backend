@@ -1,6 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.reward.service;
 
+import dev.cheerfun.pixivic.basic.event.constant.ActionType;
 import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
+import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
@@ -49,6 +51,8 @@ public class RewardService {
         if (reward.getPrice() != null && reward.getPrice() > 0 && checkUserPoint(reward.getFrom(), reward.getPrice())) {
             //扣除积分
             commonService.modifyUserPoint(reward.getFrom(), -reward.getPrice());
+            //增加扣分记录
+            insertCreditLog(new CreditHistory(null, reward.getFrom(), reward.getAppType(), reward.getAppId(), ActionType.REWARD, 0, reward.getPrice(), "打赏扣除", null));
             //找到目标对象的拥有者
             Integer userId = queryUserIdByAppTypeAndAppId(reward.getAppType(), reward.getAppId());
             if (userId != null && userId.compareTo(reward.getFrom()) != 0) {
@@ -57,12 +61,21 @@ public class RewardService {
                 reward.setTo(userId);
                 //reward增加记录
                 rewardmapper.insertReward(reward);
+                //增加加分记录
+                insertCreditLog(new CreditHistory(null, reward.getTo(), reward.getAppType(), reward.getAppId(), ActionType.REWARD, 1, reward.getPrice(), "打赏加分", null));
                 //更新reward汇总表
                 rewardmapper.updateSummary(reward);
                 return;
             }
         }
         throw new BusinessException(HttpStatus.BAD_REQUEST, "打赏失败");
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "userRecentlyCreditHistoryList", key = "#creditHistory.userId")
+    })
+    public void insertCreditLog(CreditHistory creditHistory) {
+        rewardmapper.insertCreditLog(creditHistory);
     }
 
     private Boolean checkUserPoint(Integer from, Integer price) {

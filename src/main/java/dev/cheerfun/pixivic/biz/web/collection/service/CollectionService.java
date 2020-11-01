@@ -172,6 +172,12 @@ public class CollectionService {
         return true;
     }
 
+    @Transactional
+    public Boolean deleteIllustrationFromCollection(Integer userId, Integer collectionId, List<Integer> illustrationIdList) {
+        illustrationIdList.forEach(e -> deleteIllustrationFromCollection(userId, collectionId, e));
+        return true;
+    }
+
     @Cacheable("collectionAuth")
     public boolean checkCollectionAuth(Integer collectionId, Integer userId) {
         Collection collection = queryCollectionByIdFromDb(collectionId);
