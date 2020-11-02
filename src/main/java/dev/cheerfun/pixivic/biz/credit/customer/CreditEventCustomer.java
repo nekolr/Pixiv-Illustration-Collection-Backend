@@ -43,7 +43,36 @@ public class CreditEventCustomer {
 
     @RabbitHandler()
     @Transactional(rollbackFor = Exception.class)
-    public Integer consume(Event event) {
+    public void consume(Event event) {
+        try {
+            //取出配置
+            CreditConfig creditConfig = creditConfigMap.get(event.getObjectType() + ":" + event.getAction());
+            if (creditConfig != null) {
+                //判断次数
+                if (limitCheck(event.getUserId(), event.getObjectType(), event.getAction(), creditConfig.getLimitNum())) {
+                    Integer score;
+                    //是否随机
+                    if (creditConfig.getIsRandom().compareTo(1) == 0) {
+                        //取出上下界限 生成随机值
+                        score = creditConfig.getRandomStart() + (int) (Math.random() * (creditConfig.getRandomEnd() - creditConfig.getRandomStart() + 1));
+                    } else {
+                        score = creditConfig.getScore();
+                    }
+                    //持久化
+                    //用户积分增加
+                    creditMapper.increaseUserScore(event.getUserId(), score);
+                    //积分纪录增加
+                    insertCreditLog(new CreditHistory(null, event.getUserId(), event.getObjectType(), event.getObjectId(), event.getAction(), 1, score, creditConfig.getDesc(), null));
+                }
+            }
+        } catch (Exception e) {
+            log.error("积分模块消息消费失败");
+            log.error(event.toString());
+            e.printStackTrace();
+        }
+    }
+
+    public Integer consumeSync(Event event) {
         try {
             //取出配置
             CreditConfig creditConfig = creditConfigMap.get(event.getObjectType() + ":" + event.getAction());

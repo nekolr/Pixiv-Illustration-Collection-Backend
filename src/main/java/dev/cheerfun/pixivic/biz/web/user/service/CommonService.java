@@ -261,16 +261,16 @@ public class CommonService {
     }
 
     @Transactional
-    public CheckInDTO dailyCheckIn(Integer uerId) throws ExecutionException, InterruptedException {
+    public CheckInDTO dailyCheckIn(Integer userId) throws ExecutionException, InterruptedException {
         //检查当天是否校验过
-        if (queryCheckInStatus(uerId)) {
+        if (queryCheckInStatus(userId)) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "请勿重复签到");
         }
         //签到
-        checkIn(uerId);
+        checkIn(userId);
         //加分
         LocalDateTime now = LocalDateTime.now();
-        Integer score = creditEventCustomer.consume(new Event(uerId, ActionType.CHECK_IN, ObjectType.ATTENDANCES, Integer.valueOf(now.toString().replace("-", "")), now));
+        Integer score = creditEventCustomer.consumeSync(new Event(userId, ActionType.CHECK_IN, ObjectType.ATTENDANCES, Integer.valueOf(now.toString().replace("-", "")), now));
         //随机获取动漫台词
         Sentence sentence = sentenceService.queryRandomSentence();
         //根据台词来源作品获取画作

@@ -189,7 +189,7 @@ public class CommonController {
 
     @GetMapping("/check-in")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> queryDailyCheckIn(@RequestHeader("Authorization") String token) throws ExecutionException, InterruptedException {
+    public ResponseEntity<Result<Boolean>> queryDailyCheckIn(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("获取当天签到状态成功", userService.queryCheckInStatus((Integer) AppContext.get().get(AuthConstant.USER_ID))));
     }
 
