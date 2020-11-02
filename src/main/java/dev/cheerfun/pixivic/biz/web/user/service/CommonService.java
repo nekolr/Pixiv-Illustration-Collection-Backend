@@ -269,8 +269,8 @@ public class CommonService {
         //签到
         checkIn(userId);
         //加分
-        LocalDateTime now = LocalDateTime.now();
-        Integer score = creditEventCustomer.consumeSync(new Event(userId, ActionType.CHECK_IN, ObjectType.ATTENDANCES, Integer.valueOf(now.toString().replace("-", "")), now));
+        LocalDate now = LocalDate.now();
+        Integer score = creditEventCustomer.consumeSync(new Event(userId, ActionType.CHECK_IN, ObjectType.ATTENDANCES, Integer.valueOf(now.toString().replace("-", "")), LocalDateTime.now()));
         //随机获取动漫台词
         Sentence sentence = sentenceService.queryRandomSentence();
         //根据台词来源作品获取画作
