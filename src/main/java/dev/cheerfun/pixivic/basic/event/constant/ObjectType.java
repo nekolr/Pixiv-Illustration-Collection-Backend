@@ -14,4 +14,5 @@ public class ObjectType {
     public final static String COLLECTION = "collections";
     public final static String DISCUSSION = "discussions";
     public final static String USER = "users";
+    public final static String ATTENDANCES = "attendances";
 }

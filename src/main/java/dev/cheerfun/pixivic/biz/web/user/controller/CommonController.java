@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
+import dev.cheerfun.pixivic.biz.web.user.dto.CheckInDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.ResetPasswordDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignInDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
@@ -28,6 +29,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 import java.io.IOException;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author OysterQAQ
@@ -185,8 +187,17 @@ public class CommonController {
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("兑换成功", user));
     }
 
-    //签到 返回占卜结果
-    //签到基准积分为10分 连续签到一天加1分 最多连续7天
+    @GetMapping("/check-in")
+    @PermissionRequired
+    public ResponseEntity<Result<Boolean>> queryDailyCheckIn(@RequestHeader("Authorization") String token) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("获取当天签到状态成功", userService.queryCheckInStatus((Integer) AppContext.get().get(AuthConstant.USER_ID))));
+    }
+
+    @PostMapping("/check-in")
+    @PermissionRequired
+    public ResponseEntity<Result<CheckInDTO>> dailyCheckIn(@RequestHeader("Authorization") String token) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("签到成功", userService.dailyCheckIn((Integer) AppContext.get().get(AuthConstant.USER_ID))));
+    }
 
     //绑定pixiv账户
 

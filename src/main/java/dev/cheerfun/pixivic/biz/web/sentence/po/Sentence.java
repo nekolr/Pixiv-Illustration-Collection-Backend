@@ -16,11 +16,9 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Sentence {
-    @JsonIgnore
     private Integer id;
-    @JsonSetter("hitokoto")
     private String content;
-    private String from;
-    @JsonSetter("from_who")
-    private String fromWho;
+    private String originateFrom;
+    private String originateFromJP;
+    private String author;
 }

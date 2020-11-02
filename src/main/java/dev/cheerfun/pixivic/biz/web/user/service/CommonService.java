@@ -2,13 +2,21 @@ package dev.cheerfun.pixivic.biz.web.user.service;
 
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
+import dev.cheerfun.pixivic.basic.event.constant.ActionType;
+import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
+import dev.cheerfun.pixivic.basic.event.domain.Event;
 import dev.cheerfun.pixivic.basic.verification.domain.EmailBindingVerificationCode;
-import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
+import dev.cheerfun.pixivic.biz.credit.customer.CreditEventCustomer;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
+import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
+import dev.cheerfun.pixivic.biz.web.sentence.po.Sentence;
+import dev.cheerfun.pixivic.biz.web.sentence.service.SentenceService;
+import dev.cheerfun.pixivic.biz.web.user.dto.CheckInDTO;
 import dev.cheerfun.pixivic.biz.web.user.mapper.CommonMapper;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
+import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.util.email.EmailUtil;
 import lombok.RequiredArgsConstructor;
@@ -27,8 +35,10 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author OysterQAQ
@@ -51,6 +61,9 @@ public class CommonService {
     private final PasswordUtil passwordUtil;
     private final EmailUtil emailUtil;
     private final VerificationCodeService verificationCodeService;
+    private final CreditEventCustomer creditEventCustomer;
+    private final SearchService searchService;
+    private final SentenceService sentenceService;
     //private final PooledGMService pooledGMService;
 
     public User signUp(User user) {
@@ -245,6 +258,42 @@ public class CommonService {
     @CacheEvict(value = "users", key = "#userId")
     public Boolean modifyUserPoint(Integer userId, int star) {
         return userMapper.modifyUserPoint(userId, star) == 1;
+    }
+
+    @Transactional
+    public CheckInDTO dailyCheckIn(Integer uerId) throws ExecutionException, InterruptedException {
+        //检查当天是否校验过
+        if (queryCheckInStatus(uerId)) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "请勿重复签到");
+        }
+        //签到
+        checkIn(uerId);
+        //加分
+        LocalDateTime now = LocalDateTime.now();
+        Integer score = creditEventCustomer.consume(new Event(uerId, ActionType.CHECK_IN, ObjectType.ATTENDANCES, Integer.valueOf(now.toString().replace("-", "")), now));
+        //随机获取动漫台词
+        Sentence sentence = sentenceService.queryRandomSentence();
+        //根据台词来源作品获取画作
+        Illustration illustration = null;
+        List<Illustration> illustrationList = searchService.searchByKeyword(sentence.getOriginateFromJP() != null ? sentence.getOriginateFromJP() : sentence.getOriginateFrom(), 1, 1, "original", null, null, null, null, null, 0, null, null, null, 5, null).get();
+        if (illustrationList != null && illustrationList.size() > 0) {
+            illustration = illustrationList.get(0);
+        }
+        return new CheckInDTO(score, sentence, illustration);
+    }
+
+    public Boolean queryCheckInStatus(Integer uerId) {
+        return LocalDate.now().toString().equals(queryRecentCheckDate(uerId));
+    }
+
+    @Cacheable(value = "userRecentCheckDate", key = "#userId")
+    public String queryRecentCheckDate(Integer userId) {
+        return userMapper.queryRecentCheckDate(userId);
+    }
+
+    @CacheEvict(value = "userRecentCheckDate", key = "#userId")
+    public void checkIn(Integer uerId) {
+        userMapper.checkIn(uerId, LocalDate.now().toString());
     }
 
 }

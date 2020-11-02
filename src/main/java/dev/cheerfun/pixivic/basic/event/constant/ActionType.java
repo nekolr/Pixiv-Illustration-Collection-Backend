@@ -15,4 +15,5 @@ public class ActionType {
     public final static String FOLLOW = "follow";
     public final static String PUBLISH = "publish";
     public final static String REWARD = "reward";
+    public final static String CHECK_IN = "checkIn";
 }

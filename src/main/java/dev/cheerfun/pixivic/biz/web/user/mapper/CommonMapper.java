@@ -1,11 +1,9 @@
 package dev.cheerfun.pixivic.biz.web.user.mapper;
 
-import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Mapper
 public interface CommonMapper {
@@ -137,4 +135,9 @@ public interface CommonMapper {
     @Update("update users set star=star+#{star} where user_id=#{userId}")
     int modifyUserPoint(Integer userId, int star);
 
+    @Select("select check_in_date from user_check_in_log where user_id=#{userId} order by check_in_date desc limit 1 ")
+    String queryRecentCheckDate(Integer userId);
+
+    @Insert("insert into user_check_in_log(user_id,check_in_date) values (#{userId},#{date})")
+    void checkIn(Integer userId, String date);
 }

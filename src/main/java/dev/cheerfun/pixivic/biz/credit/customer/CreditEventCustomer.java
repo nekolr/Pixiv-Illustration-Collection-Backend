@@ -43,7 +43,7 @@ public class CreditEventCustomer {
 
     @RabbitHandler()
     @Transactional(rollbackFor = Exception.class)
-    public void consume(Event event) {
+    public Integer consume(Event event) {
         try {
             //取出配置
             CreditConfig creditConfig = creditConfigMap.get(event.getObjectType() + ":" + event.getAction());
@@ -63,6 +63,7 @@ public class CreditEventCustomer {
                     creditMapper.increaseUserScore(event.getUserId(), score);
                     //积分纪录增加
                     insertCreditLog(new CreditHistory(null, event.getUserId(), event.getObjectType(), event.getObjectId(), event.getAction(), 1, score, creditConfig.getDesc(), null));
+                    return score;
                 }
             }
         } catch (Exception e) {
@@ -70,7 +71,7 @@ public class CreditEventCustomer {
             log.error(event.toString());
             e.printStackTrace();
         }
-
+        return null;
     }
 
     @Caching(evict = {
