@@ -292,8 +292,8 @@ public class CommonService {
     }
 
     @CacheEvict(value = "userRecentCheckDate", key = "#userId")
-    public void checkIn(Integer uerId) {
-        userMapper.checkIn(uerId, LocalDate.now().toString());
+    public void checkIn(Integer userId) {
+        userMapper.checkIn(userId, LocalDate.now().toString());
     }
 
 }
