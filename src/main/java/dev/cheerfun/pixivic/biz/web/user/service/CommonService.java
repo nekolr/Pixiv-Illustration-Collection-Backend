@@ -38,6 +38,7 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -64,6 +65,7 @@ public class CommonService {
     private final CreditEventCustomer creditEventCustomer;
     private final SearchService searchService;
     private final SentenceService sentenceService;
+    private final Random random = new Random(21);
     //private final PooledGMService pooledGMService;
 
     public User signUp(User user) {
@@ -275,9 +277,9 @@ public class CommonService {
         Sentence sentence = sentenceService.queryRandomSentence();
         //根据台词来源作品获取画作
         Illustration illustration = null;
-        List<Illustration> illustrationList = searchService.searchByKeyword(sentence.getOriginateFromJP() != null ? sentence.getOriginateFromJP() : sentence.getOriginateFrom(), 1, 1, "original", null, null, null, null, null, 0, null, null, null, 5, null).get();
+        List<Illustration> illustrationList = searchService.searchByKeyword(sentence.getOriginateFromJP() != null ? sentence.getOriginateFromJP() : sentence.getOriginateFrom(), 10, 1, "original", null, null, null, null, null, 0, null, null, null, 5, null).get();
         if (illustrationList != null && illustrationList.size() > 0) {
-            illustration = illustrationList.get(0);
+            illustration = illustrationList.get(random.nextInt(illustrationList.size()));
         }
         return new CheckInDTO(score, sentence, illustration);
     }
