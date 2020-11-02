@@ -35,12 +35,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(e.getHttpStatus()).body(new Result(e.getMessage()));
     }
 
-/*
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<Result> handleBaseException(MethodArgumentNotValidException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("参数错误"));
     }
-*/
 
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<Result> handleConstraintViolationException(ConstraintViolationException e) {
@@ -52,10 +50,10 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("邮箱地址错误"));
     }
 
-/*    @ExceptionHandler(value = IllegalArgumentException.class)
+    @ExceptionHandler(value = IllegalArgumentException.class)
     public ResponseEntity<Result> handleIllegalArgumentException(IllegalArgumentException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("参数错误"));
-    }*/
+    }
 
     @ExceptionHandler(value = ExpiredJwtException.class)
     public ResponseEntity<Result> handleIllegalExpiredJwtException(ExpiredJwtException e) {
