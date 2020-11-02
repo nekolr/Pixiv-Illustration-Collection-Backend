@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.biz.web.collection.mapper;
 
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
-import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
@@ -117,10 +116,10 @@ public interface CollectionMapper {
             "= #{isPublic}",
             "</if>",
             "</if>",
-            "and user_id=#{userId} order by #{orderBy} limit #{currIndex},#{pageSize}",
+            "and user_id=#{userId} order by #{orderBy} #{orderByMode} limit #{currIndex},#{pageSize}",
             "</script>"
     })
-    List<Integer> queryUserCollection(Integer userId, Integer currIndex, Integer pageSize, Integer isSelf, Integer isPublic, String orderBy);
+    List<Integer> queryUserCollection(Integer userId, Integer currIndex, Integer pageSize, Integer isSelf, Integer isPublic, String orderBy, String orderByMode);
 
     @Select("select * from collections where collection_id=#{collectionId} and use_flag=1")
     @Results({

@@ -274,8 +274,8 @@ public class CollectionService {
         return collectionMapper.queryIllustrationOrder(collectionId, illustrationId);
     }
 
-    public List<Collection> queryUserCollection(Integer userId, Integer isSelf, Integer isPublic, Integer page, Integer pageSize, String orderBy) {
-        List<Integer> collectionIdList = collectionMapper.queryUserCollection(userId, (page - 1) * pageSize, pageSize, isSelf, isPublic, orderBy);
+    public List<Collection> queryUserCollection(Integer userId, Integer isSelf, Integer isPublic, Integer page, Integer pageSize, String orderBy, String orderByMode) {
+        List<Integer> collectionIdList = collectionMapper.queryUserCollection(userId, (page - 1) * pageSize, pageSize, isSelf, isPublic, orderBy, orderByMode);
         return queryCollectionById(collectionIdList);
     }
 
@@ -442,7 +442,7 @@ public class CollectionService {
 
     @Cacheable(value = "user_collection_digest_list", key = "#userId+'-'+#isPublic")
     public List<Integer> queryUserCollectionNameListFromDb(Integer userId, Integer isPublic) {
-        return collectionMapper.queryUserCollection(userId, 0, 200, 1, isPublic, "create_time");
+        return collectionMapper.queryUserCollection(userId, 0, 200, 1, isPublic, "create_time", "desc");
     }
 
     @CacheEvict(value = "collections", key = "#collectionId")
