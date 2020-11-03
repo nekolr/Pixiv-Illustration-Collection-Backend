@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.spotlight.mapper;
 
-import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
+import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Spotlight;
 import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;

@@ -1,10 +1,10 @@
-package dev.cheerfun.pixivic.biz.web.rank.controller;
+package dev.cheerfun.pixivic.biz.web.illust.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
-import dev.cheerfun.pixivic.biz.web.rank.service.RankService;
+import dev.cheerfun.pixivic.biz.web.illust.service.RankService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;

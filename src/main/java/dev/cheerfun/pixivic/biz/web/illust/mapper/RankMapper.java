@@ -1,6 +1,6 @@
-package dev.cheerfun.pixivic.biz.web.rank.mapper;
+package dev.cheerfun.pixivic.biz.web.illust.mapper;
 
-import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
+import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;

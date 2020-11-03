@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.rank.po;
+package dev.cheerfun.pixivic.biz.web.illust.po;
 
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.AllArgsConstructor;

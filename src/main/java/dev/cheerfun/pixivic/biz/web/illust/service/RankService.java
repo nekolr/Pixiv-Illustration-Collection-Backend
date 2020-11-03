@@ -1,7 +1,7 @@
-package dev.cheerfun.pixivic.biz.web.rank.service;
+package dev.cheerfun.pixivic.biz.web.illust.service;
 
-import dev.cheerfun.pixivic.biz.web.rank.mapper.RankMapper;
-import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
+import dev.cheerfun.pixivic.biz.web.illust.mapper.RankMapper;
+import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;

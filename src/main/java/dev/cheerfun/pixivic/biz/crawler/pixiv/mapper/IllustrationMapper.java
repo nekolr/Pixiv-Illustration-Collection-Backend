@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.mapper;
 
-import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
+import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.Tag;

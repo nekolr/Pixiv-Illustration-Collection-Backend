@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
-import dev.cheerfun.pixivic.biz.web.rank.po.Rank;
+import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
