@@ -8,7 +8,7 @@ import dev.cheerfun.pixivic.biz.analysis.tag.mapper.TrendingTagsMapper;
 import dev.cheerfun.pixivic.biz.analysis.tag.po.TrendingTags;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
-import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
+import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;

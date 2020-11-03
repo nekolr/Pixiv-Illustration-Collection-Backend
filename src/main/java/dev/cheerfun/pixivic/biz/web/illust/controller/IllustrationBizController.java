@@ -5,7 +5,7 @@ import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
-import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
+import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
 import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;

@@ -10,7 +10,7 @@ import dev.cheerfun.pixivic.biz.credit.customer.CreditEventCustomer;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
-import dev.cheerfun.pixivic.biz.web.search.service.SearchService;
+import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
 import dev.cheerfun.pixivic.biz.web.sentence.po.Sentence;
 import dev.cheerfun.pixivic.biz.web.sentence.service.SentenceService;
 import dev.cheerfun.pixivic.biz.web.user.dto.CheckInDTO;

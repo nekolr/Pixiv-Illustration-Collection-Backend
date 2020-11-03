@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import dev.cheerfun.pixivic.biz.notify.po.Actor;
-import dev.cheerfun.pixivic.biz.web.search.domain.SearchSuggestion;
+import dev.cheerfun.pixivic.biz.web.illust.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
