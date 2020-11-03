@@ -1,9 +1,9 @@
-package dev.cheerfun.pixivic.biz.web.wallpaper.controller;
+package dev.cheerfun.pixivic.biz.web.illust.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.wallpaper.po.WallpaperCategory;
-import dev.cheerfun.pixivic.biz.web.wallpaper.service.WallpaperService;
+import dev.cheerfun.pixivic.biz.web.illust.service.WallpaperService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.po.illust.Tag;

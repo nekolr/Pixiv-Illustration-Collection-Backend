@@ -1,8 +1,8 @@
-package dev.cheerfun.pixivic.biz.web.wallpaper.service;
+package dev.cheerfun.pixivic.biz.web.illust.service;
 
 import dev.cheerfun.pixivic.biz.wallpaper.po.WallpaperCategory;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
-import dev.cheerfun.pixivic.biz.web.wallpaper.mapper.WallpaperMapper;
+import dev.cheerfun.pixivic.biz.web.illust.mapper.WallpaperMapper;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;

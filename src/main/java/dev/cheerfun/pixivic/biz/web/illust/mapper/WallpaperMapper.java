@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.wallpaper.mapper;
+package dev.cheerfun.pixivic.biz.web.illust.mapper;
 
 import dev.cheerfun.pixivic.biz.wallpaper.po.WallpaperCategory;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
