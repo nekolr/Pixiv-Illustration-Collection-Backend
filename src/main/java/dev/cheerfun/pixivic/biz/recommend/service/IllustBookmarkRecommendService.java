@@ -79,7 +79,6 @@ public class IllustBookmarkRecommendService extends RecommendService {
         生成10*30个推荐画师*/
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
         dealPerUser(u1, recommender, 30);
-        System.gc();
      /*
         3-6天
 
@@ -90,7 +89,6 @@ public class IllustBookmarkRecommendService extends RecommendService {
         生成10*10个推荐画师*/
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
         dealPerUser(u2, recommender, 15);
-        System.gc();
      /*   6-12天
 
         生成30*10个推荐查看作品
