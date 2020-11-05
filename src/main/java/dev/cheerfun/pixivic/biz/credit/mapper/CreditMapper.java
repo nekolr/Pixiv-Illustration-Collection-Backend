@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface CreditMapper {
     @Select("select * from user_credit_config")
     @Results({

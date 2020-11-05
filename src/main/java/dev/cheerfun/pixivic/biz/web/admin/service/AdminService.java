@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
 import dev.cheerfun.pixivic.biz.web.admin.po.*;
 import dev.cheerfun.pixivic.biz.web.admin.repository.*;
+import dev.cheerfun.pixivic.biz.web.admin.secmapper.IllustAdminMapper;
 import dev.cheerfun.pixivic.biz.web.history.service.IllustHistoryService;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
@@ -22,9 +23,10 @@ import org.springframework.data.domain.*;
 import org.springframework.data.redis.connection.RedisClusterNode;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import javax.transaction.Transactional;
 import java.util.*;
 
 /**
@@ -40,6 +42,7 @@ public class AdminService {
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustHistoryService illustHistoryService;
     private final AdminMapper adminMapper;
+    private final IllustAdminMapper illustAdminMapper;
     private final CacheManager cacheManager;
     private final TranslationUtil translationUtil;
     private final ObjectMapper objectMapper;
@@ -72,8 +75,9 @@ public class AdminService {
     }
 
     @CacheEvict(value = "illust", key = "#illustDTO.id")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void updateIllusts(IllustDTO illustDTO) {
-        adminMapper.updateIllusts(illustDTO);
+        illustAdminMapper.updateIllusts(illustDTO);
     }
 
     public Illustration queryIllustrationById(Integer illustId) throws JsonProcessingException {
@@ -359,8 +363,13 @@ public class AdminService {
         if (adminMapper.blockArtistById(artistId) == 1) {
             stringRedisTemplate.opsForSet().add(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId));
             //查找出画师的所有画作 都加入屏蔽列表
-            blockIllustrationById(adminMapper.queryIllustrationsByArtistId(artistId));
+            blockIllustrationById(queryIllustrationsByArtistId(artistId));
         }
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public List<Integer> queryIllustrationsByArtistId(Integer artistId) {
+        return illustAdminMapper.queryIllustrationsByArtistId(artistId);
     }
 
     public List<Integer> queryBlockArtist(Integer artistId) {
@@ -375,7 +384,7 @@ public class AdminService {
     public void removeArtistFromBlockArtist(Integer artistId) {
         if (adminMapper.removeArtistFromBlockArtist(artistId) == 1) {
             stringRedisTemplate.opsForSet().remove(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId));
-            List<Integer> illustIdList = adminMapper.queryIllustrationsByArtistId(artistId);
+            List<Integer> illustIdList = queryIllustrationsByArtistId(artistId);
             for (Integer illustId : illustIdList) {
                 removeIllustFromBlockIllust(illustId);
             }

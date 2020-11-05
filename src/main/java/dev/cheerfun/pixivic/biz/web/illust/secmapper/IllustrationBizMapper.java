@@ -1,16 +1,16 @@
-package dev.cheerfun.pixivic.biz.web.illust.mapper;
+package dev.cheerfun.pixivic.biz.web.illust.secmapper;
 
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
-import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
+import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper
+
 public interface IllustrationBizMapper {
     @Select("select * from illusts where illust_id = #{illustId}")
     @Results({
@@ -60,14 +60,6 @@ public interface IllustrationBizMapper {
     })
     int insertIllustRelated(@Param("illustRelatedList") List<IllustRelated> illustRelatedList);
 
-    @Select("select user_id,username,create_date from user_illust_bookmarked where illust_id=#{illustId} order by id desc  limit #{currIndex} , #{pageSize}")
-    @Results({
-            @Result(property = "illustId", column = "illust_id"),
-            @Result(property = "userId", column = "user_id"),
-            @Result(property = "createDate", column = "create_Date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
-    })
-    List<UserListDTO> queryUserListBookmarkedIllust(Integer illustId, int currIndex, int pageSize);
-
     @Select("select * from illusts where update_time >  #{localDateTime,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}")
     @Results({
             @Result(property = "id", column = "illust_id"),
@@ -92,4 +84,16 @@ public interface IllustrationBizMapper {
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
     })
     List<Illustration> queryIllustInfoForSiteMapById(Integer from, int to);
+
+    @Select("select tags from illusts where illust_id = #{illustId} ")
+    @Results({
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
+    })
+    List<Tag> queryIllustrationTagsById(String illustId);
+
+    @Update("update illusts set tags=#{tags,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler} where illust_id=#{illustId}")
+    int updateIllustrationTagsById(String illustId, List<Tag> tags);
+
+    @Update("update illusts set total_bookmarks=total_bookmarks+#{increment}  where illust_id=#{illustId}")
+    int updateIllustBookmark(int illustId, int increment);
 }

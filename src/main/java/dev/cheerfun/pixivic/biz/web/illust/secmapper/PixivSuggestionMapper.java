@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.illust.mapper;
+package dev.cheerfun.pixivic.biz.web.illust.secmapper;
 
 import dev.cheerfun.pixivic.biz.web.illust.dto.SearchSuggestionSyncDTO;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
@@ -7,7 +7,6 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-@Mapper
 public interface PixivSuggestionMapper {
     @Insert({
             "<script>",

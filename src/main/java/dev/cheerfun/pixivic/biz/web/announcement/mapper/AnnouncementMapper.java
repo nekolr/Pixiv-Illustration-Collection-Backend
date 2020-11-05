@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface AnnouncementMapper {
     @Insert("insert into announcements (title, content,date,is_Pop) values (#{title}, #{content}, #{date}, #{isPop})")
     int insert(Announcement announcement);

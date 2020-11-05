@@ -1,11 +1,11 @@
-package dev.cheerfun.pixivic.biz.crawler.pixiv.mapper;
+package dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper;
 
 import dev.cheerfun.pixivic.common.po.Spotlight;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface SpotlightMapper {
     @Insert("<script>" +
             "REPLACE  INTO " +

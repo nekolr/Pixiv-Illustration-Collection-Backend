@@ -3,7 +3,7 @@ package dev.cheerfun.pixivic.biz.web.illust.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.illust.domain.response.BangumiSearchResponse;
@@ -12,7 +12,7 @@ import dev.cheerfun.pixivic.biz.web.illust.dto.PixivSearchSuggestionDTO;
 import dev.cheerfun.pixivic.biz.web.illust.dto.SearchSuggestionSyncDTO;
 import dev.cheerfun.pixivic.biz.web.illust.dto.TagTranslation;
 import dev.cheerfun.pixivic.biz.web.illust.exception.SearchException;
-import dev.cheerfun.pixivic.biz.web.illust.mapper.PixivSuggestionMapper;
+import dev.cheerfun.pixivic.biz.web.illust.secmapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.biz.web.illust.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.biz.web.illust.util.SearchUtil;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -72,7 +72,7 @@ public class SearchService {
 
     @Cacheable(value = "candidateWords")
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(@SensitiveCheck String keyword) {
-/*        return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
+/*        return requestUtil.getJson("http://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
                 .orTimeout(2, TimeUnit.SECONDS)
                 .thenApply(r -> {
                     PixivSearchCandidatesResponse pixivSearchCandidatesResponse = null;
@@ -109,7 +109,7 @@ public class SearchService {
     public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(@SensitiveCheck String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("accept-language", "zh-CN,zh;q=0.9")
-                .uri(URI.create("https://proxy.pixivic.com:23334/ajax/search/artworks/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
+                .uri(URI.create("http://proxy.pixivic.com:23334/ajax/search/artworks/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
                 .GET()
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString())

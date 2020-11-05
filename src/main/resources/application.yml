@@ -3,8 +3,8 @@ server:
 #  tomcat:
 #    connection-timeout: 5000
 spring:
-#  profiles:
-#    active: mac
+  profiles:
+    active: mac
   data:
     redis:
       repositories:
@@ -58,24 +58,46 @@ spring:
     password: root
     publisher-confirm-type:
   datasource:
-    url: jdbc:mysql://mysql:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
-    username: root
-    password: Cheerfun.dev
-    type: com.alibaba.druid.pool.DruidDataSource
-    initialSize: 5
-    minIdle: 5
-    maxActive: 20
-    maxWait: 60000
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
-    validationQuery: SELECT 1 FROM DUAL
-    testWhileIdle: true
-    testOnBorrow: false
-    testOnReturn: false
-    poolPreparedStatements: true
-    batch:
-      job:
-        enabled: false
+    primary:
+      jdbc-url: jdbc:mysql://mysql:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+      username: root
+      password: Cheerfun.dev
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      estOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      batch:
+        job:
+          enabled: false
+    secondary:
+      jdbc-url: jdbc:mysql://mysql:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+      username: root
+      password: Cheerfun.dev
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      estOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      batch:
+        job:
+          enabled: false
   cache:
     caffeine:
       spec: maximumSize=3072,expireAfterAccess=1800s

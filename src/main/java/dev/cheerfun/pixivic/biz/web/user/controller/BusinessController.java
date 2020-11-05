@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.basic.event.publisher.EventPublisher;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
+import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkCollectionRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.FollowedRelation;
@@ -123,11 +124,11 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("获取行为历史成功"));
     }
 
-    @PostMapping("/{illustId}/tags")
+/*    @PostMapping("/{illustId}/tags")
     public ResponseEntity<Result<String>> addTag(@PathVariable String illustId, @RequestHeader("Authorization") String token, @RequestBody List<Tag> tags) {
         businessService.addTag((int) AppContext.get().get(AuthConstant.USER_ID), illustId, tags);
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
-    }
+    }*/
 
     @PostMapping("/bookmarked/collections")
     public ResponseEntity<Result<String>> bookmarkCollection(@RequestBody @Valid BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
@@ -147,6 +148,16 @@ public class BusinessController {
     public ResponseEntity<Result<List<Collection>>> queryBookmarkCollection(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
         List<Collection> collections = businessService.queryBookmarkCollection(userId, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取收藏画集成功", businessService.queryUserTotalBookmarkCollection(userId), collections));
+    }
+
+    @GetMapping("/illusts/{illustId}/bookmarkedUsers")
+    public ResponseEntity<Result<List<UserListDTO>>> queryUserListBookmarkedIllust(
+            @PathVariable Integer illustId,
+            @RequestParam(defaultValue = "1") Integer page,
+            @RequestParam(defaultValue = "30") Integer pageSize
+    ) {
+        List<UserListDTO> userList = businessService.queryUserListBookmarkedIllust(illustId, page, pageSize);
+        return ResponseEntity.ok().body(new Result<>("获取收藏该画作的用户列表成功", userList));
     }
 
     @PostMapping("/liked/collections")

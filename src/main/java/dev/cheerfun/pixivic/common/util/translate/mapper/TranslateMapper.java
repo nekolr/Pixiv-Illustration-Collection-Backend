@@ -11,7 +11,7 @@ import java.util.List;
  * @date 2020/8/20 1:08 下午
  * @description TranslateMapper
  */
-@Mapper
+//@Mapper
 public interface TranslateMapper {
     @Select("select * from azure_tran_keys where use_flag = 1")
     @Results({

@@ -3,7 +3,7 @@ package dev.cheerfun.pixivic.biz.web.artist.service;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.ArtistService;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.biz.web.artist.dto.ArtistSearchDTO;
-import dev.cheerfun.pixivic.biz.web.artist.mapper.ArtistBizMapper;
+import dev.cheerfun.pixivic.biz.web.artist.secmapper.ArtistBizMapper;
 import dev.cheerfun.pixivic.biz.web.artist.util.ArtistSearchUtil;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;

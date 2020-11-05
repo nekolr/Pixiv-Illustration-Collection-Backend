@@ -9,7 +9,7 @@ import org.apache.ibatis.annotations.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface NotifyMapper {
 
     @Insert("insert into notify_remind (remind_type,remind_actors,actor_count,object_id,object_type,object_title,recipient_id,message,extend,create_date) value (#{type},#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{actorCount},#{objectId},#{objectType},#{objectTitle},#{recipientId},#{message},#{extend},#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")

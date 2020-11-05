@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface DiscussionMapper {
     @Insert("insert into discussions (section_id,title,content,user_id,username,tag_list,create_time) values (#{sectionId},#{title},#{content},#{userId},#{username},#{tagList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{createTime,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "discussion_id")

@@ -6,7 +6,7 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.ModeMeta;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDetailDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.IllustrationMapper;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
@@ -130,7 +130,7 @@ public class IllustrationService {
     }
 
     private CompletableFuture<String> getDayRankInfo(String mode, String date, Integer index) {
-        return requestUtil.getJson("https://proxy.pixivic.com:23334/v1/illust/ranking?mode=" + mode + "&offset=" + index * 30 + "&date=" + date);
+        return requestUtil.getJson("http://proxy.pixivic.com:23334/v1/illust/ranking?mode=" + mode + "&offset=" + index * 30 + "&date=" + date);
     }
 
     private void dealReDownload(String date, List<String> waitForReDownload, List<List<Illustration>> illustrationLists) throws InterruptedException {
@@ -200,13 +200,13 @@ public class IllustrationService {
     }
 
     public Illustration pullIllustrationInfo(Integer illustId) {
-/*        CompletableFuture<String> json = requestUtil.getJson("https://proxy.pixivic.com:23334/v1/illust/detail?illust_id=" + illustId);
+/*        CompletableFuture<String> json = requestUtil.getJson("http://proxy.pixivic.com:23334/v1/illust/detail?illust_id=" + illustId);
         try {
             System.out.println(json.get());
         } catch (InterruptedException | ExecutionException e) {
             e.printStackTrace();
         }*/
-        IllustrationDetailDTO illustrationDetailDTO = (IllustrationDetailDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/illust/detail?illust_id=" + illustId, IllustrationDetailDTO.class);
+        IllustrationDetailDTO illustrationDetailDTO = (IllustrationDetailDTO) requestUtil.getJsonSync("http://proxy.pixivic.com:23334/v1/illust/detail?illust_id=" + illustId, IllustrationDetailDTO.class);
         if (illustrationDetailDTO != null) {
             return IllustrationDTO.castToIllustration(illustrationDetailDTO.getIllustrationDTO());
         }

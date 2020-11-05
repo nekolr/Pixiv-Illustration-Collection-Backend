@@ -5,10 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.illust.domain.elasticsearch.ElasticsearchResponse;
 import dev.cheerfun.pixivic.biz.web.illust.domain.elasticsearch.Hit;
 import dev.cheerfun.pixivic.biz.web.illust.domain.elasticsearch.Hits;
+import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
 
@@ -64,6 +66,8 @@ public class SearchUtil {
     private final static String SORT = "\"sort\":[\"_score\",{\"total_bookmarks\":{\"order\":\"desc\"}},{\"total_view\":{\"order\":\"desc\"}}],";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
+    @Lazy
+    private final IllustrationBizService illustrationBizService;
     @Value("${elasticsearch.ip}")
     private String elasticsearch;
 
@@ -184,7 +188,7 @@ public class SearchUtil {
                             });
                             Hits<Illustration> hits = elasticsearchResponse.getHits();
                             if (hits != null && hits.getHits() != null) {
-                                return hits.getHits().stream().map(Hit::getT).collect(Collectors.toList());
+                                return hits.getHits().stream().map(h -> illustrationBizService.queryIllustrationById(h.getT().getId())).collect(Collectors.toList());
                                 //return new SearchResult(hits.getTotal().getValue(), illustrationList);
                             }
                         }

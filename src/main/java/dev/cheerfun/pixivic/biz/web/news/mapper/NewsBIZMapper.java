@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface NewsBIZMapper {
     @Select("select new_id,title,intro,author,cover,create_date from news where referer = #{referer}  order by create_date limit #{offset} , #{pageSize}")
     @Results({

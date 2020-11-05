@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Update;
 import java.util.List;
 import java.util.Set;
 
-@Mapper
+//@Mapper
 public interface AuthMapper {
     @Update("<script>" +
             "update users set last_active_time = now() where user_id in" +

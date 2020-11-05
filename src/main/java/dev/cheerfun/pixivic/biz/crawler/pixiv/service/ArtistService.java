@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.ArtistDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.ArtistMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.ArtistMapper;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
@@ -64,7 +64,7 @@ public class ArtistService {
         while (flag) {
             log.info("开始抓取画师：" + artistId + "的第" + offset + "页作品");
             try {
-                IllustsDTO illustrationDetailDTO = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=" + offset * 30, IllustsDTO.class);
+                IllustsDTO illustrationDetailDTO = (IllustsDTO) requestUtil.getJsonSync("http://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=" + offset * 30, IllustsDTO.class);
                 if (illustrationDetailDTO != null && illustrationDetailDTO.getIllusts() != null && illustrationDetailDTO.getIllusts().size() > 0) {
                     illustrationService.saveToDb(illustrationDetailDTO.getIllusts().stream().map(IllustrationDTO::castToIllustration).collect(Collectors.toList()));
                     log.info("抓取画师：" + artistId + "的第" + offset + "页作品成功");
@@ -116,8 +116,8 @@ public class ArtistService {
     }
 
     public void pullArtistLatestIllust(Integer artistId, String type) throws IOException {
-        IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
-        // IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
+        IllustsDTO illustrationDetailDTOPage1 = (IllustsDTO) requestUtil.getJsonSync("http://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=0&type=" + type, IllustsDTO.class);
+        // IllustsDTO illustrationDetailDTOPage2 = (IllustsDTO) requestUtil.getJsonSync("http://proxy.pixivic.com:23334/v1/user/illusts?user_id=" + artistId + "&offset=30&type=" + type, IllustsDTO.class);
         //IllustsDTO illustrationDetailDTOPage1 = pixivService.pullArtistIllust(artistId, 0, type).execute().body();
         //   System.out.println(illustrationDetailDTOPage1);
         if (illustrationDetailDTOPage1 != null && illustrationDetailDTOPage1.getIllusts() != null) {
@@ -162,7 +162,7 @@ public class ArtistService {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
         List<Artist> artistList = artistIdsToDownload.stream().parallel().distinct().map(i -> {
             try {
-                CompletableFuture<Artist> artistCompletableFuture = requestUtil.getJson("https://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios")
+                CompletableFuture<Artist> artistCompletableFuture = requestUtil.getJson("http://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios")
                         .thenApply(result -> {
                             if ("false".equals(result)) {
                                 this.addToWaitingList(i);
@@ -204,7 +204,7 @@ public class ArtistService {
 
     private void dealReDownload() throws InterruptedException {
         final CountDownLatch cd = new CountDownLatch(waitForReDownload.size());
-        waitForReDownload.forEach(i -> requestUtil.getJson("https://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios").thenAccept(s -> cd.countDown()));
+        waitForReDownload.forEach(i -> requestUtil.getJson("http://proxy.pixivic.com:23334/v1/user/detail?user_id=" + i + "&filter=for_ios").thenAccept(s -> cd.countDown()));
         cd.await(waitForReDownload.size() * 11, TimeUnit.SECONDS);
     }
 

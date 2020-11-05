@@ -1,7 +1,7 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.SpotlightDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.SpotlightMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.SpotlightMapper;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Spotlight;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
@@ -53,7 +53,7 @@ public class SpotlightService {
     }*/
 
     private List<Spotlight> getSpotlightInfo(int index) {
-        SpotlightDTO spotlightDTO = (SpotlightDTO) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/spotlight/articles?category=all&offset=" + index * 10, SpotlightDTO.class);
+        SpotlightDTO spotlightDTO = (SpotlightDTO) requestUtil.getJsonSync("http://proxy.pixivic.com:23334/v1/spotlight/articles?category=all&offset=" + index * 10, SpotlightDTO.class);
         assert spotlightDTO != null;
         return spotlightDTO.getSpotlightAticles();
     }

@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface AdminMapper {
 
     @Select({
@@ -76,20 +76,6 @@ public interface AdminMapper {
     @Update("update users set is_ban=0 where user_id=#{userId}")
     Integer banUser(Integer userId);
 
-    @Update({
-            "<script>",
-            "update illusts set",
-            "<when test='illustDTO.xRestrict!=null'>\n",
-            "x_restrict=#{illustDTO.xRestrict}\n",
-            "</when>",
-            "<when test='illustDTO.sanityLevel!=null'>\n",
-            ",sanity_level=#{illustDTO.sanityLevel}\n",
-            "</when>",
-            "where illust_id=#{illustDTO.id}",
-            "</script>"
-    })
-    void updateIllusts(IllustDTO illustDTO);
-
     @Select("select token from admin_key where use_flag=1")
     List<String> queryAllAdminKey();
 
@@ -154,8 +140,6 @@ public interface AdminMapper {
     @Insert("insert into block_artist_set (artist_id,create_date) values (#{artistId},now())")
     int blockArtistById(Integer artistId);
 
-    @Select("select illust_id from illusts where artist_id = #{artistId}")
-    List<Integer> queryIllustrationsByArtistId(Integer artistId);
 
     @Select("select artist_id from block_artist_set where artist_id=#{artistId}")
     List<Integer> queryBlockArtistById(Integer artistId);

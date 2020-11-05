@@ -1,15 +1,13 @@
-package dev.cheerfun.pixivic.biz.web.illust.mapper;
+package dev.cheerfun.pixivic.biz.web.illust.secmapper;
 
 import dev.cheerfun.pixivic.biz.wallpaper.po.WallpaperCategory;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-@Mapper
 public interface WallpaperMapper {
     @Select("select tag_category_id,tag_category_name,tag_count from wallpaper_tag_category order by order_num")
     @Results({

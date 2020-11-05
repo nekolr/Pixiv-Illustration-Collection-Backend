@@ -5,7 +5,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.time.LocalDateTime;
 
-@Mapper
+//@Mapper
 public interface CommonMapper {
     @Select({
             "SELECT IFNULL((\n" +

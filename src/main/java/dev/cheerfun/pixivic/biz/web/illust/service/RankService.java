@@ -1,12 +1,14 @@
 package dev.cheerfun.pixivic.biz.web.illust.service;
 
-import dev.cheerfun.pixivic.biz.web.illust.mapper.RankMapper;
+import dev.cheerfun.pixivic.biz.web.illust.secmapper.RankMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class RankService {
     private final RankMapper rankMapper;
 

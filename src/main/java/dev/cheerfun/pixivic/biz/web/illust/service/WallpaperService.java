@@ -1,14 +1,15 @@
 package dev.cheerfun.pixivic.biz.web.illust.service;
 
 import dev.cheerfun.pixivic.biz.wallpaper.po.WallpaperCategory;
-import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
-import dev.cheerfun.pixivic.biz.web.illust.mapper.WallpaperMapper;
+import dev.cheerfun.pixivic.biz.web.illust.secmapper.WallpaperMapper;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -20,6 +21,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Transactional(propagation = Propagation.NOT_SUPPORTED)
 public class WallpaperService {
     private final WallpaperMapper wallpaperMapper;
     private final IllustrationBizService illustrationBizService;

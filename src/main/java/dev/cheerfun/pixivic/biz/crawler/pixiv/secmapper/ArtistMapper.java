@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.crawler.pixiv.mapper;
+package dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper;
 
 import dev.cheerfun.pixivic.common.po.Artist;
 import org.apache.ibatis.annotations.*;
@@ -12,7 +12,7 @@ import java.util.List;
  * @description ArtistMapper
  */
 
-@Mapper
+//@Mapper
 public interface ArtistMapper {
     @Insert({
             "<script>",

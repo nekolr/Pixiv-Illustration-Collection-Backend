@@ -1,19 +1,15 @@
-package dev.cheerfun.pixivic.biz.web.artist.mapper;
+package dev.cheerfun.pixivic.biz.web.artist.secmapper;
 
 import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
-import dev.cheerfun.pixivic.common.po.Illustration;
-import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
-import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface ArtistBizMapper {
     @Select("select * from artists where artist_id =#{artistId}")
     @Results({

@@ -6,7 +6,7 @@ import dev.cheerfun.pixivic.biz.sitemap.po.SiteMap;
 import dev.cheerfun.pixivic.biz.sitemap.po.SiteMapIndex;
 import dev.cheerfun.pixivic.biz.sitemap.po.Url;
 import dev.cheerfun.pixivic.biz.sitemap.po.UrlSet;
-import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
+import dev.cheerfun.pixivic.biz.web.illust.secmapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.ssh.SshUtil;
 import lombok.RequiredArgsConstructor;

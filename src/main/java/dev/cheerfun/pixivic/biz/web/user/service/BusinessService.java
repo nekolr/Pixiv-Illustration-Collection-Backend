@@ -11,6 +11,7 @@ import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.recommend.service.RecommendBizService;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
+import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
@@ -134,20 +135,19 @@ public class BusinessService {
     }
 
     //@Scheduled(cron = "0 0 16 * * ?")
-    @Transactional(rollbackFor = Exception.class)
     public void flushBookmarkCountToDb() {
         //半夜三点往mysql更新收藏数
         Map<Object, Object> map = stringRedisTemplate.opsForHash().entries(RedisKeyConstant.BOOKMARK_COUNT_MAP_REDIS_PRE);
         for (Map.Entry<Object, Object> entry : map.entrySet()) {
             int illustId = Integer.parseInt(entry.getKey().toString());
             int increment = Integer.parseInt(entry.getValue().toString());
-            businessMapper.updateIllustBookmark(illustId, increment);
+            illustrationBizService.updateIllustBookmark(illustId, increment);
         }
         stringRedisTemplate.delete(RedisKeyConstant.BOOKMARK_COUNT_MAP_REDIS_PRE);
     }
 
     public List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize) {
-        return businessMapper.queryBookmarked(userId, type, currIndex, pageSize);
+        return illustrationBizService.queryIllustrationByIdList(businessMapper.queryBookmarked(userId, type, currIndex, pageSize));
     }
 
     public Boolean queryIsBookmarked(int userId, Integer illustId) {
@@ -211,7 +211,7 @@ public class BusinessService {
         return stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artistId, String.valueOf(userId));
     }
 
-    @Transactional(rollbackFor = Exception.class)
+/*    @Transactional(rollbackFor = Exception.class)
     public void addTag(int userId, String illustId, List<Tag> tags) {
         List<Tag> oldTags = businessMapper.queryIllustrationTagsById(illustId);
         oldTags.addAll(tags);
@@ -219,7 +219,7 @@ public class BusinessService {
         //用户积分增加
         int starIncrement = 10;
         businessMapper.updateUserStar(userId, starIncrement);
-    }
+    }*/
 
     public List<Illustration> queryFollowedLatest(int userId, String type, int page, int pageSize) {
         List<Integer> illustIdList = queryFollowedLatestSortedIllustId(userId, type).stream().skip(pageSize * (page - 1))
@@ -289,6 +289,11 @@ public class BusinessService {
     public List<Collection> queryBookmarkCollection(Integer userId, Integer page, Integer pageSize) {
         List<Integer> collectionIdList = businessMapper.queryBookmarkCollection(userId, (page - 1), pageSize);
         return collectionService.queryCollectionById(collectionIdList);
+    }
+
+    @Cacheable("illust_bookmarked")
+    public List<UserListDTO> queryUserListBookmarkedIllust(Integer illustId, Integer page, Integer pageSize) {
+        return businessMapper.queryUserListBookmarkedIllust(illustId, (page - 1) * pageSize, pageSize);
     }
 
     public Integer queryUserTotalBookmarkCollection(Integer userId) {

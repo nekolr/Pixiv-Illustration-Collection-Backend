@@ -1,11 +1,9 @@
-package dev.cheerfun.pixivic.biz.web.illust.mapper;
+package dev.cheerfun.pixivic.biz.web.illust.secmapper;
 
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-@Mapper
 public interface CandidatesMapper {
     @Insert({
             "<script>",

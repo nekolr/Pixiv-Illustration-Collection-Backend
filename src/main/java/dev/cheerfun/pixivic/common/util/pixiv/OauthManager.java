@@ -79,7 +79,7 @@ public class OauthManager {
         while ((System.currentTimeMillis() - start) < 60 * 1000) {
             try {
                 HttpRequest.Builder uri = HttpRequest.newBuilder()
-                        .uri(URI.create("https://proxy.pixivic.com:23334/auth/token"));
+                        .uri(URI.create("http://proxy.pixivic.com:23334/auth/token"));
                 RequestUtil.decorateHeader(uri);
                 HttpRequest httpRequest = uri.POST(HttpRequest.BodyPublishers.ofString(pixivUser.getRequestBody()))
                         .build();

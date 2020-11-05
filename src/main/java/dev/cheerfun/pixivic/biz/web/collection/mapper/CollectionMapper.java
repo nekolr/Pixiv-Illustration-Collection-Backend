@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface CollectionMapper {
     @Update("update collection_illust_relation set order_num=#{resultIndex} where collection_id=#{collectionId} and illust_id=#{reOrderIllustrationId}")
     Integer updateIllustrationOrder(Integer collectionId, Integer reOrderIllustrationId, Integer resultIndex);

@@ -3,7 +3,7 @@ package dev.cheerfun.pixivic.biz.wallpaper.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.wallpaper.constant.WallpaperType;
-import dev.cheerfun.pixivic.biz.wallpaper.mapper.WallpaperGenerateMapper;
+import dev.cheerfun.pixivic.biz.wallpaper.secmapper.WallpaperGenerateMapper;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;

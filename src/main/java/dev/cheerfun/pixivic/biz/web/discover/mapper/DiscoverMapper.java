@@ -8,7 +8,7 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface DiscoverMapper {
     @Select("select * from discover_nodes where use_flag=1 order by order_col")
     @Results({

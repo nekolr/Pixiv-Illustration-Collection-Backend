@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.crawler.pixiv.mapper;
+package dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper;
 
 import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2019/09/12 14:27
  * @description IllustrationMapper
  */
-@Mapper
+//@Mapper
 public interface IllustrationMapper {
     @Insert("<script>" +
             "REPLACE  INTO " +

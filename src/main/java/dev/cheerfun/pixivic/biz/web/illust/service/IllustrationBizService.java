@@ -4,9 +4,8 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
-import dev.cheerfun.pixivic.biz.web.illust.mapper.IllustrationBizMapper;
+import dev.cheerfun.pixivic.biz.web.illust.secmapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
-import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -20,6 +19,8 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.net.URLEncoder;
@@ -114,6 +115,7 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "illust")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Illustration queryIllustrationByIdFromDb(Integer illustId) {
         //判断是否在封禁集合中
         if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId))) {
@@ -127,11 +129,13 @@ public class IllustrationBizService {
         return illustration;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Illustration queryIllustrationByIdFromDbWithoutCache(Integer illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         return illustration;
     }
 
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public String queryRandomIllustration(String urlType, String illustType, Boolean detail, String ratio, Float range, Integer maxSanityLevel) {
         String[] split = ratio.split(":");
         float r = Float.parseFloat(split[0]) / Float.parseFloat(split[1]);
@@ -152,6 +156,10 @@ public class IllustrationBizService {
                     .append("&artistId=").append(illustration.getArtistId());
         }
         return url.toString();
+    }
+
+    public int updateIllustBookmark(int illustId, int increment) {
+        return illustrationBizMapper.updateIllustBookmark(illustId, increment);
     }
 
     //@Scheduled(cron = "0 0/5 * * * ? ")
@@ -194,11 +202,6 @@ public class IllustrationBizService {
             }
             return illustration;
         }).filter(Objects::nonNull).collect(Collectors.toList());
-    }
-
-    @Cacheable("illust_bookmarked")
-    public List<UserListDTO> queryUserListBookmarkedIllust(Integer illustId, Integer page, Integer pageSize) {
-        return illustrationBizMapper.queryUserListBookmarkedIllust(illustId, (page - 1) * pageSize, pageSize);
     }
 
     public void dealIsLikedInfoForIllustList(List<Illustration> illustrationList) {

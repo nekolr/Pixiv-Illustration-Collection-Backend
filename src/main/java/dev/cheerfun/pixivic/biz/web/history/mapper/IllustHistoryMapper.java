@@ -10,7 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Mapper
+//@Mapper
 public interface IllustHistoryMapper {
     @Insert("insert into illust_history_temp (user_id,illust_id,create_at) value (#{userId},#{illustId},#{createAt,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     Integer insertToTemp(IllustHistory illustHistory);

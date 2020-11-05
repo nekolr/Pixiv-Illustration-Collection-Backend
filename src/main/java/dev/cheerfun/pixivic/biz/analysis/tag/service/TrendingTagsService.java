@@ -7,7 +7,7 @@ import dev.cheerfun.pixivic.biz.analysis.tag.dto.PixivTrendingTagResponse;
 import dev.cheerfun.pixivic.biz.analysis.tag.mapper.TrendingTagsMapper;
 import dev.cheerfun.pixivic.biz.analysis.tag.po.TrendingTags;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.IllustrationMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
@@ -132,7 +132,7 @@ public class TrendingTagsService {
     }
 
     public List<Tag> queryPixivTrendingTag() {
-        PixivTrendingTagResponse pixivTrendingTagResponse = (PixivTrendingTagResponse) requestUtil.getJsonSync("https://proxy.pixivic.com:23334/v1/trending-tags/illust?filter=for_ios", PixivTrendingTagResponse.class);
+        PixivTrendingTagResponse pixivTrendingTagResponse = (PixivTrendingTagResponse) requestUtil.getJsonSync("http://proxy.pixivic.com:23334/v1/trending-tags/illust?filter=for_ios", PixivTrendingTagResponse.class);
         if (pixivTrendingTagResponse != null) {
             List<Tag> searchRecommends = pixivTrendingTagResponse.getTrendTags().stream().map(e -> {
                 Illustration illustration = IllustrationDTO.castToIllustration(e.getIllust());
