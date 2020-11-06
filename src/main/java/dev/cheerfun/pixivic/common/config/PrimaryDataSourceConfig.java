@@ -24,11 +24,9 @@ import javax.sql.DataSource;
 @MapperScan(basePackages = "**.mapper", sqlSessionTemplateRef = "PrimarySessionTemplate")
 public class PrimaryDataSourceConfig {
 
-    @Bean(name = "PrimaryDataSource") //As a bean object and named
+    @Bean(name = "PrimaryDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.primary")
-    //In the configuration file, the prefix of the data source
     @Primary
-    //For marking up master data sources, this annotation is not added to any injected files other than master data sources
     public DataSource PrimaryDataSource() {
         return DataSourceBuilder.create().build();
     }
