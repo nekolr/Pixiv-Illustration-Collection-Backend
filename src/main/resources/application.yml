@@ -59,7 +59,7 @@ spring:
     publisher-confirm-type:
   datasource:
     primary:
-      jdbc-url: jdbc:mysql://mysql:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+      jdbc-url: jdbc:mysql://mysql:3306/pixivic_biz?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
       username: root
       password: Cheerfun.dev
       driver-class-name: com.mysql.cj.jdbc.Driver
