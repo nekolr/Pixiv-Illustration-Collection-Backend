@@ -76,4 +76,12 @@ public interface BusinessMapper {
     })
     List<UserListDTO> queryUserListBookmarkedIllust(Integer illustId, int currIndex, int pageSize);
 
+    @Select("select user_id,username,create_date from user_artist_followed where artist_id=#{artistId} order by id desc  limit #{currIndex} , #{pageSize}")
+    @Results({
+            @Result(property = "illustId", column = "illust_id"),
+            @Result(property = "userId", column = "user_id"),
+            @Result(property = "createDate", column = "create_Date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+    })
+    List<UserListDTO> queryUserListFollowedArtist(Integer artistId, int currIndex, Integer pageSize);
+
 }

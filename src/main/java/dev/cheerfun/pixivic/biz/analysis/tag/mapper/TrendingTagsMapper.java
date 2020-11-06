@@ -6,13 +6,6 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 public interface TrendingTagsMapper {
-    @Select("select * from tags where name=#{keyword} or translated_name=#{keyword}")
-    @Results({
-            @Result(column = "translated_name", property = "translatedName"),
-            @Result(column = "tag_id", property = "id")
-    })
-    List<Tag> queryTag(String keyword);
-
     @Insert("replace into trending_tags (trending_tags, date) values (#{tagList,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},#{date})")
     void insert(String date, List<Tag> tagList);
 

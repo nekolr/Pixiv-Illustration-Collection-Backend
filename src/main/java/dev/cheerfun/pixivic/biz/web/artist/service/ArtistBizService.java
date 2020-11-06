@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
 import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
+import dev.cheerfun.pixivic.biz.web.user.mapper.BusinessMapper;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -46,6 +47,7 @@ import java.util.stream.Collectors;
 public class ArtistBizService {
     private final StringRedisTemplate stringRedisTemplate;
     private final ArtistBizMapper artistBizMapper;
+    private final BusinessMapper businessMapper;
     private final ArtistService artistService;
     private final ExecutorService crawlerExecutorService;
     private final IllustrationBizService illustrationBizService;
@@ -120,7 +122,7 @@ public class ArtistBizService {
 
     @Cacheable("artist_followed")
     public List<UserListDTO> queryUserListFollowedArtist(Integer artistId, Integer page, Integer pageSize) {
-        return artistBizMapper.queryUserListFollowedArtist(artistId, (page - 1) * pageSize, pageSize);
+        return businessMapper.queryUserListFollowedArtist(artistId, (page - 1) * pageSize, pageSize);
     }
 
     @Cacheable(value = "artist_illusts")

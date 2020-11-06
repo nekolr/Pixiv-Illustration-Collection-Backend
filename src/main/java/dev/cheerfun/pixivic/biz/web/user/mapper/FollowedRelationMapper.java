@@ -13,11 +13,11 @@ public interface FollowedRelationMapper {
     @Delete("delete from user_artist_followed where user_id=#{userId} and artist_id = #{artistId}")
     int cancelFollow(int userId, int artistId);
 
-    @Select("select a.* from (select artist_id from user_artist_followed where user_id = #{userId}) u left join artists a on u.artist_id = a.artist_id limit #{currIndex} , #{pageSize}")
+/*    @Select("select a.* from (select artist_id from user_artist_followed where user_id = #{userId}) u left join artists a on u.artist_id = a.artist_id limit #{currIndex} , #{pageSize}")
     @Results({
             @Result(property = "id", column = "artist_id"),
     })
-    List<Artist> queryFollowed(int userId, int currIndex, int pageSize);
+    List<Artist> queryFollowed(int userId, int currIndex, int pageSize);*/
 
     @Select("select  count(id) from user_artist_followed where user_id = #{userId} and artist_id=#{artistId}")
     int queryIsFollowed(int userId, int artistId);

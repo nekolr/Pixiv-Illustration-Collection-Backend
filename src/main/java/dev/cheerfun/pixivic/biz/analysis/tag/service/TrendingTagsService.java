@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.biz.analysis.tag.dto.PixivTrendingTagResponse;
 import dev.cheerfun.pixivic.biz.analysis.tag.mapper.TrendingTagsMapper;
 import dev.cheerfun.pixivic.biz.analysis.tag.po.TrendingTags;
+import dev.cheerfun.pixivic.biz.analysis.tag.secmapper.TagMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
@@ -52,6 +53,7 @@ public class TrendingTagsService {
     private final RequestUtil requestUtil;
     private final SearchService searchService;
     private final TrendingTagsMapper trendingTagsMapper;
+    private final TagMapper tagMapper;
     private final ObjectMapper objectMapper;
     @Value("${apiLog.path}")
     private String logPath;
@@ -101,7 +103,7 @@ public class TrendingTagsService {
                     .limit(100)
                     .map(e -> {
                         //查找标签库中有翻译的，则是优秀标签
-                        List<Tag> tags = trendingTagsMapper.queryTag(e.getKey());
+                        List<Tag> tags = tagMapper.queryTag(e.getKey());
                         if (tags != null && tags.size() > 0) {
                             Optional<Tag> t = tags.stream().filter(tag -> !"".equals(tag.getName()) && !"".equals(tag.getTranslatedName())).findAny();
                             return t.orElseGet(() -> tags.get(0));
