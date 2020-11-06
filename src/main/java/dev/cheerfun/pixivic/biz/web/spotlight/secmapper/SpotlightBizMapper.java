@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2019/09/12 14:27
  * @description RankMapper
  */
-//@Mapper
+
 public interface SpotlightBizMapper {
     @Insert("insert into ranks(`mode`,`date`,`data`) values(#{mode}, #{date},#{data,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler})")
     int insert(Rank rank);

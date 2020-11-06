@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-//@Mapper
 public interface Rewardmapper {
     @Insert("insert into rewards (reward_app_type,reward_app_id,reward_from,reward_from_username,reward_to,price,create_date) values (#{appType},#{appId},#{from},#{fromName},#{to},#{price},#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     void insertReward(Reward reward);

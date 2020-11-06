@@ -11,7 +11,6 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 import java.util.Set;
 
-//@Mapper
 public interface AnimateMapper {
 
     @Insert("<script>" +

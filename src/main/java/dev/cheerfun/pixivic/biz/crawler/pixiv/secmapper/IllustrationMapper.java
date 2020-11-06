@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2019/09/12 14:27
  * @description IllustrationMapper
  */
-//@Mapper
+
 public interface IllustrationMapper {
     @Insert("<script>" +
             "REPLACE  INTO " +

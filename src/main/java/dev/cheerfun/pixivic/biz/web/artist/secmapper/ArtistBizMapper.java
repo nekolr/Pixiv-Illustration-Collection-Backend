@@ -9,7 +9,6 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-//@Mapper
 public interface ArtistBizMapper {
     @Select("select * from artists where artist_id =#{artistId}")
     @Results({

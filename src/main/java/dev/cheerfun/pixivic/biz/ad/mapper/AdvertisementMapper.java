@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-//@Mapper
 public interface AdvertisementMapper {
     @Select("select * from advertisement where use_flag=1")
     @Results({

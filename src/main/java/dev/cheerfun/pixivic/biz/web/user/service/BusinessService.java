@@ -116,7 +116,7 @@ public class BusinessService {
             if (increment > 0) {
                 stringRedisTemplate.opsForSet().add(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
                 //异步往mysql中写入
-                businessMapper.bookmark(userId, illustId, username, LocalDateTime.now());
+                businessMapper.bookmark(userId, illustId, illustrationBizService.getIllustType(illustId), username, LocalDateTime.now());
             } else {
                 stringRedisTemplate.opsForSet().remove(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
                 //异步往mysql中移除
@@ -147,7 +147,19 @@ public class BusinessService {
     }
 
     public List<Illustration> queryBookmarked(int userId, String type, int currIndex, int pageSize) {
-        return illustrationBizService.queryIllustrationByIdList(businessMapper.queryBookmarked(userId, type, currIndex, pageSize));
+        Integer illustType;
+        switch (type) {
+            case "illust":
+                illustType = 1;
+                break;
+            case "manga":
+                illustType = 2;
+                break;
+            default:
+                illustType = 3;
+                break;
+        }
+        return illustrationBizService.queryIllustrationByIdList(businessMapper.queryBookmarked(userId, illustType, currIndex, pageSize));
     }
 
     public Boolean queryIsBookmarked(int userId, Integer illustId) {

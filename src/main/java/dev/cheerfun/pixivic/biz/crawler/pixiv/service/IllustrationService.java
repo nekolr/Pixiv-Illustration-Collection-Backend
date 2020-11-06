@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.ModeMeta;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDetailDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustsDTO;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.mapper.ArtistIllustRelationMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.IllustrationMapper;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
@@ -14,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -81,6 +83,7 @@ public class IllustrationService {
     private final RequestUtil requestUtil;
     private final IllustrationMapper illustrationMapper;
     private final ObjectMapper objectMapper;
+    private final ArtistIllustRelationMapper artistIllustRelationMapper;
 
     public List<Integer> pullAllRankInfo(LocalDate date) throws InterruptedException {
         final CountDownLatch cd = new CountDownLatch(taskSum);
@@ -175,7 +178,14 @@ public class IllustrationService {
         //Lists.partition(illustrations, 50).forEach(illustrationMapper::insert);
         illustrationMapper.batchInsert(illustrations);
         System.out.println("画作入库完毕");
-        illustrationMapper.flush();
+        insertArtistIllustRelation(illustrations);
+        System.out.println("画师画作关系入库完毕");
+        //illustrationMapper.flush();
+    }
+
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public void insertArtistIllustRelation(List<Illustration> illustrations) {
+        artistIllustRelationMapper.batchiInsertArtistIllustRelation(illustrations);
     }
 
     @Transactional(rollbackFor = Exception.class)

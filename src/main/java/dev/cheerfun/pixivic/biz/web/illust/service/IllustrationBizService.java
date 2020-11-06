@@ -222,4 +222,16 @@ public class IllustrationBizService {
         }
     }
 
+    public Integer getIllustType(Integer illustId) {
+        String type = queryIllustrationById(illustId).getType();
+        switch (type) {
+            case "illust":
+                return 1;
+            case "manga":
+                return 2;
+            default:
+                return 3;
+        }
+    }
+
 }

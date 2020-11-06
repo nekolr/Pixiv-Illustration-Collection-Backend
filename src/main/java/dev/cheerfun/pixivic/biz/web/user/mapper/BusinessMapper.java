@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//@Mapper
+
 public interface BusinessMapper {
 
     @Update("update users set star=star+#{increment}  where user_id=#{userId}")
@@ -32,8 +32,8 @@ public interface BusinessMapper {
     @Select("select  count(id) from user_artist_followed where user_id = #{userId} and artist_id=#{artistId}")
     int queryIsFollowed(int userId, int artistId);
 
-    @Insert("replace into user_illust_bookmarked (user_id, illust_id,username,create_date) values (#{userId}, #{illustId},#{username}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
-    int bookmark(int userId, int illustId, String username, LocalDateTime now);
+    @Insert("replace into user_illust_bookmarked (user_id, illust_id,illust_type,username,create_date) values (#{userId}, #{illustId},#{illustType},#{username}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    int bookmark(int userId, int illustId, Integer illustType, String username, LocalDateTime now);
 
     @Delete("delete from user_illust_bookmarked where id=#{relationId} ")
     int cancelBookmarkByid(int relationId);
@@ -41,10 +41,16 @@ public interface BusinessMapper {
     @Delete("delete from user_illust_bookmarked where user_id=#{userId} and illust_id=#{illustId} ")
     int cancelBookmark(int userId, int illustId);
 
-    @Select("select i.illust_id from (select illust_id from user_illust_bookmarked where user_id=#{userId} order by id desc limit #{currIndex} , #{pageSize}) u left join illusts i on  u.illust_id=i.illust_id where type=#{type}")
-    List<Integer> queryBookmarked(int userId, String type, int currIndex, int pageSize);
+    @Select("select illust_id from user_illust_bookmarked where user_id=#{userId} and illust_type=#{type} order by id desc limit #{currIndex} , #{pageSize}")
+    List<Integer> queryBookmarked(int userId, Integer type, int currIndex, int pageSize);
 
-    @Select("select  illust_id from (select    artist_id from user_artist_followed where user_id=#{userId}) u  join illusts  i   on i.artist_id=u.artist_id   where i.type=#{type} and create_date >= (SELECT DATE_ADD(now(),INTERVAL -1 MONTH))")
+    @Select("select illust_id\n" +
+            "from (select artist_id from user_artist_followed where user_id = #{userId}) u\n" +
+            "         join artist_illust_relation i on i.artist_id = u.artist_id\n" +
+            "where i.illust_type = (case #{type} WHEN 'illust' THEN 1\n" +
+            "                     WHEN 'manga' THEN 2\n" +
+            "                     ELSE 3 end)\n" +
+            "  and create_date >= (SELECT DATE_ADD(now(), INTERVAL -1 MONTH))")
     List<Integer> queryFollowedLatestIllustId(int userId, String type);
 
     @Insert("insert into user_collection_bookmarked (user_id,username,collection_id) values (#{userId},#{username}, #{collectionId})")

@@ -14,7 +14,7 @@ import java.util.List;
  * @date 2020/10/12 2:36 PM
  * @description VIPProxyServerMapper
  */
-//@Mapper
+
 public interface VIPProxyServerMapper {
     @Update("update vip_proxy_servers set use_flag=0 where server_id=#{serverId}")
     void ban(Integer serverId);

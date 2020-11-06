@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-//@Mapper
 public interface FeatureTagMapper {
     @Select("select * from feature_tags where tag_type in (0,1) and extend_content is null")
     @Results({

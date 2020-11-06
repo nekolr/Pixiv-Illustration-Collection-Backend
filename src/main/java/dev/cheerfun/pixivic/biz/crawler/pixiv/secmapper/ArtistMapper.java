@@ -12,7 +12,6 @@ import java.util.List;
  * @description ArtistMapper
  */
 
-//@Mapper
 public interface ArtistMapper {
     @Insert({
             "<script>",

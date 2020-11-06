@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-//@Mapper
 public interface CommentMapper {
     @Insert("insert into comments (app_type, app_id,parent_id,reply_from,reply_from_name,reply_to,reply_to_name,content,create_date,liked_count,platform) " +
             "values (#{appType}, #{appId}, #{parentId}, #{replyFrom}, #{replyFromName},#{replyTo},#{replyToName}, #{content}, #{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}, #{likedCount},#{platform})")

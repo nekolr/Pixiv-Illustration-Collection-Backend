@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-//@Mapper
 public interface TrendingTagsMapper {
     @Select("select * from tags where name=#{keyword} or translated_name=#{keyword}")
     @Results({

@@ -15,7 +15,7 @@ import java.util.List;
  * @date 2020/8/31 6:22 下午
  * @description AppMapper
  */
-//@Mapper
+
 public interface AppMapper {
     @Select("select * from app_version_info order by release_date desc limit 1")
     @Results({

@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
-//@Mapper
 public interface SyncAccountMapper {
     @Select("select user_id from forum_account_sync_log where forum_account_sync_log_id = 1")
     Integer queryLatestSyncUserId();

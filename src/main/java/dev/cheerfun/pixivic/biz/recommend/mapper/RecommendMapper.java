@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-//@Mapper
 public interface RecommendMapper {
 
     //根据活跃时间查询用户

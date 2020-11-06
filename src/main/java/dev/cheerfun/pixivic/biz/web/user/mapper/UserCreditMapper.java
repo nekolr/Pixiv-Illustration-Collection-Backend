@@ -8,7 +8,6 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
-//@Mapper
 public interface UserCreditMapper {
     @Select("select credit_log_id from user_credit_log where user_id=#{userId} order by credit_log_id desc  limit 1000")
     List<Integer> queryRecentlyCreditHistoryList(int userId);

@@ -6,7 +6,6 @@ import org.apache.ibatis.annotations.*;
 import java.time.LocalDateTime;
 import java.util.List;
 
-//@Mapper
 public interface FollowedRelationMapper {
     @Insert("insert into user_artist_followed (user_id, artist_id,create_date) values (#{userId}, #{artistId}, #{now,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     int follow(int userId, int artistId, LocalDateTime now);
