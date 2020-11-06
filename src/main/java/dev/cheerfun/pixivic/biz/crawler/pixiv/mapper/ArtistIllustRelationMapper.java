@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.mapper;
 
 import dev.cheerfun.pixivic.common.po.Illustration;
 import org.apache.ibatis.annotations.Insert;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -14,13 +15,12 @@ public interface ArtistIllustRelationMapper {
             "<foreach collection='illustrations' item='illustration' index='index'  separator=','>" +
             "(#{illustration.artistId}," +
             "#{illustration.id}," +
-            "#{illustration.id}, " +
-            "(case #{illustration.type} WHEN 'illust' THEN 1" +
-            "WHEN 'manga' THEN 2" +
+            "(case #{illustration.type} WHEN 'illust' THEN 1 " +
+            "WHEN 'manga' THEN 2 " +
             "ELSE 3 end)," +
             "#{illustration.createDate})" +
             "</foreach>" +
             "</script>")
-    void batchiInsertArtistIllustRelation(List<Illustration> illustrations);
+    void batchiInsertArtistIllustRelation(@Param("illustrations") List<Illustration> illustrations);
 
 }

@@ -193,7 +193,7 @@ public class IllustrationBizService {
     }
 
     public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {
-        return illustIdList.stream().map(e -> {
+        return illustIdList.stream().parallel().map(e -> {
             Illustration illustration = null;
             try {
                 illustration = queryIllustrationById(e);

@@ -185,7 +185,12 @@ public class IllustrationService {
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public void insertArtistIllustRelation(List<Illustration> illustrations) {
-        artistIllustRelationMapper.batchiInsertArtistIllustRelation(illustrations);
+        try {
+            artistIllustRelationMapper.batchiInsertArtistIllustRelation(illustrations);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Transactional(rollbackFor = Exception.class)

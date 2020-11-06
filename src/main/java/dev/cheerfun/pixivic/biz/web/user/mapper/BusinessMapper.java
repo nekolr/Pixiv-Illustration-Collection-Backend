@@ -50,7 +50,7 @@ public interface BusinessMapper {
             "where i.illust_type = (case #{type} WHEN 'illust' THEN 1\n" +
             "                     WHEN 'manga' THEN 2\n" +
             "                     ELSE 3 end)\n" +
-            "  and create_date >= (SELECT DATE_ADD(now(), INTERVAL -1 MONTH))")
+            "  and create_date >= (SELECT DATE_ADD(now(), INTERVAL -2 MONTH))")
     List<Integer> queryFollowedLatestIllustId(int userId, String type);
 
     @Insert("insert into user_collection_bookmarked (user_id,username,collection_id) values (#{userId},#{username}, #{collectionId})")
