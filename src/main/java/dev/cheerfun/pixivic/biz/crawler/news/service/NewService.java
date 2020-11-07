@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.news.constant.NewsCrawlerConstant;
 import dev.cheerfun.pixivic.biz.crawler.news.dto.DMZJNewDTO;
-import dev.cheerfun.pixivic.biz.crawler.news.mapper.NewMapper;
+import dev.cheerfun.pixivic.biz.crawler.news.secmapper.NewMapper;
 import dev.cheerfun.pixivic.common.po.ACGNew;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;

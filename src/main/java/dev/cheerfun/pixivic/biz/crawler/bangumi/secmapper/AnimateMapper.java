@@ -1,10 +1,9 @@
-package dev.cheerfun.pixivic.biz.crawler.bangumi.mapper;
+package dev.cheerfun.pixivic.biz.crawler.bangumi.secmapper;
 
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.Animate;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.AnimateCharacter;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.Seiyuu;
 import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 

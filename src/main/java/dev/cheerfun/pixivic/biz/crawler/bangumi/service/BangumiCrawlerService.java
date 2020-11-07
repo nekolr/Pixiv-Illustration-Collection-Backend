@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.Animate;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.AnimateCharacter;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.Seiyuu;
-import dev.cheerfun.pixivic.biz.crawler.bangumi.mapper.AnimateMapper;
+import dev.cheerfun.pixivic.biz.crawler.bangumi.secmapper.AnimateMapper;
 import lombok.RequiredArgsConstructor;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

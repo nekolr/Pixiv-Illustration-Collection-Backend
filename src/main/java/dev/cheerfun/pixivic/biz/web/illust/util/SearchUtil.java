@@ -47,7 +47,7 @@ public class SearchUtil {
     private final static String NESTED_POS = "\"}}},\"negative\":{\"match\":{\"tags.translated_name.keyword\":\"\"}},\"negative_boost\":0.865}}}}";
     private final static String TYPE_PRE = "{\"term\":{\"type\":\"";
     private final static String TYPE_POS = "\"}}";
-    private final static String X_RESTRICT_PRE = "{\"term\":{\"x_restrict\":";
+    private final static String X_RESTRICT_PRE = "{\"term\":{\"restrict\":";
     private final static String X_RESTRICT_POS = "}}";
     private final static String ID_PRE = "\"must_not\": {\"term\": {\"_id\":\"";
     private final static String ID_POS = "\"}}";
@@ -176,7 +176,7 @@ public class SearchUtil {
     public CompletableFuture<List<Illustration>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .uri(URI.create("http://" + elasticsearch + ":9200/illusts/_search"))
+                .uri(URI.create("http://" + elasticsearch + ":9200/illusts/_search?_source=illust_id"))
                 .method("GET", HttpRequest.BodyPublishers.ofString(body))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(

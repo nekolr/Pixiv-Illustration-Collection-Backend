@@ -1,7 +1,6 @@
-package dev.cheerfun.pixivic.biz.web.news.mapper;
+package dev.cheerfun.pixivic.biz.web.news.secmapper;
 
 import dev.cheerfun.pixivic.common.po.ACGNew;
-import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;

@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.news.service;
 
-import dev.cheerfun.pixivic.biz.web.news.mapper.NewsBIZMapper;
+import dev.cheerfun.pixivic.biz.web.news.secmapper.NewsBIZMapper;
 import dev.cheerfun.pixivic.common.po.ACGNew;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
