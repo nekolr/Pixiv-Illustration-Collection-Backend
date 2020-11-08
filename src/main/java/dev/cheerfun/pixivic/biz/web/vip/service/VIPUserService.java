@@ -84,7 +84,7 @@ public class VIPUserService {
     //根据编号查询验证码
 
     //每天晚上四点定时刷新用户角色
-    @Scheduled(cron = "0 0 4 * * ?")
+    @Scheduled(cron = "0 0 2 * * ?")
     public void refreshUserPermissionLevel() {
         //更新已经过期的会员
         commonService.refreshUserPermissionLevel();

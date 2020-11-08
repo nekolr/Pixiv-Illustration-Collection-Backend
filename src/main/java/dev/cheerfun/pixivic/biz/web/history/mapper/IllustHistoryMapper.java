@@ -20,7 +20,7 @@ public interface IllustHistoryMapper {
     @Delete("delete from illust_history where user_id =#{userId}")
     Integer deleteIllustHistorByUserId(Integer userId);
 
-    @Select("REPLACE INTO illust_history( `user_id`, `illust_id`, `create_at` ) SELECT user_id,illust_id,create_at FROM illust_history_temp where user_id is not null  order by temp_id")
+    @Select("REPLACE INTO illust_history( `user_id`, `illust_id`, `create_at` ) SELECT user_id,illust_id,create_at FROM illust_history_temp where user_id is not null and illust_id is not null order by temp_id")
     void tempToIllustHistory();
 
     @Delete("truncate illust_history_temp")

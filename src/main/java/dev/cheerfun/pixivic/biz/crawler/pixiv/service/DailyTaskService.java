@@ -18,7 +18,7 @@ public class DailyTaskService {
     private final IllustRankService rankService;
     private final MainCrawlerService mainCrawlerService;
 
-    @Scheduled(cron = "0 30 5 * * ?")
+    @Scheduled(cron = "0 30 1 * * ?")
     public void spotlight() {
         spotlightService.pullAllSpotlight();
     }
