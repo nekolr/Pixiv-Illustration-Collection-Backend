@@ -101,6 +101,12 @@ public class CollectionService {
         }
         //校验collectionId是否属于用户
         checkCollectionAuth(collection.getId(), userId);
+        List<CollectionTag> tagList = collection.getTagList();
+        if (tagList != null && tagList.size() > 0) {
+            tagList.forEach(e -> {
+                e.setTagName(sensitiveFilter.filter(e.getTagName()));
+            });
+        }
         collectionMapper.updateCollection(userId, collection);
         //是否修改了可见性
         //修改则清空收藏数以及收藏数据
