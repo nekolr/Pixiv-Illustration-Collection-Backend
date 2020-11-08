@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
  */
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-public class SearchUtil {
+public class IllustSearchUtil {
     private final static String MIN_SCORE = "\"min_score\": 0.6";
     private final static String FROM = "\"from\":";
     private final static String SIZE = "\"size\": ";
@@ -62,8 +62,8 @@ public class SearchUtil {
     private final static String DATE_RANGE_1 = "{\"range\":{\"create_date\":{\"gte\":\"";
     private final static String DATE_RANGE_2 = "\",\"lte\":\"";
     private final static String DATE_RANGE_3 = "\"}}}";
-    private final static String SCRIPT_SCORE = "\"script_score\":{\"script\":{\"params\":{\"total_bookmarks_max\":35000,\"total_view_max\":2500000},\"source\":\"(1.00+doc['total_bookmarks'].value/params.total_bookmarks_max+doc['total_view'].value/params.total_view_max)\"}}";
-    private final static String SORT = "\"sort\":[\"_score\",{\"total_bookmarks\":{\"order\":\"desc\"}},{\"total_view\":{\"order\":\"desc\"}}],";
+    //private final static String SORT = "\"sort\":[\"_score\",{\"total_bookmarks\":{\"order\":\"desc\"}},{\"total_view\":{\"order\":\"desc\"}}],";
+    private final static String SORT = "\"sort\":[\"_score\",{\"total_bookmarks\":{\"order\":\"desc\"}}],";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     @Lazy

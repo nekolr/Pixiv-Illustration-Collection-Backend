@@ -45,11 +45,11 @@ public interface BusinessMapper {
     List<Integer> queryBookmarked(int userId, Integer type, int currIndex, int pageSize);
 
     @Select("select illust_id\n" +
-            "from (select artist_id from user_artist_followed where user_id = #{userId}) u\n" +
-            "         join artist_illust_relation i on i.artist_id = u.artist_id\n" +
-            "where i.illust_type = (case #{type} WHEN 'illust' THEN 1\n" +
-            "                     WHEN 'manga' THEN 2\n" +
-            "                     ELSE 3 end)\n" +
+            "from (select artist_id from user_artist_followed where user_id = #{userId}) u " +
+            "         join artist_illust_relation i on i.artist_id = u.artist_id " +
+            "where i.illust_type = (case #{type} WHEN 'illust' THEN 1 " +
+            "                     WHEN 'manga' THEN 2 " +
+            "                     ELSE 3 end) " +
             "  and create_date >= (SELECT DATE_ADD(now(), INTERVAL -2 MONTH))")
     List<Integer> queryFollowedLatestIllustId(int userId, String type);
 

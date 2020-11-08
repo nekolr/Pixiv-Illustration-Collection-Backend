@@ -44,7 +44,8 @@ public class ArtistSearchUtil {
 
     @Cacheable("artistSearchResult")
     public CompletableFuture<List<ArtistSearchDTO>> search(String artistName, Integer page, Integer pageSize) {
-        return request(build(artistName, page, pageSize));
+        String build = build(artistName, page, pageSize);
+        return request(build);
     }
 
     public String build(String artistName, Integer page, Integer pageSize) {

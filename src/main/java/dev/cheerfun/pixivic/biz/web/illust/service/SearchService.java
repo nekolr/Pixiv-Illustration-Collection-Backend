@@ -14,7 +14,7 @@ import dev.cheerfun.pixivic.biz.web.illust.dto.TagTranslation;
 import dev.cheerfun.pixivic.biz.web.illust.exception.SearchException;
 import dev.cheerfun.pixivic.biz.web.illust.secmapper.PixivSuggestionMapper;
 import dev.cheerfun.pixivic.biz.web.illust.util.ImageSearchUtil;
-import dev.cheerfun.pixivic.biz.web.illust.util.SearchUtil;
+import dev.cheerfun.pixivic.biz.web.illust.util.IllustSearchUtil;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
@@ -58,7 +58,7 @@ public class SearchService {
     private final TranslationUtil translationUtil;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private final SearchUtil searchUtil;
+    private final IllustSearchUtil searchUtil;
     private final ImageSearchUtil imageSearchUtil;
     private final PixivSuggestionMapper pixivSuggestionMapper;
     private final IllustrationMapper illustrationMapper;

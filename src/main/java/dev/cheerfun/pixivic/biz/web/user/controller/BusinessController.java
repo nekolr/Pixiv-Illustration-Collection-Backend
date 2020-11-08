@@ -150,16 +150,6 @@ public class BusinessController {
         return ResponseEntity.ok().body(new Result<>("获取收藏画集成功", businessService.queryUserTotalBookmarkCollection(userId), collections));
     }
 
-    @GetMapping("/illusts/{illustId}/bookmarkedUsers")
-    public ResponseEntity<Result<List<UserListDTO>>> queryUserListBookmarkedIllust(
-            @PathVariable Integer illustId,
-            @RequestParam(defaultValue = "1") Integer page,
-            @RequestParam(defaultValue = "30") Integer pageSize
-    ) {
-        List<UserListDTO> userList = businessService.queryUserListBookmarkedIllust(illustId, page, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取收藏该画作的用户列表成功", userList));
-    }
-
     @PostMapping("/liked/collections")
     public ResponseEntity<Result<String>> likeCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
         Integer userId = (int) AppContext.get().get(AuthConstant.USER_ID);
