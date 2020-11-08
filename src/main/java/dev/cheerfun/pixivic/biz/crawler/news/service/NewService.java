@@ -43,7 +43,7 @@ public class NewService {
     //DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy年MM月dd日");
     DateTimeFormatter df = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
-    @Scheduled(cron = "0 30 0 * * ?")
+    @Scheduled(cron = "0 40 2 * * ?")
     void dailyPullTask() throws IOException, InterruptedException {
         pullDMZJNews();
         pullACGMHNews();
