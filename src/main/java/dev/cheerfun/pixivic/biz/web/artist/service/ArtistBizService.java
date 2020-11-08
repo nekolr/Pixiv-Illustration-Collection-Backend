@@ -24,6 +24,8 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDate;
@@ -107,15 +109,27 @@ public class ArtistBizService {
         artist.setTotalFollowUsers(String.valueOf(stringRedisTemplate.opsForSet().size(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + artist.getId())));
     }
 
-    @Cacheable(value = "artist")
     public Artist queryArtistById(Integer artistId) {
         if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId))) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
         }
+        Artist artist = queryArtistByIdFromDb(artistId);
+        return artist;
+    }
+
+    public List<Artist> queryArtistByIdList(List<Integer> artistIdList) {
+        return artistIdList.stream().parallel().map(e -> queryArtistByIdFromDb(e)).filter(Objects::nonNull).collect(Collectors.toList());
+    }
+
+    @Cacheable(value = "artist")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    public Artist queryArtistByIdFromDb(Integer artistId) {
+        if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId))) {
+            return null;
+        }
         Artist artist = artistBizMapper.queryArtistById(artistId);
         if (artist == null) {
             waitForPullArtistInfoQueue.offer(artistId);
-            throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
         }
         return artist;
     }

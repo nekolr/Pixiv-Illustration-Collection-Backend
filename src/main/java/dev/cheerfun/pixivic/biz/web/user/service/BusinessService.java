@@ -193,7 +193,7 @@ public class BusinessService {
     }
 
     public List<Artist> queryFollowed(int userId, int currIndex, int pageSize) {
-        List<Artist> artists = businessMapper.queryFollowed(userId, currIndex, pageSize);
+        List<Artist> artists = artistBizService.queryArtistByIdList(businessMapper.queryFollowed(userId, currIndex, pageSize));
         if (artists.size() != 0) {
             if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
                 int user = (int) AppContext.get().get(AuthConstant.USER_ID);
