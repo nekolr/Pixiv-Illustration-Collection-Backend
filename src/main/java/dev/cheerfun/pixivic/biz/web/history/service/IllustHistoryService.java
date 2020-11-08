@@ -7,6 +7,8 @@ import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.connection.RedisClusterNode;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -49,6 +51,7 @@ public class IllustHistoryService {
         return null;
     }
 
+    @Cacheable("illustHistoryFromMysql")
     public List<Illustration> pullFromMysql(int userId, int page, int pageSize) {
         //取最小分数即时间戳
         Set<String> illustIdList = stringRedisTemplate.opsForZSet().rangeByScore(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1);
@@ -68,6 +71,7 @@ public class IllustHistoryService {
     //定时清理历史记录长度，临时表转移到正式表，清空临时表，正式表清除期限外数据
     @Scheduled(cron = "0 10 2 * * ?")
     @Transactional(rollbackFor = Exception.class)
+    @CacheEvict("illustHistoryFromMysql")
     public void clear() {
         System.out.println("开始清理历史记录");
         Iterator<RedisClusterNode> iterator = stringRedisTemplate.getConnectionFactory().getClusterConnection().clusterGetNodes().iterator();
