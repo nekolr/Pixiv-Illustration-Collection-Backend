@@ -25,7 +25,7 @@ public interface IllustrationBizMapper {
             @Result(property = "sanityLevel", column = "sanity_level"),
             @Result(property = "totalBookmarks", column = "total_bookmarks"),
             @Result(property = "totalView", column = "total_view"),
-            @Result(property = "xrestrict", column = "x_restrict"),
+            @Result(property = "xRestrict", column = "x_restrict"),
             @Result(property = "createDate", column = "create_date"),
     })
     Illustration queryIllustrationByIllustId(Integer illustId);
