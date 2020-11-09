@@ -83,6 +83,9 @@ public class ArtistBizService {
 
     public Artist queryArtistDetail(Integer artistId) throws InterruptedException {
         Artist artist = queryArtistById(artistId);
+        if (artist == null) {
+            throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
+        }
         dealArtist(artist);
         Map<String, Object> context = AppContext.get();
         if (context != null && context.get(AuthConstant.USER_ID) != null) {
