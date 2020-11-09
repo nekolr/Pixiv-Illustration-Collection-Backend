@@ -45,6 +45,7 @@
         <wechat-sdk.version>3.8.0</wechat-sdk.version>
         <gm4java.version>1.1.1</gm4java.version>
         <deeplearning4j.version>1.0.0-beta7</deeplearning4j.version>
+        <druid-spring-boot-starter.version>1.2.3</druid-spring-boot-starter.version>
     </properties>
 
     <dependencies>
@@ -94,6 +95,11 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis-spring-boot-starter.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+            <version>${druid-spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>

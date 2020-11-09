@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.common.config;
 
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
 import org.mybatis.spring.SqlSessionTemplate;
@@ -28,7 +29,7 @@ public class PrimaryDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.datasource.primary")
     @Primary
     public DataSource PrimaryDataSource() {
-        return DataSourceBuilder.create().build();
+        return DruidDataSourceBuilder.create().build();
     }
 
     @Bean(name = "PrimarySessionFactory")

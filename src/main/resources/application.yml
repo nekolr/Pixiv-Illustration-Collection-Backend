@@ -2,7 +2,7 @@ server:
   port: 8080
 spring:
 #  profiles:
-  #    active: mac
+#    active: mac
   data:
     redis:
       repositories:
@@ -58,7 +58,7 @@ spring:
     publisher-confirm-type:
   datasource:
     primary:
-      jdbc-url: jdbc:mysql://mysql-biz:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+      url: jdbc:mysql://mysql-biz:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
       username: root
       password: Cheerfun.dev
       driver-class-name: com.mysql.cj.jdbc.Driver
@@ -78,7 +78,7 @@ spring:
         job:
           enabled: false
     secondary:
-      jdbc-url: jdbc:mysql://mysql-crawler:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+      url: jdbc:mysql://mysql-crawler:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
       username: root
       password: Cheerfun.dev
       driver-class-name: com.mysql.cj.jdbc.Driver
