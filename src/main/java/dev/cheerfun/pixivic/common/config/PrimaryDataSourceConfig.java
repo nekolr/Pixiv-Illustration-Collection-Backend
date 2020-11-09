@@ -22,33 +22,33 @@ import javax.sql.DataSource;
  * @description PrimaryDataSourceConfig
  */
 @Configuration
-@MapperScan(basePackages = "**.mapper", sqlSessionTemplateRef = "PrimarySessionTemplate")
+@MapperScan(basePackages = "**.mapper", sqlSessionTemplateRef = "sessionTemplate")
 public class PrimaryDataSourceConfig {
 
-    @Bean(name = "PrimaryDataSource")
+    @Bean(name = "dataSource")
     @ConfigurationProperties(prefix = "spring.datasource.primary")
     @Primary
     public DataSource PrimaryDataSource() {
         return DruidDataSourceBuilder.create().build();
     }
 
-    @Bean(name = "PrimarySessionFactory")
+    @Bean(name = "sessionFactory")
     @Primary
-    public SqlSessionFactory PrimarySessionFactory(@Qualifier("PrimaryDataSource") DataSource dataSource) throws Exception {
+    public SqlSessionFactory PrimarySessionFactory(@Qualifier("dataSource") DataSource dataSource) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         return bean.getObject();
     }
 
-    @Bean(name = "PrimaryTransactionManager")
+    @Bean(name = "transactionManager")
     @Primary
-    public DataSourceTransactionManager PrimaryTransactionManager(@Qualifier("PrimaryDataSource") DataSource dataSource) {
+    public DataSourceTransactionManager PrimaryTransactionManager(@Qualifier("dataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
-    @Bean(name = "PrimarySessionTemplate")
+    @Bean(name = "sessionTemplate")
     @Primary
-    public SqlSessionTemplate PrimarySessionTemplate(@Qualifier("PrimarySessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+    public SqlSessionTemplate PrimarySessionTemplate(@Qualifier("sessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 
