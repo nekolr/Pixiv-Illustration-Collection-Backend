@@ -89,7 +89,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
             }
             //如果超出 redis中递增次数
             log.info("用户:" + userId + "触发限流机制");
-            if (stringRedisTemplate.opsForHash().increment(RedisKeyConstant.ACCOUNT_BAN_COUNT_MAP, String.valueOf(userId), 1) > 30) {
+            if (stringRedisTemplate.opsForHash().increment(RedisKeyConstant.ACCOUNT_BAN_COUNT_MAP, String.valueOf(userId), 1) > 25) {
                 log.info("用户:" + userId + "触发限流机制过多，进行屏蔽");
                 //数据库修改屏蔽
                 adminService.banUser(userId);
