@@ -19,7 +19,14 @@ public interface IllustrationBizMapper {
             @Result(property = "tools", column = "tools", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "imageUrls", column = "image_urls", javaType = List.class, typeHandler = JsonTypeHandler.class),
-            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class)
+            @Result(property = "tags", column = "tags", javaType = List.class, typeHandler = JsonTypeHandler.class),
+            @Result(property = "artistId", column = "artist_id"),
+            @Result(property = "pageCount", column = "page_count"),
+            @Result(property = "sanityLevel", column = "sanity_level"),
+            @Result(property = "totalBookmarks", column = "total_bookmarks"),
+            @Result(property = "totalView", column = "total_view"),
+            @Result(property = "xrestrict", column = "x_restrict"),
+            @Result(property = "createDate", column = "create_date"),
     })
     Illustration queryIllustrationByIllustId(Integer illustId);
 
