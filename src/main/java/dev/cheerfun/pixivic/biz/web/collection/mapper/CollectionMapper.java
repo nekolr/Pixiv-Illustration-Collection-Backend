@@ -126,7 +126,16 @@ public interface CollectionMapper {
             @Result(property = "id", column = "collection_id"),
             @Result(property = "tagList", column = "tag_list", javaType = List.class, typeHandler = JsonTypeHandler.class),
             @Result(property = "cover", column = "cover", javaType = List.class, typeHandler = JsonTypeHandler.class),
-            @Result(property = "createTime", column = "create_time", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+            @Result(property = "createTime", column = "create_time", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "isPublic", column = "is_public"),
+            @Result(property = "useFlag", column = "use_flag"),
+            @Result(property = "forbidComment", column = "forbid_comment"),
+            @Result(property = "totalBookmarked", column = "total_bookmarked"),
+            @Result(property = "totalView", column = "total_view"),
+            @Result(property = "totalPeopleSeen", column = "total_people_seen"),
+            @Result(property = "totalLiked", column = "total_liked"),
+            @Result(property = "totalReward", column = "total_reward"),
+            @Result(property = "illustCount", column = "illust_count"),
     })
     Collection queryCollectionById(Integer collectionId);
 
