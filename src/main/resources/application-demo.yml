@@ -1,10 +1,6 @@
 server:
   port: 8080
-#  tomcat:
-#    connection-timeout: 5000
 spring:
-  #  profiles:
-  #    active: mac
   data:
     redis:
       repositories:
@@ -15,29 +11,27 @@ spring:
     generate-ddl: false
     hibernate:
       ddl-auto: none
-  servlet:
-    multipart:
-      max-file-size: 20MB
-      max-request-size: 100MB
   mail:
     host:
     username:
     password:
+    #    host: smtpdm.aliyun.com
+    #    username: admin@mail.cheerfun.dev
+    #    password: CheerfunDEV123
     protocol: smtp
     properties:
       mail:
         smtp:
-          connectiontimeout: 99000
-          timeout: 99000
+          connectiontimeout: 100000
+          timeout: 100000
           auth: true
           starttls:
             enable: true
             required: true
           socketFactory:
-            port: 587
+            port: 465
             class: javax.net.ssl.SSLSocketFactory
-    test-connection: true
-    port: 587
+    port: 465
   redis:
     jedis:
       pool:
@@ -56,29 +50,50 @@ spring:
     port: 5672
     username: root
     password: root
-    publisher-confirm-type:
   datasource:
-    url: jdbc:mysql://mysql:3306/pixivic?serverTimezone=UTC&useUnicode=true&characterEncoding=utf-8
-    username: root
-    password:
-    type: com.alibaba.druid.pool.DruidDataSource
-    initialSize: 5
-    minIdle: 5
-    maxActive: 20
-    maxWait: 60000
-    timeBetweenEvictionRunsMillis: 60000
-    minEvictableIdleTimeMillis: 300000
-    validationQuery: SELECT 1 FROM DUAL
-    testWhileIdle: true
-    testOnBorrow: false
-    testOnReturn: false
-    poolPreparedStatements: true
-    batch:
-      job:
-        enabled: false
+    primary:
+      url: jdbc:mysql://mysql:3306/pixivic_biz?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+      username:
+      password:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      estOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      batch:
+        job:
+          enabled: false
+    secondary:
+      url: jdbc:mysql://mysql:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+      username:
+      password:
+      driver-class-name: com.mysql.cj.jdbc.Driver
+      type: com.alibaba.druid.pool.DruidDataSource
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      estOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: true
+      batch:
+        job:
+          enabled: false
   cache:
     caffeine:
-      spec: maximumSize=2048,expireAfterAccess=1800s
+      spec: maximumSize=1024,expireAfterAccess=1800s
     type: caffeine
 management:
   endpoints:
@@ -90,33 +105,38 @@ management:
       show-details: always
 jjwt:
   secret:
-  expirationTime: 864000
-  refreshInterval: 1800000
+  expirationTime:
+  refreshInterval:
 pixiv:
   oauth:
     client_id:
     client_secret:
     device_token:
-    config: /home/PIC/user2.json
+    config: /Users/oysterqaq/PIC/user2.json
 saucenao:
   token:
-    path: /home/PIC/saucenao.json
+    path: /Users/oysterqaq/PIC/saucenao.json
 mybatis:
   configuration:
     mapUnderscoreToCamelCase: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   type-handlers-package: dev.cheerfun.pixivic.common.util.json
 elasticsearch:
   ip: elasticsearch
 apiLog:
-  path: /home/PIC/log
+  path: /Users/oysterqaq/Desktop
 sensitiveWordList:
-  path: /home/PIC/sensitive
+  path: /Users/oysterqaq/PIC/sensitive
 ssh:
-  configPath: /home/PIC/ssh.conf
+  configPath: /Users/oysterqaq/PIC/ssh.conf
 sitemap:
-  savePath: /home/PIC/sitemap
-  remoteSavePath: /home/PIC/sitemap
+  savePath: /Users/oysterqaq/PIC/sitemap/
+  remoteSavePath: /home/sitemap
 graphicsMagick:
-  path: /usr/bin/gm
+  path: /usr/local/Cellar/graphicsmagick/1.3.35/bin/gm
 nsfw:
-  modelPath: /home/PIC/nsfw.299x299.h5
+  modelPath: /Users/oysterqaq/PIC/nsfw.299x299.h5
+chacha20:
+  key:
+  nonce:
+  counter: 1
