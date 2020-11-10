@@ -72,7 +72,7 @@ spring:
       username: root
       password: Cheerfun.dev
       driver-class-name: org.mariadb.jdbc.Driver
-      maximumPoolSize: 10
+      maximumPoolSize: 20
       minimumIdle: 2
       idleTimeout: 600000
       connectionTimeout: 30000
