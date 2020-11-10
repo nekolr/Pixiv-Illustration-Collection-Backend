@@ -23,6 +23,7 @@
         <lombok.version>1.18.8</lombok.version>
         <jjwt.version>0.10.7</jjwt.version>
         <mysql.version>8.0.21</mysql.version>
+        <mariadb.version>2.7.0</mariadb.version>
         <maven.complie.version>3.7.0</maven.complie.version>
         <common.lang3.version>3.8.1</common.lang3.version>
         <druid.version>1.1.20</druid.version>
@@ -161,10 +162,11 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
         <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>${mysql.version}</version>
+            <groupId>org.mariadb.jdbc</groupId>
+            <artifactId>mariadb-java-client</artifactId>
+            <version>${mariadb.version}</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>

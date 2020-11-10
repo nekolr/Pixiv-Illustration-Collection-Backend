@@ -19,6 +19,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
 
@@ -28,7 +29,7 @@ public class RunTest {
     volatile int j = 0;
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        System.out.println(queryRelatedKeywordFromBaidu("JSP"));
+        System.out.println(UUID.randomUUID());
     }
 
     public static boolean queryRelatedKeywordFromBaidu(String keyword) {

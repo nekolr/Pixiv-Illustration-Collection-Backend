@@ -29,7 +29,7 @@ public class PrimaryDataSourceConfig {
     @ConfigurationProperties(prefix = "spring.datasource.primary")
     @Primary
     public DataSource PrimaryDataSource() {
-        return DruidDataSourceBuilder.create().build();
+        return DataSourceBuilder.create().build();
     }
 
     @Bean(name = "sessionFactory")

@@ -27,7 +27,7 @@ public class SecondaryDataSourceConfig {
     @Bean(name = "SecondaryDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.secondary")
     public DataSource SecondaryDataSource() {
-        return DruidDataSourceBuilder.create().build();
+        return DataSourceBuilder.create().build();
     }
 
     @Bean(name = "SecondarySessionFactory")

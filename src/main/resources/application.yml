@@ -58,45 +58,25 @@ spring:
     publisher-confirm-type:
   datasource:
     primary:
-      url: jdbc:mysql://mysql-biz:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+      jdbc_url: jdbc:mariadb://mysql-biz:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
       username: root
       password: Cheerfun.dev
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      type: com.alibaba.druid.pool.DruidDataSource
-      initialSize: 5
-      minIdle: 5
-      maxActive: 20
-      maxWait: 60000
-      timeBetweenEvictionRunsMillis: 60000
-      minEvictableIdleTimeMillis: 300000
-      validationQuery: SELECT 1 FROM DUAL
-      testWhileIdle: true
-      estOnBorrow: false
-      testOnReturn: false
-      poolPreparedStatements: true
-      batch:
-        job:
-          enabled: false
+      driver-class-name: org.mariadb.jdbc.Driver
+      maximumPoolSize: 10
+      minimumIdle: 2
+      idleTimeout: 600000
+      connectionTimeout: 30000
+      maxLifetime: 1800000
     secondary:
-      url: jdbc:mysql://mysql-crawler:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
+      jdbc_url: jdbc:mariadb://mysql-crawler:3306/pixivic?serverTimezone=GMT%2B8&useUnicode=true&characterEncoding=utf-8
       username: root
       password: Cheerfun.dev
-      driver-class-name: com.mysql.cj.jdbc.Driver
-      type: com.alibaba.druid.pool.DruidDataSource
-      initialSize: 5
-      minIdle: 5
-      maxActive: 20
-      maxWait: 60000
-      timeBetweenEvictionRunsMillis: 60000
-      minEvictableIdleTimeMillis: 300000
-      validationQuery: SELECT 1 FROM DUAL
-      testWhileIdle: true
-      estOnBorrow: false
-      testOnReturn: false
-      poolPreparedStatements: true
-      batch:
-        job:
-          enabled: false
+      driver-class-name: org.mariadb.jdbc.Driver
+      maximumPoolSize: 10
+      minimumIdle: 2
+      idleTimeout: 600000
+      connectionTimeout: 30000
+      maxLifetime: 1800000
   cache:
     caffeine:
       spec: maximumSize=4096,expireAfterAccess=1800s
