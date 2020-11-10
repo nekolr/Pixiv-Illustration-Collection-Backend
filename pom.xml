@@ -23,7 +23,6 @@
         <lombok.version>1.18.8</lombok.version>
         <jjwt.version>0.10.7</jjwt.version>
         <mysql.version>8.0.21</mysql.version>
-        <mariadb.version>2.7.0</mariadb.version>
         <maven.complie.version>3.7.0</maven.complie.version>
         <common.lang3.version>3.8.1</common.lang3.version>
         <druid.version>1.1.20</druid.version>
@@ -46,7 +45,6 @@
         <wechat-sdk.version>3.8.0</wechat-sdk.version>
         <gm4java.version>1.1.1</gm4java.version>
         <deeplearning4j.version>1.0.0-beta7</deeplearning4j.version>
-        <druid-spring-boot-starter.version>1.2.3</druid-spring-boot-starter.version>
     </properties>
 
     <dependencies>
@@ -96,11 +94,6 @@
             <groupId>org.mybatis.spring.boot</groupId>
             <artifactId>mybatis-spring-boot-starter</artifactId>
             <version>${mybatis-spring-boot-starter.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid-spring-boot-starter</artifactId>
-            <version>${druid-spring-boot-starter.version}</version>
         </dependency>
         <dependency>
             <groupId>javax.validation</groupId>
@@ -162,16 +155,10 @@
             <artifactId>guava</artifactId>
             <version>${guava.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/org.mariadb.jdbc/mariadb-java-client -->
         <dependency>
-            <groupId>org.mariadb.jdbc</groupId>
-            <artifactId>mariadb-java-client</artifactId>
-            <version>${mariadb.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.alibaba</groupId>
-            <artifactId>druid</artifactId>
-            <version>${druid.version}</version>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <version>${mysql.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.ben-manes.caffeine</groupId>
