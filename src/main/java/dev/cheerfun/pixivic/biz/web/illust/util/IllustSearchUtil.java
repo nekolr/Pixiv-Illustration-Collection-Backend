@@ -188,7 +188,9 @@ public class IllustSearchUtil {
                             });
                             Hits<Illustration> hits = elasticsearchResponse.getHits();
                             if (hits != null && hits.getHits() != null) {
-                                return hits.getHits().stream().map(h -> illustrationBizService.queryIllustrationById(h.getT().getId())).collect(Collectors.toList());
+                                List<Integer> illustIdList = hits.getHits().stream().map(h -> h.getT().getId()).collect(Collectors.toList());
+
+                                return illustrationBizService.queryIllustrationByIllustIdList(illustIdList);
                                 //return new SearchResult(hits.getTotal().getValue(), illustrationList);
                             }
                         }

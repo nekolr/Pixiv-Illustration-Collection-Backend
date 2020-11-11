@@ -52,7 +52,7 @@ public class VIPProxyServerService {
                 writeLock.lock();
                 try {
                     availableList.forEach(e -> {
-                        if (!check(e)) {
+                        if (e.getServerAddress() != null && !check(e)) {
                             ban(e);
                         }
                     });
