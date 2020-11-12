@@ -452,6 +452,7 @@ public class CollectionService {
     }
 
     @CacheEvict(value = "collections", key = "#collectionId")
+    @Transactional
     public Boolean updateCollectionCover(Integer userId, Integer collectionId, List<Integer> illustIdList) {
         checkCollectionAuth(collectionId, userId);
         List<ImageUrl> imageUrlList = illustIdList.stream().map(e -> {
