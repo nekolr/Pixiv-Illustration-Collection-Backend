@@ -62,7 +62,7 @@ spring:
       username: root
       password: Cheerfun.dev
       driver-class-name: com.mysql.cj.jdbc.Driver
-      maximumPoolSize: 10
+      maximumPoolSize: 30
       minimumIdle: 2
       idleTimeout: 600000
       connectionTimeout: 30000
