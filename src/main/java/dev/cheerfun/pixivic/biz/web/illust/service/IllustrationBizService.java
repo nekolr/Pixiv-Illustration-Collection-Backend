@@ -115,6 +115,7 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "illust")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED)
     public Illustration queryIllustrationByIdFromDb(Integer illustId) {
         //判断是否在封禁集合中
         if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId))) {
