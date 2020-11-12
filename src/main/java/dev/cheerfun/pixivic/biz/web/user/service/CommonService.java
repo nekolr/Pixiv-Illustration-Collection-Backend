@@ -132,10 +132,8 @@ public class CommonService {
     }
 
     public int setPasswordByEmail(String password, String email) {
-        System.out.println("开始重置" + email + "的密码为" + password);
         User user = queryUserByEmail(email);
         if (user != null) {
-            System.out.println(user);
             return setPasswordById(passwordUtil.encrypt(password), user.getId());
         }
         throw new BusinessException(HttpStatus.BAD_REQUEST, "邮箱不存在");
