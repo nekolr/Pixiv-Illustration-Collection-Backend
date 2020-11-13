@@ -137,7 +137,6 @@ public class CollectionController {
     @GetMapping("/collections/{collectionId}/illustrations")
     @WithUserInfo
     @PermissionRequired
-    //@WithAdvertisement
     public ResponseEntity<Result<List<Illustration>>> queryCollectionIllust(@PathVariable Integer collectionId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestParam(required = false) String userFinger) {
         //用户指纹 放到hyperlog记录浏览量
         if (page == 1 && userFinger != null) {

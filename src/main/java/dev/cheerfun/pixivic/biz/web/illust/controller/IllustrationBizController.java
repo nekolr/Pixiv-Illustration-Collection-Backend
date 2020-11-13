@@ -53,7 +53,6 @@ public class IllustrationBizController {
 
     @GetMapping("/illusts/{illustId}/related")
     @WithUserInfo
-    @PermissionRequired
     @WithAdvertisement
     @RateLimit
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization") String token) {
