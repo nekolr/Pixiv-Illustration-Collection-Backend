@@ -10,6 +10,7 @@ import dev.cheerfun.pixivic.biz.analysis.tag.service.TrendingTagsService;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.illust.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.illust.domain.response.PixivSearchCandidatesResponse;
+import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
@@ -43,6 +44,7 @@ import java.util.concurrent.CompletableFuture;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SearchController {
     private final SearchService searchService;
+    private final IllustrationBizService illustrationBizService;
     private final TranslationUtil translationUtil;
     private final TrendingTagsService trendingTagsService;
 
@@ -114,7 +116,7 @@ public class SearchController {
             String[] keywords = keyword.split("\\|\\|");
             keyword = Arrays.stream(keywords).map(translationUtil::translateToJapaneseByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        CompletableFuture<List<Illustration>> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null);
+        CompletableFuture<List<Illustration>> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null).thenApply(illustrationBizService::queryIllustrationByIllustIdList);
         return searchResultCompletableFuture.thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
     }
 

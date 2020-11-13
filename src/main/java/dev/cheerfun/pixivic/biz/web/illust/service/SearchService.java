@@ -206,15 +206,15 @@ public class SearchService {
     }
 
     public Illustration queryFirstSearchResult(String keyword) throws ExecutionException, InterruptedException {
-        List<Illustration> illustrations = searchByKeyword(keyword, 1, 0, "original", "illust", null, null, null, null, 0, null, null, null, 5, null).get();
-        if (illustrations != null && illustrations.size() > 0) {
-            return illustrations.get(0);
+        List<Integer> illustIdList = searchByKeyword(keyword, 1, 0, "original", "illust", null, null, null, null, 0, null, null, null, 5, null).get();
+        if (illustIdList != null && illustIdList.size() > 0) {
+            return illustrationBizService.queryIllustrationByIdFromDb(illustIdList.get(0));
         }
         return null;
     }
 
     @Cacheable(value = "searchResult")
-    public CompletableFuture<List<Illustration>> searchByKeyword(
+    public CompletableFuture<List<Integer>> searchByKeyword(
             String keyword,
             int pageSize,
             int page,
@@ -231,7 +231,7 @@ public class SearchService {
             Integer maxSanityLevel,
             Integer exceptId) {
         String build = searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, exceptId);
-        CompletableFuture<List<Illustration>> request = searchUtil.request(build);
+        CompletableFuture<List<Integer>> request = searchUtil.request(build);
         return request;
     }
 
@@ -246,7 +246,7 @@ public class SearchService {
     }
 
     @Cacheable(value = "related")
-    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
+    public CompletableFuture<List<Integer>> queryIllustrationRelated(int illustId, int page, int pageSize) {
         Illustration illustration = illustrationBizService.queryIllustrationById(illustId);
         illustration = objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
         });

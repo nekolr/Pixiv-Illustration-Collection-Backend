@@ -173,7 +173,7 @@ public class IllustSearchUtil {
         return stringBuilder.toString();
     }
 
-    public CompletableFuture<List<Illustration>> request(String body) {
+    public CompletableFuture<List<Integer>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .uri(URI.create("http://" + elasticsearch + ":9200/illusts/_search?_source=illust_id"))
@@ -189,8 +189,7 @@ public class IllustSearchUtil {
                             Hits<Illustration> hits = elasticsearchResponse.getHits();
                             if (hits != null && hits.getHits() != null) {
                                 List<Integer> illustIdList = hits.getHits().stream().map(h -> h.getT().getId()).collect(Collectors.toList());
-
-                                return illustrationBizService.queryIllustrationByIllustIdList(illustIdList);
+                                return illustIdList;
                                 //return new SearchResult(hits.getTotal().getValue(), illustrationList);
                             }
                         }
