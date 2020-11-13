@@ -145,3 +145,5 @@ chacha20:
   key: 生蚝是位兴趣使然的OTAKU
   nonce: PIXIVICJUST4
   counter: 21
+recaptcha:
+  secret: 6Le5lOIZAAAAAI34bH_axfWScwcKFnxUBNbpe60d

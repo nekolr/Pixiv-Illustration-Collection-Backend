@@ -11,6 +11,7 @@ import dev.cheerfun.pixivic.biz.web.user.dto.SignInDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
+import dev.cheerfun.pixivic.biz.web.user.util.RecaptchaUtil;
 import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -45,6 +46,7 @@ public class CommonController {
     private final CommonService userService;
     private final VIPUserService vipUserService;
     private final PasswordUtil passwordUtil;
+    private final RecaptchaUtil recaptchaUtil;
     private final JWTUtil jwtUtil;
 
     @GetMapping("/{userId}")
@@ -72,6 +74,14 @@ public class CommonController {
     @PostMapping
     @CheckVerification
     public ResponseEntity<Result<User>> signUp(@RequestBody SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+        User user = userInfo.castToUser();
+        user = userService.signUp(user);
+        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
+    }
+
+    @PostMapping("/checkByRecaptcha")
+    public ResponseEntity<Result<User>> signUpCheckByRecaptcha(@RequestBody SignUpDTO userInfo) throws IOException, InterruptedException {
+        recaptchaUtil.check(userInfo.getGRecaptchaResponse());
         User user = userInfo.castToUser();
         user = userService.signUp(user);
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", user));

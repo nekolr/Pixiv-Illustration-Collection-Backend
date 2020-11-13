@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.user.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import lombok.Data;
@@ -26,6 +27,7 @@ public class SignUpDTO {
     @NotBlank
     @Size(min = 6, max = 20)
     private String password;
+    private String gRecaptchaResponse;
 
     public User castToUser() {
         return new User(username, email, password);
