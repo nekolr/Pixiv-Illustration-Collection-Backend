@@ -10,6 +10,7 @@ import dev.cheerfun.pixivic.biz.credit.customer.CreditEventCustomer;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
+import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
 import dev.cheerfun.pixivic.biz.web.sentence.po.Sentence;
 import dev.cheerfun.pixivic.biz.web.sentence.service.SentenceService;
@@ -65,6 +66,7 @@ public class CommonService {
     private final CreditEventCustomer creditEventCustomer;
     private final SearchService searchService;
     private final SentenceService sentenceService;
+    private final IllustrationBizService illustrationBizService;
     private final Random random = new Random(21);
     //private final PooledGMService pooledGMService;
 
@@ -275,9 +277,9 @@ public class CommonService {
         Sentence sentence = sentenceService.queryRandomSentence();
         //根据台词来源作品获取画作
         Illustration illustration = null;
-        List<Illustration> illustrationList = searchService.searchByKeyword(sentence.getOriginateFromJP() != null ? sentence.getOriginateFromJP() : sentence.getOriginateFrom(), 10, 1, "original", null, null, null, null, null, 0, null, null, null, 5, null).get();
+        List<Integer> illustrationList = searchService.searchByKeyword(sentence.getOriginateFromJP() != null ? sentence.getOriginateFromJP() : sentence.getOriginateFrom(), 10, 1, "original", null, null, null, null, null, 0, null, null, null, 5, null).get();
         if (illustrationList != null && illustrationList.size() > 0) {
-            illustration = illustrationList.get(random.nextInt(illustrationList.size()));
+            illustration = illustrationBizService.queryIllustrationByIdFromDb(illustrationList.get(random.nextInt(illustrationList.size())));
         }
         return new CheckInDTO(score, sentence, illustration);
     }
