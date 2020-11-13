@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
+@Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
 public class RankService {
     private final RankMapper rankMapper;
 

@@ -115,7 +115,7 @@ public class IllustrationBizService {
     }
 
     @Cacheable(value = "illust")
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
     public Illustration queryIllustrationByIdFromDb(Integer illustId) {
         //判断是否在封禁集合中
         if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId))) {
@@ -129,13 +129,13 @@ public class IllustrationBizService {
         return illustration;
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
     public Illustration queryIllustrationByIdFromDbWithoutCache(Integer illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         return illustration;
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
     public String queryRandomIllustration(String urlType, String illustType, Boolean detail, String ratio, Float range, Integer maxSanityLevel) {
         String[] split = ratio.split(":");
         float r = Float.parseFloat(split[0]) / Float.parseFloat(split[1]);

@@ -75,7 +75,7 @@ public class AdminService {
     }
 
     @CacheEvict(value = "illust", key = "#illustDTO.id")
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
     public void updateIllusts(IllustDTO illustDTO) {
         illustAdminMapper.updateIllusts(illustDTO);
     }
@@ -367,7 +367,7 @@ public class AdminService {
         }
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
     public List<Integer> queryIllustrationsByArtistId(Integer artistId) {
         return illustAdminMapper.queryIllustrationsByArtistId(artistId);
     }

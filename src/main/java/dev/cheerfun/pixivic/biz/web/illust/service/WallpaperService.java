@@ -21,7 +21,7 @@ import java.util.List;
  */
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
-@Transactional(propagation = Propagation.NOT_SUPPORTED)
+@Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
 public class WallpaperService {
     private final WallpaperMapper wallpaperMapper;
     private final IllustrationBizService illustrationBizService;

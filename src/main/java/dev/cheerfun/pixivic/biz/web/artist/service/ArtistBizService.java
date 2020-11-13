@@ -124,7 +124,7 @@ public class ArtistBizService {
     }
 
     @Cacheable(value = "artist")
-    @Transactional(propagation = Propagation.NOT_SUPPORTED)
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
     public Artist queryArtistByIdFromDb(Integer artistId) {
         if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId))) {
             return null;
