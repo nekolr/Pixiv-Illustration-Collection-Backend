@@ -22,7 +22,7 @@ public class ExecutorServiceConfig {
                 40,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024 * 1000),
+                new LinkedBlockingQueue<>(2048 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
@@ -46,11 +46,11 @@ public class ExecutorServiceConfig {
     public ExecutorService mailExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("mail-pool-%d").build();
         return new ThreadPoolExecutor(
-                5,
+                30,
                 30,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024 * 1000),
+                new LinkedBlockingQueue<>(2048 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
@@ -64,7 +64,7 @@ public class ExecutorServiceConfig {
                 40,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024 * 1000),
+                new LinkedBlockingQueue<>(2048 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
@@ -75,10 +75,10 @@ public class ExecutorServiceConfig {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("saveToDB-pool-%d").build();
         return new ThreadPoolExecutor(
                 4,
-                40,
+                50,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024 * 1000),
+                new LinkedBlockingQueue<>(2048 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
@@ -92,7 +92,7 @@ public class ExecutorServiceConfig {
                 10,
                 0L,
                 TimeUnit.MILLISECONDS,
-                new LinkedBlockingQueue<>(1024 * 1000),
+                new LinkedBlockingQueue<>(2048 * 1000),
                 namedThreadFactory,
                 new ThreadPoolExecutor.AbortPolicy()
         );
