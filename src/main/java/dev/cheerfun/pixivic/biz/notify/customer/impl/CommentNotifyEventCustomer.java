@@ -38,7 +38,7 @@ public class CommentNotifyEventCustomer extends NotifyEventCustomer {
     @Override
     protected Integer querySendTo(Event event) {
         Comment comment = commentService.queryCommentById(event.getObjectId());
-        if (comment.getAppType().equals(ObjectType.ILLUST) && comment.getParentId().compareTo(0) == 0) {
+        if (comment.getAppType().equals(ObjectType.ILLUST) && comment.getParentId().compareTo(0) == 0 && !event.getAction().equals(ActionType.LIKE)) {
             return null;
         }
         //根据不同动作进行处理

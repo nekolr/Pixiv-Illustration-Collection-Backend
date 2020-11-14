@@ -25,7 +25,6 @@ public class WebMessageSender implements NotifySender {
     @Transactional
     public Boolean send(NotifyRemind notifyRemind) {
         //直接持久化到数据库
-        System.out.println(notifyRemind);
         if (notifyRemind.getId() != null) {
             notifyRemindService.updateRemindActorAndCreateDate(notifyRemind);
         } else {
