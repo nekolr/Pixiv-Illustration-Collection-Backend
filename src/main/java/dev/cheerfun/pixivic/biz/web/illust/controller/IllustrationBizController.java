@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.illust.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
@@ -53,6 +54,7 @@ public class IllustrationBizController {
 
     @GetMapping("/illusts/{illustId}/related")
     @WithUserInfo
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithAdvertisement
     @RateLimit
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization") String token) {
