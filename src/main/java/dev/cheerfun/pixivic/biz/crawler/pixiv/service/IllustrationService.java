@@ -183,7 +183,7 @@ public class IllustrationService {
         //illustrationMapper.flush();
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
+    @Transactional(transactionManager = "SecondaryTransactionManager")
     public void insertArtistIllustRelation(List<Illustration> illustrations) {
         try {
             artistIllustRelationMapper.batchiInsertArtistIllustRelation(illustrations);
