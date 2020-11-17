@@ -72,7 +72,7 @@ public class CollectionController {
     public ResponseEntity<Result<List<Integer>>> addIllustrationToCollection(@PathVariable Integer collectionId, @RequestBody List<Integer> illustrationIds, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         List<Integer> illustIdList = collectionService.addIllustrationToCollection(userId, collectionId, illustrationIds);
-        return ResponseEntity.ok().body(new Result<>("添加画作成功" + (illustIdList.size() > 0 ? "重复作品如下" : ""), illustIdList));
+        return ResponseEntity.ok().body(new Result<>("添加画作成功" + (illustIdList.size() > 0 ? "，存在一些重复画作" : ""), illustIdList));
     }
 
     //从画集中删除画作
