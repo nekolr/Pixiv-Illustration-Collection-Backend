@@ -2,9 +2,11 @@ package dev.cheerfun.pixivic;
 
 import com.google.common.collect.Lists;
 import com.google.common.io.BaseEncoding;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import io.github.bucket4j.*;
 import org.apache.commons.lang3.StringUtils;
 import org.checkerframework.checker.units.qual.C;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
@@ -41,11 +43,11 @@ import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Encrypt;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        Integer a = null;
-        System.out.println(a);
-        System.out.println(172800 / 60 / 60 / 24);
-        System.out.println(1800000L / 1000 / 60);
-
+        String xForwardedFor = "218.24.120.112, 10.3.0.11, 10.3.0.11";
+        int i = xForwardedFor.indexOf(",");
+        System.out.println(xForwardedFor.substring(0, i));
+        int ip = ip2Int(xForwardedFor.substring(0, i));
+        System.out.println(ip);
     }
 
     public static byte[] intToBytes(int value) {
@@ -74,5 +76,17 @@ public class Consumer {
         return result;
     }
 
+    public static int ip2Int(String ipString) {
+        // 取 ip 的各段
+        String[] ipSlices = ipString.split("\\.");
+        int rs = 0;
+        for (int i = 0; i < ipSlices.length; i++) {
+            // 将 ip 的每一段解析为 int，并根据位置左移 8 位
+            int intSlice = Integer.parseInt(ipSlices[i]) << 8 * i;
+            // 或运算
+            rs = rs | intSlice;
+        }
+        return rs;
+    }
 }
 

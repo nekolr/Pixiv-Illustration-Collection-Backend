@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
+import dev.cheerfun.pixivic.common.util.aop.JoinPointArgUtil;
 import io.github.bucket4j.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.time.Duration;
@@ -38,12 +40,18 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RateLimitProcessor implements HandlerInterceptor {
     private final StringRedisTemplate stringRedisTemplate;
     private final AdminService adminService;
+    private final JoinPointArgUtil joinPointArgUtil;
 
-    private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
+    private final Map<Integer, Bucket> userBuckets = new ConcurrentHashMap<>();
+    private final Map<Integer, Bucket> ipAddrBuckets = new ConcurrentHashMap<>();
+
     //未登录用户
-    private final Bucket freeBucket = Bucket4j.builder()
-            .addLimit(Bandwidth.classic(300, Refill.intervally(300, Duration.ofMinutes(1))))
-            .build();
+    private static Bucket freeBucket() {
+        return Bucket4j.builder()
+                .addLimit(Bandwidth.classic(600, Refill.intervally(600, Duration.ofMinutes(10))))
+                // .addLimit(Bandwidth.classic(20, Refill.intervally(20, Duration.ofSeconds(20))))
+                .build();
+    }
 
     private static Bucket standardBucket() {
         return Bucket4j.builder()
@@ -77,11 +85,11 @@ public class RateLimitProcessor implements HandlerInterceptor {
             Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
             Integer permissionLevel = (Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL);
             if (permissionLevel == PermissionLevel.EMAIL_CHECKED) {
-                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> emailCheckBucket());
+                requestBucket = this.userBuckets.computeIfAbsent(userId, key -> emailCheckBucket());
             } else if (permissionLevel == PermissionLevel.VIP) {
-                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> premiumBucket());
+                requestBucket = this.userBuckets.computeIfAbsent(userId, key -> premiumBucket());
             } else {
-                requestBucket = this.buckets.computeIfAbsent(userId.toString(), key -> standardBucket());
+                requestBucket = this.userBuckets.computeIfAbsent(userId, key -> standardBucket());
             }
             ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
             if (probe.isConsumed()) {
@@ -95,7 +103,12 @@ public class RateLimitProcessor implements HandlerInterceptor {
                 adminService.banUser(userId);
             }
         } else {
-            requestBucket = this.freeBucket;
+            //获取真实ip
+            String xForwardedFor = joinPointArgUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestHeader.class, AuthConstant.X_FORWARDED_FOR);
+            int i = xForwardedFor.indexOf(",");
+            //ip地址转int节省内存
+            int ip = ip2Int(xForwardedFor.substring(0, i));
+            requestBucket = this.ipAddrBuckets.computeIfAbsent(ip, key -> freeBucket());
             ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
             if (probe.isConsumed()) {
                 return joinPoint.proceed();
@@ -107,5 +120,18 @@ public class RateLimitProcessor implements HandlerInterceptor {
         }*/
 
         throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
+    }
+
+    public static int ip2Int(String ipString) {
+        // 取 ip 的各段
+        String[] ipSlices = ipString.split("\\.");
+        int rs = 0;
+        for (int i = 0; i < ipSlices.length; i++) {
+            // 将 ip 的每一段解析为 int，并根据位置左移 8 位
+            int intSlice = Integer.parseInt(ipSlices[i]) << 8 * i;
+            // 或运算
+            rs = rs | intSlice;
+        }
+        return rs;
     }
 }

@@ -10,9 +10,15 @@ import org.apache.ibatis.annotations.Select;
 import java.util.List;
 
 public interface ArtistBizMapper {
-    @Select("select * from artists where artist_id =#{artistId}")
+    @Select("select SQL_NO_CACHE * from artists where artist_id =#{artistId}")
     @Results({
             @Result(property = "id", column = "artist_id"),
+            @Result(property = "birthDay", column = "birth_day"),
+            @Result(property = "webPage", column = "webpage"),
+            @Result(property = "twitterAccount", column = "twitter_account"),
+            @Result(property = "twitterUrl", column = "twitter_url"),
+            @Result(property = "totalFollowUsers", column = "total_follow_users"),
+            @Result(property = "totalIllustBookmarksPublic", column = "total_illust_bookmarks_public"),
     })
     Artist queryArtistById(Integer artistId);
 

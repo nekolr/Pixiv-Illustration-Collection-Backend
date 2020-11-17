@@ -61,18 +61,6 @@ public class IllustrationBizController {
         return searchService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", illustrationBizService.queryIllustrationByIllustIdList(r))));
     }
 
-    @GetMapping("/illusts/random")
-    public ResponseEntity<Result<Illustration>> queryRandomIllustration(
-            @RequestParam(defaultValue = "original") String urlType,
-            @RequestParam(defaultValue = "illust") String illustType,
-            @RequestParam(defaultValue = "false") Boolean detail,
-            @RequestParam(defaultValue = "1") Float range,
-            @RequestParam(defaultValue = "16:9") String ratio,
-            @RequestParam(defaultValue = "4") Integer maxSanityLevel
-    ) {
-        String url = illustrationBizService.queryRandomIllustration(urlType, illustType, detail, ratio, range, maxSanityLevel);
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header("Location", url).header("Cache-Control", "no-cache").body(null);
-    }
 
     @GetMapping("/tags/{tag}/candidates")
     public ResponseEntity<Result<List<Tag>>> autoCompleteTag(@PathVariable String tag, @RequestBody List<String> tagList) {

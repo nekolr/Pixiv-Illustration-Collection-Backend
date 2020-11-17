@@ -59,4 +59,8 @@ public class WallpaperService {
         return illustrationBizService.queryIllustrationByIdList(queryIllustIdByTag(tagId, type, offset, pageSize));
     }
 
+    public String queryRandomIllustration() {
+
+        return null;
+    }
 }

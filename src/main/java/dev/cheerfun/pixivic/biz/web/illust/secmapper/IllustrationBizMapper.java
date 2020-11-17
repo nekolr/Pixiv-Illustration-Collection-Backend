@@ -12,7 +12,7 @@ import java.util.List;
 
 
 public interface IllustrationBizMapper {
-    @Select("select * from illusts where illust_id = #{illustId}")
+    @Select("select SQL_NO_CACHE * from illusts where illust_id = #{illustId}")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
