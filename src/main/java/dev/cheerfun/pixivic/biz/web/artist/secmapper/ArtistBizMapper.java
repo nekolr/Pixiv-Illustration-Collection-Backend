@@ -1,6 +1,5 @@
 package dev.cheerfun.pixivic.biz.web.artist.secmapper;
 
-import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import org.apache.ibatis.annotations.Result;
