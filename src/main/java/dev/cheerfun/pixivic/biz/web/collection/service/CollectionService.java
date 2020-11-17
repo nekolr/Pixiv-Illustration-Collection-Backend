@@ -408,7 +408,7 @@ public class CollectionService {
         Collection collection = queryCollectionById(collectionId);
         if (collection.getIsPublic() == 0) {
             Map<String, Object> context = AppContext.get();
-            if (context != null && context.get(AuthConstant.USER_ID) != null && context.get(AuthConstant.USER_ID) == collection.getUserId()) {
+            if (context != null && context.get(AuthConstant.USER_ID) != null && collection.getUserId().compareTo((Integer) context.get(AuthConstant.USER_ID)) == 0) {
                 return collection;
             } else {
                 throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人未公开画集");
