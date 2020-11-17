@@ -294,7 +294,7 @@ public class CollectionService {
         if (collection.getIsPublic() == 0) {
             Map<String, Object> context = AppContext.get();
             if (context != null && context.get(AuthConstant.USER_ID) != null) {
-                if (context.get(AuthConstant.USER_ID) != collection.getUserId()) {
+                if ((int) context.get(AuthConstant.USER_ID) != collection.getUserId()) {
                     throw new BusinessException(HttpStatus.FORBIDDEN, "无权限访问");
                 }
             }
@@ -408,7 +408,7 @@ public class CollectionService {
         Collection collection = queryCollectionById(collectionId);
         if (collection.getIsPublic() == 0) {
             Map<String, Object> context = AppContext.get();
-            if (context != null && context.get(AuthConstant.USER_ID) != null && collection.getUserId().compareTo((Integer) context.get(AuthConstant.USER_ID)) == 0) {
+            if (context != null && context.get(AuthConstant.USER_ID) != null && (int) context.get(AuthConstant.USER_ID) == collection.getUserId()) {
                 return collection;
             } else {
                 throw new BusinessException(HttpStatus.FORBIDDEN, "禁止查看他人未公开画集");
