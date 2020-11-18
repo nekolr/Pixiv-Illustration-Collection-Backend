@@ -18,6 +18,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Component
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -26,13 +27,11 @@ public class OauthManager {
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final ExecutorService executorService;
-    private final Random random = new Random();
     @Value("${pixiv.oauth.config}")
     private String path;
     @Getter
     private volatile List<PixivUser> pixivUserList;
     private volatile int pixivUserSize;
-
     //失败队列，由于只会有一个线程访问所以不需要可见
     private Set<Integer> refreshErrorSet;
 
@@ -112,6 +111,7 @@ public class OauthManager {
         long start = System.currentTimeMillis();
         //自旋获取
         while (System.currentTimeMillis() - start < 1000 * 15) {
+            ThreadLocalRandom random = ThreadLocalRandom.current();
             int i = random.nextInt(pixivUserSize);
             PixivUser pixivUser = pixivUserList.get(i);
             //token不为空且令牌桶足够

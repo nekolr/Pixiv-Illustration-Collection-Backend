@@ -41,11 +41,11 @@ public class PixivicSyncController {
         return ResponseEntity.ok().body(new Result<>("抓取日排行成功"));
     }
 
-    @GetMapping("/mainCrawler")
+/*    @GetMapping("/mainCrawler")
     public ResponseEntity<Result<String>> mainCrawler(@RequestParam String date) throws InterruptedException {
         dailyTaskService.mainCrawler();
         return ResponseEntity.ok().body(new Result<>("全量抓取成功"));
-    }
+    }*/
 
     @GetMapping("/reSyncRankToIllust")
     public ResponseEntity<Result<String>> reSyncRankToIllust(@RequestParam String date) {

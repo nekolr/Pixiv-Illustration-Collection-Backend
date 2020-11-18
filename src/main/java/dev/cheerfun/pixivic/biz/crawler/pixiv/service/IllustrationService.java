@@ -108,6 +108,7 @@ public class IllustrationService {
         }
         System.err.println("失败队列：");
         waitForReDownload.forEach(System.out::println);
+        //saveToDb(illustrationLists.stream().filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toList()));
         illustrationLists.forEach(e -> {
             if (e != null && e.size() > 0) {
                 saveToDb(e);

@@ -30,4 +30,16 @@ public interface WallpaperMapper {
 
     @Select("select count(*) from wallpapers where tag_id =#{tagId} and wallpaper_type =#{type} ")
     Integer queryIllustCountByTag(Integer tagId, Integer type);
+
+    @Select("select random_index from random_pc_illust order by random_index desc limit 1")
+    int queryPcWallpaperCount();
+
+    @Select("select random_index from random_mobile_illust order by random_index desc limit 1")
+    int queryMobileWallpaperCount();
+
+    @Select("select illust_id from random_pc_illust where random_index=#{randomIndex}")
+    int queryPCIllustIdByRandomIndex(int randomIndex);
+
+    @Select("select illust_id from random_mobile_illust where random_index=#{randomIndex}")
+    int queryMobileIllustIdByRandomIndex(int randomIndex);
 }

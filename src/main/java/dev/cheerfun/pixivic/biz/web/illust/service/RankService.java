@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.illust.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.illust.secmapper.RankMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -25,6 +27,7 @@ import java.util.stream.Collectors;
 @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
 public class RankService {
     private final RankMapper rankMapper;
+    private final ObjectMapper objectMapper;
 
     @Cacheable(value = "rank")
     public List<Illustration> queryByDateAndMode(String date, String mode, int page, int pageSize) {
@@ -34,7 +37,8 @@ public class RankService {
             illustrationList = rank.getData().stream().skip(pageSize * (page - 1))
                     .limit(pageSize).collect(Collectors.toList());
         }
-        return illustrationList;
+        return objectMapper.convertValue(illustrationList, new TypeReference<List<Illustration>>() {
+        });
     }
 
     public List<Rank> queryByDate(String date) {

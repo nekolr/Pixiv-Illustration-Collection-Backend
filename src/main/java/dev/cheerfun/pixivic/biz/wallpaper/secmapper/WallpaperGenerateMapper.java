@@ -12,4 +12,10 @@ public interface WallpaperGenerateMapper {
 
     @Insert("insert ignore into wallpapers (tag_id,wallpaper_type,illust_id) values(#{tagId},#{wallpaperType},#{illustId})")
     void insertWallpaper(Long tagId, Integer wallpaperType, Integer illustId);
+
+    @Select("select distinct illust_id from wallpapers where wallpaper_type=#{type}")
+    List<Integer> queryAllWallpaperByType(int type);
+
+    @Insert("insert into random_mobile_illust (random_index,illust_id) values (#{index},#{illustId})")
+    void insertToRandomIndexTable(int type, int index, Integer illustId);
 }

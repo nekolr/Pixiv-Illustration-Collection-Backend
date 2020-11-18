@@ -12,6 +12,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 /**
@@ -26,7 +27,6 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 public class AzureApiKeyManager {
     private List<AzureApiKey> availableList;
     private Integer availableListSize;
-    private Random random;
     private final TranslateMapper translateMapper;
     ReentrantReadWriteLock lock = new ReentrantReadWriteLock(false);
     final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
@@ -37,7 +37,6 @@ public class AzureApiKeyManager {
         try {
             //初始化apikey
             log.info("开始初始化az翻译api管理类");
-            random = new Random(21);
             //如果是一号，把所有key置为有效
             //if (LocalDate.now().getDayOfMonth() == 1) {
                 translateMapper.resetStatus();
@@ -55,6 +54,7 @@ public class AzureApiKeyManager {
         readLock.lock();
         try {
             if (availableListSize > 0) {
+                ThreadLocalRandom random = ThreadLocalRandom.current();
                 return availableList.get(random.nextInt(availableListSize));
             }
             return null;

@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,8 +73,6 @@ public class WallpaperGenerateService {
                 Integer type = filterBySize(illustration);
                 if (type != null) {
                     //过滤没有中文释义的标签
-                    illustration.setTags(objectMapper.convertValue(illustration.getTags(), new TypeReference<List<Tag>>() {
-                    }));
                     illustration.getTags().stream().filter(t -> {
                         String translatedName = t.getTranslatedName();
                         return t.getId() != null && translatedName != null && !"".equals(translatedName.trim());

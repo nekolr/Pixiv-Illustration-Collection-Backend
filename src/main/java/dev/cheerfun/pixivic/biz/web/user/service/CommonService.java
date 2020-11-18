@@ -42,6 +42,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author OysterQAQ
@@ -68,7 +69,6 @@ public class CommonService {
     private final SearchService searchService;
     private final SentenceService sentenceService;
     private final IllustrationBizService illustrationBizService;
-    private final Random random = new Random(21);
     //private final PooledGMService pooledGMService;
 
     public User signUp(User user) {
@@ -280,6 +280,7 @@ public class CommonService {
         Illustration illustration = null;
         List<Integer> illustrationList = searchService.searchByKeyword(sentence.getOriginateFromJP() != null ? sentence.getOriginateFromJP() : sentence.getOriginateFrom(), 10, 1, "original", null, null, null, null, null, 0, null, null, null, 5, null).get();
         if (illustrationList != null && illustrationList.size() > 0) {
+            ThreadLocalRandom random = ThreadLocalRandom.current();
             illustration = illustrationBizService.queryIllustrationByIdFromDb(illustrationList.get(random.nextInt(illustrationList.size())));
         }
         return new CheckInDTO(score, sentence, illustration);

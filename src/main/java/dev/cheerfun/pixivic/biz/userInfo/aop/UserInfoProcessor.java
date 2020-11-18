@@ -66,10 +66,10 @@ public class UserInfoProcessor {
         List data = body.getData();
         //由于jackson反序列化如果使用泛型则会将对象反序列化为linkedhashmap,这里重新序列化做一个转换,会降低效率
         if (data != null && data.size() > 0) {
-            if (data.get(0) instanceof Map) {
+/*            if (data.get(0) instanceof Map) {
                 body.setData(objectMapper.convertValue(data, new TypeReference<List<Illustration>>() {
                 }));
-            }
+            }*/
             if (data.get(0) instanceof ArtistWithRecentlyIllusts) {
                 List<ArtistWithRecentlyIllusts> result = data;
                 result.stream().parallel().forEach(r -> {

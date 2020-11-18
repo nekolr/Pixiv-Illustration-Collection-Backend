@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 
 import java.nio.ByteBuffer;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Decrypt;
 import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Encrypt;
@@ -24,7 +25,6 @@ public class ExchangeCodeUtil {
     private byte[] nonce;
     private int counter;
     private BaseEncoding baseEncoding = BaseEncoding.base32();
-    private Random random = new Random(21);
 
     public ExchangeCodeUtil(@Value("${chacha20.key}") String key, @Value("${chacha20.nonce}") String nonce, @Value("${chacha20.counter}") int counter) {
         this.key = key.getBytes();
@@ -33,6 +33,7 @@ public class ExchangeCodeUtil {
     }
 
     public String generateExchangeCode(int exchangeCodeId, byte bizCode) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         byte[] result = new byte[10];
         //构建payload 随机数+编号+业务数据  72位
         byte[] payload = ByteBuffer.allocate(4).putInt(exchangeCodeId).array();
