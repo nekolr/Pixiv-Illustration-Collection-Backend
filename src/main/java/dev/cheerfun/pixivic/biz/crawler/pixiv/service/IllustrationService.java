@@ -157,7 +157,7 @@ public class IllustrationService {
         cd.await(waitForReDownload.size() * 2, TimeUnit.SECONDS);
     }
 
-    @Transactional(propagation = Propagation.NOT_SUPPORTED, rollbackFor = Exception.class, transactionManager = "SecondaryTransactionManager")
+    //@Transactional(propagation = Propagation.NOT_SUPPORTED, rollbackFor = Exception.class, transactionManager = "SecondaryTransactionManager")
     @Async("saveToDBExecutorService")
     public void saveToDb(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
@@ -183,7 +183,7 @@ public class IllustrationService {
         //illustrationMapper.flush();
     }
 
-    @Transactional(transactionManager = "SecondaryTransactionManager")
+    //@Transactional(transactionManager = "SecondaryTransactionManager")
     public void insertArtistIllustRelation(List<Illustration> illustrations) {
         try {
             artistIllustRelationMapper.batchiInsertArtistIllustRelation(illustrations);
@@ -193,7 +193,7 @@ public class IllustrationService {
 
     }
 
-    @Transactional(rollbackFor = Exception.class, transactionManager = "SecondaryTransactionManager")
+    //@Transactional(rollbackFor = Exception.class, transactionManager = "SecondaryTransactionManager")
     public void saveToDb2(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
         if (tags.size() > 0) {
