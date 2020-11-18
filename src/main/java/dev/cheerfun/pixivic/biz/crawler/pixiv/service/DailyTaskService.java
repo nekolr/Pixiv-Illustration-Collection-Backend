@@ -28,7 +28,7 @@ public class DailyTaskService {
         rankService.pullAllRank();
     }
 
-    @Scheduled(cron = "0 0/10 * * * ?")
+    @Scheduled(cron = "0 */5 * * * ?")
     public void mainCrawler() throws InterruptedException {
         System.out.println("开始执行主要爬虫任务");
         mainCrawlerService.dailyPersistentTask();
