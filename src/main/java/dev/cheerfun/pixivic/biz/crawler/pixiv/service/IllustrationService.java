@@ -109,7 +109,12 @@ public class IllustrationService {
         System.err.println("失败队列：");
         waitForReDownload.forEach(System.out::println);
         illustrationLists.removeIf(Objects::isNull);
-        saveToDb(illustrationLists.stream().flatMap(Collection::stream).filter(Objects::nonNull).collect(Collectors.toList()));
+        illustrationLists.forEach(e -> {
+            if (e != null) {
+                saveToDb(e);
+            }
+        });
+        //saveToDb(illustrationLists.stream().flatMap(Collection::stream).filter(Objects::nonNull).collect(Collectors.toList()));
         return illustrationLists.stream().flatMap(Collection::stream).filter(Objects::nonNull).map(Illustration::getArtistId).distinct().collect(Collectors.toList());
     }
 
