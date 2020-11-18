@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
+
 /**
  * @author OysterQAQ
  * @version 1.0
@@ -28,7 +30,8 @@ public class DailyTaskService {
         rankService.pullAllRank();
     }
 
-    @Scheduled(cron = "0 */5 * * * ?")
+    @Scheduled(cron = "0 0 3,4,5,6,7,8,9 * * ? ")
+    @PostConstruct
     public void mainCrawler() throws InterruptedException {
         System.out.println("开始执行主要爬虫任务");
         mainCrawlerService.dailyPersistentTask();

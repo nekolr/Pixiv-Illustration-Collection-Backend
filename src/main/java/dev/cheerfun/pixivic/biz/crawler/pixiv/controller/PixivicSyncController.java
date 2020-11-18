@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.service.DailyTaskService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustRankService;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
@@ -31,12 +32,19 @@ public class PixivicSyncController {
     private final IllustRankService illustRankService;
     private final RankService rankService;
     private final IllustrationService illustrationService;
+    private final DailyTaskService dailyTaskService;
     private final ObjectMapper objectMapper;
 
     @GetMapping("/reSyncRank")
     public ResponseEntity<Result<String>> reSyncRank(@RequestParam String date) throws InterruptedException {
         illustRankService.pullAllRank(date);
         return ResponseEntity.ok().body(new Result<>("抓取日排行成功"));
+    }
+
+    @GetMapping("/mainCrawler")
+    public ResponseEntity<Result<String>> mainCrawler(@RequestParam String date) throws InterruptedException {
+        dailyTaskService.mainCrawler();
+        return ResponseEntity.ok().body(new Result<>("全量抓取成功"));
     }
 
     @GetMapping("/reSyncRankToIllust")
