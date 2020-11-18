@@ -114,7 +114,6 @@ public class IllustrationService {
                 saveToDb(e);
             }
         });
-        //saveToDb(illustrationLists.stream().flatMap(Collection::stream).filter(Objects::nonNull).collect(Collectors.toList()));
         return illustrationLists.stream().flatMap(Collection::stream).filter(Objects::nonNull).map(Illustration::getArtistId).distinct().collect(Collectors.toList());
     }
 
