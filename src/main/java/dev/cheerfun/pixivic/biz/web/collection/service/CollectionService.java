@@ -161,8 +161,6 @@ public class CollectionService {
         if (collection.getIllustCount() == 0) {
             List<ImageUrl> imageUrls = illustrationBizService.queryIllustrationById(illustrationIds.get(0)).getImageUrls();
             List<ImageUrl> temp = new ArrayList<>();
-            temp.add(objectMapper.convertValue(imageUrls.get(0), new TypeReference<ImageUrl>() {
-            }));
             collectionMapper.updateCollectionCover(collectionId, temp);
         }
         return failed;
@@ -458,9 +456,7 @@ public class CollectionService {
         List<ImageUrl> imageUrlList = illustIdList.stream().map(e -> {
             Illustration illustration = illustrationBizService.queryIllustrationByIdFromDb(e);
             if (illustration != null) {
-                return objectMapper.convertValue(illustration
-                        .getImageUrls().get(0), new TypeReference<ImageUrl>() {
-                });
+                return illustration.getImageUrls().get(0);
             }
             return null;
         }).filter(Objects::nonNull).limit(5).collect(Collectors.toList());

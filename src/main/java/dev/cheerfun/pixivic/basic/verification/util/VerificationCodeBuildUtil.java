@@ -15,11 +15,9 @@ import java.util.Random;
  */
 
 public class VerificationCodeBuildUtil {
-    private final static Random random;
     private final static String str;
 
     static {
-        random = new Random();
         str = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890";
     }
 

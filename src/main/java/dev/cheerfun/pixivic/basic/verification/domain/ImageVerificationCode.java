@@ -8,7 +8,7 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.Base64;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author OysterQAQ
@@ -20,13 +20,11 @@ public class ImageVerificationCode extends AbstractVerificationCode {
     private final static int WIDTH;
     private final static int HEIGHT;
     private final static int LINE_COUNT;
-    private final static Random random;
 
     static {
         WIDTH = 200;
         HEIGHT = 60;
         LINE_COUNT = 40;
-        random = new Random();
     }
 
     @Getter
@@ -34,6 +32,7 @@ public class ImageVerificationCode extends AbstractVerificationCode {
 
     public ImageVerificationCode(String value) {
         super(value);
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         char[] chars = value.toCharArray();
         int length = chars.length;
         int fontWidth = WIDTH / length;
@@ -87,6 +86,7 @@ public class ImageVerificationCode extends AbstractVerificationCode {
     }
 
     private static Color getRandColor(int fc, int bc) {// 给定范围获得随机颜色
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         fc = fc > 255 ? 255 : fc;
         bc = bc > 255 ? 255 : bc;
         int r = fc + random.nextInt(bc - fc);

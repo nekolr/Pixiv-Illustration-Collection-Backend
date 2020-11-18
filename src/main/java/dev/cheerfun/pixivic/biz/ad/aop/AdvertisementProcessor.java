@@ -18,6 +18,7 @@ import org.springframework.stereotype.Component;
 import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.stream.Collectors;
 
 /**
@@ -35,7 +36,6 @@ public class AdvertisementProcessor {
     private static List<Integer> randomList;
     private static Map<Integer, List<Advertisement>> advertisementMap;
     private final AdvertisementMapper advertisementMapper;
-    private final Random random = new Random(21);
 
     @Pointcut(value = "@annotation(dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement)||@within(dev.cheerfun.pix" +
             "ivic.biz.ad.annotation.WithAdvertisement)")
@@ -71,6 +71,7 @@ public class AdvertisementProcessor {
     }
 
     public void insertAD(Object responseEntity) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         Result<List> body = (Result<List>) ((ResponseEntity) responseEntity).getBody();
         List bodyData = body.getData();
         if (bodyData.size() > 0) {

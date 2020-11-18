@@ -1,5 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.illust.service;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
@@ -45,6 +47,7 @@ public class IllustrationBizService {
     private final IllustrationBizMapper illustrationBizMapper;
     private final IllustrationService illustrationService;
     private final StringRedisTemplate stringRedisTemplate;
+    private final ObjectMapper objectMapper;
     private LinkedBlockingQueue<Integer> waitForPullIllustQueue;
     private final ExecutorService crawlerExecutorService;
 
@@ -126,13 +129,15 @@ public class IllustrationBizService {
             log.info("画作：" + illustId + "不存在，加入队列等待爬取");
             waitForPullIllustQueue.offer(illustId);
         }
-        return illustration;
+        return objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
+        });
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
     public Illustration queryIllustrationByIdFromDbWithoutCache(Integer illustId) {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
-        return illustration;
+        return objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
+        });
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")

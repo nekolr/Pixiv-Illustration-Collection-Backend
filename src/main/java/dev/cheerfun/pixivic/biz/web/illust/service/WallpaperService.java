@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.illust.service;
 import dev.cheerfun.pixivic.biz.wallpaper.po.WallpaperCategory;
 import dev.cheerfun.pixivic.biz.web.illust.secmapper.WallpaperMapper;
 import dev.cheerfun.pixivic.common.po.Illustration;
+import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +12,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author OysterQAQ
@@ -25,6 +28,15 @@ import java.util.List;
 public class WallpaperService {
     private final WallpaperMapper wallpaperMapper;
     private final IllustrationBizService illustrationBizService;
+    private int pcWallpaperCount;
+    private int mobileWallpaperCount;
+    public final static String DEFAULT_IMAGE = "https://i.pixiv.cat/img-original/img/2017/12/20/00/12/19/66360679_p0.png?1605706663178";
+
+    @PostConstruct
+    public void init() {
+        pcWallpaperCount = wallpaperMapper.queryPcWallpaperCount();
+        mobileWallpaperCount = wallpaperMapper.queryMobileWallpaperCount();
+    }
 
     //查询所有分类
     @Cacheable("tagCategory")
@@ -59,8 +71,29 @@ public class WallpaperService {
         return illustrationBizService.queryIllustrationByIdList(queryIllustIdByTag(tagId, type, offset, pageSize));
     }
 
-    public String queryRandomIllustration() {
-
-        return null;
+    public String queryRandomIllustration(int type, String size) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
+        int illustId = queryIllustIdByRandomIndex(type, random.nextInt(1, type == 1 ? pcWallpaperCount : mobileWallpaperCount));
+        List<ImageUrl> imageUrls = illustrationBizService.queryIllustrationByIdFromDb(illustId).getImageUrls();
+        if (imageUrls != null && imageUrls.size() > 0) {
+            ImageUrl imageUrl = imageUrls.get(0);
+            switch (size) {
+                case "original":
+                    return imageUrl.getOriginal();
+                case "large":
+                    return imageUrl.getLarge();
+                case "medium":
+                    return imageUrl.getMedium();
+                case "squareMedium":
+                    return imageUrl.getSquareMedium();
+            }
+        }
+        return DEFAULT_IMAGE;
     }
+
+    @Cacheable("randomIllust")
+    public int queryIllustIdByRandomIndex(int type, int randomIndex) {
+        return type == 1 ? wallpaperMapper.queryPCIllustIdByRandomIndex(randomIndex) : wallpaperMapper.queryMobileIllustIdByRandomIndex(randomIndex);
+    }
+
 }

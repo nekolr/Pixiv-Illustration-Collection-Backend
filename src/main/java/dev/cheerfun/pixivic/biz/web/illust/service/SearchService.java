@@ -248,8 +248,6 @@ public class SearchService {
     @Cacheable(value = "related")
     public CompletableFuture<List<Integer>> queryIllustrationRelated(int illustId, int page, int pageSize) {
         Illustration illustration = illustrationBizService.queryIllustrationById(illustId);
-        illustration = objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
-        });
         if (illustration != null && illustration.getTags().size() > 0) {
             String keywords = illustration.getTags().stream().filter(e -> !"".equals(e.getName())).limit(3).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();
             return searchByKeyword(keywords, pageSize, page, "original", null, null, null, null, null, 0, null, null, null, 5, illustId);

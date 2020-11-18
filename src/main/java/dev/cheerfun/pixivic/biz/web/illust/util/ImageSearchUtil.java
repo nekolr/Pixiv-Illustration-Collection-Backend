@@ -21,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author OysterQAQ
@@ -37,7 +38,6 @@ public class ImageSearchUtil {
     private final static String URL = "uri=";
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
-    private Random random = new Random();
     private int length;
     private List<String> tokens;
     @Value("${saucenao.token.path}")
@@ -52,6 +52,7 @@ public class ImageSearchUtil {
     }
 
     public CompletableFuture<SaucenaoResponse> searchBySaucenao(String url) {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(SAUCENAO_URL_1 + url + SAUCENAO_URL_2 + tokens.get(random.nextInt(length))))
                 .GET()

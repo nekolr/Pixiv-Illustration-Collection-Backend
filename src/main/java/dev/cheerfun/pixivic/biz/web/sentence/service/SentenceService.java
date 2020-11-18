@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 /**
  * @author OysterQAQ
@@ -20,7 +21,6 @@ import java.util.Random;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SentenceService {
     private final SentenceMapper sentenceMapper;
-    private final Random random = new Random(21);
     private Integer sentenceListSize;
 
     @PostConstruct
@@ -30,6 +30,7 @@ public class SentenceService {
     }
 
     public Sentence queryRandomSentence() {
+        ThreadLocalRandom random = ThreadLocalRandom.current();
         return querySentenceById(random.nextInt(sentenceListSize));
     }
 
