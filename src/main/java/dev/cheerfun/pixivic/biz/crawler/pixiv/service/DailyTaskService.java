@@ -31,7 +31,6 @@ public class DailyTaskService {
     }
 
     @Scheduled(cron = "0 0 3,4,5,6,7,8,9 * * ? ")
-    @PostConstruct
     public void mainCrawler() throws InterruptedException {
         System.out.println("开始执行主要爬虫任务");
         mainCrawlerService.dailyPersistentTask();
