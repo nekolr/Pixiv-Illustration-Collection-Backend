@@ -21,7 +21,6 @@ public class MainCrawlerService {
     private final IllustrationService illustrationService;
     private final ArtistService artistService;
 
-    @CacheEvict(cacheNames = "illust", allEntries = true)
     public void dailyPersistentTask() throws InterruptedException {
         int hour = LocalTime.now().getHour();
         LocalDate date = LocalDate.now().plusDays(-(hour + 1) * 2);
