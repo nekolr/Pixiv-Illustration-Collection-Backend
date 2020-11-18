@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.wallpaper.constant.WallpaperType;
 import dev.cheerfun.pixivic.biz.wallpaper.secmapper.WallpaperGenerateMapper;
+import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
@@ -31,6 +32,17 @@ public class WallpaperGenerateService {
     private final ObjectMapper objectMapper;
     private final float computer = 16f / 9;
     private final float phone = 9f / 16;
+
+/*    @PostConstruct
+    public void init(){
+
+        List<Integer> integers = wallpaperGenerateMapper.queryAllWallpaperByType(2);
+        Collections.shuffle(integers);
+        for (int i = 0; i < integers.size(); i++) {
+            wallpaperGenerateMapper.insertToRandomIndexTable(2,i,integers.get(i));
+        }
+
+    }*/
 
     /* *
      */
