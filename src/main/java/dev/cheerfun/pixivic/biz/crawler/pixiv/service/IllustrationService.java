@@ -108,7 +108,6 @@ public class IllustrationService {
         }
         System.err.println("失败队列：");
         waitForReDownload.forEach(System.out::println);
-        illustrationLists.removeIf(Objects::isNull);
         illustrationLists.forEach(e -> {
             if (e != null && e.size() > 0) {
                 saveToDb(e);
