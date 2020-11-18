@@ -49,8 +49,11 @@ public class WallpaperController {
 
     @GetMapping("/wallpaper/{platform}/random")
     @RateLimit
-    public ResponseEntity<Result<Illustration>> queryRandomIllustration(@PathVariable String platform, @RequestParam(value = "size", defaultValue = "original") String size, @RequestParam(value = "domain", defaultValue = "https://i.pixiv.cat") String domain, @RequestHeader("X-Forwarded-For") String XForwardedFor) {
+    public ResponseEntity<Result<Illustration>> queryRandomIllustration(@PathVariable String platform, @RequestParam(value = "size", defaultValue = "original") String size, @RequestParam(value = "webp", defaultValue = "1") String webp, @RequestParam(value = "domain", defaultValue = "https://i.pixiv.cat") String domain, @RequestHeader("X-Forwarded-For") String XForwardedFor) {
         String url = wallpaperService.queryRandomIllustration("pc".equals(platform) ? 1 : 2, size);
+        if ("0".equals(webp)) {
+            url = url.replace("_webp", "");
+        }
         return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header("Location", url.replace("https://i.pximg.net", domain)).header("Cache-Control", "no-cache").body(null);
     }
 
