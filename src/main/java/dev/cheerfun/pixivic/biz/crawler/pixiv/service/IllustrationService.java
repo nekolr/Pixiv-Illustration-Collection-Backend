@@ -157,7 +157,7 @@ public class IllustrationService {
         cd.await(waitForReDownload.size() * 2, TimeUnit.SECONDS);
     }
 
-    //@Transactional(propagation = Propagation.NOT_SUPPORTED, rollbackFor = Exception.class, transactionManager = "SecondaryTransactionManager")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, rollbackFor = Exception.class, transactionManager = "SecondaryTransactionManager")
     @Async("saveToDBExecutorService")
     public void saveToDb(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
