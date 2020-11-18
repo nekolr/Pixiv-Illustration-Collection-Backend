@@ -89,7 +89,7 @@ public class IllustrationService {
         final CountDownLatch cd = new CountDownLatch(taskSum);
         List<List<Illustration>> illustrationLists = new ArrayList<>(Collections.nCopies(taskSum, null));
         List<String> waitForReDownload = new ArrayList<>(Collections.nCopies(taskSum, null));
-        modes.forEach(modeMeta -> {
+        modes.stream().parallel().forEach(modeMeta -> {
             IntStream.range(0, modeMeta.getTaskSum()).forEach(i -> {
                 getDayRankInfo(modeMeta, date.toString(), i, waitForReDownload)
                         .whenComplete((illustrations, throwable) -> {
@@ -110,7 +110,7 @@ public class IllustrationService {
         waitForReDownload.forEach(System.out::println);
         illustrationLists.removeIf(Objects::isNull);
         illustrationLists.forEach(e -> {
-            if (e != null) {
+            if (e != null && e.size() > 0) {
                 saveToDb(e);
             }
         });
