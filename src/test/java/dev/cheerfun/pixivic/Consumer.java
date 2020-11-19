@@ -43,8 +43,11 @@ import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Encrypt;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        String xForwardedFor = "218.24.120.112, 10.3.0.11, 10.3.0.11";
+        String xForwardedFor = "218.24.120.112";
         int i = xForwardedFor.indexOf(",");
+        if (i == -1) {
+            i = xForwardedFor.length();
+        }
         System.out.println(xForwardedFor.substring(0, i));
         int ip = ip2Int(xForwardedFor.substring(0, i));
         System.out.println(ip);

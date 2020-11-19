@@ -28,7 +28,6 @@
         <guava.version>30.0-jre</guava.version>
         <jsoup.version>1.13.1</jsoup.version>
         <mybatis-spring-boot-starter.version>2.1.4</mybatis-spring-boot-starter.version>
-        <mybatis-typehandlers-jsr310.version>1.0.2</mybatis-typehandlers-jsr310.version>
         <jackson.version>2.11.3</jackson.version>
         <bucket4j-core.version>4.10.0</bucket4j-core.version>
         <caffeine.version>2.8.5</caffeine.version>
