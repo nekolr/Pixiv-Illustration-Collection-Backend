@@ -207,7 +207,6 @@ public class IllustrationService {
 
     }
 
-    //@Transactional(transactionManager = "SecondaryTransactionManager")
     public void insertArtistIllustRelation(List<Illustration> illustrations) {
         try {
             artistIllustRelationMapper.batchiInsertArtistIllustRelation(illustrations);
@@ -217,7 +216,6 @@ public class IllustrationService {
 
     }
 
-    //@Transactional(rollbackFor = Exception.class, transactionManager = "SecondaryTransactionManager")
     public void saveToDb2(List<Illustration> illustrations) {
         List<Tag> tags = illustrations.stream().parallel().map(Illustration::getTags).flatMap(Collection::stream).collect(Collectors.toList());
         if (tags.size() > 0) {
