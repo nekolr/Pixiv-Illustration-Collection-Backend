@@ -445,7 +445,7 @@ public class CollectionService {
 
     @Cacheable(value = "user_collection_digest_list", key = "#userId+'-'+#isPublic")
     public List<Integer> queryUserCollectionNameListFromDb(Integer userId, Integer isPublic) {
-        return collectionMapper.queryUserCollection(userId, 0, 200, 1, isPublic, "create_time", "desc");
+        return collectionMapper.queryUserCollection(userId, 0, 500, 1, isPublic, "create_time", "desc");
     }
 
     @CacheEvict(value = "collections", key = "#collectionId")
