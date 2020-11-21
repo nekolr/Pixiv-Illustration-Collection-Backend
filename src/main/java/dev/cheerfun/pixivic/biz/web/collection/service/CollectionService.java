@@ -159,10 +159,8 @@ public class CollectionService {
         }
         collectionMapper.incrCollectionIllustCount(collectionId, sum);
         if (collection.getIllustCount() == 0 || collection.getCover() == null || collection.getCover().size() == 0) {
-            List<ImageUrl> imageUrls = illustrationBizService.queryIllustrationById(illustrationIds.get(0)).getImageUrls();
-            List<ImageUrl> temp = new ArrayList<>();
-            temp.add(imageUrls.get(0));
-            collectionMapper.updateCollectionCover(collectionId, temp);
+            List<ImageUrl> imageUrlList = illustrationBizService.queryIllustrationByIdList(illustrationIds).stream().limit(5).map(i -> i.getImageUrls().get(0)).collect(Collectors.toList());
+            collectionMapper.updateCollectionCover(collectionId, imageUrlList);
         }
         return failed;
     }
@@ -465,7 +463,7 @@ public class CollectionService {
         return true;
     }
 
-    public Boolean fixCollection() {
+    public Boolean fixCollectionCover() {
         List<Integer> collections = collectionMapper.queryAllCollectionWithoutCover();
         collections.forEach(e -> {
             try {
