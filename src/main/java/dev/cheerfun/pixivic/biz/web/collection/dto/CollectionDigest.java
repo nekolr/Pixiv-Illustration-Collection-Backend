@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author OysterQAQ
@@ -20,7 +21,7 @@ public class CollectionDigest {
     private String caption;
 
     public static CollectionDigest castByCollection(Collection collection) {
-        return new CollectionDigest(collection.getId(), collection.getTitle(), collection.getCaption());
+        return new CollectionDigest(collection.getId(), collection.getTitle(), StringUtils.abbreviate(collection.getCaption(), 20));
     }
 
 }
