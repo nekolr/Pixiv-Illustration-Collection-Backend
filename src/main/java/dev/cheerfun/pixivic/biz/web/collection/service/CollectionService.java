@@ -158,7 +158,7 @@ public class CollectionService {
             }
         }
         collectionMapper.incrCollectionIllustCount(collectionId, sum);
-        if (collection.getIllustCount() == 0) {
+        if (collection.getIllustCount() == 0 || collection.getCover() == null || collection.getCover().size() == 0) {
             List<ImageUrl> imageUrls = illustrationBizService.queryIllustrationById(illustrationIds.get(0)).getImageUrls();
             List<ImageUrl> temp = new ArrayList<>();
             temp.add(imageUrls.get(0));
