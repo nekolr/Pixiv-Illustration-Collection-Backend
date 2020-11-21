@@ -465,4 +465,16 @@ public class CollectionService {
         return true;
     }
 
+    public Boolean fixCollection() {
+        List<Integer> collections = collectionMapper.queryAllCollectionWithoutCover();
+        collections.forEach(e -> {
+            try {
+                List<ImageUrl> collect = queryCollectionIllust(e, 1, 5).stream().limit(5).map(i -> i.getImageUrls().get(0)).collect(Collectors.toList());
+                collectionMapper.updateCollectionCover(e, collect);
+            } catch (Exception exception) {
+                exception.printStackTrace();
+            }
+        });
+        return true;
+    }
 }

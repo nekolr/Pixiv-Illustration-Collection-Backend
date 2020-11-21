@@ -233,4 +233,7 @@ public interface CollectionMapper {
     @Select("select count(*) from collections where use_flag = 1 and is_public = 0 ")
     Integer queryPublicCollectionCount();
 
+    @Select("select collection_id from collections where illust_count>0 and cover='[]'")
+    List<Integer> queryAllCollectionWithoutCover();
+
 }

@@ -170,4 +170,10 @@ public class CollectionController {
         return null;
     }
 
+    //修复画集
+    @GetMapping("/collections/fix")
+    public ResponseEntity<Result<Boolean>> fixCollection() {
+        return ResponseEntity.ok().body(new Result<>("修复画集封面成功", collectionService.queryPublicCollectionCount(), collectionService.fixCollection()));
+    }
+
 }
