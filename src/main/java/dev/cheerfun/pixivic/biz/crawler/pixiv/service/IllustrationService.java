@@ -38,7 +38,6 @@ public class IllustrationService {
     private static final List<ModeMeta> modes;
     private static final HashMap<String, Integer> modeIndex;
     private static final Integer taskSum;
-    private static ReentrantLock lock = new ReentrantLock();
     private LinkedBlockingQueue<List<Illustration>> waitForSaveToDbIllustList;
     private final RequestUtil requestUtil;
     private final IllustrationMapper illustrationMapper;
