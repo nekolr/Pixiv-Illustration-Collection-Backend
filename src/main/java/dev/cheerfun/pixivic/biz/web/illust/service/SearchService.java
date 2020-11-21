@@ -13,8 +13,8 @@ import dev.cheerfun.pixivic.biz.web.illust.dto.SearchSuggestionSyncDTO;
 import dev.cheerfun.pixivic.biz.web.illust.dto.TagTranslation;
 import dev.cheerfun.pixivic.biz.web.illust.exception.SearchException;
 import dev.cheerfun.pixivic.biz.web.illust.secmapper.PixivSuggestionMapper;
-import dev.cheerfun.pixivic.biz.web.illust.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.biz.web.illust.util.IllustSearchUtil;
+import dev.cheerfun.pixivic.biz.web.illust.util.ImageSearchUtil;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
@@ -26,6 +26,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
@@ -66,6 +67,7 @@ public class SearchService {
     private final ExecutorService saveToDBExecutorService;
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
+    @PostConstruct
     public void init() {
         savePixivSuggestionToDb();
     }
