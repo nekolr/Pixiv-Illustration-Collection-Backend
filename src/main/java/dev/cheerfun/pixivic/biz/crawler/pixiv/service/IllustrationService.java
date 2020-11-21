@@ -87,6 +87,7 @@ public class IllustrationService {
     @PostConstruct
     public void init() {
         waitForSaveToDbIllustList = new LinkedBlockingQueue<>(1024 * 1000);
+        dealWaitForSaveToDbIllustList();
     }
 
     public List<Integer> pullAllRankInfo(LocalDate date) throws InterruptedException {
