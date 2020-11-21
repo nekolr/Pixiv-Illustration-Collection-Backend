@@ -160,8 +160,7 @@ public class CollectionService {
         collectionMapper.incrCollectionIllustCount(collectionId, sum);
         if (collection.getIllustCount() == 0) {
             List<ImageUrl> imageUrls = illustrationBizService.queryIllustrationById(illustrationIds.get(0)).getImageUrls();
-            List<ImageUrl> temp = new ArrayList<>();
-            collectionMapper.updateCollectionCover(collectionId, temp);
+            collectionMapper.updateCollectionCover(collectionId, imageUrls);
         }
         return failed;
     }
