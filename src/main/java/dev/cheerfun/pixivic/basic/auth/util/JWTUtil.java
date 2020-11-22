@@ -50,9 +50,8 @@ public class JWTUtil implements Serializable {
     private String generateToken(String issuer, Map<String, Object> claims) {
         claims.merge(AuthConstant.REFRESH_COUNT, 0, (value, newValue) -> (Integer) value < 3 ? (Integer) value + 1 : value);
         Integer refreshCount = (Integer) claims.get(AuthConstant.REFRESH_COUNT);
-        long expirationTimeLong = Long.parseLong(authProperties.getExpirationTime());
         final Date createdDate = new Date();
-        final Date expirationDate = new Date(createdDate.getTime() + (refreshCount + 1) * expirationTimeLong * 1000);
+        final Date expirationDate = new Date(createdDate.getTime() + (refreshCount + 1) * authProperties.getExpirationTime() * 1000);
         return Jwts.builder()
                 .setIssuer(issuer)
                 .setClaims(claims)

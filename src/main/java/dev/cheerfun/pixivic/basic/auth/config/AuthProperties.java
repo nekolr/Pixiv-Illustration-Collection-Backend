@@ -14,7 +14,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AuthProperties {
     private String secret;
 
-    private String expirationTime;
+    private long expirationTime;
 
     private long refreshInterval;
 }
