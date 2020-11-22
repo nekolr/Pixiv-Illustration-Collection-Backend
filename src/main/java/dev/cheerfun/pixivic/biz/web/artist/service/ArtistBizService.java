@@ -19,6 +19,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,7 @@ public class ArtistBizService {
     private final ExecutorService crawlerExecutorService;
     private final IllustrationBizService illustrationBizService;
     private final ArtistSearchUtil artistSearchUtil;
+    private final CacheManager cacheManager;
     private LinkedBlockingQueue<String> waitForPullArtistQueue;
     private LinkedBlockingQueue<Integer> waitForPullArtistInfoQueue;
 
@@ -185,19 +187,28 @@ public class ArtistBizService {
                     artistId = waitForPullArtistInfoQueue.take();
                     if (!stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_NOT_IN_PIXIV, String.valueOf(artistId))) {
                         log.info("开始从Pixiv获取画师(id:" + artistId + ")信息");
-                        artistService.pullArtistsInfo(artistId);
-                        log.info("获取画师(id:" + artistId + ")信息完毕");
-                        artistService.pullArtistAllIllust(artistId);
+                        Artist artist = artistService.pullArtistsInfo(artistId);
+                        if (artist != null) {
+                            log.info("获取画师(id:" + artistId + ")信息完毕");
+                            putIllustCache(artist);
+                            artistService.pullArtistAllIllust(artistId);
+                        } else {
+                            log.info("画师(id:" + artistId + ")信息在Pixiv上不存在");
+                            stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_NOT_IN_PIXIV, String.valueOf(artistId));
+                        }
                     } else {
                         log.info("画师(id:" + artistId + ")信息在Pixiv上不存在，跳过");
                     }
                 } catch (Exception exception) {
                     log.error("获取画师(id:" + artistId + ")信息失败");
-                    stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_NOT_IN_PIXIV, String.valueOf(artistId));
                     exception.printStackTrace();
                 }
             }
         });
+    }
+
+    public void putIllustCache(Artist artist) {
+        cacheManager.getCache("artist").put(artist.getId(), artist);
     }
 
     @Cacheable(value = "artistSummarys")

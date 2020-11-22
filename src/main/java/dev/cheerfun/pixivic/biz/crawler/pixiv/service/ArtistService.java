@@ -128,35 +128,6 @@ public class ArtistService {
         }
     }
 
-    public void dealArtistIllustList() throws IOException {
-        Path configFilePath = FileSystems.getDefault()
-                .getPath("/home/artist/");
-        Integer offset = Integer.valueOf(Objects.requireNonNull(stringRedisTemplate.opsForValue().get("offset")));
-        List<Path> fileWithName = Files.walk(configFilePath)
-                .filter(Files::isRegularFile)
-                .sorted().collect(Collectors.toList());
-       /* for(int j=0;j<178200;j++){
-            System.out.println("删除"+fileWithName.get(j));
-            Files.delete(fileWithName.get(j));
-        }*/
-        for (int i = offset; i < fileWithName.size(); i += 300) {
-            System.out.println("开始处理第" + i + "个到第" + (i + 300) + "个文件");
-            List<Illustration> illustrationList = fileWithName.stream().skip(i).limit(300).map(e ->
-            {
-                try {
-                    return objectMapper.readValue(Files.readString(e), new TypeReference<IllustsDTO>() {
-                    }).getIllusts();
-                } catch (IOException ex) {
-                    return null;
-                }
-            }).filter(Objects::nonNull).flatMap(Collection::stream).filter(Objects::nonNull).map(IllustrationDTO::castToIllustration).collect(Collectors.toList());
-          /*  IllustsDTO illustsDTO = objectMapper.readValue(Files.readString(fileWithName.get(i)), new TypeReference<IllustsDTO>() {
-            });
-            List<Illustration> illustrationList = illustsDTO.getIllusts().stream().parallel().map(IllustrationDTO::castToIllustration).collect(Collectors.toList());*/
-            illustrationService.saveToDb2(illustrationList);
-            stringRedisTemplate.opsForValue().set("offset", String.valueOf(i));
-        }
-    }
 
     public List<Artist> pullArtistsInfo(List<Integer> artistIds) {
         List<Integer> artistIdsToDownload = artistMapper.queryArtistsNotInDb(artistIds);
