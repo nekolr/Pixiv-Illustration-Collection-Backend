@@ -13,6 +13,7 @@ import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,6 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.concurrent.locks.ReentrantLock;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -44,6 +44,7 @@ public class IllustrationService {
     private final ObjectMapper objectMapper;
     private final ExecutorService saveToDBExecutorService;
     private final ArtistIllustRelationMapper artistIllustRelationMapper;
+    private final CacheManager cacheManager;
 
     static {
         taskSum = 162;
@@ -199,12 +200,17 @@ public class IllustrationService {
                 try {
                     List<Illustration> illustrationList = waitForSaveToDbIllustList.take();
                     saveToDbSync(illustrationList);
+                    putIllustCache(illustrationList);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
 
+    }
+
+    public void putIllustCache(List<Illustration> illustrationList) {
+        illustrationList.stream().parallel().forEach(e -> cacheManager.getCache("illust").put(e.getId(), e));
     }
 
     public void insertArtistIllustRelation(List<Illustration> illustrations) {
