@@ -190,7 +190,7 @@ public class ArtistBizService {
                         Artist artist = artistService.pullArtistsInfo(artistId);
                         if (artist != null) {
                             log.info("获取画师(id:" + artistId + ")信息完毕");
-                            putIllustCache(artist);
+                            putArtistCache(artist);
                             artistService.pullArtistAllIllust(artistId);
                         } else {
                             log.info("画师(id:" + artistId + ")信息在Pixiv上不存在");
@@ -207,7 +207,7 @@ public class ArtistBizService {
         });
     }
 
-    public void putIllustCache(Artist artist) {
+    public void putArtistCache(Artist artist) {
         cacheManager.getCache("artist").put(artist.getId(), artist);
     }
 
