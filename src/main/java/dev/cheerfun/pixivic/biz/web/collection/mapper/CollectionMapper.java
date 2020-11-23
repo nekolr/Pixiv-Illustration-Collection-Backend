@@ -130,6 +130,7 @@ public interface CollectionMapper {
             @Result(property = "isPublic", column = "is_public"),
             @Result(property = "useFlag", column = "use_flag"),
             @Result(property = "forbidComment", column = "forbid_comment"),
+            @Result(property = "pornWarning", column = "porn_warning"),
             @Result(property = "totalBookmarked", column = "total_bookmarked"),
             @Result(property = "totalView", column = "total_view"),
             @Result(property = "totalPeopleSeen", column = "total_people_seen"),
