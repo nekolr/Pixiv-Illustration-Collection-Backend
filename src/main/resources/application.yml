@@ -99,7 +99,7 @@ management:
 jjwt:
   secret: 生蚝QAQ只是一位兴趣使然的面向ACG编程人员♥♥♥♥♥♥♥♥♥♥♥♥
   expirationTime: 259200
-  refreshInterval: 10800000
+  refreshInterval: 21600000
 pixiv:
   oauth:
     client_id: KzEZED7aC0vird8jWyHM38mXjNTY
