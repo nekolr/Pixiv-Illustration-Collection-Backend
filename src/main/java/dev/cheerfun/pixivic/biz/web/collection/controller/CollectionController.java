@@ -18,6 +18,7 @@ import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
@@ -31,6 +32,7 @@ import java.util.concurrent.CompletableFuture;
  * @description CollectionController
  */
 @RestController
+@Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CollectionController {
     private final CollectionService collectionService;

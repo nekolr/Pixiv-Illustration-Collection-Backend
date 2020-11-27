@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import lombok.Data;
 
+import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class Collection {
     private String username;
     private List<ImageUrl> cover;
     @SensitiveCheck
+    @Size(min = 2, max = 40)
     private String title;
     @SensitiveCheck
     private String caption;
