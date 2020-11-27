@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.collection.po;
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Size;
 
@@ -19,6 +20,5 @@ public class CollectionTag {
     private Integer id;
     @JsonSetter("tag_name")
     @JsonAlias({"tagName", "tag_name"})
-    @Size(min = 2, max = 30)
     private String tagName;
 }

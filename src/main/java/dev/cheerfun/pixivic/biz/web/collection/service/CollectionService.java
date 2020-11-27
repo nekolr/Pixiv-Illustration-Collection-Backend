@@ -67,9 +67,14 @@ public class CollectionService {
         //去除敏感词
         List<CollectionTag> tagList = collection.getTagList();
         if (tagList != null && tagList.size() > 0) {
-            tagList.forEach(e -> {
-                e.setTagName(sensitiveFilter.filter(e.getTagName()));
-            });
+            collection.setTagList(tagList.stream().filter(e -> {
+                if (e.getTagName() != null && e.getTagName().length() > 0) {
+                    e.setTagName(sensitiveFilter.filter(e.getTagName()));
+                    return true;
+                } else {
+                    return false;
+                }
+            }).collect(Collectors.toList()));
         }
         collection.setCreateTime(LocalDateTime.now());
         //插入画集
@@ -103,9 +108,14 @@ public class CollectionService {
         checkCollectionAuth(collection.getId(), userId);
         List<CollectionTag> tagList = collection.getTagList();
         if (tagList != null && tagList.size() > 0) {
-            tagList.forEach(e -> {
-                e.setTagName(sensitiveFilter.filter(e.getTagName()));
-            });
+            collection.setTagList(tagList.stream().filter(e -> {
+                if (e.getTagName() != null && e.getTagName().length() > 0) {
+                    e.setTagName(sensitiveFilter.filter(e.getTagName()));
+                    return true;
+                } else {
+                    return false;
+                }
+            }).collect(Collectors.toList()));
         }
         collectionMapper.updateCollection(userId, collection);
         //是否修改了可见性

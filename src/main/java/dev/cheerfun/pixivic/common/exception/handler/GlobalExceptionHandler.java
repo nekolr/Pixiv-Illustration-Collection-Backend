@@ -37,7 +37,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
     public ResponseEntity<Result> handleBaseException(MethodArgumentNotValidException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("参数错误"));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result(e.getMessage()));
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)

@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -48,7 +49,7 @@ public class CollectionController {
     //修改画集元数据
     @PutMapping("/collections/{collectionId}")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> updateCollection(@PathVariable Integer collectionId, @RequestBody @SensitiveCheck Collection collection, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> updateCollection(@PathVariable Integer collectionId, @RequestBody @Valid @SensitiveCheck Collection collection, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("修改画集成功", collectionService.updateCollection(userId, collection)));
     }
@@ -120,7 +121,7 @@ public class CollectionController {
     //查询用户画集
     @GetMapping("/users/{userId}/collections")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(15) Integer pageSize, @RequestParam(required = false) Integer isPublic, @RequestParam(value = "orderBy", defaultValue = "create_time") String orderBy, @RequestParam(value = "orderByMode", defaultValue = "desc") String orderByMode) {
+    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(30) Integer pageSize, @RequestParam(required = false) Integer isPublic, @RequestParam(value = "orderBy", defaultValue = "create_time") String orderBy, @RequestParam(value = "orderByMode", defaultValue = "desc") String orderByMode) {
         Integer isSelf = collectionService.checkUserAuth(isPublic, userId);
         if ("updateTime".equals(orderBy)) {
             orderBy = "update_time";

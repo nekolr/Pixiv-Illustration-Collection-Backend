@@ -8,7 +8,11 @@ import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,10 +27,11 @@ import java.util.List;
 public class Collection {
     private Integer id;
     private Integer userId;
+    @NotNull
     private String username;
     private List<ImageUrl> cover;
     @SensitiveCheck
-    @Size(min = 2, max = 40)
+    @Length(max = 100, min = 1, message = "标题长度不符合")
     private String title;
     @SensitiveCheck
     private String caption;

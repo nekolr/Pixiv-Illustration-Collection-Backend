@@ -5,8 +5,8 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
-import javax.validation.constraints.Max;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,7 +28,7 @@ public class Comment {
     private String replyToName;
     private String platform;
     @SensitiveCheck
-    @Max(value = 512)
+    @Length(max = 512)
     private String content;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")

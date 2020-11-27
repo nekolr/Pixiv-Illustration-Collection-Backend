@@ -12,6 +12,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
@@ -23,6 +24,7 @@ import java.util.List;
  * @date 2020/10/23 8:22 PM
  * @description WallpaperController
  */
+@Validated
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class WallpaperController {

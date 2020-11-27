@@ -18,12 +18,14 @@ import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
@@ -56,7 +58,7 @@ public class CommonController {
     }
 
     @GetMapping("/usernames/{username}")
-    public ResponseEntity<Result> checkUsername(@NotBlank @PathVariable("username") @Size(min = 2, max = 50) String username) {
+    public ResponseEntity<Result> checkUsername(@NotBlank @PathVariable("username") @Length(min = 2, max = 50) String username) {
         if (userService.checkUsername(username)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("用户名已存在"));
         }
@@ -73,7 +75,7 @@ public class CommonController {
 
     @PostMapping
     @CheckVerification
-    public ResponseEntity<Result<User>> signUp(@RequestBody SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result<User>> signUp(@RequestBody @Valid SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userInfo.castToUser();
         user = userService.signUp(user);
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", user));

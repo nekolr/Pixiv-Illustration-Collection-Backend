@@ -1,13 +1,12 @@
 package dev.cheerfun.pixivic.biz.web.user.dto;
 
-import com.fasterxml.jackson.annotation.JsonAlias;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 
 /**
  * @author OysterQAQ
@@ -17,15 +16,15 @@ import javax.validation.constraints.Size;
  */
 @Data
 public class SignUpDTO {
-    @NotBlank
+    @NotBlank(message = "用户名不能为空")
     @SensitiveCheck
-    @Size(min = 2, max = 40)
+    @Length(min = 2, max = 40, message = "用户名长度应该在2-40之间")
     private String username;
     @NotBlank
-    @Email
+    @Email(message = "不符合邮箱格式")
     private String email;
-    @NotBlank
-    @Size(min = 6, max = 20)
+    @NotBlank(message = "密码不能为空")
+    @Length(min = 6, max = 25, message = "密码长度应该在6-25之间")
     private String password;
     private String gRecaptchaResponse;
 
