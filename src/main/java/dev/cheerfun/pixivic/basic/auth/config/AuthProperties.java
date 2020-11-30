@@ -16,5 +16,5 @@ public class AuthProperties {
 
     private long expirationTime;
 
-    private long refreshInterval;
+    private Long refreshInterval;
 }
