@@ -329,7 +329,7 @@ public class CollectionService {
     }
 
     public List<Collection> queryCollectionById(List<Integer> collectionId) {
-        return collectionId.stream().parallel().map(this::queryCollectionById).collect(Collectors.toList());
+        return collectionId.stream().parallel().filter(Objects::nonNull).map(this::queryCollectionById).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public List<Collection> queryLatestPublicCollection(Integer page, Integer pageSize) {

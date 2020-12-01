@@ -176,7 +176,7 @@ public class IllustSearchUtil {
     public CompletableFuture<List<Integer>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .uri(URI.create("http://" + elasticsearch + ":9200/illusts/_search?_source=illust_id"))
+                .uri(URI.create("http://" + elasticsearch + "/illusts/_search?_source=illust_id"))
                 .method("GET", HttpRequest.BodyPublishers.ofString(body))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(

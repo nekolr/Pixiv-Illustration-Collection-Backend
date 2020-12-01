@@ -54,7 +54,7 @@ public class CollectionTagSearchUtil {
     public CompletableFuture<List<CollectionTag>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .uri(URI.create("http://" + elasticsearch + ":9200/collection_tag/_search"))
+                .uri(URI.create("http://" + elasticsearch + "/collection_tag/_search"))
                 .method("GET", HttpRequest.BodyPublishers.ofString(body))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(

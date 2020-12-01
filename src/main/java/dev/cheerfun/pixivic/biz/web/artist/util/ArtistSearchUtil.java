@@ -64,7 +64,7 @@ public class ArtistSearchUtil {
     public CompletableFuture<List<ArtistSearchDTO>> request(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .uri(URI.create("http://" + elasticsearch + ":9200/artist/_search"))
+                .uri(URI.create("http://" + elasticsearch + "/artist/_search"))
                 .method("GET", HttpRequest.BodyPublishers.ofString(body))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(

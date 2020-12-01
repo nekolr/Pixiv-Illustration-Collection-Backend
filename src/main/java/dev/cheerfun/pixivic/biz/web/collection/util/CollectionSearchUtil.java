@@ -118,7 +118,7 @@ public class CollectionSearchUtil {
     public CompletableFuture<List<Integer>> searchCollection(String body) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
-                .uri(URI.create("http://" + elasticsearch + ":9200/collections/_search?_source=illust_id"))
+                .uri(URI.create("http://" + elasticsearch + "/collections/_search?_source=collection_id"))
                 .method("GET", HttpRequest.BodyPublishers.ofString(body))
                 .build();
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(
