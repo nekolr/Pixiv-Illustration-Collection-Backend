@@ -65,15 +65,13 @@ public class DeepDanbooruService {
             try (InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {
                 NativeImageLoader loader = new NativeImageLoader(512, 512, 3, new ColorConversionTransform(COLOR_BGR2RGB));
                 INDArray indArray = loader.asMatrix(inputStream, false).div(255);
-                System.out.println(LocalDateTime.now());
                 URI uri = URI.create("http://" + TFServingServer + "/v1/models/deepdanbooru:predict");
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(uri).POST(HttpRequest.BodyPublishers.ofString("{\"instances\":" + indArray.toStringFull() + "}")).build();
                 String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-                System.out.println(LocalDateTime.now());
                 Predictions predictions = objectMapper.readValue(body, Predictions.class);
                 Float[] prediction = predictions.getPredictions()[0];
-                return IntStream.range(0, 7722).filter(e -> prediction[e] > 0.6).mapToObj(e -> queryTagListByIndex(e + 1)
+                return IntStream.range(0, 7722).parallel().filter(e -> prediction[e] > 0.6).mapToObj(e -> queryTagListByIndex(e + 1)
                 ).filter(Objects::nonNull).collect(Collectors.toList());
             }
         }
