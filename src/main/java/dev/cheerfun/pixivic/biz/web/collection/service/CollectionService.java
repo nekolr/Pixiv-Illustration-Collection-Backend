@@ -8,6 +8,7 @@ import dev.cheerfun.pixivic.biz.web.collection.dto.UpdateIllustrationOrderDTO;
 import dev.cheerfun.pixivic.biz.web.collection.mapper.CollectionMapper;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
+import dev.cheerfun.pixivic.biz.web.collection.util.CollectionSearchUtil;
 import dev.cheerfun.pixivic.biz.web.collection.util.CollectionTagSearchUtil;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
@@ -56,6 +57,7 @@ public class CollectionService {
     private final SensitiveFilter sensitiveFilter;
     private final IllustrationBizService illustrationBizService;
     private final CollectionTagSearchUtil collectionTagSearchUtil;
+    private final CollectionSearchUtil collectionSearchUtil;
 
     @Caching(evict = {
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-0'"),
@@ -424,8 +426,9 @@ public class CollectionService {
         return collection;
     }
 
-    public List<Collection> searchCollection(String keyword, String mode) {
-        return null;
+    @Cacheable("collectionSerchResult")
+    public CompletableFuture<List<Collection>> searchCollection(String keyword, String startCreateDate, String endCreateDate, String startUpdateDate, String endUpdateDate, Integer page, Integer pageSize) {
+        return collectionSearchUtil.searchCollection(collectionSearchUtil.build(keyword, startCreateDate, endCreateDate, startUpdateDate, endUpdateDate, page, pageSize)).thenApply(this::queryCollectionById);
     }
 
     public Integer checkUserAuth(Integer isPublic, Integer userId) {

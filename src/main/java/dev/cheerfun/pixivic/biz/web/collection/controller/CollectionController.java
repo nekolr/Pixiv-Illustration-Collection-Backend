@@ -169,8 +169,8 @@ public class CollectionController {
 
     //搜索画集
     @GetMapping("/collections")
-    public ResponseEntity<Result<List<Collection>>> searchCollection(@RequestBody UpdateIllustrationOrderDTO updateIllustrationOrderDTO, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam("mode") String mode) {
-        return null;
+    public CompletableFuture<ResponseEntity<Result<List<Collection>>>> searchCollection(@RequestParam String keyword, @RequestParam(required = false) String startCreateDate, @RequestParam(required = false) String endCreateDate, @RequestParam(required = false) String startUpdateDate, @RequestParam(required = false) String endUpdateDate, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+        return collectionService.searchCollection(keyword, startCreateDate, endCreateDate, startUpdateDate, endUpdateDate, page, pageSize).thenApply(e -> ResponseEntity.ok().body(new Result<>("获取搜索结果成功", e)));
     }
 
 }

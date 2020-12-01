@@ -208,15 +208,16 @@ public class SearchService {
     }
 
     public Illustration queryFirstSearchResult(String keyword) throws ExecutionException, InterruptedException {
-        List<Integer> illustIdList = searchByKeyword(keyword, 1, 0, "original", "illust", null, null, null, null, 0, null, null, null, 5, null).get();
-        if (illustIdList != null && illustIdList.size() > 0) {
-            return illustrationBizService.queryIllustrationByIdFromDb(illustIdList.get(0));
+        List<Illustration> illustList = searchByKeyword(keyword, 1, 0, "original", "illust", null, null, null, null, 0, null, null, null, 5, null).get();
+        if (illustList != null && illustList.size() > 0) {
+            //return illustrationBizService.queryIllustrationByIdFromDb(illustIdList.get(0));
+            return illustList.get(0);
         }
         return null;
     }
 
     @Cacheable(value = "searchResult")
-    public CompletableFuture<List<Integer>> searchByKeyword(
+    public CompletableFuture<List<Illustration>> searchByKeyword(
             String keyword,
             int pageSize,
             int page,
@@ -233,7 +234,7 @@ public class SearchService {
             Integer maxSanityLevel,
             Integer exceptId) {
         String build = searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, exceptId);
-        CompletableFuture<List<Integer>> request = searchUtil.request(build);
+        CompletableFuture<List<Illustration>> request = searchUtil.request(build).thenApply(illustrationBizService::queryIllustrationByIllustIdList);
         return request;
     }
 
@@ -248,7 +249,7 @@ public class SearchService {
     }
 
     @Cacheable(value = "related")
-    public CompletableFuture<List<Integer>> queryIllustrationRelated(int illustId, int page, int pageSize) {
+    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
         Illustration illustration = illustrationBizService.queryIllustrationById(illustId);
         if (illustration != null && illustration.getTags().size() > 0) {
             String keywords = illustration.getTags().stream().filter(e -> !"".equals(e.getName())).limit(3).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();

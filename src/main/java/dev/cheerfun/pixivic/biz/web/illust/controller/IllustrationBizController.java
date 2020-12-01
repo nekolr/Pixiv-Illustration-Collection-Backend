@@ -58,7 +58,7 @@ public class IllustrationBizController {
     @WithAdvertisement
     @RateLimit
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization") String token, @RequestHeader("X-Forwarded-For") String XForwardedFor) {
-        return searchService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", illustrationBizService.queryIllustrationByIllustIdList(r))));
+        return searchService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
     }
 
 
