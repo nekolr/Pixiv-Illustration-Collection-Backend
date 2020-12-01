@@ -60,7 +60,6 @@ public class DeepDanbooruService {
     private String TFServingServer;
 
     public List<String> generateImageTagList(MultipartFile file) throws IOException, InterruptedException, IM4JavaException {
-
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             zoomPic(outputStream, file.getInputStream(), file.getContentType(), 512, 512);
             try (InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {
@@ -74,7 +73,6 @@ public class DeepDanbooruService {
                 System.out.println(LocalDateTime.now());
                 Predictions predictions = objectMapper.readValue(body, Predictions.class);
                 Float[] prediction = predictions.getPredictions()[0];
-                List<String> s = Files.readLines(new File("/Users/oysterqaq/Desktop/deepdanbooru-v4-20200814-sgd-e30/tags.txt"), Charset.defaultCharset());
                 return IntStream.range(0, 7722).filter(e -> prediction[e] > 0.6).mapToObj(e -> queryTagListByIndex(e + 1)
                 ).filter(Objects::nonNull).collect(Collectors.toList());
             }
