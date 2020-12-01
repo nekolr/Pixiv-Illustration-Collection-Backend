@@ -56,7 +56,7 @@ public class Consumer {
 
         NativeImageLoader loader = new NativeImageLoader(512, 512, 3, new ColorConversionTransform(COLOR_BGR2RGB));
 
-        INDArray indArray = loader.asMatrix(new File("/Users/oysterqaq/Desktop/2.jpg"), false).div(255);
+        INDArray indArray = loader.asMatrix(new File("/Users/oysterqaq/Desktop/test.jpg"), false).div(255);
         System.out.println(Arrays.toString(indArray.shape()));
         // DataNormalization scaler = new VGG16ImagePreProcessor();
         // scaler.transform(indArray);
@@ -65,7 +65,7 @@ public class Consumer {
         System.out.println(indArray);
         HttpClient httpClient = HttpClient.newHttpClient();
         String body = null;
-        for (int i = 0; i < 10; i++) {
+        // for (int i = 0; i < 10; i++) {
             System.out.println(LocalDateTime.now());
             URI uri = URI.create("http://manjaro:8501/v1/models/deepdanbooru:predict");
             HttpRequest request = HttpRequest.newBuilder()
@@ -73,7 +73,7 @@ public class Consumer {
             body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
             System.out.println(LocalDateTime.now());
 
-        }
+        //   }
 
         System.out.println(body);
         Predictions predictions = new ObjectMapper().readValue(body, Predictions.class);

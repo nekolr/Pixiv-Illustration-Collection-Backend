@@ -134,3 +134,5 @@ chacha20:
   counter: 21
 recaptcha:
   secret: 6Le5lOIZAAAAAI34bH_axfWScwcKFnxUBNbpe60d
+TFServingServer:
+  localhost:8501
