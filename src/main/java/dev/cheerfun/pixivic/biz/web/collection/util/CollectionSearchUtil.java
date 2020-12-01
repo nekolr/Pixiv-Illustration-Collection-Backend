@@ -63,7 +63,7 @@ public class CollectionSearchUtil {
                 .append(DOT)
                 .append(KEYWORDS_PRE);
 
-        for (String s : keyword.split("&")) {
+        for (String s : keyword.split(" ")) {
             stringBuilder.append(KEYWORD_PRE)
                     .append(s)
                     .append(KEYWORD_END)
