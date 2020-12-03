@@ -5,8 +5,10 @@ import dev.cheerfun.pixivic.basic.ratelimit.exception.RateLimitException;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
+import dev.cheerfun.pixivic.common.constant.RequestParamType;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.util.aop.JoinPointArgUtil;
+import dev.cheerfun.pixivic.common.util.aop.RequestUtil;
 import io.github.bucket4j.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
     private final StringRedisTemplate stringRedisTemplate;
     private final AdminService adminService;
     private final JoinPointArgUtil joinPointArgUtil;
+    private final RequestUtil requestUtil;
 
     private final Map<Integer, Bucket> userBuckets = new ConcurrentHashMap<>();
     private final Map<Integer, Bucket> ipAddrBuckets = new ConcurrentHashMap<>();
@@ -104,10 +107,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
             }
         } else {
             //获取真实ip
-            String xForwardedFor = joinPointArgUtil.getFirstMethodArgByAnnotationValueMethodValue(joinPoint, RequestHeader.class, AuthConstant.X_FORWARDED_FOR);
-            int i = xForwardedFor.indexOf(",");
-            //ip地址转int节省内存
-            int ip = ip2Int(xForwardedFor.substring(0, i));
+            int ip = requestUtil.queryRealIp();
             requestBucket = this.ipAddrBuckets.computeIfAbsent(ip, key -> freeBucket());
             ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
             if (probe.isConsumed()) {
@@ -122,16 +122,4 @@ public class RateLimitProcessor implements HandlerInterceptor {
         throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
     }
 
-    public static int ip2Int(String ipString) {
-        // 取 ip 的各段
-        String[] ipSlices = ipString.split("\\.");
-        int rs = 0;
-        for (int i = 0; i < ipSlices.length; i++) {
-            // 将 ip 的每一段解析为 int，并根据位置左移 8 位
-            int intSlice = Integer.parseInt(ipSlices[i]) << 8 * i;
-            // 或运算
-            rs = rs | intSlice;
-        }
-        return rs;
-    }
 }

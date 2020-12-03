@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.ad.aop;
 import dev.cheerfun.pixivic.biz.ad.domain.Advertisement;
 import dev.cheerfun.pixivic.biz.ad.mapper.AdvertisementMapper;
 import dev.cheerfun.pixivic.biz.ad.po.AdvertisementInfo;
+import dev.cheerfun.pixivic.biz.ad.service.AdvertisementService;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,29 +34,13 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Order(3)
 public class AdvertisementProcessor {
-    private static List<Integer> randomList;
-    private static Map<Integer, List<Advertisement>> advertisementMap;
-    private final AdvertisementMapper advertisementMapper;
+    private final AdvertisementService advertisementService;
 
     @Pointcut(value = "@annotation(dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement)||@within(dev.cheerfun.pix" +
             "ivic.biz.ad.annotation.WithAdvertisement)")
     public void pointCut() {
     }
 
-    @PostConstruct
-    public void init() {
-        randomList = new ArrayList<>();
-        List<AdvertisementInfo> advertisementInfos = advertisementMapper.queryAllEnableAdvertisementInfo();
-        //构造randomList
-        advertisementInfos.forEach(e -> {
-            for (int i = 0; i < e.getWeight(); i++) {
-                randomList.add(e.getId());
-            }
-        });
-        Collections.shuffle(randomList);
-        //转换成Advertisement分组构造advertisementMap
-        advertisementMap = advertisementInfos.stream().map(Advertisement::new).collect(Collectors.groupingBy(Advertisement::getAdId));
-    }
 
     @Around(value = "pointCut()")
     public Object withAD(ProceedingJoinPoint joinPoint) throws Throwable {
@@ -78,11 +63,8 @@ public class AdvertisementProcessor {
             List data = new ArrayList(bodyData.size() + 1);
             data.addAll(bodyData);
             //随机决定是否插入
-            int isAdd = random.nextInt(1000);
-            if (isAdd < 100) {
-                //如果插入则根据权重选一个广告插入
-                int i = random.nextInt(randomList.size());
-                Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
+            Advertisement advertisement = advertisementService.serveAds();
+            if (advertisement != null) {
                 data.add(advertisement);
                 body.setData(data);
             }
