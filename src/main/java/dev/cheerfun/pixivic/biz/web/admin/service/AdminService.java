@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.admin.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.ad.aop.AdvertisementProcessor;
+import dev.cheerfun.pixivic.biz.ad.service.AdvertisementService;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.mapper.AdminMapper;
 import dev.cheerfun.pixivic.biz.web.admin.po.*;
@@ -55,7 +56,7 @@ public class AdminService {
     private final AdvertisementRepository advertisementRepository;
     private final AppVersionInfoRepository appVersionInfoRepository;
     private final IllustrationBizService illustrationBizService;
-    private final AdvertisementProcessor advertisementProcessor;
+    private final AdvertisementService advertisementService;
     private List<String> keyList;
 
     @PostConstruct
@@ -296,19 +297,19 @@ public class AdminService {
 
     public AdvertisementPO updateAdvertisement(AdvertisementPO advertisementPO) {
         AdvertisementPO result = advertisementRepository.save(advertisementPO);
-        advertisementProcessor.init();
+        advertisementService.init();
         return result;
     }
 
     public AdvertisementPO createAdvertisement(AdvertisementPO advertisementPO) {
         AdvertisementPO result = advertisementRepository.save(advertisementPO);
-        advertisementProcessor.init();
+        advertisementService.init();
         return result;
     }
 
     public Boolean deleteAdvertisement(Integer adId) {
         advertisementRepository.deleteById(adId);
-        advertisementProcessor.init();
+        advertisementService.init();
         return true;
     }
 

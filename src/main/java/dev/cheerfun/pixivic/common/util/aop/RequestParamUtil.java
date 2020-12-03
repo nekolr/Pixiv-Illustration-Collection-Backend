@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletRequest;
  * @description RequestUtil
  */
 @Component
-public class RequestUtil {
+public class RequestParamUtil {
     public HttpServletRequest getCurrentRequest() throws IllegalStateException {
         ServletRequestAttributes attrs = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         if (attrs == null) {

@@ -41,7 +41,6 @@ public class AdvertisementProcessor {
     public void pointCut() {
     }
 
-
     @Around(value = "pointCut()")
     public Object withAD(ProceedingJoinPoint joinPoint) throws Throwable {
         Object result = joinPoint.proceed();

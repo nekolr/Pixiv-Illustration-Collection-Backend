@@ -6,17 +6,12 @@ import com.google.common.hash.Funnels;
 import dev.cheerfun.pixivic.biz.ad.domain.Advertisement;
 import dev.cheerfun.pixivic.biz.ad.mapper.AdvertisementMapper;
 import dev.cheerfun.pixivic.biz.ad.po.AdvertisementInfo;
-import dev.cheerfun.pixivic.common.constant.AuthConstant;
-import dev.cheerfun.pixivic.common.constant.RequestParamType;
-import dev.cheerfun.pixivic.common.util.aop.RequestUtil;
+import dev.cheerfun.pixivic.common.util.aop.RequestParamUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.annotation.PostConstruct;
-import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -36,7 +31,7 @@ public class AdvertisementService {
     private static List<Integer> randomList;
     private static Map<Integer, List<Advertisement>> advertisementMap;
     private final AdvertisementMapper advertisementMapper;
-    private final RequestUtil requestUtil;
+    private final RequestParamUtil requestParamUtil;
     BloomFilter<String> bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.US_ASCII), 1000000, 0.001);
 
     @PostConstruct
@@ -57,12 +52,12 @@ public class AdvertisementService {
     public Advertisement serveAds() {
         String identification;
         //先获取用户id
-        Integer userId = requestUtil.queryUserIdFromAppContext();
+        Integer userId = requestParamUtil.queryUserIdFromAppContext();
         if (userId != null) {
             identification = String.valueOf(userId);
         } else {
             //如果没有则获取ip地址
-            identification = String.valueOf(requestUtil.queryRealIp());
+            identification = String.valueOf(requestParamUtil.queryRealIp());
         }
         ThreadLocalRandom random = ThreadLocalRandom.current();
         int isAdd = random.nextInt(1000);

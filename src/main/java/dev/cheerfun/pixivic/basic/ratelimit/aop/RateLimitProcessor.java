@@ -5,10 +5,9 @@ import dev.cheerfun.pixivic.basic.ratelimit.exception.RateLimitException;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
-import dev.cheerfun.pixivic.common.constant.RequestParamType;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.util.aop.JoinPointArgUtil;
-import dev.cheerfun.pixivic.common.util.aop.RequestUtil;
+import dev.cheerfun.pixivic.common.util.aop.RequestParamUtil;
 import io.github.bucket4j.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import java.time.Duration;
@@ -43,7 +41,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
     private final StringRedisTemplate stringRedisTemplate;
     private final AdminService adminService;
     private final JoinPointArgUtil joinPointArgUtil;
-    private final RequestUtil requestUtil;
+    private final RequestParamUtil requestParamUtil;
 
     private final Map<Integer, Bucket> userBuckets = new ConcurrentHashMap<>();
     private final Map<Integer, Bucket> ipAddrBuckets = new ConcurrentHashMap<>();
@@ -107,7 +105,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
             }
         } else {
             //获取真实ip
-            int ip = requestUtil.queryRealIp();
+            int ip = requestParamUtil.queryRealIp();
             //如果没有被ban过
             if (stringRedisTemplate.opsForValue().get(RedisKeyConstant.IP_BAN_PRE + ip) == null) {
                 requestBucket = this.ipAddrBuckets.computeIfAbsent(ip, key -> freeBucket());
