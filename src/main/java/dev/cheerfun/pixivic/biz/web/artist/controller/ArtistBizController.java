@@ -34,7 +34,7 @@ public class ArtistBizController {
 
     @GetMapping("/artists/{artistId}")
     @RateLimit
-    @PermissionRequired
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = "Authorization", required = false) String token) throws InterruptedException {
         return ResponseEntity.ok().body(new Result<>("获取画师详情成功", artistBizService.queryArtistDetail(artistId)));
     }
@@ -50,7 +50,7 @@ public class ArtistBizController {
     }
 
     @GetMapping("/artists/{artistId}/illusts/{type}")
-    @PermissionRequired
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithUserInfo
     @RateLimit
     public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) throws InterruptedException {

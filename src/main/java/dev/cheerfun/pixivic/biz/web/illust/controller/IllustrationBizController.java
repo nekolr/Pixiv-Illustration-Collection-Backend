@@ -47,17 +47,17 @@ public class IllustrationBizController {
 
     @GetMapping("/illusts/{illustId}")
     @RateLimit
-    @PermissionRequired
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Authorization", required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", illustrationBizService.queryIllustrationByIdWithUserInfo(illustId)));
     }
 
     @GetMapping("/illusts/{illustId}/related")
     @WithUserInfo
-    @PermissionRequired
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithAdvertisement
     @RateLimit
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization") String token, @RequestHeader("X-Forwarded-For") String XForwardedFor) {
+    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         return searchService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
     }
 
