@@ -3,9 +3,12 @@ package dev.cheerfun.pixivic.biz.ad.service;
 import com.google.common.base.Charsets;
 import com.google.common.hash.BloomFilter;
 import com.google.common.hash.Funnels;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.ad.domain.Advertisement;
 import dev.cheerfun.pixivic.biz.ad.mapper.AdvertisementMapper;
 import dev.cheerfun.pixivic.biz.ad.po.AdvertisementInfo;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.util.aop.RequestParamUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +67,7 @@ public class AdvertisementService {
         //使用布隆过滤器查看是否投放过一次
         if (bloomFilter.mightContain(identification)) {
             //如果投放过 以一个较低的随机来投放
-            if (userId == null ? isAdd < 100 : isAdd < 80) {
+            if (userId == null ? isAdd < 110 : isAdd < ((int) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP ? 90 : 70)) {
                 int i = random.nextInt(randomList.size());
                 Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
                 return advertisement;
