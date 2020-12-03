@@ -60,18 +60,18 @@ public class AdvertisementService {
             identification = String.valueOf(requestParamUtil.queryRealIp());
         }
         ThreadLocalRandom random = ThreadLocalRandom.current();
-        int isAdd = random.nextInt(100);
+        int isAdd = random.nextInt(1000);
         //使用布隆过滤器查看是否投放过一次
         if (bloomFilter.mightContain(identification)) {
             //如果投放过 以一个较低的随机来投放
-            if (userId == null ? isAdd < 10 : isAdd < 8) {
+            if (userId == null ? isAdd < 100 : isAdd < 80) {
                 int i = random.nextInt(randomList.size());
                 Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
                 return advertisement;
             }
         } else {
             //如果没投放过 以一个较高的随机来投放
-            if (isAdd < 20) {
+            if (isAdd < 200) {
                 int i = random.nextInt(randomList.size());
                 Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
                 bloomFilter.put(identification);
