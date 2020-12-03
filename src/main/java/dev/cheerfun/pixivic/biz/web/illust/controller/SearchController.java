@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.illust.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
@@ -76,7 +77,7 @@ public class SearchController {
     @GetMapping("/illustrations")
     @WithUserInfo
     @WithAdvertisement
-    @PermissionRequired
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
     @RateLimit
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
             @SensitiveCheck
