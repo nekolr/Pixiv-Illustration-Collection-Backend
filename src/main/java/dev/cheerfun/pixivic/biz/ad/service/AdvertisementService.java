@@ -12,6 +12,7 @@ import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.util.aop.RequestParamUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -35,7 +36,7 @@ public class AdvertisementService {
     private static Map<Integer, List<Advertisement>> advertisementMap;
     private final AdvertisementMapper advertisementMapper;
     private final RequestParamUtil requestParamUtil;
-    BloomFilter<String> bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.US_ASCII), 1000000, 0.001);
+    BloomFilter<String> bloomFilter;
 
     @PostConstruct
     public void init() {
@@ -50,6 +51,7 @@ public class AdvertisementService {
         Collections.shuffle(randomList);
         //转换成Advertisement分组构造advertisementMap
         advertisementMap = advertisementInfos.stream().map(Advertisement::new).collect(Collectors.groupingBy(Advertisement::getAdId));
+        bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.US_ASCII), 1000000, 0.001);
     }
 
     public Advertisement serveAds() {
@@ -67,7 +69,7 @@ public class AdvertisementService {
         //使用布隆过滤器查看是否投放过一次
         if (bloomFilter.mightContain(identification)) {
             //如果投放过 以一个较低的随机来投放
-            if (userId == null ? isAdd < 90 : isAdd < ((int) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP ? 80 : 70)) {
+            if (userId == null ? isAdd < 110 : isAdd < ((int) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP ? 90 : 70)) {
                 int i = random.nextInt(randomList.size());
                 Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
                 return advertisement;
@@ -82,6 +84,12 @@ public class AdvertisementService {
             }
         }
         return null;
+    }
+
+    @Scheduled(cron = "0 0 */12 * * ?")
+    public synchronized void resetBloomFilter() {
+        bloomFilter = null;
+        bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.US_ASCII), 1000000, 0.001);
     }
 
 }
