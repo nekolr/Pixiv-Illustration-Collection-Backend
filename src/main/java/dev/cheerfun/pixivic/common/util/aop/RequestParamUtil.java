@@ -50,7 +50,9 @@ public class RequestParamUtil {
         //ip地址转int节省内存
         int ip = ip2Int(xForwardedFor.substring(0, i));
         //放进threadLocal
-        AppContext.get().put(AuthConstant.X_FORWARDED_FOR, ip);
+        if (AppContext.get() != null) {
+            AppContext.get().put(AuthConstant.X_FORWARDED_FOR, ip);
+        }
         return ip;
     }
 

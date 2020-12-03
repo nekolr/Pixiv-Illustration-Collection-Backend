@@ -59,11 +59,11 @@ public class AdvertisementProcessor {
         Result<List> body = (Result<List>) ((ResponseEntity) responseEntity).getBody();
         List bodyData = body.getData();
         if (bodyData.size() > 0) {
-            List data = new ArrayList(bodyData.size() + 1);
-            data.addAll(bodyData);
             //随机决定是否插入
             Advertisement advertisement = advertisementService.serveAds();
             if (advertisement != null) {
+                List data = new ArrayList(bodyData.size() + 1);
+                data.addAll(bodyData);
                 data.add(advertisement);
                 body.setData(data);
             }
