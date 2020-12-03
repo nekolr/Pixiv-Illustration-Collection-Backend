@@ -67,7 +67,7 @@ public class AdvertisementService {
         //使用布隆过滤器查看是否投放过一次
         if (bloomFilter.mightContain(identification)) {
             //如果投放过 以一个较低的随机来投放
-            if (userId == null ? isAdd < 110 : isAdd < ((int) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP ? 90 : 70)) {
+            if (userId == null ? isAdd < 90 : isAdd < ((int) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP ? 80 : 70)) {
                 int i = random.nextInt(randomList.size());
                 Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
                 return advertisement;
