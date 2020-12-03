@@ -108,16 +108,18 @@ public class RateLimitProcessor implements HandlerInterceptor {
         } else {
             //获取真实ip
             int ip = requestUtil.queryRealIp();
-            requestBucket = this.ipAddrBuckets.computeIfAbsent(ip, key -> freeBucket());
-            ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
-            if (probe.isConsumed()) {
-                return joinPoint.proceed();
+            //如果没有被ban过
+            if (stringRedisTemplate.opsForValue().get(RedisKeyConstant.IP_BAN_PRE + ip) == null) {
+                requestBucket = this.ipAddrBuckets.computeIfAbsent(ip, key -> freeBucket());
+                ConsumptionProbe probe = requestBucket.tryConsumeAndReturnRemaining(1);
+                if (probe.isConsumed()) {
+                    return joinPoint.proceed();
+                } else {
+                    //ban12小时ip
+                    stringRedisTemplate.opsForValue().set(RedisKeyConstant.IP_BAN_PRE + ip, "", Duration.ofHours(12));
+                }
             }
         }
-
-/*        if (userId != null && permissionLevel != null) {
-
-        }*/
 
         throw new RateLimitException(HttpStatus.TOO_MANY_REQUESTS, "请求过于频繁");
     }
