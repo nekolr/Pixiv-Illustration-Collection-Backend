@@ -2,8 +2,6 @@ package dev.cheerfun.pixivic.biz.web.collection.po;
 
 import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
@@ -12,10 +10,7 @@ import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
 
-import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -30,6 +25,7 @@ public class Collection {
     @JsonAlias({"collection_id", "collectionId"})
     private Integer id;
     private Integer userId;
+    @NotBlank
     private String username;
     private List<ImageUrl> cover;
     @SensitiveCheck
