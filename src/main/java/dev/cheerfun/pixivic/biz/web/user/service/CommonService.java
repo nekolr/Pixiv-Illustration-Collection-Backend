@@ -34,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
@@ -341,6 +342,15 @@ public class CommonService {
     @Transactional
     public void updateUsernameToDb(Integer userId, String username) {
         userMapper.updateUsername(userId, username);
+        userMapper.updateUsernameInCollections(userId, username);
+        userMapper.updateFromUsernameInComments(userId, username);
+        userMapper.updateToUsernameInComments(userId, username);
+        userMapper.updateUsernameInDiscussions(userId, username);
+        userMapper.updateUsernameInRewards(userId, username);
+        userMapper.updateUsernameInUserArtistFollowed(userId, username);
+        userMapper.updateUsernameInUserCollectionBookmarked(userId, username);
+        userMapper.updateUsernameInUserIllustBookmarked(userId, username);
+        userMapper.updateUsernameInUserUserFollowed(userId, username);
     }
 
     @Cacheable("checkUserUpdateUsernameLog")
@@ -349,4 +359,5 @@ public class CommonService {
         //没修改过,或者在三个月之前
         return localDateTime == null || localDateTime.toLocalDate().isBefore(LocalDate.now().plusMonths(-6));
     }
+
 }
