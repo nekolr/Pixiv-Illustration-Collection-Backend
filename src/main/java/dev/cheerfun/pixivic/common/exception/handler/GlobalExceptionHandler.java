@@ -36,13 +36,13 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(value = MethodArgumentNotValidException.class)
-    public ResponseEntity<Result> handleBaseException(MethodArgumentNotValidException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result(e.getMessage()));
+    public ResponseEntity<Result> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("输入参数中存在错误", e.getMessage()));
     }
 
     @ExceptionHandler(value = ConstraintViolationException.class)
     public ResponseEntity<Result> handleConstraintViolationException(ConstraintViolationException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result(e.getMessage()));
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("输入参数中存在错误", e.getMessage()));
     }
 
     @ExceptionHandler(value = SendFailedException.class)

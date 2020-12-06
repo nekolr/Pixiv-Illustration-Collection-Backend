@@ -67,7 +67,7 @@ public class CollectionService {
     })
     public Integer createCollection(Integer userId, Collection collection) {
         //去除敏感词
-        List<CollectionTag> tagList = collection.getTagList();
+/*        List<CollectionTag> tagList = collection.getTagList();
         if (tagList != null && tagList.size() > 0) {
             collection.setTagList(tagList.stream().filter(e -> {
                 if (e.getTagName() != null && e.getTagName().length() > 0) {
@@ -77,7 +77,7 @@ public class CollectionService {
                     return false;
                 }
             }).collect(Collectors.toList()));
-        }
+        }*/
         collection.setCreateTime(LocalDateTime.now());
         //插入画集
         collection.setUserId(userId);

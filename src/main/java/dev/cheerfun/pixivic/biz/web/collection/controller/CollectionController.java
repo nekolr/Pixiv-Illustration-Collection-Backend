@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -41,7 +42,7 @@ public class CollectionController {
     //新建画集
     @PostMapping("/collections")
     @PermissionRequired
-    public ResponseEntity<Result<Integer>> createCollection(@RequestBody @SensitiveCheck Collection collection, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Integer>> createCollection(@RequestBody @Valid @SensitiveCheck Collection collection, @RequestHeader(value = "Authorization") String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("新建画集成功", collectionService.createCollection(userId, collection)));
     }

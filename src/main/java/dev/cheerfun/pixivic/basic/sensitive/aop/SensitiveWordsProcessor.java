@@ -39,10 +39,8 @@ public class SensitiveWordsProcessor {
     public Object handleSensitiveCheck(ProceedingJoinPoint joinPoint) throws Throwable {
         List<JoinPointArg> contentStream = commonUtil.getMethodArgsByAnnotationValueMethodValue(joinPoint, SensitiveCheck.class);
         contentStream.forEach(e -> {
-            try {
+            if (e.getValue() != null) {
                 joinPoint.getArgs()[e.getIndex()] = sensitiveFilter.filter(e.getValue());
-            } catch (IllegalAccessException ex) {
-                ex.printStackTrace();
             }
         });
         return joinPoint.proceed(joinPoint.getArgs());

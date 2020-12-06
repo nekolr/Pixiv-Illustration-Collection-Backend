@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.basic.sensitive.util;
 
+import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.basic.sensitive.domain.SensitiveNode;
 import dev.cheerfun.pixivic.basic.sensitive.domain.StringPointer;
 import lombok.Data;
@@ -13,6 +14,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.NavigableSet;
@@ -131,12 +133,14 @@ public class SensitiveFilter {
      * </code>
      *
      * @param sentence 句子
-     * @param replace  敏感词的替换字符
      * @return 过滤后的句子
      * @author ZhangXiaoye
      * @date 2017年1月5日 下午4:16:31
      */
     public String filter(String sentence) {
+        if (sentence.length() == 0) {
+            return sentence;
+        }
         return filter(sentence, '*');
     }
 
@@ -227,25 +231,36 @@ public class SensitiveFilter {
         }
     }
 
-    public Object filter(Object object) throws IllegalAccessException {
-        if (object == null)
-            return object;
+    public Object filter(Object object) {
+        System.out.println(object);
         if (object instanceof String) {
             return filter((String) object);
         } else if (!isBaseType(object)) {
             //如果是对象则遍历里面的属性
             Class<?> valueClass = object.getClass();
-            //集合则跳过
+            //集合则遍历元素
             if (object instanceof Collection) {
+                ((Collection<?>) object).forEach(this::filter);
                 return object;
             }
-            for (Field declaredField : valueClass.getDeclaredFields()) {
-                declaredField.setAccessible(true);
-                //递归处理
-                declaredField.set(object, filter(declaredField.get(object)));
+            for (Field field : valueClass.getDeclaredFields()) {
+                if (Arrays.stream(field.getDeclaredAnnotations()).anyMatch(e -> e.annotationType().equals(SensitiveCheck.class))) {
+                    field.setAccessible(true);
+                    //递归处理
+                    Object o = null;
+                    try {
+                        o = field.get(object);
+                        if (o != null) {
+                            field.set(object, filter(o));
+                        }
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             return object;
         }
         return object;
     }
+
 }

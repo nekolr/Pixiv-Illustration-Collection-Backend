@@ -33,6 +33,7 @@ public class Collection {
     private String title;
     @SensitiveCheck
     private String caption;
+    @SensitiveCheck
     private List<CollectionTag> tagList;
     private Integer illustCount;
     private List<Illustration> illustrationList;
