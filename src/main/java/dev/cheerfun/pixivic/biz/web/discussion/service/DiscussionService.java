@@ -40,13 +40,6 @@ public class DiscussionService {
     @Transactional
     @CacheEvict(value = "sectionDiscussionCount", key = "#discussionDTO.sectionId")
     public Discussion createDiscussion(Discussion discussionDTO, Integer userId) {
-        //敏感过滤
-        List<CollectionTag> tagList = discussionDTO.getTagList();
-        if (tagList != null && tagList.size() > 0) {
-            tagList.forEach(e -> {
-                e.setTagName(sensitiveFilter.filter(e.getTagName()));
-            });
-        }
         Discussion discussion = new Discussion(discussionDTO.getSectionId(), discussionDTO.getTitle(), discussionDTO.getContent(), userId, discussionDTO.getUsername(), discussionDTO.getTagList(), LocalDateTime.now());
         if (discussionMapper.createDiscussion(discussion).compareTo(1) == 0) {
             //总数+1

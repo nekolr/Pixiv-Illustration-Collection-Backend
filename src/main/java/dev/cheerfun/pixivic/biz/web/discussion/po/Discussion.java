@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.discussion.po;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -44,6 +45,7 @@ public class Discussion {
     private LocalDateTime updateTime;
     private Integer commentCount;
     private Integer option;
+    @SensitiveCheck
     private List<CollectionTag> tagList;
     private Integer bounty;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
