@@ -135,7 +135,6 @@ public class CommonController {
 
     //校验名字
     @PostMapping("/checkUsername")
-    @PermissionRequired
     public ResponseEntity<Result<String>> checkUsernameSensitive(@RequestParam String username) {
         return ResponseEntity.ok().body(new Result<>("获取用户名校验结果成功", userService.checkUsernameSensitive(username)));
     }
