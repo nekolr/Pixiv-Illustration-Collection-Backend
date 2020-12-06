@@ -66,18 +66,6 @@ public class CollectionService {
             @CacheEvict("publicCollectionCount")
     })
     public Integer createCollection(Integer userId, Collection collection) {
-        //去除敏感词
-/*        List<CollectionTag> tagList = collection.getTagList();
-        if (tagList != null && tagList.size() > 0) {
-            collection.setTagList(tagList.stream().filter(e -> {
-                if (e.getTagName() != null && e.getTagName().length() > 0) {
-                    e.setTagName(sensitiveFilter.filter(e.getTagName()));
-                    return true;
-                } else {
-                    return false;
-                }
-            }).collect(Collectors.toList()));
-        }*/
         collection.setCreateTime(LocalDateTime.now());
         //插入画集
         collection.setUserId(userId);
@@ -108,17 +96,6 @@ public class CollectionService {
         }
         //校验collectionId是否属于用户
         checkCollectionAuth(collection.getId(), userId);
-        List<CollectionTag> tagList = collection.getTagList();
-        if (tagList != null && tagList.size() > 0) {
-            collection.setTagList(tagList.stream().filter(e -> {
-                if (e.getTagName() != null && e.getTagName().length() > 0) {
-                    e.setTagName(sensitiveFilter.filter(e.getTagName()));
-                    return true;
-                } else {
-                    return false;
-                }
-            }).collect(Collectors.toList()));
-        }
         collectionMapper.updateCollection(userId, collection);
         //是否修改了可见性
         //修改则清空收藏数以及收藏数据

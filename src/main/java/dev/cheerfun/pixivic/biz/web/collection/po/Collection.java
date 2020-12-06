@@ -25,7 +25,6 @@ public class Collection {
     @JsonAlias({"collection_id", "collectionId"})
     private Integer id;
     private Integer userId;
-    @NotBlank
     private String username;
     private List<ImageUrl> cover;
     @SensitiveCheck
