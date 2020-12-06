@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
+import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.CheckInDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.ResetPasswordDTO;
@@ -143,8 +144,13 @@ public class CommonController {
     @PutMapping("/{userId}/username")
     @PermissionRequired
     public ResponseEntity<Result<User>> updateUsername(@RequestParam String username, @RequestHeader("Authorization") String token) {
-        return ResponseEntity.ok().body(new Result<>("修改用户名成功，部分模块缓存等待自动刷新", userService.updateUsername((Integer) AppContext.get().get(AuthConstant.USER_ID)
-                , username)));
+        User user = null;
+        try {
+            user = userService.updateUsername((Integer) AppContext.get().get(AuthConstant.USER_ID), username);
+        } catch (Exception e) {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "修改失败，可能是用户名重复");
+        }
+        return ResponseEntity.ok().body(new Result<>("修改用户名成功，部分模块缓存等待自动刷新", user));
     }
 
     @GetMapping("/{userId}/email/isCheck")
