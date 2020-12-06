@@ -232,7 +232,6 @@ public class SensitiveFilter {
     }
 
     public Object filter(Object object) {
-        System.out.println(object);
         if (object instanceof String) {
             return filter((String) object);
         } else if (!isBaseType(object)) {
