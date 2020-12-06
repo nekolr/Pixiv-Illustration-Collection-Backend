@@ -5,8 +5,10 @@ import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.event.constant.ActionType;
 import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
 import dev.cheerfun.pixivic.basic.event.domain.Event;
+import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.basic.verification.domain.EmailBindingVerificationCode;
 import dev.cheerfun.pixivic.biz.credit.customer.CreditEventCustomer;
+import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
@@ -17,14 +19,15 @@ import dev.cheerfun.pixivic.biz.web.sentence.service.SentenceService;
 import dev.cheerfun.pixivic.biz.web.user.dto.CheckInDTO;
 import dev.cheerfun.pixivic.biz.web.user.mapper.CommonMapper;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
-import dev.cheerfun.pixivic.biz.web.user.util.RecaptchaUtil;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.util.email.EmailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +43,6 @@ import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -69,7 +71,8 @@ public class CommonService {
     private final SearchService searchService;
     private final SentenceService sentenceService;
     private final IllustrationBizService illustrationBizService;
-    //private final PooledGMService pooledGMService;
+    private final SensitiveFilter sensitiveFilter;
+    private final CollectionService collectionService;
 
     public User signUp(User user) {
         //检测用户名或邮箱是否重复
@@ -300,4 +303,50 @@ public class CommonService {
         userMapper.checkIn(userId, LocalDate.now().toString());
     }
 
+    public String checkUsernameSensitive(String username) {
+        return sensitiveFilter.filter(username);
+    }
+
+    @Transactional
+    public User updateUsername(Integer userId, String username) {
+        //校验敏感词
+        username = sensitiveFilter.filter(username);
+        if (username.contains("*")) {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "用户名中包含非法关键词或者*");
+        }
+        //校验改名记录表 每半年只能改一次
+        if (checkUserUpdateUsernameLog(userId)) {
+            updateUsernameToDb(userId, username);
+            //增加改名记录
+            insertUserUpdateUsernameLog(userId);
+            //清理缓存（主要是用户发布相关的，例如画集、讨论需要即时清理）
+            collectionService.evictCacheByUser(userId);
+            return queryUser(userId);
+        } else {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "用户名每半年只能修改一次");
+        }
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "checkUserUpdateUsernameLog", key = "#userId")
+    })
+    @Transactional
+    public void insertUserUpdateUsernameLog(Integer userId) {
+        userMapper.insertUserUpdateUsernameLog(userId);
+    }
+
+    @Caching(evict = {
+            @CacheEvict(value = "users", key = "#userId")
+    })
+    @Transactional
+    public void updateUsernameToDb(Integer userId, String username) {
+        userMapper.updateUsername(userId, username);
+    }
+
+    @Cacheable("checkUserUpdateUsernameLog")
+    public boolean checkUserUpdateUsernameLog(Integer userId) {
+        LocalDateTime localDateTime = userMapper.queryUserUpdateUsernameLog(userId);
+        //没修改过,或者在三个月之前
+        return localDateTime == null || localDateTime.toLocalDate().isBefore(LocalDate.now().plusMonths(-6));
+    }
 }

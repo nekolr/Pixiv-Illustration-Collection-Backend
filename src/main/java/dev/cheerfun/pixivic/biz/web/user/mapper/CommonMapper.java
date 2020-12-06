@@ -139,4 +139,25 @@ public interface CommonMapper {
 
     @Insert("insert into user_check_in_log(user_id,check_in_date) values (#{userId},#{date})")
     void checkIn(Integer userId, String date);
+
+    @Select("select create_time from user_update_username_log where user_id=#{userId} order by create_time desc limit 1")
+    @Results({
+            @Result(javaType = LocalDateTime.class, column = "create_time", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+    })
+    LocalDateTime queryUserUpdateUsernameLog(Integer userId);
+
+    @Update("update users set username=#{username} where user_id=#{userId};\n" +
+            "update comments set reply_from_name = #{username} where reply_from=#{userId};\n" +
+            "update comments set reply_to_name = #{username} where reply_to=#{userId};\n" +
+            "update discussions set username = #{username} where user_id=#{userId};\n" +
+            "update collections set username = #{username} where user_id=#{userId};\n" +
+            "update rewards set reward_from_username = #{username} where reward_from=#{userId};\n" +
+            "update user_artist_followed set username = #{username} where user_id=#{userId};\n" +
+            "update user_illust_bookmarked set username = #{username} where user_id=#{userId};\n" +
+            "update user_collection_bookmarked set username = #{username} where user_id=#{userId};\n" +
+            "update user_user_followed set username = #{username} where user_id=#{userId};\n")
+    void updateUsername(Integer userId, String username);
+
+    @Insert("insert into user_update_username_log (user_id,create_time) values (#{userId},now())")
+    void insertUserUpdateUsernameLog(Integer userId);
 }

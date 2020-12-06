@@ -20,6 +20,7 @@ import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -58,6 +59,7 @@ public class CollectionService {
     private final IllustrationBizService illustrationBizService;
     private final CollectionTagSearchUtil collectionTagSearchUtil;
     private final CollectionSearchUtil collectionSearchUtil;
+    private final CacheManager cacheManager;
 
     @Caching(evict = {
             @CacheEvict(value = "user_collection_digest_list", key = "#userId+'-0'"),
@@ -464,5 +466,9 @@ public class CollectionService {
             }
         });
         return true;
+    }
+
+    public void evictCacheByUser(Integer userId) {
+        queryUserCollectionNameListFromDb(userId, null).stream().parallel().forEach(e -> cacheManager.getCache("collections").evictIfPresent(e));
     }
 }

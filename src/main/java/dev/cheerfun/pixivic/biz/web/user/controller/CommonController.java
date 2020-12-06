@@ -3,7 +3,6 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
-import dev.cheerfun.pixivic.biz.credit.po.CreditHistory;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.CheckInDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.ResetPasswordDTO;
@@ -27,11 +26,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Email;
-import javax.validation.constraints.Max;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Size;
 import java.io.IOException;
-import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -134,6 +130,21 @@ public class CommonController {
     public ResponseEntity<Result<User>> updateUserInfo(@PathVariable("userId") Integer userId, @RequestBody User user, @RequestHeader("Authorization") String token) {
         userService.updateUserInfo((int) AppContext.get().get(AuthConstant.USER_ID), user);
         return ResponseEntity.ok().body(new Result<>("更新用户信息成功", user));
+    }
+
+    //校验名字
+    @PostMapping("/checkUsername")
+    @PermissionRequired
+    public ResponseEntity<Result<String>> checkUsernameSensitive(@RequestParam String username) {
+        return ResponseEntity.ok().body(new Result<>("获取用户名校验结果成功", userService.checkUsernameSensitive(username)));
+    }
+
+    //修改名字
+    @PutMapping("/{userId}/username")
+    @PermissionRequired
+    public ResponseEntity<Result<User>> updateUsername(@RequestParam String username, @RequestHeader("Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("修改用户名成功，部分模块缓存等待自动刷新", userService.updateUsername((Integer) AppContext.get().get(AuthConstant.USER_ID)
+                , username)));
     }
 
     @GetMapping("/{userId}/email/isCheck")
