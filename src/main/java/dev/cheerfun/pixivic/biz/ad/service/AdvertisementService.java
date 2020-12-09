@@ -73,8 +73,8 @@ public class AdvertisementService {
         if (bloomFilter.mightContain(identification)) {
             //如果投放过 以一个较低的随机来投放
             if (userId == null ? isAdd < 100 : isAdd < ((int) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP ? 75 : 60)) {
-                int i = random.nextInt(randomList.size());//优化成取余
-                Advertisement advertisement = advertisementList.get(randomList.get(i));
+                //优化成取余
+                Advertisement advertisement = advertisementList.get(randomList.get(isAdd % randomList.size()));
                 return Collections.singletonList(advertisement);
             }
         } else {
