@@ -17,11 +17,12 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.nio.file.FileSystems;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
@@ -49,8 +50,7 @@ public class ArtistService {
     private List<Integer> waitForReDownload = new ArrayList<>();
 
     public Artist pullArtistsInfo(Integer artistId) {
-        ArrayList<Integer> artistIds = new ArrayList<>(1);
-        artistIds.add(artistId);
+        List<Integer> artistIds = Collections.singletonList(artistId);
         List<Artist> artists = pullArtistsInfo(artistIds);
         if (artists != null && artists.size() > 0)
             return artists.get(0);

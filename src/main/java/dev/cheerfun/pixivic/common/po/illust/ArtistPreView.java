@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ArtistPreView {
-    protected Integer id;
-    protected String name;
-    protected String account;
-    protected String avatar;
+    public Integer id;
+    public String name;
+    public String account;
+    public String avatar;
 }

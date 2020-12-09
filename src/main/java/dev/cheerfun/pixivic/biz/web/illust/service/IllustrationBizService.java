@@ -6,8 +6,8 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.service.IllustrationService;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistPreViewWithFollowedInfo;
 import dev.cheerfun.pixivic.biz.userInfo.dto.IllustrationWithLikeInfo;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
-import dev.cheerfun.pixivic.biz.web.illust.secmapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.biz.web.illust.po.IllustRelated;
+import dev.cheerfun.pixivic.biz.web.illust.secmapper.IllustrationBizMapper;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -67,8 +67,7 @@ public class IllustrationBizService {
                     if (!stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ILLUST_NOT_IN_PIXIV, String.valueOf(illustId))) {
                         Illustration illustration = illustrationService.pullIllustrationInfo(illustId);
                         if (illustration != null) {
-                            List<Illustration> illustrations = new ArrayList<>(1);
-                            illustrations.add(illustration);
+                            List<Illustration> illustrations = Collections.singletonList(illustration);
                             illustrationService.saveToDb(illustrations);
                             log.info("获取画作：" + illustId + "完毕");
                         } else {

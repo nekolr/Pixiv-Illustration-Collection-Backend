@@ -9,6 +9,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * @author OysterQAQ
@@ -25,7 +26,6 @@ public class Advertisement extends IllustrationWithLikeInfo {
 
     public Advertisement(AdvertisementInfo advertisementInfo) {
         title = advertisementInfo.getTitle();
-        imageUrls = new ArrayList<>(1);
         pageCount = 1;
         ImageUrl imageUrl = new ImageUrl();
         String adImageUrl = advertisementInfo.getImageUrl();
@@ -33,7 +33,7 @@ public class Advertisement extends IllustrationWithLikeInfo {
         imageUrl.setMedium(adImageUrl);
         imageUrl.setOriginal(adImageUrl);
         imageUrl.setSquareMedium(adImageUrl);
-        imageUrls.add(imageUrl);
+        imageUrls = Collections.singletonList(imageUrl);
         type = advertisementInfo.getType();
         height = advertisementInfo.getImageHeight();
         width = advertisementInfo.getImageWidth();

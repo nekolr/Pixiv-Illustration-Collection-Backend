@@ -1,8 +1,6 @@
 package dev.cheerfun.pixivic.biz.ad.aop;
 
 import dev.cheerfun.pixivic.biz.ad.domain.Advertisement;
-import dev.cheerfun.pixivic.biz.ad.mapper.AdvertisementMapper;
-import dev.cheerfun.pixivic.biz.ad.po.AdvertisementInfo;
 import dev.cheerfun.pixivic.biz.ad.service.AdvertisementService;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +14,9 @@ import org.springframework.core.annotation.Order;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -60,11 +56,11 @@ public class AdvertisementProcessor {
         List bodyData = body.getData();
         if (bodyData.size() > 0) {
             //随机决定是否插入
-            Advertisement advertisement = advertisementService.serveAds();
+            List<Advertisement> advertisement = advertisementService.serveAds();
             if (advertisement != null) {
                 List data = new ArrayList(bodyData.size() + 1);
                 data.addAll(bodyData);
-                data.add(advertisement);
+                data.addAll(advertisement);
                 body.setData(data);
             }
         }

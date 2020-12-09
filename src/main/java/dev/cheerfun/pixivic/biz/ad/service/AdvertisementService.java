@@ -32,8 +32,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AdvertisementService {
-    private static List<Integer> randomList;
-    private static Map<Integer, List<Advertisement>> advertisementMap;
+    private List<Integer> randomList;
+    private Map<String, List<Advertisement>> advertisementMap;
+    private List<Advertisement> advertisementList;
     private final AdvertisementMapper advertisementMapper;
     private final RequestParamUtil requestParamUtil;
     BloomFilter<String> bloomFilter;
@@ -43,18 +44,20 @@ public class AdvertisementService {
         randomList = new ArrayList<>();
         List<AdvertisementInfo> advertisementInfos = advertisementMapper.queryAllEnableAdvertisementInfo();
         //构造randomList
-        advertisementInfos.forEach(e -> {
-            for (int i = 0; i < e.getWeight(); i++) {
-                randomList.add(e.getId());
+        for (int i = 0; i < advertisementInfos.size(); i++) {
+            for (int j = 0; i < advertisementInfos.get(i).getWeight(); j++) {
+                randomList.add(i);
             }
-        });
+        }
         Collections.shuffle(randomList);
+        //构造advertisementList
+        advertisementList = advertisementInfos.stream().map(Advertisement::new).collect(Collectors.toList());
         //转换成Advertisement分组构造advertisementMap
-        advertisementMap = advertisementInfos.stream().map(Advertisement::new).collect(Collectors.groupingBy(Advertisement::getAdId));
+        advertisementMap = advertisementList.stream().collect(Collectors.groupingBy(e -> e.getArtistPreView().getName()));
         bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.US_ASCII), 1000000, 0.001);
     }
 
-    public Advertisement serveAds() {
+    public List<Advertisement> serveAds() {
         String identification;
         //先获取用户id
         Integer userId = requestParamUtil.queryUserIdFromAppContext();
@@ -71,16 +74,18 @@ public class AdvertisementService {
             //如果投放过 以一个较低的随机来投放
             if (userId == null ? isAdd < 100 : isAdd < ((int) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP ? 75 : 60)) {
                 int i = random.nextInt(randomList.size());//优化成取余
-                Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
-                return advertisement;
+                Advertisement advertisement = advertisementList.get(randomList.get(i));
+                return Collections.singletonList(advertisement);
             }
         } else {
-            //如果没投放过 以一个较高的随机来投放
+            //如果没投放过 以一个较高的随机来投放 且将每个广告主的广告都投放一次
             if (isAdd < 200) {
-                int i = random.nextInt(randomList.size());
-                Advertisement advertisement = advertisementMap.get(randomList.get(i)).get(0);
+                List<Advertisement> advertisementList = new ArrayList<>(advertisementMap.size());
+                advertisementMap.forEach((k, v) -> {
+                    advertisementList.add(v.get(0));
+                });
                 bloomFilter.put(identification);
-                return advertisement;
+                return advertisementList;
             }
         }
         return null;
