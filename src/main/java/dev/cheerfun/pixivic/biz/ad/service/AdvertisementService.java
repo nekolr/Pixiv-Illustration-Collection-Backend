@@ -45,7 +45,7 @@ public class AdvertisementService {
         List<AdvertisementInfo> advertisementInfos = advertisementMapper.queryAllEnableAdvertisementInfo();
         //构造randomList
         for (int i = 0; i < advertisementInfos.size(); i++) {
-            for (int j = 0; i < advertisementInfos.get(i).getWeight(); j++) {
+            for (int j = 0; j < advertisementInfos.get(i).getWeight(); j++) {
                 randomList.add(i);
             }
         }
