@@ -170,7 +170,7 @@ public class SearchService {
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
-        return new SearchSuggestion(translationUtil.translateToJapaneseByYouDao(keyword), keyword);
+        return new SearchSuggestion(translationUtil.translateToChineseByAzure(keyword), keyword);
     }
 
     @Cacheable(value = "bangumiSearch")
@@ -201,7 +201,7 @@ public class SearchService {
         return httpClient.sendAsync(httpRequest, HttpResponse.BodyHandlers.ofString()).thenApply(r ->
                 moeGirlPattern.matcher(r.body()).results().map(result -> {
                     String matchKeyword = result.group();
-                    return new SearchSuggestion(matchKeyword, translationUtil.translateToJapaneseByYouDao(keyword));
+                    return new SearchSuggestion(matchKeyword, translationUtil.translateToChineseByAzure(keyword));
                 }).collect(Collectors.toList())
         );
 

@@ -115,7 +115,7 @@ public class SearchController {
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
             String[] keywords = keyword.split("\\|\\|");
-            keyword = Arrays.stream(keywords).map(translationUtil::translateToJapaneseByYouDao).reduce((s1, s2) -> s1 + " " + s2).get();
+            keyword = Arrays.stream(keywords).map(translationUtil::translateToChineseByAzure).reduce((s1, s2) -> s1 + " " + s2).get();
         }
         CompletableFuture<List<Illustration>> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null);
         return searchResultCompletableFuture.thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
