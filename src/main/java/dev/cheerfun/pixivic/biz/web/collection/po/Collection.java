@@ -28,6 +28,7 @@ public class Collection {
     private String username;
     private List<ImageUrl> cover;
     @SensitiveCheck
+    @NotBlank
     @Length(max = 100, min = 1, message = "标题长度不符合")
     private String title;
     @SensitiveCheck
