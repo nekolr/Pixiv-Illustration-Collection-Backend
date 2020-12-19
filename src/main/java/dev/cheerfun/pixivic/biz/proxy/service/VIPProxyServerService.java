@@ -56,6 +56,7 @@ public class VIPProxyServerService {
         crawlerExecutorService.submit(() -> {
             while (true) {
                 try {
+                    log.info("开始检查高级会员线路可用性");
                     List<VIPProxyServer> tempList = serverList.stream().parallel().filter(e -> {
                         if (check(e)) {
                             log.error("检测到" + e + "高级会员线路下线");
