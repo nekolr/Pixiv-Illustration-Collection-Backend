@@ -70,7 +70,7 @@ public class VIPProxyServerService {
                     writeLock.unlock();
                 }
                 log.info("检查高级会员线路可用性完成");
-                Thread.sleep(1000 * 60 * 2);
+                Thread.sleep(1000 * 60 * 5);
             }
         });
     }
