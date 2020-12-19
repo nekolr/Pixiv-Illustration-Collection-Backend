@@ -1,10 +1,8 @@
 package dev.cheerfun.pixivic.biz.proxy.mapper;
 
 import dev.cheerfun.pixivic.biz.proxy.po.VIPProxyServer;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.Update;
+import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
+import org.apache.ibatis.annotations.*;
 
 import java.util.List;
 
@@ -20,6 +18,12 @@ public interface VIPProxyServerMapper {
     void ban(Integer serverId);
 
     @Select("select * from vip_proxy_servers where use_flag=1")
+    @Results({
+            @Result(property = "id", column = "server_id"),
+            @Result(property = "serverAddress", column = "server_address"),
+            @Result(property = "useFlag", column = "use_flag"),
+            @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+    })
     List<VIPProxyServer> queryAllServer();
 
     @Insert("insert into vip_proxy_servers (server_address,create_date) values(#{serverAddress},now())")
