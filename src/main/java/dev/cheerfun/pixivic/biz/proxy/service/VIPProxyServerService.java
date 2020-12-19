@@ -12,9 +12,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -27,8 +31,9 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VIPProxyServerService {
     private final VIPProxyServerMapper vipProxyServerMapper;
-    private List<VIPProxyServer> availableList;
-    private Integer availableListSize;
+    private List<VIPProxyServer> availableServerList;
+    private List<VIPProxyServer> serverList;
+    private Integer availableServerListSize;
     private final ExecutorService crawlerExecutorService;
     ReentrantReadWriteLock lock = new ReentrantReadWriteLock(false);
     final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
@@ -39,7 +44,8 @@ public class VIPProxyServerService {
     public void init() {
         try {
             //获取服务器列表，并且尝试是否可用
-            availableList = vipProxyServerMapper.queryAllServer();
+            serverList = vipProxyServerMapper.queryAllServer();
+            availableServerList = new ArrayList<>(serverList);
             loopCheck();
         } catch (Exception exception) {
             log.error("初始化vip高速服务器服务失败");
@@ -50,19 +56,21 @@ public class VIPProxyServerService {
         crawlerExecutorService.submit(() -> {
             while (true) {
                 try {
-                    availableList.forEach(e -> {
-                        if (!check(e)) {
+                    List<VIPProxyServer> tempList = serverList.stream().parallel().filter(e -> {
+                        if (check(e)) {
                             log.error("检测到" + e + "高级会员线路下线");
-                            ban(e);
+                            //ban(e);
+                            return false;
                         }
-                    });
+                        return true;
+                    }).collect(Collectors.toList());
                     writeLock.lock();
-                    availableList = vipProxyServerMapper.queryAllServer();
-                    availableListSize = availableList.size();
+                    availableServerList = tempList;
+                    availableServerListSize = tempList.size();
                 } finally {
                     writeLock.unlock();
                 }
-                Thread.sleep(1000 * 60 * 5);
+                Thread.sleep(1000 * 60 * 2);
             }
         });
     }
@@ -70,7 +78,7 @@ public class VIPProxyServerService {
     public List<VIPProxyServer> queryAllServer() {
         readLock.lock();
         try {
-            return availableList;
+            return availableServerList;
         } finally {
             readLock.unlock();
         }
@@ -99,8 +107,8 @@ public class VIPProxyServerService {
         writeLock.lock();
         try {
             vipProxyServerMapper.addServer(vipProxyServer);
-            availableList = vipProxyServerMapper.queryAllServer();
-            availableListSize = availableList.size();
+            availableServerList = vipProxyServerMapper.queryAllServer();
+            availableServerListSize = availableServerList.size();
         } finally {
             writeLock.unlock();
         }
