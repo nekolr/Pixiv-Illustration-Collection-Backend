@@ -33,7 +33,6 @@ public class VIPProxyServerService {
     private final VIPProxyServerMapper vipProxyServerMapper;
     private List<VIPProxyServer> availableServerList;
     private List<VIPProxyServer> serverList;
-    private Integer availableServerListSize;
     private final ExecutorService crawlerExecutorService;
     ReentrantReadWriteLock lock = new ReentrantReadWriteLock(false);
     final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
@@ -67,7 +66,6 @@ public class VIPProxyServerService {
                     }).collect(Collectors.toList());
                     writeLock.lock();
                     availableServerList = tempList;
-                    availableServerListSize = tempList.size();
                 } finally {
                     writeLock.unlock();
                 }
@@ -109,8 +107,7 @@ public class VIPProxyServerService {
         writeLock.lock();
         try {
             vipProxyServerMapper.addServer(vipProxyServer);
-            availableServerList = vipProxyServerMapper.queryAllServer();
-            availableServerListSize = availableServerList.size();
+            serverList = vipProxyServerMapper.queryAllServer();
         } finally {
             writeLock.unlock();
         }
