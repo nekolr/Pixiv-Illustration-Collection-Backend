@@ -39,7 +39,7 @@ public class VIPProxyServerService {
     public void init() {
         try {
             //获取服务器列表，并且尝试是否可用
-            availableList = queryAllServer();
+            availableList = vipProxyServerMapper.queryAllServer();
             loopCheck();
         } catch (Exception exception) {
             log.error("初始化vip高速服务器服务失败");
@@ -56,7 +56,7 @@ public class VIPProxyServerService {
                             ban(e);
                         }
                     });
-                    availableList = queryAllServer();
+                    availableList = vipProxyServerMapper.queryAllServer();
                     availableListSize = availableList.size();
                 } finally {
                     writeLock.unlock();
@@ -69,7 +69,7 @@ public class VIPProxyServerService {
     public List<VIPProxyServer> queryAllServer() {
         readLock.lock();
         try {
-            return vipProxyServerMapper.queryAllServer();
+            return availableList;
         } finally {
             readLock.unlock();
         }
@@ -98,7 +98,7 @@ public class VIPProxyServerService {
         writeLock.lock();
         try {
             vipProxyServerMapper.addServer(vipProxyServer);
-            availableList = queryAllServer();
+            availableList = vipProxyServerMapper.queryAllServer();
             availableListSize = availableList.size();
         } finally {
             writeLock.unlock();
