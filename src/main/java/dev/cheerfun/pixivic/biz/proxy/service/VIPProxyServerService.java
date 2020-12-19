@@ -49,13 +49,14 @@ public class VIPProxyServerService {
     public void loopCheck() {
         crawlerExecutorService.submit(() -> {
             while (true) {
-                writeLock.lock();
                 try {
                     availableList.forEach(e -> {
                         if (e.getServerAddress() != null && !check(e)) {
+                            log.error("检测到" + e + "高级会员线路下线");
                             ban(e);
                         }
                     });
+                    writeLock.lock();
                     availableList = vipProxyServerMapper.queryAllServer();
                     availableListSize = availableList.size();
                 } finally {
