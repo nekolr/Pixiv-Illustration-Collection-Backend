@@ -133,7 +133,7 @@ public class CollectionController {
     //查询用户所有画集名字
     @GetMapping("/users/{userId}/collectionsDigest")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<CollectionDigest>>> queryUserCollectionNameList(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(required = false) Integer isPublic) {
+    public ResponseEntity<Result<List<CollectionDigest>>> queryUserCollectionNameList(@PathVariable Integer userId, @RequestHeader(value = "Authorization") String token, @RequestParam(required = false) Integer isPublic) {
         return ResponseEntity.ok().body(new Result<>("获取用户画集名称列表成功", collectionService.queryUserCollectionNameList((Integer) AppContext.get().get(AuthConstant.USER_ID), isPublic)));
     }
 
