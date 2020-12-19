@@ -51,7 +51,7 @@ public class VIPProxyServerService {
             while (true) {
                 try {
                     availableList.forEach(e -> {
-                        if (e.getServerAddress() != null && !check(e)) {
+                        if (!check(e)) {
                             log.error("检测到" + e + "高级会员线路下线");
                             ban(e);
                         }
@@ -81,7 +81,7 @@ public class VIPProxyServerService {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(vipProxyServer.getServerAddress() + "/test.jpg")).GET().build();
             int statusCode = httpClient.send(request, HttpResponse.BodyHandlers.discarding()).statusCode();
-            if (statusCode == 404) {
+            if (statusCode == 401) {
                 return true;
             }
         } catch (Exception e) {
