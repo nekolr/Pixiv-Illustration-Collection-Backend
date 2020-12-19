@@ -88,15 +88,11 @@ public class VIPProxyServerService {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create(vipProxyServer.getServerAddress() + "/test.jpg")).GET().build();
-            int statusCode = httpClient.send(request, HttpResponse.BodyHandlers.discarding()).statusCode();
-            if (statusCode == 401) {
-                return true;
-            }
+            httpClient.send(request, HttpResponse.BodyHandlers.discarding()).statusCode();
         } catch (Exception e) {
-            e.printStackTrace();
-            //ban(vipProxyServer);
+            return false;
         }
-        return false;
+        return true;
     }
 
     public void ban(VIPProxyServer vipProxyServer) {
