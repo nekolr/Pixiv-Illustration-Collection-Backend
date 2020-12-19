@@ -55,8 +55,8 @@ public class VIPProxyServerService {
     public void loopCheck() {
         crawlerExecutorService.submit(() -> {
             while (true) {
+                log.info("开始周期性检查高级会员线路可用性");
                 try {
-                    log.info("开始检查高级会员线路可用性");
                     List<VIPProxyServer> tempList = serverList.stream().parallel().filter(e -> {
                         if (!check(e)) {
                             log.error("检测到" + e + "高级会员线路下线");
@@ -71,6 +71,7 @@ public class VIPProxyServerService {
                 } finally {
                     writeLock.unlock();
                 }
+                log.info("检查高级会员线路可用性完成");
                 Thread.sleep(1000 * 60 * 2);
             }
         });
