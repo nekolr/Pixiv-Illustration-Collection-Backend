@@ -210,8 +210,8 @@ public class CommonController {
     @PermissionRequired
     public ResponseEntity<Result<User>> updatePermissionLevel(@RequestParam String exchangeCode, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
         Integer uid = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-        User user = userService.queryUser(uid);
         vipUserService.exchangeVIP(uid, exchangeCode);
+        User user = userService.queryUser(uid);
         return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("兑换成功", user));
     }
 
