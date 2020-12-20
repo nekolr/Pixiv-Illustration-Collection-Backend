@@ -27,7 +27,7 @@ public class VIPUserController {
 
     //获取高速服务器
     @GetMapping("/vipProxyServer")
-    @PermissionRequired(PermissionLevel.VIP)
+    @PermissionRequired
     public ResponseEntity<Result<List<VIPProxyServer>>> queryVipProxyServer(@RequestHeader("Authorization") String token) {
         return ResponseEntity.ok().body(new Result<>("获取高速服务器成功", vipProxyServerService.queryAllServer()));
     }
