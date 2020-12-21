@@ -72,14 +72,14 @@ public class AdvertisementService {
         //使用布隆过滤器查看是否投放过一次
         if (bloomFilter.mightContain(identification)) {
             //如果投放过 以一个较低的随机来投放
-            if (userId == null ? isAdd < 100 : isAdd < ((int) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP ? 75 : 60)) {
+            if (userId == null ? isAdd < 150 : isAdd < ((int) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP ? 75 : 60)) {
                 //优化成取余
                 Advertisement advertisement = advertisementList.get(randomList.get(isAdd % randomList.size()));
                 return Collections.singletonList(advertisement);
             }
         } else {
             //如果没投放过 以一个较高的随机来投放 且将每个广告主的广告都投放一次
-            if (isAdd < 200) {
+            if (isAdd < 300) {
                 List<Advertisement> advertisementList = new ArrayList<>(advertisementMap.size());
                 advertisementMap.forEach((k, v) -> {
                     advertisementList.add(v.get(0));
