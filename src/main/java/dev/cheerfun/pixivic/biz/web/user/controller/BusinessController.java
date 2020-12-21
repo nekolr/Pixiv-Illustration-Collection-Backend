@@ -64,11 +64,6 @@ public class BusinessController {
     @WithUserInfo
     public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable Integer userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
         List<Illustration> illustrations = businessService.queryBookmarked(userId, type, (page - 1) * pageSize, pageSize);
-       /* int userIdFromAppContext;
-        if (token != null) {
-            userIdFromAppContext = (int) AppContext.get().get(AuthConstant.USER_ID);
-            businessService.dealIfFollowedInfo(illustrations, userIdFromAppContext);
-        }*/
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
 

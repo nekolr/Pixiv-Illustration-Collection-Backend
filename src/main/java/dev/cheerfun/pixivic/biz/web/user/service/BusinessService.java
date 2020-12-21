@@ -1,13 +1,11 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import com.google.common.collect.Lists;
-import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
-import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.recommend.service.RecommendBizService;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
@@ -18,7 +16,6 @@ import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
-import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -102,7 +99,10 @@ public class BusinessService {
     }
 
     @Transactional(rollbackFor = Exception.class)
-    @CacheEvict(value = "illust_bookmarked", key = "#illustId+'1'+'30'")
+    @Caching(evict = {
+            @CacheEvict(value = "illust_bookmarked", key = "#illustId+'1'+'30'"),
+            @CacheEvict(value = "illust_bookmarked", key = "#illustId+'-1-30'")
+    })
     public void bookmarkOperation(int userId, String username, int illustId, int increment, int relationId) {
         //redis修改联系以及修改redis中该画作收藏数(事务)
 //        Boolean isMember = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + userId, String.valueOf(illustId));
@@ -303,7 +303,7 @@ public class BusinessService {
         return collectionService.queryCollectionById(collectionIdList);
     }
 
-    @Cacheable("illust_bookmarked")
+    @Cacheable(value = "illust_bookmarked", key = "#illustId+'-'+#page+'-'+#pageSize")
     public List<UserListDTO> queryUserListBookmarkedIllust(Integer illustId, Integer page, Integer pageSize) {
         return businessMapper.queryUserListBookmarkedIllust(illustId, (page - 1) * pageSize, pageSize);
     }
