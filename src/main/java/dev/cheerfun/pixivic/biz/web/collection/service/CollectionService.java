@@ -372,7 +372,8 @@ public class CollectionService {
     @Transactional
     @Caching(evict = {
             @CacheEvict(value = "collectionSummary", key = "#userId+'-0'"),
-            @CacheEvict(value = "collectionSummary", key = "#userId+'-1'")
+            @CacheEvict(value = "collectionSummary", key = "#userId+'-1'"),
+            @CacheEvict(value = "collectionSummary", key = "#userId+'-null'"),
     })
     public void dealUserCollectionSummary(Integer userId) {
         collectionMapper.dealUserPublicCollectionSummary(userId);
