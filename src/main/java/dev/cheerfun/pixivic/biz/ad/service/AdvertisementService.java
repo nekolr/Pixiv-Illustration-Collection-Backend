@@ -79,7 +79,7 @@ public class AdvertisementService {
             }
         } else {
             //如果没投放过 以一个较高的随机来投放 且将每个广告主的广告都投放一次
-            if (isAdd < 300) {
+            if (isAdd < 500) {
                 List<Advertisement> advertisementList = new ArrayList<>(advertisementMap.size());
                 advertisementMap.forEach((k, v) -> {
                     advertisementList.add(v.get(0));
