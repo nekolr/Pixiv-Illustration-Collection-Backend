@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.time.LocalDate;
+import java.time.Period;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -94,7 +95,11 @@ public class VIPUserService {
     //增加一个会员试用表
     @Cacheable(value = "CanParticipateActivity", key = "#userId+'-'+#activityName")
     public Boolean checkCanParticipateActivity(Integer userId, String activityName) {
-        return VIPMapper.checkActivity(userId, activityName) == null;
+        //用户id对100取余 定义一个变量 为当前日期-2020-12-22的天数
+        if (userId % 100 < 3 * Period.between(LocalDate.of(2020, 12, 22), LocalDate.now().plusDays(1)).getDays()) {
+            return VIPMapper.checkActivity(userId, activityName) == null;
+        }
+        return false;
     }
 
     @CacheEvict(value = "CanParticipateActivity", key = "#userId+'-'+#activityName")
