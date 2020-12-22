@@ -246,13 +246,13 @@ public class CommonService {
     public Boolean updateUserPermissionLevel(Integer userId, byte type) {
         User user = queryUser(userId);
         //首先查询用户是否会员且未过期
-        if (user.getPermissionLevel() == PermissionLevel.VIP && user.getPermissionLevelExpireDate() != null && user.getPermissionLevelExpireDate().isAfter(LocalDateTime.now())) {
+        if (user.getPermissionLevel() >= PermissionLevel.VIP && user.getPermissionLevelExpireDate() != null && user.getPermissionLevelExpireDate().isAfter(LocalDateTime.now())) {
             //如果是则叠加
             userMapper.extendPermissionLevelExpirationTime(userId, type);
             return true;
         } else {
             //如果不是则过期时间为当前时间加上type
-            userMapper.updatePermissionLevelExpirationTime(userId, PermissionLevel.VIP, LocalDateTime.now().plusHours(type * 24));
+            userMapper.updatePermissionLevelExpirationTime(userId, user.getPermissionLevel() > PermissionLevel.VIP ? user.getPermissionLevel() : PermissionLevel.VIP, LocalDateTime.now().plusHours(type * 24));
             return true;
         }
     }
