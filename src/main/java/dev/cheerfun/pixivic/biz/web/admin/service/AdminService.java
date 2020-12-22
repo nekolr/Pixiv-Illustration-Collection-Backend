@@ -425,4 +425,9 @@ public class AdminService {
         appVersionInfoRepository.deleteById(appVersionInfoId);
         return true;
     }
+
+    public Boolean updateAdvertisementList() {
+        advertisementService.init();
+        return true;
+    }
 }

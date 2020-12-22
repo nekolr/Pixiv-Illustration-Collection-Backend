@@ -52,6 +52,13 @@ public class AdvertisementAdminController {
         return ResponseEntity.ok().body(new Result<>("更新广告成功", adminService.updateAdvertisement(advertisementPO)));
     }
 
+    @PutMapping("/adList")
+    @PermissionRequired(PermissionLevel.ADMIN)
+    public ResponseEntity<Result<Boolean>> updateAdvertisementList(
+            @RequestHeader(value = "Authorization") String token) {
+        return ResponseEntity.ok().body(new Result<>("更新广告成功", adminService.updateAdvertisementList()));
+    }
+
     @PutMapping("/ads")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<AdvertisementPO>> createAdvertisement(
