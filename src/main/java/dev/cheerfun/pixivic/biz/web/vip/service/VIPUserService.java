@@ -85,7 +85,7 @@ public class VIPUserService {
         //更新用户会员状态
         commonService.updateUserPermissionLevel(userId, exchangeCode.getType());
         //更新兑换码是否使用
-        VIPMapper.updateExchangeCode(exchangeCode.getId());
+        VIPMapper.updateExchangeCode(exchangeCode.getId(), userId);
     }
 
     //每天晚上四点定时刷新用户角色
