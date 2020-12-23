@@ -59,7 +59,7 @@ public class VIPUserService {
     }
 
     //使用验证码
-    @Transactional
+
     public Boolean exchangeVIP(Integer userId, String exchangeStringCode) {
         if (exchangeStringCode.length() != 16) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码无效");
@@ -74,15 +74,19 @@ public class VIPUserService {
         if (useFlag) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码已经被使用");
         }
-        //更新用户会员状态
-        commonService.updateUserPermissionLevel(userId, exchangeCode.getType());
-        //更新兑换码是否使用
-        VIPMapper.updateExchangeCode(exchangeCode.getId());
+        exchangeVIP(userId, exchangeCode);
         stringRedisTemplate.opsForValue().setBit(RedisKeyConstant.VIP_CODE_USAGE_RECORD_BITMAP, exchangeCode.getId(), true);
         //返回
         return true;
     }
-    //根据编号查询验证码
+
+    @Transactional
+    private void exchangeVIP(Integer userId, ExchangeCode exchangeCode) {
+        //更新用户会员状态
+        commonService.updateUserPermissionLevel(userId, exchangeCode.getType());
+        //更新兑换码是否使用
+        VIPMapper.updateExchangeCode(exchangeCode.getId());
+    }
 
     //每天晚上四点定时刷新用户角色
     @Scheduled(cron = "0 0 2 * * ?")
