@@ -100,8 +100,8 @@ public class VIPUserService {
     //增加一个会员试用表
     @Cacheable(value = "CanParticipateActivity", key = "#userId+'-'+#activityName")
     public Boolean checkCanParticipateActivity(Integer userId, String activityName) {
-        //用户id对100取余 定义一个变量 为当前日期-2020-12-22的天数
-        if (userId % 100 < 5 * Period.between(LocalDate.of(2020, 12, 22), LocalDate.now().plusDays(1)).getDays()) {
+        //用户id对100取余大于当前日期-2020-12-21的天数
+        if (userId % 100 < 8 * Period.between(LocalDate.of(2020, 12, 21), LocalDate.now()).getDays()) {
             return VIPMapper.checkActivity(userId, activityName) == null;
         }
         return false;
