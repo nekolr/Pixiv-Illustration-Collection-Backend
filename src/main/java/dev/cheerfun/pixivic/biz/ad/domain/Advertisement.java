@@ -40,7 +40,7 @@ public class Advertisement extends IllustrationWithLikeInfo {
         artistPreView = new ArtistPreViewWithFollowedInfo(null, advertisementInfo.getAdvertiserName(), null, advertisementInfo.getAdvertiserAvatar(), false);
         link = advertisementInfo.getLink();
         adId = advertisementInfo.getId();
-        sanityLevel = 4;
+        sanityLevel = 1;
         restrict = 0;
         xRestrict = 0;
         isLiked = false;
