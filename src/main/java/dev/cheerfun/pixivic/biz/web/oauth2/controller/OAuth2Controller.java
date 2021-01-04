@@ -56,7 +56,7 @@ public class OAuth2Controller {
     }
 
     @GetMapping("/oauth/me")
-    public ResponseEntity<Object> userinfo(@RequestHeader(value = "Authorization") String accessToken) {
+    public ResponseEntity<Object> userinfo(@RequestHeader(value = "authorization") String accessToken) {
         return ResponseEntity.ok().body(oAuth2Service.userinfo(accessToken));
     }
 
