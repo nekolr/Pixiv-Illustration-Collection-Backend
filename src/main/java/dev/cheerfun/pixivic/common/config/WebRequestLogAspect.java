@@ -50,7 +50,7 @@ public class WebRequestLogAspect {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Pointcut("execution(public * com.revengemission.sso.oauth2.server.controller.*.*(..))")
+    @Pointcut("execution(public * *.controller.*.*(..))")
     public void wsLog() {
     }
 
