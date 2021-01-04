@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.domain.Authable;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -85,10 +86,10 @@ public class User implements Authable {
     @JsonIgnore
     public Map<String, Object> getClaims() {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("permissionLevel", permissionLevel);
-        claims.put("isBan", isBan);
-        claims.put("refreshCount", 0);
-        claims.put("userId", id);
+        claims.put(AuthConstant.PERMISSION_LEVEL, permissionLevel);
+        claims.put(AuthConstant.IS_BAN, isBan);
+        claims.put(AuthConstant.REFRESH_COUNT, 0);
+        claims.put(AuthConstant.USER_ID, id);
         return claims;
     }
 

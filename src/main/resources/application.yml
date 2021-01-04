@@ -1,8 +1,8 @@
 server:
   port: 8080
 spring:
-#  profiles:
-#    active: mac
+  profiles:
+    active: mac
   data:
     redis:
       repositories:
@@ -136,3 +136,9 @@ recaptcha:
   secret: 6Le5lOIZAAAAAI34bH_axfWScwcKFnxUBNbpe60d
 TFServingServer:
   localhost:8501
+oauth2:
+  issuer: https://pix.ipv4.host
+  authorizationEndpoint: https://pix.ipv4.host/oauth/authorize
+  tokenEndpoint: https://pix.ipv4.host/oauth/token
+  checkToken:
+  userinfoEndpoint: https://pix.ipv4.host/user/me

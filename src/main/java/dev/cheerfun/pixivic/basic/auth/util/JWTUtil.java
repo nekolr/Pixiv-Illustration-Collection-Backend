@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.basic.auth.exception.AuthExpirationException;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtParser;
+import io.jsonwebtoken.JwtParserBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Map;
@@ -27,9 +29,11 @@ import java.util.Map;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class JWTUtil implements Serializable {
     private final AuthProperties authProperties;
+    private final JwtParser jwtParser;
+    private final SecretKey secretKey;
 
     public Claims getAllClaimsFromToken(String token) {
-        JwtParser jwtParser = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(authProperties.getSecret().getBytes()));
+        //  JwtParser jwtParser = Jwts.parser().setSigningKey(Keys.hmacShaKeyFor(authProperties.getSecret().getBytes()));
         Claims body = null;
         try {
             body = jwtParser.parseClaimsJws(token).getBody();
@@ -40,24 +44,28 @@ public class JWTUtil implements Serializable {
     }
 
     public String getToken(Authable authable) {
-        return generateToken(authable.getIssuer(), authable.getClaims());
+        return generateToken(authable.getIssuer(), authable.getClaims(), null);
     }
 
-    private String refreshToken(Claims claims) {
-        return generateToken(claims.getIssuer(), claims);
+    public String getToken(Authable authable, Long expirationTime) {
+        return generateToken(authable.getIssuer(), authable.getClaims(), expirationTime);
     }
 
-    private String generateToken(String issuer, Map<String, Object> claims) {
+    public String refreshToken(Claims claims) {
+        return generateToken(claims.getIssuer(), claims, null);
+    }
+
+    private String generateToken(String issuer, Map<String, Object> claims, Long expirationTime) {
         claims.merge(AuthConstant.REFRESH_COUNT, 0, (value, newValue) -> (Integer) value < 3 ? (Integer) value + 1 : value);
         Integer refreshCount = (Integer) claims.get(AuthConstant.REFRESH_COUNT);
         final Date createdDate = new Date();
-        final Date expirationDate = new Date(createdDate.getTime() + (refreshCount + 1) * authProperties.getExpirationTime() * 1000);
+        final Date expirationDate = new Date(createdDate.getTime() + (refreshCount + 1) * (expirationTime == null ? authProperties.getExpirationTime() : expirationTime) * 1000);
         return Jwts.builder()
                 .setIssuer(issuer)
                 .setClaims(claims)
                 .setIssuedAt(createdDate)
                 .setExpiration(expirationDate)
-                .signWith(Keys.hmacShaKeyFor(authProperties.getSecret().getBytes()))
+                .signWith(secretKey)
                 .compact();
     }
 

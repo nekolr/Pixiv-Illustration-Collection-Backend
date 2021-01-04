@@ -21,7 +21,7 @@
         <boot.version>2.3.5.RELEASE</boot.version>
         <java.version>12</java.version>
         <lombok.version>1.18.8</lombok.version>
-        <jjwt.version>0.10.8</jjwt.version>
+        <jjwt.version>0.11.2</jjwt.version>
         <mysql.version>8.0.22</mysql.version>
         <maven.complie.version>3.7.0</maven.complie.version>
         <common.lang3.version>3.8.1</common.lang3.version>
