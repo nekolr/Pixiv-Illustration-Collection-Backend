@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.oauth2.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.biz.web.oauth2.config.OauthAuthorizationServer;
+import dev.cheerfun.pixivic.biz.web.oauth2.domain.OAuth2UserInfo;
 import dev.cheerfun.pixivic.biz.web.oauth2.service.OAuth2Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,7 +73,7 @@ public class OAuth2Controller {
     }
 
     @GetMapping("/oauth/me")
-    public ResponseEntity<Object> userinfo(@RequestHeader(value = "authorization", required = false) String accessToken) {
+    public ResponseEntity<OAuth2UserInfo> userinfo(@RequestHeader(value = "authorization", required = false) String accessToken) {
         return ResponseEntity.ok().body(oAuth2Service.userinfo(accessToken));
     }
 

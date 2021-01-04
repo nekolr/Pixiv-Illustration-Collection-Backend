@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.biz.web.oauth2.constant.GrantType;
 import dev.cheerfun.pixivic.biz.web.oauth2.constant.Scope;
 import dev.cheerfun.pixivic.biz.web.oauth2.constant.TokenType;
 import dev.cheerfun.pixivic.biz.web.oauth2.domain.OAuth2TokenResponse;
+import dev.cheerfun.pixivic.biz.web.oauth2.domain.OAuth2UserInfo;
 import dev.cheerfun.pixivic.biz.web.oauth2.mapper.OAuth2Mapper;
 import dev.cheerfun.pixivic.biz.web.oauth2.po.OAuth2Client;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
@@ -97,8 +98,9 @@ public class OAuth2Service {
         }
     }
 
-    public User userinfo(String accessToken) {
+    public OAuth2UserInfo userinfo(String accessToken) {
         Map<String, Object> claim = jwtUtil.validateToken(accessToken.replace("Bearer ", ""));
-        return userService.queryUser((int) claim.get(AuthConstant.USER_ID));
+        User user = userService.queryUser((int) claim.get(AuthConstant.USER_ID));
+        return new OAuth2UserInfo(user.getId(), user.getUsername(), user.getEmail());
     }
 }
