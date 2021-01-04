@@ -44,8 +44,8 @@ import java.util.Map;
  * @description WebRequestLogAspect
  */
 
-//@Aspect
-//@Component
+@Aspect
+@Component
 public class WebRequestLogAspect {
 
     private Logger log = LoggerFactory.getLogger(this.getClass());
