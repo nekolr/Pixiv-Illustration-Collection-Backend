@@ -98,7 +98,7 @@ public class OAuth2Service {
     }
 
     public User userinfo(String accessToken) {
-        Map<String, Object> claim = jwtUtil.validateToken(accessToken);
+        Map<String, Object> claim = jwtUtil.validateToken(accessToken.replace("Bearer ", ""));
         return userService.queryUser((int) claim.get(AuthConstant.USER_ID));
     }
 }

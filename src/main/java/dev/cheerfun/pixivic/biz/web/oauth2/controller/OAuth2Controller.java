@@ -27,22 +27,6 @@ public class OAuth2Controller {
         return ResponseEntity.ok().body(oAuth2Service.queryServerInfo());
     }
 
-    @PostMapping("/oauth/authorize")
-    @PermissionRequired
-    public ResponseEntity<Object> authorizeByPost(@RequestParam(name = "referer", required = false) String referer,
-                                                  @RequestParam(value = "client_id") Integer clientId,
-                                                  @RequestParam(value = "response_type", required = false) String responseType,
-                                                  @RequestParam(value = "state", required = false) String state,
-                                                  @RequestParam(value = "scope", required = false) String scope,
-                                                  @RequestParam(value = "user_oauth_approval", required = false, defaultValue = "false") boolean userOauthApproval,
-                                                  @RequestParam(value = "redirect_uri") String redirectUri,
-                                                  @RequestHeader(value = "Authorization") String token) {
-
-        String result = oAuth2Service.authorize(clientId, state, redirectUri);
-        System.out.println(result);
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header("Location", result).header("Cache-Control", "no-cache").body(null);
-    }
-
     @GetMapping("/oauth/authorize")
     @PermissionRequired
     public ResponseEntity<Object> authorize(@RequestParam(name = "referer", required = false) String referer,
@@ -72,7 +56,7 @@ public class OAuth2Controller {
     }
 
     @GetMapping("/oauth/me")
-    public ResponseEntity<Object> userinfo(@RequestParam(value = "access_token", required = false) String accessToken) {
+    public ResponseEntity<Object> userinfo(@RequestHeader(value = "Authorization") String accessToken) {
         return ResponseEntity.ok().body(oAuth2Service.userinfo(accessToken));
     }
 
