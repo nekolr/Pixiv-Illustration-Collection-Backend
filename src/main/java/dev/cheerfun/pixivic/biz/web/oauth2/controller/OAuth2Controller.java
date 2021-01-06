@@ -40,7 +40,7 @@ public class OAuth2Controller {
                                             @RequestHeader(value = "Authorization") String token) {
         String result = oAuth2Service.authorize(clientId, state, redirectUri);
         //System.out.println(result);
-        return ResponseEntity.status(HttpStatus.MOVED_PERMANENTLY).header("Location", result).header("Cache-Control", "no-cache").body(null);
+        return ResponseEntity.ok().header("Location", result).body(null);
     }
 
     @PostMapping("/oauth/token")
