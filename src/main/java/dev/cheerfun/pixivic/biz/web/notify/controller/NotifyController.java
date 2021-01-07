@@ -28,7 +28,7 @@ public class NotifyController {
     //根据分类获取消息
     @GetMapping("/users/{userId}/reminds")
     @PermissionRequired
-    public ResponseEntity<Result<List<NotifyRemind>>> queryRemind(@PathVariable String userId, @RequestParam Integer type, @RequestParam(required = false) Long offset, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<NotifyRemind>>> queryRemind(@PathVariable String userId, @RequestParam Integer type, @RequestParam(required = false) Long offset, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         if (offset == null) {
             offset = System.currentTimeMillis() / 1000L;
         }
@@ -38,13 +38,13 @@ public class NotifyController {
     //获取各消息分类未读数
     @GetMapping("/users/{userId}/remindSummary")
     @PermissionRequired
-    public ResponseEntity<Result<List<NotifyRemindSummary>>> queryRemindSummary(@PathVariable String userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<NotifyRemindSummary>>> queryRemindSummary(@PathVariable String userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("获取消息未读统计成功", notifyService.queryRemindSummary((int) AppContext.get().get(AuthConstant.USER_ID))));
     }
 
     @GetMapping("/users/{userId}/unreadRemindsCount")
     @PermissionRequired
-    public ResponseEntity<Result<Integer>> queryUnreadRemindsCount(@PathVariable String userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Integer>> queryUnreadRemindsCount(@PathVariable String userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("获取总未读消息数成功", notifyService.queryUnreadRemindsCount((int) AppContext.get().get(AuthConstant.USER_ID))));
     }
 

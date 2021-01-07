@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.common.util.pixiv;
 
 import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -79,7 +80,7 @@ final public class RequestUtil {
         int randomOauthIndex = oauthUtil.getRandomOauthIndex();
         Oauth oauth = oauthUtil.getOauths().get(randomOauthIndex);
         HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + oauth.getAccessToken())
+                .header(AuthConstant.AUTHORIZATION, "Bearer " + oauth.getAccessToken())
                 .GET()
                 .build();
         return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(HttpResponse::body);
@@ -92,7 +93,7 @@ final public class RequestUtil {
         decorateHeader(uri);
         PixivUser pixivUser = oauthManager.getRandomPixivUser();
         HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + pixivUser.getAccessToken())
+                .header(AuthConstant.AUTHORIZATION, "Bearer " + pixivUser.getAccessToken())
                 .GET()
                 .build();
         return httpClient.sendAsync(getRank, HttpResponse.BodyHandlers.ofString()).thenApply(resp -> {
@@ -112,7 +113,7 @@ final public class RequestUtil {
         decorateHeader(uri);
         PixivUser pixivUser = oauthManager.getRandomPixivUser();
         HttpRequest getRank = uri
-                .header("Authorization", "Bearer " + pixivUser.getAccessToken())
+                .header(AuthConstant.AUTHORIZATION, "Bearer " + pixivUser.getAccessToken())
                 .GET()
                 .build();
         try {

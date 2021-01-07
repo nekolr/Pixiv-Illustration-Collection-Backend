@@ -40,7 +40,7 @@ public class IllustHistoryController {
     @PermissionRequired
     @WithUserInfo
     @GetMapping("/users/{userId}/illustHistory")
-    public ResponseEntity<Result<List<Illustration>>> queryIllustHistory(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryIllustHistory(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         List<Illustration> illustrations = illustHistoryService.pullFromRedis((int) AppContext.get().get(AuthConstant.USER_ID), page, pageSize);
         return ResponseEntity.ok(new Result<>("获取近期历史记录成功", illustrations));
     }
@@ -48,14 +48,14 @@ public class IllustHistoryController {
     // TODO
     @PermissionRequired
     @DeleteMapping("/users/{userId}/illustHistory")
-    public ResponseEntity<Result<String>> deleteIllustHistory(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<String>> deleteIllustHistory(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         return ResponseEntity.ok(new Result<>("删除近期历史记录成功"));
     }
 
     @PermissionRequired
     @WithUserInfo
     @GetMapping("/users/{userId}/oldIllustHistory")
-    public ResponseEntity<Result<List<Illustration>>> queryOldIllustHistory(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryOldIllustHistory(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         List<Illustration> illustrations = illustHistoryService.pullFromMysql((int) AppContext.get().get(AuthConstant.USER_ID), page, pageSize);
         return ResponseEntity.ok(new Result<>("获取历史记录成功", illustrations));
     }
@@ -63,7 +63,7 @@ public class IllustHistoryController {
     // TODO
     @PermissionRequired
     @DeleteMapping("/users/{userId}/oldIllustHistory")
-    public ResponseEntity<Result<String>> deleteOldIllustHistory(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<String>> deleteOldIllustHistory(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         return ResponseEntity.ok(new Result<>("删除历史记录成功"));
     }
 }

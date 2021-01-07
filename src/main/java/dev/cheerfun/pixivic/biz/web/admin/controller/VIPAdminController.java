@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.biz.proxy.po.VIPProxyServer;
 import dev.cheerfun.pixivic.biz.proxy.service.VIPProxyServerService;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
 import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,14 +35,14 @@ public class VIPAdminController {
     //生成兑换码
     @GetMapping("/exchangeCode")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<List<String>>> getCheckEmail(@RequestParam byte type, @RequestParam Integer sum, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<String>>> getCheckEmail(@RequestParam byte type, @RequestParam Integer sum, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("生成兑换码成功", vipUserService.generateExchangeCode(type, sum)));
     }
 
     //添加高速服务器
     @PostMapping("/vipProxyServer")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result> addVipProxyServer(@RequestParam String url, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result> addVipProxyServer(@RequestParam String url, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         vipProxyServerService.addServer(url);
         return ResponseEntity.ok().body(new Result<>("添加高速服务器成功"));
     }
@@ -49,7 +50,7 @@ public class VIPAdminController {
     //获取高速服务器
     @GetMapping("/vipProxyServer")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<List<VIPProxyServer>>> queryVipProxyServer(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<VIPProxyServer>>> queryVipProxyServer(@RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("获取高速服务器成功", vipProxyServerService.queryAllServer()));
     }
 

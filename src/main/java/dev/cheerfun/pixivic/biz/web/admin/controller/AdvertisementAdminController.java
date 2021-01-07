@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.po.AdvertisementPO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class AdvertisementAdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Page<AdvertisementPO> advertisementPOS = adminService.queryAdvertisements(advertisementPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取广告列表成功", advertisementPOS.getTotalElements(), advertisementPOS.getContent()));
     }
@@ -48,14 +49,14 @@ public class AdvertisementAdminController {
     public ResponseEntity<Result<AdvertisementPO>> updateAdvertisement(
             @PathVariable Integer adId,
             @RequestBody AdvertisementPO advertisementPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("更新广告成功", adminService.updateAdvertisement(advertisementPO)));
     }
 
     @PutMapping("/adList")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> updateAdvertisementList(
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("更新广告成功", adminService.updateAdvertisementList()));
     }
 
@@ -63,7 +64,7 @@ public class AdvertisementAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<AdvertisementPO>> createAdvertisement(
             @RequestBody AdvertisementPO advertisementPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("发布广告成功", adminService.createAdvertisement(advertisementPO)));
     }
 
@@ -71,7 +72,7 @@ public class AdvertisementAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteAdvertisement(
             @PathVariable Integer adId,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除广告成功", adminService.deleteAdvertisement(adId)));
     }
 

@@ -34,24 +34,24 @@ public class VIPUserController {
     //获取高速服务器
     @GetMapping("/vipProxyServer")
     @PermissionRequired
-    public ResponseEntity<Result<List<VIPProxyServer>>> queryVipProxyServer(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<VIPProxyServer>>> queryVipProxyServer(@RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("获取高速服务器成功", vipProxyServerService.queryAllServer()));
     }
 
     //查看活动送会员是否参与过
     @GetMapping("/vipActivity/{activityName}/canParticipateStatus")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> checkCanParticipateActivity(@PathVariable String activityName, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> checkCanParticipateActivity(@PathVariable String activityName, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("获取活动可参与状态成功", vipUserService.checkCanParticipateActivity((int) AppContext.get().get(AuthConstant.USER_ID), activityName)));
     }
 
     @PutMapping("/vipActivity/{activityName}/participateStatus")
     @PermissionRequired
-    public ResponseEntity<Result<User>> participateActivity(@PathVariable String activityName, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<User>> participateActivity(@PathVariable String activityName, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         vipUserService.participateActivity(userId, activityName);
         User user = userService.queryUser(userId);
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("参与活动成功", user));
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("参与活动成功", user));
     }
 
 }

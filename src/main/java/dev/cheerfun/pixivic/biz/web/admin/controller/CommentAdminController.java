@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.po.CommentPO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class CommentAdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Page<CommentPO> commentPOPage = adminService.queryComment(commentPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取评论列表成功", commentPOPage.getTotalElements(), commentPOPage.getContent()));
     }
@@ -47,7 +48,7 @@ public class CommentAdminController {
     public ResponseEntity<Result<CommentPO>> updateComment(
             @PathVariable Integer commentId,
             @RequestBody CommentPO commentPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("更新评论成功", adminService.updateComment(commentPO)));
     }
 
@@ -55,7 +56,7 @@ public class CommentAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteComment(
             @PathVariable Integer commentId,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除评论成功", adminService.deleteComment(adminService.queryCommentById(commentId))));
     }
 }

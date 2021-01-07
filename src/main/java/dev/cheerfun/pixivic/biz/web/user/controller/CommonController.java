@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
@@ -49,9 +50,15 @@ public class CommonController {
     private final JWTUtil jwtUtil;
 
     @GetMapping("/{userId}")
-    public ResponseEntity<Result<User>> queryUser(@PathVariable("userId") Integer userId) {
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<User>> queryUser(@PathVariable("userId") Integer userId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         User user = userService.queryUser(userId);
-        return ResponseEntity.ok().body(new Result<>("获取用户信息成功", user));
+        String newToken = null;
+        if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
+            Integer uid = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+            newToken = jwtUtil.getToken(userService.queryUser(uid));
+        }
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, newToken).body(new Result<>("获取用户信息成功", user));
     }
 
     @GetMapping("/usernames/{username}")
@@ -75,7 +82,7 @@ public class CommonController {
     public ResponseEntity<Result<User>> signUp(@RequestBody @Valid SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userInfo.castToUser();
         user = userService.signUp(user);
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
     }
 
     @PostMapping("/checkByRecaptcha")
@@ -83,38 +90,38 @@ public class CommonController {
         recaptchaUtil.check(userInfo.getGRecaptchaResponse());
         User user = userInfo.castToUser();
         user = userService.signUp(user);
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
     }
 
     @PostMapping("/token")
     @CheckVerification
     public ResponseEntity<Result<User>> signIn(@RequestBody SignInDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userService.signIn(userInfo.getUsername(), userInfo.getPassword());
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
     }
 
     @GetMapping("/tokenWithQQ")
     public ResponseEntity<Result<User>> signInByQQ(@RequestParam String qqAccessToken) throws IOException, InterruptedException {
         User user = userService.signIn(qqAccessToken);
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
     }
 
     @PutMapping("/{userId}/qqAccessToken")
     @PermissionRequired
-    public ResponseEntity<Result<User>> bindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) throws IOException, InterruptedException {
+    public ResponseEntity<Result<User>> bindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) throws IOException, InterruptedException {
         User user = userService.bindQQ(qqAccessToken, (int) AppContext.get().get(AuthConstant.USER_ID));
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("绑定QQ成功", user));
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("绑定QQ成功", user));
     }
 
     @DeleteMapping("/{userId}/qqAccessToken")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> unbindQQ(@PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> unbindQQ(@PathVariable("userId") int userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("解绑QQ成功", userService.unbindQQ((int) AppContext.get().get(AuthConstant.USER_ID))));
     }
 
     @PutMapping("/{userId}/avatar")
     @PermissionRequired
-    public ResponseEntity<Result<String>> setAvatar(@RequestParam String avatar, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> setAvatar(@RequestParam String avatar, @PathVariable("userId") int userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         userService.setAvatar(avatar, (int) AppContext.get().get(AuthConstant.USER_ID));
         return ResponseEntity.ok().body(new Result<>("修改头像成功", avatar));
     }
@@ -123,12 +130,12 @@ public class CommonController {
     @CheckVerification
     public ResponseEntity<Result<User>> checkEmail(@RequestParam @Email String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userService.setEmail(email, userId);
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
     }
 
     @PutMapping("/{userId}")
     @PermissionRequired
-    public ResponseEntity<Result<User>> updateUserInfo(@PathVariable("userId") Integer userId, @RequestBody User user, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<User>> updateUserInfo(@PathVariable("userId") Integer userId, @RequestBody User user, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         userService.updateUserInfo((int) AppContext.get().get(AuthConstant.USER_ID), user);
         return ResponseEntity.ok().body(new Result<>("更新用户信息成功", user));
     }
@@ -142,7 +149,7 @@ public class CommonController {
     //修改名字
     @PutMapping("/{userId}/username")
     @PermissionRequired
-    public ResponseEntity<Result<User>> updateUsername(@RequestParam String username, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<User>> updateUsername(@RequestParam String username, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         User user = null;
         try {
             user = userService.updateUsername((Integer) AppContext.get().get(AuthConstant.USER_ID), username);
@@ -154,14 +161,14 @@ public class CommonController {
 
     @GetMapping("/{userId}/email/isCheck")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> queryEmailIsCheck(@PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> queryEmailIsCheck(@PathVariable("userId") int userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         Boolean isCheck = userService.queryEmailIsCheck((int) AppContext.get().get(AuthConstant.USER_ID));
         return ResponseEntity.ok().body(new Result<>("获取邮箱验证状态成功", isCheck));
     }
 
     @GetMapping("/{userId}/isBindQQ")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> queryIsBindQQ(@PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> queryIsBindQQ(@PathVariable("userId") int userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         Boolean isBind = userService.queryIsBindQQ((int) AppContext.get().get(AuthConstant.USER_ID));
         return ResponseEntity.ok().body(new Result<>("获取QQ绑定状态成功", isBind));
     }
@@ -175,7 +182,7 @@ public class CommonController {
 
     @PutMapping("/{userId}/password")
     @PermissionRequired
-    public ResponseEntity<Result> setPassword(@RequestHeader("Authorization") String token, @RequestBody ResetPasswordDTO item) {
+    public ResponseEntity<Result> setPassword(@RequestHeader(AuthConstant.AUTHORIZATION) String token, @RequestBody ResetPasswordDTO item) {
         userService.setPasswordById(passwordUtil.encrypt(item.getPassword()), (int) AppContext.get().get(AuthConstant.USER_ID));
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }
@@ -188,7 +195,7 @@ public class CommonController {
 
     @GetMapping("/emails/{email:.+}/checkEmail")
     @PermissionRequired
-    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") @Email String email, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result> getCheckEmail(@PathVariable("email") @Email String email, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         userService.checkEmail(email);
         userService.getCheckEmail(email, (int) AppContext.get().get(AuthConstant.USER_ID));
         return ResponseEntity.ok().body(new Result<>("发送邮箱验证邮件成功"));
@@ -196,7 +203,7 @@ public class CommonController {
 
     /*@PostMapping("/{moduleName}/image")
     @PermissionRequired
-    public ResponseEntity<Result<Picture>> uploadModuleImage(@PathVariable("moduleName") String moduleName, @RequestParam("file") MultipartFile file, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Picture>> uploadModuleImage(@PathVariable("moduleName") String moduleName, @RequestParam("file") MultipartFile file, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("上传图片成功", userService.uploadModuleImage(moduleName, file, (int) AppContext.get().get(AuthConstant.USER_ID))));
     }*/
 
@@ -208,22 +215,22 @@ public class CommonController {
 
     @PutMapping("/{userId}/permissionLevel")
     @PermissionRequired
-    public ResponseEntity<Result<User>> updatePermissionLevel(@RequestParam String exchangeCode, @PathVariable("userId") int userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<User>> updatePermissionLevel(@RequestParam String exchangeCode, @PathVariable("userId") int userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         Integer uid = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         vipUserService.exchangeVIP(uid, exchangeCode);
         User user = userService.queryUser(uid);
-        return ResponseEntity.ok().header("Authorization", jwtUtil.getToken(user)).body(new Result<>("兑换成功", user));
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("兑换成功", user));
     }
 
     @GetMapping("/check-in")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> queryDailyCheckIn(@RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> queryDailyCheckIn(@RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("获取当天签到状态成功", userService.queryCheckInStatus((Integer) AppContext.get().get(AuthConstant.USER_ID))));
     }
 
     @PostMapping("/check-in")
     @PermissionRequired
-    public ResponseEntity<Result<CheckInDTO>> dailyCheckIn(@RequestHeader("Authorization") String token) throws ExecutionException, InterruptedException {
+    public ResponseEntity<Result<CheckInDTO>> dailyCheckIn(@RequestHeader(AuthConstant.AUTHORIZATION) String token) throws ExecutionException, InterruptedException {
         return ResponseEntity.ok().body(new Result<>("签到成功", userService.dailyCheckIn((Integer) AppContext.get().get(AuthConstant.USER_ID))));
     }
 

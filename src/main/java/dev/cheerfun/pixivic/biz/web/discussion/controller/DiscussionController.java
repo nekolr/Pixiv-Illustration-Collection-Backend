@@ -32,7 +32,7 @@ public class DiscussionController {
     @PostMapping("/sections/{sectionId}/discussions")
     @PermissionRequired
     @RateLimit
-    public ResponseEntity<Result<Discussion>> createDiscussion(@PathVariable Integer sectionId, @RequestBody @SensitiveCheck Discussion discussion, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Discussion>> createDiscussion(@PathVariable Integer sectionId, @RequestBody @SensitiveCheck Discussion discussion, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         discussion.setSectionId(sectionId);
         return ResponseEntity.ok().body(new Result<>("创建讨论成功", discussionService.createDiscussion(discussion, userId)));
@@ -40,7 +40,7 @@ public class DiscussionController {
 
     @PutMapping("/discussions/{discussionId}")
     @PermissionRequired
-    public ResponseEntity<Result<Discussion>> updateDiscussion(@PathVariable Integer discussionId, @RequestBody @SensitiveCheck Discussion discussion, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Discussion>> updateDiscussion(@PathVariable Integer discussionId, @RequestBody @SensitiveCheck Discussion discussion, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         discussion.setId(discussionId);
         return ResponseEntity.ok().body(new Result<>("更新讨论成功", discussionService.updateDiscussion(userId, discussion)));
@@ -48,7 +48,7 @@ public class DiscussionController {
 
     @DeleteMapping("/discussions/{discussionId}")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> deleteDiscussion(@PathVariable Integer discussionId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> deleteDiscussion(@PathVariable Integer discussionId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         Boolean result = discussionService.deleteDiscussion(userId, discussionId);
         return ResponseEntity.ok().body(new Result<>("删除讨论" + (result ? "成功" : "失败"), result));
@@ -56,7 +56,7 @@ public class DiscussionController {
 
     @PostMapping("/discussions/{discussionId}/upOrDown")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> upOrDown(@PathVariable Integer discussionId, @RequestParam Integer option, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> upOrDown(@PathVariable Integer discussionId, @RequestParam Integer option, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         Boolean result = discussionService.upOrDown(userId, discussionId, option);
         return ResponseEntity.ok().body(new Result<>("操作" + (result ? "成功" : "失败"), result));
@@ -64,14 +64,14 @@ public class DiscussionController {
 
     @GetMapping("/sections/{sectionId}/discussions")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<DiscussionVO>>> queryList(@PathVariable Integer sectionId, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "20") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<List<DiscussionVO>>> queryList(@PathVariable Integer sectionId, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "20") Integer pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         List<DiscussionVO> discussionList = discussionService.queryList(sectionId, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取讨论列表成功", discussionService.queryListCount(sectionId), discussionList));
     }
 
     @GetMapping("/discussions/{discussionId}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<Discussion>> queryById(@PathVariable Integer discussionId, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<Discussion>> queryById(@PathVariable Integer discussionId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         Discussion discussion = discussionService.queryById(discussionId);
         return ResponseEntity.ok().body(new Result<>("获取讨论详情成功", discussion));
     }

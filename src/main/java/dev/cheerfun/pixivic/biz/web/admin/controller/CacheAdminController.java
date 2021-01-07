@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.admin.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,7 +31,7 @@ public class CacheAdminController {
     public ResponseEntity<Result<Boolean>> deleteCache(
             @PathVariable String region,
             @PathVariable String key,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除缓存成功", adminService.deleteCache(region, key)));
     }
 
@@ -38,14 +39,14 @@ public class CacheAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteAllCache(
             @PathVariable String region,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除缓存成功", adminService.deleteCache(region, null)));
     }
 
     @DeleteMapping("/caches")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteAllCache(
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除缓存成功", adminService.deleteCache(null, null)));
     }
 }

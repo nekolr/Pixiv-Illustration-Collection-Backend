@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.po.UserPO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class UserAdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Page<UserPO> userPOPage = adminService.queryUsers(userPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取用户列表成功", userPOPage.getTotalElements(), userPOPage.getContent()));
     }
@@ -47,7 +48,7 @@ public class UserAdminController {
     public ResponseEntity<Result<UserPO>> banUser(
             @PathVariable Integer userId,
             @RequestBody UserPO userPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("封禁用户成功", adminService.updateUser(userPO)));
     }
 
@@ -56,7 +57,7 @@ public class UserAdminController {
     public ResponseEntity<Result<UserPO>> releaseUser(
             @PathVariable Integer userId,
             @RequestBody UserPO userPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("解封用户成功", adminService.updateUser(userPO)));
     }
 
@@ -64,7 +65,7 @@ public class UserAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteUser(
             @PathVariable Integer userId,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除用户成功", adminService.deleteUser(userId)));
     }
 
@@ -72,7 +73,7 @@ public class UserAdminController {
     @DeleteMapping("/recommendation/viewIllust")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteViewIllustRecommendation(
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除可能想看推荐成功", adminService.deleteViewIllustRecommendation()));
     }
 }

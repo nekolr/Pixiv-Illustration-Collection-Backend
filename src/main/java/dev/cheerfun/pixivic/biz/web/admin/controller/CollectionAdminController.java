@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.po.CollectionPO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class CollectionAdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Page<CollectionPO> collectionPOPage = adminService.queryCollection(collectionPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取画集列表成功", collectionPOPage.getTotalElements(), collectionPOPage.getContent()));
     }
@@ -47,7 +48,7 @@ public class CollectionAdminController {
     public ResponseEntity<Result<CollectionPO>> updateCollection(
             @PathVariable Integer collectionId,
             @RequestBody CollectionPO collectionPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("更新画集成功", adminService.updateCollection(collectionPO)));
     }
 
@@ -55,7 +56,7 @@ public class CollectionAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteCollection(
             @PathVariable Integer collectionId,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除画集成功", adminService.deleteCollection(collectionId)));
     }
 }

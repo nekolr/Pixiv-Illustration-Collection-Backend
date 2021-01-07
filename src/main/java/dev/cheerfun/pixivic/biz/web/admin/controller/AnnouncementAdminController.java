@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.po.AnnouncementPO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class AnnouncementAdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Page<AnnouncementPO> announcementPOS = adminService.queryAnnouncement(announcementPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取公告列表成功", announcementPOS.getTotalElements(), announcementPOS.getContent()));
     }
@@ -47,7 +48,7 @@ public class AnnouncementAdminController {
     public ResponseEntity<Result<AnnouncementPO>> updateAnnouncement(
             @PathVariable Integer announcementId,
             @RequestBody AnnouncementPO announcementPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("更新公告成功", adminService.updateAnnouncement(announcementPO)));
     }
 
@@ -55,7 +56,7 @@ public class AnnouncementAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<AnnouncementPO>> createAnnouncement(
             @RequestBody AnnouncementPO announcementPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("发布公告成功", adminService.createAnnouncement(announcementPO)));
     }
 
@@ -63,7 +64,7 @@ public class AnnouncementAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteAnnouncement(
             @PathVariable Integer announcementId,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除公告成功", adminService.deleteAnnouncement(announcementId)));
     }
 }

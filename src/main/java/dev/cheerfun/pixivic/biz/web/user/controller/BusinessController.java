@@ -48,13 +48,13 @@ public class BusinessController {
     private final EventPublisher eventPublisher;
 
     @PostMapping("/bookmarked")
-    public ResponseEntity<Result<String>> bookmark(@RequestBody @Valid BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> bookmark(@RequestBody @Valid BookmarkRelation bookmarkRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         businessService.bookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getUsername(), bookmarkRelation.getIllustId());
         return ResponseEntity.ok().body(new Result<>("收藏成功"));
     }
 
     @DeleteMapping("/bookmarked")
-    public ResponseEntity<Result<String>> cancelBookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> cancelBookmark(@RequestBody BookmarkRelation bookmarkRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         businessService.cancelBookmark((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkRelation.getIllustId(), bookmarkRelation.getId());
         return ResponseEntity.ok().body(new Result<>("取消收藏成功"));
     }
@@ -62,32 +62,32 @@ public class BusinessController {
     @GetMapping("/{userId}/bookmarked/{type}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithUserInfo
-    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable Integer userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable Integer userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         List<Illustration> illustrations = businessService.queryBookmarked(userId, type, (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
 
     @GetMapping("/{userId}/{illustId}/isBookmarked")
-    public ResponseEntity<Result<Boolean>> queryIsBookmarked(@PathVariable Integer userId, @PathVariable Integer illustId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> queryIsBookmarked(@PathVariable Integer userId, @PathVariable Integer illustId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         Boolean isBookmark = businessService.queryIsBookmarked((int) AppContext.get().get(AuthConstant.USER_ID), illustId);
         return ResponseEntity.ok().body(new Result<>("获取是否收藏画作成功", isBookmark));
     }
 
     @PostMapping("/followed")
-    public ResponseEntity<Result<String>> follow(@RequestBody @Valid FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> follow(@RequestBody @Valid FollowedRelation followedRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         businessService.follow((int) AppContext.get().get(AuthConstant.USER_ID), followedRelation.getArtistId(), followedRelation.getUsername());
         return ResponseEntity.ok().body(new Result<>("follow成功"));
     }
 
     @DeleteMapping("/followed")
-    public ResponseEntity<Result<String>> cancelFollow(@RequestBody FollowedRelation followedRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> cancelFollow(@RequestBody FollowedRelation followedRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         businessService.cancelFollow((int) AppContext.get().get(AuthConstant.USER_ID), followedRelation.getArtistId());
         return ResponseEntity.ok().body(new Result<>("取消follow成功"));
     }
 
     @GetMapping("/{userId}/followed")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<List<Artist>>> queryFollowed(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         List<Artist> artists = businessService.queryFollowed(userId, (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师列表成功", artists));
     }
@@ -95,38 +95,38 @@ public class BusinessController {
     @GetMapping("/{userId}/followedWithRecentlyIllusts")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithUserInfo
-    public ResponseEntity<Result<List<ArtistWithRecentlyIllusts>>> queryFollowedWithRecentlyIllusts(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<List<ArtistWithRecentlyIllusts>>> queryFollowedWithRecentlyIllusts(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         List<ArtistWithRecentlyIllusts> artists = businessService.queryFollowedWithRecentlyIllusts(userId, (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取带有近期画作的follow画师列表成功", artists));
     }
 
     @GetMapping("/{userId}/followed/latest/{type}")
     @WithUserInfo
-    public ResponseEntity<Result<List<Illustration>>> queryFollowedLatest(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(150) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryFollowedLatest(@PathVariable String userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(150) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         List<Illustration> illustrationList = businessService.queryFollowedLatest((int) AppContext.get().get(AuthConstant.USER_ID), type, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取follow画师最新画作成功", illustrationList));
     }
 
     @GetMapping("/{userId}/{artistId}/isFollowed")
-    public ResponseEntity<Result<Boolean>> queryIsFollowed(@PathVariable String userId, @PathVariable Integer artistId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> queryIsFollowed(@PathVariable String userId, @PathVariable Integer artistId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         Boolean isFollowed = businessService.queryIsFollowed((int) AppContext.get().get(AuthConstant.USER_ID), artistId);
         return ResponseEntity.ok().body(new Result<>("获取是否follow画师成功", isFollowed));
     }
 
     @GetMapping("/{userId}/actionHistory")
-    public ResponseEntity<Result<String>> queryActionHistory(@PathVariable String userId, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> queryActionHistory(@PathVariable String userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         //查看行为历史
         return ResponseEntity.ok().body(new Result<>("获取行为历史成功"));
     }
 
 /*    @PostMapping("/{illustId}/tags")
-    public ResponseEntity<Result<String>> addTag(@PathVariable String illustId, @RequestHeader("Authorization") String token, @RequestBody List<Tag> tags) {
+    public ResponseEntity<Result<String>> addTag(@PathVariable String illustId, @RequestHeader(AuthConstant.AUTHORIZATION) String token, @RequestBody List<Tag> tags) {
         businessService.addTag((int) AppContext.get().get(AuthConstant.USER_ID), illustId, tags);
         return ResponseEntity.ok().body(new Result<>("成功为画作添加标签"));
     }*/
 
     @PostMapping("/bookmarked/collections")
-    public ResponseEntity<Result<String>> bookmarkCollection(@RequestBody @Valid BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> bookmarkCollection(@RequestBody @Valid BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         businessService.bookmarkCollection(userId, bookmarkCollectionRelation.getUsername(), bookmarkCollectionRelation.getCollectionId());
         eventPublisher.publish(new Event(userId, ActionType.BOOKMARK, ObjectType.COLLECTION, bookmarkCollectionRelation.getCollectionId(), LocalDateTime.now()));
@@ -134,19 +134,19 @@ public class BusinessController {
     }
 
     @DeleteMapping("/bookmarked/collections")
-    public ResponseEntity<Result<String>> cancelBookmarkCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> cancelBookmarkCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         businessService.cancelBookmarkCollection((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkCollectionRelation.getCollectionId());
         return ResponseEntity.ok().body(new Result<>("取消收藏画集成功"));
     }
 
     @GetMapping("/{userId}/bookmarked/collections")
-    public ResponseEntity<Result<List<Collection>>> queryBookmarkCollection(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<Collection>>> queryBookmarkCollection(@PathVariable Integer userId, @RequestParam(defaultValue = "1") @Max(100) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         List<Collection> collections = businessService.queryBookmarkCollection(userId, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取收藏画集成功", businessService.queryUserTotalBookmarkCollection(userId), collections));
     }
 
     @PostMapping("/liked/collections")
-    public ResponseEntity<Result<String>> likeCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> likeCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         businessService.likeCollection(userId, bookmarkCollectionRelation.getCollectionId());
         eventPublisher.publish(new Event(userId, ActionType.LIKE, ObjectType.COLLECTION, bookmarkCollectionRelation.getCollectionId(), LocalDateTime.now()));
@@ -154,19 +154,19 @@ public class BusinessController {
     }
 
     @DeleteMapping("/liked/collections")
-    public ResponseEntity<Result<String>> cancelLikeCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> cancelLikeCollection(@RequestBody BookmarkCollectionRelation bookmarkCollectionRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         businessService.cancelLikeCollection((int) AppContext.get().get(AuthConstant.USER_ID), bookmarkCollectionRelation.getCollectionId());
         return ResponseEntity.ok().body(new Result<>("取消点赞画集成功"));
     }
 
     @PostMapping("/followed/users")
-    public ResponseEntity<Result<String>> followUser(@RequestBody @Valid FollowedUserRelation followedUserRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> followUser(@RequestBody @Valid FollowedUserRelation followedUserRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         businessService.followUser((int) AppContext.get().get(AuthConstant.USER_ID), followedUserRelation.getUsername(), followedUserRelation.getFollowedUserId());
         return ResponseEntity.ok().body(new Result<>("关注用户成功"));
     }
 
     @DeleteMapping("/followed/users")
-    public ResponseEntity<Result<String>> cancelFollowUser(@RequestBody FollowedUserRelation followedUserRelation, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> cancelFollowUser(@RequestBody FollowedUserRelation followedUserRelation, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         businessService.cancelFollowUser((int) AppContext.get().get(AuthConstant.USER_ID), followedUserRelation.getFollowedUserId());
         return ResponseEntity.ok().body(new Result<>("取消关注用户成功"));
     }

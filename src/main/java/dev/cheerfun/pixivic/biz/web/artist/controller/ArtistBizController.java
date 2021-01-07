@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
 import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -35,7 +36,7 @@ public class ArtistBizController {
     @GetMapping("/artists/{artistId}")
     @RateLimit
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = "Authorization", required = false) String token) throws InterruptedException {
+    public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws InterruptedException {
         return ResponseEntity.ok().body(new Result<>("获取画师详情成功", artistBizService.queryArtistDetail(artistId)));
     }
 
@@ -53,7 +54,7 @@ public class ArtistBizController {
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithUserInfo
     @RateLimit
-    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = "Authorization", required = false) String token) throws InterruptedException {
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws InterruptedException {
         List<Illustration> illustrationList = artistBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationList));
     }
@@ -66,7 +67,7 @@ public class ArtistBizController {
     @GetMapping("/artists")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithUserInfo
-    public CompletableFuture<ResponseEntity<Result<List<Artist>>>> queryArtistByName(@RequestParam String artistName, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize, @RequestHeader(value = "Authorization", required = false) String token) {
+    public CompletableFuture<ResponseEntity<Result<List<Artist>>>> queryArtistByName(@RequestParam String artistName, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         return artistBizService.queryArtistByName(artistName, page, pageSize).thenApply(e -> ResponseEntity.ok().body(new Result<>("获取画师搜索结果成功", e)));
     }
 

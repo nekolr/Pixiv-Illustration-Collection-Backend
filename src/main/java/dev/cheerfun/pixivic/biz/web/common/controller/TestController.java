@@ -16,6 +16,7 @@ import dev.cheerfun.pixivic.biz.recommend.service.IllustViewRecommendService;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
 import dev.cheerfun.pixivic.biz.web.user.service.BusinessService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.email.EmailUtil;
 import dev.cheerfun.pixivic.common.util.pixiv.OauthManager;
@@ -64,7 +65,7 @@ public class TestController {
     @PostMapping("/test")
     @RateLimit
     @PermissionRequired
-    public ResponseEntity<String> test(@RequestBody @SensitiveCheck SignUpDTO signUpDTO,/*@RequestHeader("Authorization")  String token,*/@RequestParam @SensitiveCheck String content, @RequestParam @SensitiveCheck String title) throws InterruptedException, ExecutionException, IOException {
+    public ResponseEntity<String> test(@RequestBody @SensitiveCheck SignUpDTO signUpDTO,/*@RequestHeader(AuthConstant.AUTHORIZATION)  String token,*/@RequestParam @SensitiveCheck String content, @RequestParam @SensitiveCheck String title) throws InterruptedException, ExecutionException, IOException {
         // trendingTagsService.dailyTask();
 
         return ResponseEntity.ok().body("");
@@ -99,7 +100,7 @@ public class TestController {
 
     @PermissionRequired(PermissionLevel.VIP)
     @PostMapping("/auth")
-    public String testAOP(@RequestBody() User user, @RequestHeader("Authorization") String token) {
+    public String testAOP(@RequestBody() User user, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         return "233";
     }
 

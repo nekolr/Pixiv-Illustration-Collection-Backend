@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
@@ -41,27 +42,27 @@ public class IllustrationAdminController {
 
     @PutMapping("/illusts/{illustId}")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Authorization") String token, @RequestBody IllustDTO illustDTO) {
+    public ResponseEntity<Result<Illustration>> updateIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token, @RequestBody IllustDTO illustDTO) {
         adminService.updateIllusts(illustDTO);
         return ResponseEntity.ok().body(new Result<>("更新画作等级成功", null));
     }
 
     @PostMapping("/blockIllusts")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Boolean>> blockIllustrationById(@RequestHeader(value = "Authorization") String token, @RequestBody List<Integer> illustIdList) {
+    public ResponseEntity<Result<Boolean>> blockIllustrationById(@RequestHeader(value = AuthConstant.AUTHORIZATION) String token, @RequestBody List<Integer> illustIdList) {
         adminService.blockIllustrationById(illustIdList);
         return ResponseEntity.ok().body(new Result<>("封禁画作成功", true));
     }
 
     @GetMapping("/blockIllusts")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<List<Integer>>> queryBlockIllust(@RequestParam(required = false) Integer illustId, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<List<Integer>>> queryBlockIllust(@RequestParam(required = false) Integer illustId, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("获取封禁画作成功", adminService.queryBlockIllust(illustId)));
     }
 
     @DeleteMapping("/blockIllusts/{illustId}")
     @PermissionRequired(PermissionLevel.ADMIN)
-    public ResponseEntity<Result<Boolean>> removeIllustFromBlockIllust(@PathVariable Integer illustId, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> removeIllustFromBlockIllust(@PathVariable Integer illustId, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         adminService.removeIllustFromBlockIllust(illustId);
         return ResponseEntity.ok().body(new Result<>("移除封禁画作成功", true));
     }

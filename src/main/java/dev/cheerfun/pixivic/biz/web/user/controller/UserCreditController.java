@@ -32,7 +32,7 @@ public class UserCreditController {
     //获取积分历史
     @GetMapping("/{userId}/creditHistory")
     @PermissionRequired
-    public ResponseEntity<Result<List<CreditHistory>>> queryCreditHistoryList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<List<CreditHistory>>> queryCreditHistoryList(@RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("查询近期积分历史成功", userCreditService.queryCreditHistoryCount(userId), userCreditService.queryCreditHistoryList(userId, page, pageSize)));
     }

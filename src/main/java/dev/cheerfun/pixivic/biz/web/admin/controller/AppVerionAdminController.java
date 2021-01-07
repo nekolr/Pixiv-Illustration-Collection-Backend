@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.po.AppVersionInfoPO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +39,7 @@ public class AppVerionAdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Page<AppVersionInfoPO> appVersionInfoPOS = adminService.queryAppVersionInfo(advertisementPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("查询app版本记录成功", appVersionInfoPOS.getTotalElements(), appVersionInfoPOS.getContent()));
     }
@@ -48,7 +49,7 @@ public class AppVerionAdminController {
     public ResponseEntity<Result<AppVersionInfoPO>> updateAppVersionInfo(
             @PathVariable Integer appVersionInfoId,
             @RequestBody AppVersionInfoPO appVersionInfoPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("更新app版本成功", adminService.updateAppVersionInfo(appVersionInfoPO)));
     }
 
@@ -56,7 +57,7 @@ public class AppVerionAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<AppVersionInfoPO>> createAppVersionInfo(
             @RequestBody AppVersionInfoPO appVersionInfoPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("发布app版本成功", adminService.createAppVersionInfo(appVersionInfoPO)));
     }
 
@@ -64,7 +65,7 @@ public class AppVerionAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteAppVersionInfo(
             @PathVariable Integer appVersionInfoId,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除app版本成功", adminService.deleteAppVersionInfo(appVersionInfoId)));
     }
 

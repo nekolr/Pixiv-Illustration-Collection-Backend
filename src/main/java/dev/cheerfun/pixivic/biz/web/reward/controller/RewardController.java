@@ -35,7 +35,7 @@ public class RewardController {
 
     @PostMapping("/{appType}/{appId}/rewards")
     @PermissionRequired
-    public ResponseEntity<Result<String>> pushReward(@PathVariable String appType, @PathVariable int appId, @RequestBody Reward reward, @RequestHeader("Authorization") String token) {
+    public ResponseEntity<Result<String>> pushReward(@PathVariable String appType, @PathVariable int appId, @RequestBody Reward reward, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         reward.init(userId);
         rewardService.pushReward(reward);

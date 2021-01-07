@@ -42,7 +42,7 @@ public class CollectionController {
     //新建画集
     @PostMapping("/collections")
     @PermissionRequired
-    public ResponseEntity<Result<Integer>> createCollection(@RequestBody @Valid @SensitiveCheck Collection collection, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Integer>> createCollection(@RequestBody @Valid @SensitiveCheck Collection collection, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("新建画集成功", collectionService.createCollection(userId, collection)));
     }
@@ -50,7 +50,7 @@ public class CollectionController {
     //修改画集元数据
     @PutMapping("/collections/{collectionId}")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> updateCollection(@PathVariable Integer collectionId, @RequestBody @Valid @SensitiveCheck Collection collection, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> updateCollection(@PathVariable Integer collectionId, @RequestBody @Valid @SensitiveCheck Collection collection, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("修改画集成功", collectionService.updateCollection(userId, collection)));
     }
@@ -58,14 +58,14 @@ public class CollectionController {
     //获取画集元数据
     @GetMapping("/collections/{collectionId}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<Collection>> getCollection(@PathVariable Integer collectionId, @RequestHeader(value = "Authorization", required = false) String token) {
+    public ResponseEntity<Result<Collection>> getCollection(@PathVariable Integer collectionId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         return ResponseEntity.ok().body(new Result<>("查看画集成功", collectionService.getCollection(collectionId)));
     }
 
     //删除画集
     @DeleteMapping("/collections/{collectionId}")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> deleteCollection(@PathVariable Integer collectionId, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> deleteCollection(@PathVariable Integer collectionId, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("删除画集成功", collectionService.deleteCollection(userId, collectionId)));
     }
@@ -73,7 +73,7 @@ public class CollectionController {
     //将画作添加进画集
     @PostMapping("/collections/{collectionId}/illustrations")
     @PermissionRequired
-    public ResponseEntity<Result<List<Integer>>> addIllustrationToCollection(@PathVariable Integer collectionId, @RequestBody List<Integer> illustrationIds, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<List<Integer>>> addIllustrationToCollection(@PathVariable Integer collectionId, @RequestBody List<Integer> illustrationIds, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         List<Integer> illustIdList = collectionService.addIllustrationToCollection(userId, collectionId, illustrationIds);
         return ResponseEntity.ok().body(new Result<>("添加画作成功" + (illustIdList.size() > 0 ? "，存在一些重复画作" : ""), illustIdList));
@@ -82,7 +82,7 @@ public class CollectionController {
     //从画集中删除画作
     @DeleteMapping("/collections/{collectionId}/illustrations/{illustrationId}")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> deleteIllustrationFromCollection(@PathVariable Integer collectionId, @PathVariable Integer illustrationId, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> deleteIllustrationFromCollection(@PathVariable Integer collectionId, @PathVariable Integer illustrationId, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("删除画作成功", collectionService.deleteIllustrationFromCollection(userId, collectionId, illustrationId)));
     }
@@ -90,7 +90,7 @@ public class CollectionController {
     //从画集中删除画作
     @DeleteMapping("/collections/{collectionId}/illustrations")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> deleteIllustrationFromCollection(@PathVariable Integer collectionId, @RequestBody List<Integer> illustrationIdList, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> deleteIllustrationFromCollection(@PathVariable Integer collectionId, @RequestBody List<Integer> illustrationIdList, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("批量删除画作成功", collectionService.deleteIllustrationFromCollection(userId, collectionId, illustrationIdList)));
     }
@@ -98,7 +98,7 @@ public class CollectionController {
     //更改画集封面
     @PutMapping("/collections/{collectionId}/cover")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> updateCollectionCover(@PathVariable Integer collectionId, @RequestBody List<Integer> illustIdList, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> updateCollectionCover(@PathVariable Integer collectionId, @RequestBody List<Integer> illustIdList, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("更新封面成功", collectionService.updateCollectionCover(userId, collectionId, illustIdList)));
     }
@@ -106,7 +106,7 @@ public class CollectionController {
     //画集画作排序
     @PutMapping("/collections/{collectionId}/illustrations/order")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> updateIllustrationOrder(@PathVariable Integer collectionId, @RequestBody List<Integer> illustIdList, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> updateIllustrationOrder(@PathVariable Integer collectionId, @RequestBody List<Integer> illustIdList, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.updateIllustrationOrder(collectionId, illustIdList, userId)));
     }
@@ -114,7 +114,7 @@ public class CollectionController {
     //画集画作拖动排序
     @PutMapping("/collections/{collectionId}/illustrations/orderByDrag")
     @PermissionRequired
-    public ResponseEntity<Result<Boolean>> updateIllustrationOrderByDrag(@PathVariable Integer collectionId, @RequestBody UpdateIllustrationOrderDTO updateIllustrationOrderDTO, @RequestHeader(value = "Authorization") String token) {
+    public ResponseEntity<Result<Boolean>> updateIllustrationOrderByDrag(@PathVariable Integer collectionId, @RequestBody UpdateIllustrationOrderDTO updateIllustrationOrderDTO, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Integer userId = (Integer) AppContext.get().get(AuthConstant.USER_ID);
         return ResponseEntity.ok().body(new Result<>("更新排序成功", collectionService.updateIllustrationOrder(collectionId, updateIllustrationOrderDTO, userId)));
     }
@@ -122,7 +122,7 @@ public class CollectionController {
     //查询用户画集
     @GetMapping("/users/{userId}/collections")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(30) Integer pageSize, @RequestParam(required = false) Integer isPublic, @RequestParam(value = "orderBy", defaultValue = "create_time") String orderBy, @RequestParam(value = "orderByMode", defaultValue = "desc") String orderByMode) {
+    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(30) Integer pageSize, @RequestParam(required = false) Integer isPublic, @RequestParam(value = "orderBy", defaultValue = "create_time") String orderBy, @RequestParam(value = "orderByMode", defaultValue = "desc") String orderByMode) {
         Integer isSelf = collectionService.checkUserAuth(isPublic, userId);
         if ("updateTime".equals(orderBy)) {
             orderBy = "update_time";
@@ -133,7 +133,7 @@ public class CollectionController {
     //查询用户所有画集名字
     @GetMapping("/users/{userId}/collectionsDigest")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<CollectionDigest>>> queryUserCollectionNameList(@PathVariable Integer userId, @RequestHeader(value = "Authorization") String token, @RequestParam(required = false) Integer isPublic) {
+    public ResponseEntity<Result<List<CollectionDigest>>> queryUserCollectionNameList(@PathVariable Integer userId, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token, @RequestParam(required = false) Integer isPublic) {
         return ResponseEntity.ok().body(new Result<>("获取用户画集名称列表成功", collectionService.queryUserCollectionNameList((Integer) AppContext.get().get(AuthConstant.USER_ID), isPublic)));
     }
 
@@ -141,7 +141,7 @@ public class CollectionController {
     @GetMapping("/collections/{collectionId}/illustrations")
     @WithUserInfo
     @PermissionRequired
-    public ResponseEntity<Result<List<Illustration>>> queryCollectionIllust(@PathVariable Integer collectionId, @RequestHeader(value = "Authorization", required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestParam(required = false) String userFinger) {
+    public ResponseEntity<Result<List<Illustration>>> queryCollectionIllust(@PathVariable Integer collectionId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestParam(required = false) String userFinger) {
         //用户指纹 放到hyperlog记录浏览量
         if (page == 1 && userFinger != null) {
             collectionService.modifyCollectionTotalPeopleSeen(collectionId, userFinger);
@@ -170,7 +170,7 @@ public class CollectionController {
 
     //搜索画集
     @GetMapping("/collections")
-    public CompletableFuture<ResponseEntity<Result<List<Collection>>>> searchCollection(@RequestParam String keyword, @RequestParam(required = false) String startCreateDate, @RequestParam(required = false) String endCreateDate, @RequestParam(required = false) String startUpdateDate, @RequestParam(required = false) String endUpdateDate, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestHeader(value = "Authorization") String token) {
+    public CompletableFuture<ResponseEntity<Result<List<Collection>>>> searchCollection(@RequestParam String keyword, @RequestParam(required = false) String startCreateDate, @RequestParam(required = false) String endCreateDate, @RequestParam(required = false) String startUpdateDate, @RequestParam(required = false) String endUpdateDate, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return collectionService.searchCollection(keyword, startCreateDate, endCreateDate, startUpdateDate, endUpdateDate, page, pageSize).thenApply(e -> ResponseEntity.ok().body(new Result<>("获取搜索结果成功", e)));
     }
 

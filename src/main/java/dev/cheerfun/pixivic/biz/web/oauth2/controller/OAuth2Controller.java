@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.biz.web.oauth2.config.OauthAuthorizationServer;
 import dev.cheerfun.pixivic.biz.web.oauth2.domain.OAuth2UserInfo;
 import dev.cheerfun.pixivic.biz.web.oauth2.service.OAuth2Service;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -37,7 +38,7 @@ public class OAuth2Controller {
                                             @RequestParam(value = "scope", required = false) String scope,
                                             @RequestParam(value = "user_oauth_approval", required = false, defaultValue = "false") boolean userOauthApproval,
                                             @RequestParam(value = "redirect_uri") String redirectUri,
-                                            @RequestHeader(value = "Authorization") String token) {
+                                            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         String result = oAuth2Service.authorize(clientId, state, redirectUri);
         //System.out.println(result);
         return ResponseEntity.ok().header("Location", result).body(null);
@@ -56,7 +57,7 @@ public class OAuth2Controller {
     }
 
     @GetMapping("/oauth/me")
-    public ResponseEntity<OAuth2UserInfo> userinfo(@RequestHeader(value = "authorization", required = false) String accessToken) {
+    public ResponseEntity<OAuth2UserInfo> userinfo(@RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String accessToken) {
         return ResponseEntity.ok().body(oAuth2Service.userinfo(accessToken));
     }
 

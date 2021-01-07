@@ -13,6 +13,7 @@ import dev.cheerfun.pixivic.biz.web.illust.domain.SearchSuggestion;
 import dev.cheerfun.pixivic.biz.web.illust.domain.response.PixivSearchCandidatesResponse;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
@@ -111,7 +112,7 @@ public class SearchController {
             @RequestParam(required = false)
                     Integer minTotalView,
             @RequestParam(defaultValue = "5")
-                    Integer maxSanityLevel, @RequestHeader(value = "Authorization", required = false) String token) {
+                    Integer maxSanityLevel, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
             String[] keywords = keyword.split("\\|\\|");

@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.web.admin.po.DiscussionPO;
 import dev.cheerfun.pixivic.biz.web.admin.po.SectionPO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -39,7 +40,7 @@ public class DiscussionAdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Page<DiscussionPO> discussionPOPage = adminService.queryDiscussion(discussionPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取讨论列表成功", discussionPOPage.getTotalElements(), discussionPOPage.getContent()));
     }
@@ -49,7 +50,7 @@ public class DiscussionAdminController {
     public ResponseEntity<Result<DiscussionPO>> updateDiscussion(
             @PathVariable Integer discussionId,
             @RequestBody DiscussionPO discussionPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("更新讨论成功", adminService.updateDiscussion(discussionPO)));
     }
 
@@ -57,7 +58,7 @@ public class DiscussionAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteDiscussion(
             @PathVariable Integer discussionId,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除讨论成功", adminService.deleteDiscussion(discussionId)));
     }
 
@@ -69,7 +70,7 @@ public class DiscussionAdminController {
             @RequestParam(defaultValue = "30") Integer pageSize,
             @RequestParam(defaultValue = "id") String orderBy,
             @RequestParam(defaultValue = "asc") String orderByMode,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         Page<SectionPO> sectionPOPage = adminService.querySection(sectionPO, page, pageSize, orderBy, orderByMode);
         return ResponseEntity.ok().body(new Result<>("获取板块列表成功", sectionPOPage.getTotalElements(), sectionPOPage.getContent()));
     }
@@ -79,7 +80,7 @@ public class DiscussionAdminController {
     public ResponseEntity<Result<SectionPO>> updateSection(
             @PathVariable Integer sectionId,
             @RequestBody SectionPO sectionPO,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("更新板块成功", adminService.updateSection(sectionPO)));
     }
 
@@ -87,7 +88,7 @@ public class DiscussionAdminController {
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<Boolean>> deleteSection(
             @PathVariable Integer sectionId,
-            @RequestHeader(value = "Authorization") String token) {
+            @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("删除板块成功", adminService.deleteSection(sectionId)));
     }
 
