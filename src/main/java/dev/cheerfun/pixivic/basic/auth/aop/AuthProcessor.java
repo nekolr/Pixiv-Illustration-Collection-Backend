@@ -109,6 +109,7 @@ public class AuthProcessor {
     private ResponseEntity dealReturn(ResponseEntity responseEntity, Map<String, Object> claims) {
         if (claims.get(AuthConstant.NEW_TOKEN) != null) {
             responseEntity = ResponseEntity.status(responseEntity.getStatusCode())
+                    .headers(responseEntity.getHeaders())
                     .header(AuthConstant.AUTHORIZATION, String.valueOf(claims.get(AuthConstant.NEW_TOKEN)))
                     .body(responseEntity.getBody());
         }
