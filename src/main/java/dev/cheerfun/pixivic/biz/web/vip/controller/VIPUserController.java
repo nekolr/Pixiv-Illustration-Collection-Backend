@@ -35,7 +35,8 @@ public class VIPUserController {
     @GetMapping("/vipProxyServer")
     @PermissionRequired
     public ResponseEntity<Result<List<VIPProxyServer>>> queryVipProxyServer(@RequestHeader(AuthConstant.AUTHORIZATION) String token) {
-        return ResponseEntity.ok().body(new Result<>("获取高速服务器成功", vipProxyServerService.queryAllServer()));
+        Integer uid = (Integer) AppContext.get().get(AuthConstant.USER_ID);
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(userService.queryUser(uid))).body(new Result<>("获取高速服务器成功", vipProxyServerService.queryAllServer()));
     }
 
     //查看活动送会员是否参与过

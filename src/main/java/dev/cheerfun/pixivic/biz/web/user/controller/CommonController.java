@@ -53,12 +53,7 @@ public class CommonController {
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<User>> queryUser(@PathVariable("userId") Integer userId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         User user = userService.queryUser(userId);
-        String newToken = null;
-        if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null) {
-            Integer uid = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-            newToken = jwtUtil.getToken(userService.queryUser(uid));
-        }
-        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, newToken).body(new Result<>("获取用户信息成功", user));
+        return ResponseEntity.ok().body(new Result<>("获取用户信息成功", user));
     }
 
     @GetMapping("/usernames/{username}")
