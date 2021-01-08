@@ -50,7 +50,7 @@ public class RateLimitProcessor implements HandlerInterceptor {
     private static Bucket freeBucket() {
         return Bucket4j.builder()
                 .addLimit(Bandwidth.classic(600, Refill.intervally(600, Duration.ofMinutes(10))))
-                .addLimit(Bandwidth.classic(20, Refill.intervally(20, Duration.ofSeconds(20))))
+                .addLimit(Bandwidth.classic(50, Refill.intervally(20, Duration.ofSeconds(20))))
                 .build();
     }
 

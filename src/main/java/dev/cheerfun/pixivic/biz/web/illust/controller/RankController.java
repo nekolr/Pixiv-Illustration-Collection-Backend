@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.web.illust.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.illust.service.RankService;
@@ -32,6 +33,7 @@ public class RankController {
 
     @GetMapping
     @WithUserInfo
+    @RateLimit
     @WithAdvertisement
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<List<Illustration>>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
