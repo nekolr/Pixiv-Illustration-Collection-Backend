@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.core.annotation.Order;
 import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
@@ -108,9 +109,13 @@ public class AuthProcessor {
 
     private ResponseEntity dealReturn(ResponseEntity responseEntity, Map<String, Object> claims) {
         if (claims.get(AuthConstant.NEW_TOKEN) != null) {
-            responseEntity = ResponseEntity.status(responseEntity.getStatusCode())
-                    .headers(responseEntity.getHeaders())
-                    .header(AuthConstant.AUTHORIZATION, String.valueOf(claims.get(AuthConstant.NEW_TOKEN)))
+            HttpHeaders headers = responseEntity.getHeaders();
+            ResponseEntity.BodyBuilder bodyBuilder = ResponseEntity.status(responseEntity.getStatusCode())
+                    .headers(headers);
+            if (headers.get(AuthConstant.AUTHORIZATION) == null) {
+                bodyBuilder.header(AuthConstant.AUTHORIZATION, String.valueOf(claims.get(AuthConstant.NEW_TOKEN)));
+            }
+            responseEntity = bodyBuilder
                     .body(responseEntity.getBody());
         }
         return responseEntity;
