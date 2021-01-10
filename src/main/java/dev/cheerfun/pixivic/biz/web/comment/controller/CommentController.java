@@ -37,12 +37,12 @@ public class CommentController {
     @PostMapping("/{commentAppType}/{commentAppId}/comments")
     @PermissionRequired
     @RateLimit
-    public ResponseEntity<Result<String>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @SensitiveCheck Comment comment, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
+    public ResponseEntity<Result<Integer>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @SensitiveCheck Comment comment, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         comment.init(commentAppType, commentAppId, userId);
-        commentService.pushComment(comment);
+        Integer commentId = commentService.pushComment(comment);
         eventPublisher.publish(new Event(userId, ActionType.PUBLISH, ObjectType.COMMENT, comment.getId(), LocalDateTime.now()));
-        return ResponseEntity.ok().body(new Result<>("评论成功"));
+        return ResponseEntity.ok().body(new Result<>("评论成功", commentId));
     }
 
     @GetMapping("/{commentAppType}/{commentAppId}/comments")
