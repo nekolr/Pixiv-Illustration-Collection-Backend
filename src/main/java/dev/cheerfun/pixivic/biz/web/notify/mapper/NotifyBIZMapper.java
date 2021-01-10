@@ -20,6 +20,6 @@ public interface NotifyBIZMapper {
     })
     List<NotifyRemindSummary> queryRemindSummary(int userId);
 
-    @Update("update notify_remind_summary set unread_count=unread_count - #{count} where user_id=#{userId} and remind_type=#{type}")
+    @Update("update notify_remind_summary set unread_count=if(unread_count - #{count}>=0,unread_count - #{count},0) where user_id=#{userId} and remind_type=#{type}")
     void updateRemindSummary(Integer userId, Integer type, long count);
 }
