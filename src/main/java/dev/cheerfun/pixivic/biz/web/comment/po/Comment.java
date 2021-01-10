@@ -25,6 +25,7 @@ public class Comment {
     private Integer replyFrom;
     private String replyFromName;
     private Integer replyTo;
+    private Integer replyToCommentId;
     private String replyToName;
     private String platform;
     @SensitiveCheck

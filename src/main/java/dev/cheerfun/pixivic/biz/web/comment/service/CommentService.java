@@ -47,12 +47,11 @@ public class CommentService {
             @CacheEvict(value = "comments", key = "#comment.appType+#comment.appId"),
             @CacheEvict(value = "topCommentsCount", key = "#comment.appType+#comment.appId")
     })
-    public Integer pushComment(Comment comment) {
+    public void pushComment(Comment comment) {
         int commentId = commentMapper.pushComment(comment);
         if (comment.getParentId().compareTo(0) == 0) {
             waitForUpdateApp.put(comment.getAppType() + ":" + comment.getAppId(), 1);
         }
-        return commentId;
     }
 
     @Transactional(rollbackFor = Exception.class)

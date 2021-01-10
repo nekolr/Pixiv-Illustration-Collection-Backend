@@ -40,9 +40,9 @@ public class CommentController {
     public ResponseEntity<Result<Integer>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @SensitiveCheck Comment comment, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         comment.init(commentAppType, commentAppId, userId);
-        Integer commentId = commentService.pushComment(comment);
+        commentService.pushComment(comment);
         eventPublisher.publish(new Event(userId, ActionType.PUBLISH, ObjectType.COMMENT, comment.getId(), LocalDateTime.now()));
-        return ResponseEntity.ok().body(new Result<>("评论成功", commentId));
+        return ResponseEntity.ok().body(new Result<>("评论成功", comment.getId()));
     }
 
     @GetMapping("/{commentAppType}/{commentAppId}/comments")
