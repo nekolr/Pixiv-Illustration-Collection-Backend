@@ -12,4 +12,5 @@ import lombok.Data;
 public class NotifyRemindSummary {
     private Integer type;
     private Integer unread;
+    private Integer total;
 }

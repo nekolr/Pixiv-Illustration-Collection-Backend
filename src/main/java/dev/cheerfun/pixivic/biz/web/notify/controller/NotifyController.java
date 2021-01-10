@@ -32,7 +32,8 @@ public class NotifyController {
         if (offset == null) {
             offset = System.currentTimeMillis() / 1000L;
         }
-        return ResponseEntity.ok().body(new Result<>("获取消息列表成功", notifyService.queryRemind((int) AppContext.get().get(AuthConstant.USER_ID), type, offset, pageSize)));
+        Integer uid = (int) AppContext.get().get(AuthConstant.USER_ID);
+        return ResponseEntity.ok().body(new Result<>("获取消息列表成功", notifyService.queryRemindCount(uid, type), notifyService.queryRemind(uid, type, offset, pageSize)));
     }
 
     //获取各消息分类未读数

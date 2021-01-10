@@ -12,10 +12,11 @@ public interface NotifyBIZMapper {
     @Update("update notify_remind set read_status=1 where remind_id=#{remindId}")
     void readRemind(Integer remindId);
 
-    @Select("select remind_type,unread_count from notify_remind_summary where user_id=#{userId}")
+    @Select("select remind_type,unread_count,total_count from notify_remind_summary where user_id=#{userId}")
     @Results({
             @Result(property = "type", column = "remind_type"),
-            @Result(property = "unread", column = "unread_count")
+            @Result(property = "unread", column = "unread_count"),
+            @Result(property = "total", column = "total_count")
     })
     List<NotifyRemindSummary> queryRemindSummary(int userId);
 

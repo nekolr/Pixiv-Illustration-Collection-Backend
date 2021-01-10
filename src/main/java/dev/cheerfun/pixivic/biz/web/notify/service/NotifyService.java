@@ -46,6 +46,10 @@ public class NotifyService {
         return notifyReminds;
     }
 
+    public Integer queryRemindCount(int userId, Integer type) {
+        return queryRemindSummary(userId).stream().filter(e -> type.compareTo(e.getType()) == 0).findAny().get().getTotal();
+    }
+
     @CacheEvict("remind")
     public void readRemind(Integer remindId) {
         notifyMapper.readRemind(remindId);
