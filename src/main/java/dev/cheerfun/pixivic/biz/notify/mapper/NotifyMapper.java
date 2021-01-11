@@ -53,12 +53,15 @@ public interface NotifyMapper {
     })
     NotifyRemind queryNotifyRemindById(Integer remindId);
 
-    @Update("update notify_remind set remind_actors=#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},actor_count=#{actorCount} , create_date=#{createDate} where remind_id=#{id}")
+    @Update("update notify_remind set remind_actors=#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},actor_count=#{actorCount} , create_date=#{createDate},remind_status=0 where remind_id=#{id}")
     void updateRemindActorAndCreateDate(NotifyRemind notifyRemind);
 
     @Insert("INSERT INTO notify_remind_summary (user_id,remind_type,unread_count,total_count)\n" +
             "VALUES (#{recipientId},#{type},1,1)\n" +
             "ON DUPLICATE KEY UPDATE\n" +
-            "unread_count = unread_count + 1,total_count=total_count+1")
+            "unread_count = unread_count + 1" +
+            "<when test='notifyRemind.id==null'>\n" +
+            ",total_count=total_count+1" +
+            "</when>")
     void updateRemindSummary(NotifyRemind notifyRemind);
 }
