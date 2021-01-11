@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author OysterQAQ
@@ -47,7 +48,11 @@ public class NotifyService {
     }
 
     public Integer queryRemindCount(int userId, Integer type) {
-        return queryRemindSummary(userId).stream().filter(e -> type.compareTo(e.getType()) == 0).findAny().get().getTotal();
+        Optional<NotifyRemindSummary> any = queryRemindSummary(userId).stream().filter(e -> type.compareTo(e.getType()) == 0).findAny();
+        if (any.isPresent()) {
+            return any.get().getTotal();
+        }
+        return 0;
     }
 
     @CacheEvict("remind")
