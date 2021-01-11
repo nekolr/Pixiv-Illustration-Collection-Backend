@@ -62,7 +62,7 @@ public interface NotifyMapper {
                     "VALUES (#{recipientId},#{type},1,1)\n" +
                     "ON DUPLICATE KEY UPDATE\n" +
                     "unread_count = unread_count + 1" +
-                    "<if test='notifyRemind.id==null'>\n" +
+                    "<if test='id==null'>\n" +
                     ",total_count=total_count+1" +
                     "</if>" +
                     "</script>"
