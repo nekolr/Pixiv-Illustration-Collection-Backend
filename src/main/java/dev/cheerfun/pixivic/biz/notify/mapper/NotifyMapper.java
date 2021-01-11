@@ -53,7 +53,7 @@ public interface NotifyMapper {
     })
     NotifyRemind queryNotifyRemindById(Integer remindId);
 
-    @Update("update notify_remind set remind_actors=#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},actor_count=#{actorCount} , create_date=#{createDate},remind_status=0 where remind_id=#{id}")
+    @Update("update notify_remind set remind_actors=#{actors,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},actor_count=#{actorCount} , create_date=#{createDate},read_status=0 where remind_id=#{id}")
     void updateRemindActorAndCreateDate(NotifyRemind notifyRemind);
 
     @Insert(
