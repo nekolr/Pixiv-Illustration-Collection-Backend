@@ -30,8 +30,20 @@ public class NotifyService {
     public List<NotifyRemind> queryRemind(int userId, Integer type, long offset, int pageSize) {
         List<Integer> remindIdList = notifyMapper.queryRemind(userId, type, offset, pageSize);
         List<NotifyRemind> notifyReminds = notifyRemindService.queryRemindList(remindIdList);
-        updateRemindSummary(userId, type);
-        //将id加入移步刷新队列
+        //将summary的未读减掉对应的
+        boolean isUpdate = notifyReminds.stream().anyMatch(e -> {
+            Integer status = e.getStatus();
+            if (status.compareTo(0) == 0) {
+                //如果未读更新状态
+                readRemind(e.getId());
+                return true;
+            }
+            return false;
+        });
+        if (isUpdate) {
+            updateRemindSummary(userId, type);
+        }
+        //将id加入移步刷新队列 修改已读
         return notifyReminds;
     }
 
