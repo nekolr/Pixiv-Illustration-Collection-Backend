@@ -69,4 +69,10 @@ public class NotifyRemindService {
 
     //消息已读使用队列来移步更新，同步更新内存 因此不需要清理缓存
 
+    //全部标为已读
+    @CacheEvict(value = "remindSummary", key = "#userId")
+    public void clearAllUnread(Integer userId) {
+        // notifyMapper.updateRemindSummary(notifyRemind);
+    }
+
 }

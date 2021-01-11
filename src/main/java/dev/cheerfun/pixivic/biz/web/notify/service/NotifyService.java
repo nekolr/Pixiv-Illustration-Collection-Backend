@@ -30,19 +30,7 @@ public class NotifyService {
     public List<NotifyRemind> queryRemind(int userId, Integer type, long offset, int pageSize) {
         List<Integer> remindIdList = notifyMapper.queryRemind(userId, type, offset, pageSize);
         List<NotifyRemind> notifyReminds = notifyRemindService.queryRemindList(remindIdList);
-        //将summary的未读减掉对应的
-        long count = notifyReminds.stream().filter(e -> {
-            Integer status = e.getStatus();
-            if (status.compareTo(0) == 0) {
-                //如果未读更新状态
-                readRemind(e.getId());
-                return true;
-            }
-            return false;
-        }).count();
-        if (count > 0) {
-            updateRemindSummary(userId, type, count);
-        }
+        updateRemindSummary(userId, type);
         //将id加入移步刷新队列
         return notifyReminds;
     }
@@ -61,8 +49,8 @@ public class NotifyService {
     }
 
     @CacheEvict(value = "remindSummary", key = "#userId")
-    public void updateRemindSummary(Integer userId, Integer type, long count) {
-        notifyMapper.updateRemindSummary(userId, type, count);
+    public void updateRemindSummary(Integer userId, Integer type) {
+        notifyMapper.updateRemindSummary(userId, type);
 
     }
 
