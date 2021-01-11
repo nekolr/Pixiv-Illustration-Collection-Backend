@@ -6,7 +6,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 public interface NotifyBIZMapper {
-    @Select("select remind_id from notify_remind where recipient_id=#{userId} and remind_type=#{type} and create_date<FROM_UNIXTIME(#{offset}) limit #{pageSize} ")
+    @Select("select remind_id from notify_remind where recipient_id=#{userId} and remind_type=#{type} and create_date<FROM_UNIXTIME(#{offset}) order by create_date desc limit #{pageSize} ")
     List<Integer> queryRemind(int userId, Integer type, long offset, int pageSize);
 
     @Update("update notify_remind set read_status=1 where remind_id=#{remindId}")
