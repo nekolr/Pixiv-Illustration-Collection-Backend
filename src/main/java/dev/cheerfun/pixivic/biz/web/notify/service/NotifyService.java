@@ -63,7 +63,6 @@ public class NotifyService {
     @CacheEvict(value = "remindSummary", key = "#userId")
     public void updateRemindSummary(Integer userId, Integer type) {
         notifyMapper.updateRemindSummary(userId, type);
-
     }
 
     @Cacheable("remindSummary")
@@ -74,4 +73,13 @@ public class NotifyService {
     public Integer queryUnreadRemindsCount(int userId) {
         return queryRemindSummary(userId).stream().mapToInt(NotifyRemindSummary::getUnread).sum();
     }
+
+    @Transactional
+    @CacheEvict(value = "remindSummary", key = "#userId")
+    public Boolean updateUnreadRemindsCountToZero(int userId, Integer type) {
+        notifyMapper.readAllRemindByType(userId, type);
+        notifyMapper.updateRemindSummaryToZeroByType(userId, type);
+        return true;
+    }
+
 }

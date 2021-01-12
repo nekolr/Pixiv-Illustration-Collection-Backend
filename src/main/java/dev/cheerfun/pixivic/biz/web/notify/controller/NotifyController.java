@@ -49,4 +49,10 @@ public class NotifyController {
         return ResponseEntity.ok().body(new Result<>("获取总未读消息数成功", notifyService.queryUnreadRemindsCount((int) AppContext.get().get(AuthConstant.USER_ID))));
     }
 
+    @PutMapping("/users/{userId}/unreadRemindsCount")
+    @PermissionRequired
+    public ResponseEntity<Result<Boolean>> updateUnreadRemindsCountToZero(@PathVariable String userId, @RequestParam Integer type, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
+        return ResponseEntity.ok().body(new Result<>("清空当前分类未读消息成功", notifyService.updateUnreadRemindsCountToZero((int) AppContext.get().get(AuthConstant.USER_ID), type)));
+    }
+
 }
