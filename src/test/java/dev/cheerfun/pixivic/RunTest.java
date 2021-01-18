@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import dev.cheerfun.pixivic.biz.web.illust.domain.SearchSuggestion;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import org.jsoup.Jsoup;
@@ -15,12 +16,15 @@ import org.jsoup.select.Elements;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.TimeoutException;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class RunTest {
@@ -29,7 +33,12 @@ public class RunTest {
     volatile int j = 0;
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        System.out.println(UUID.randomUUID());
+        String content = Files.readString(Path.of("/Users/oysterqaq/Desktop/1.txt"));
+        Pattern moeGirlPattern = Pattern.compile("(?<=(?:gtm-illust-recommend-user-name\" href=\"/users\\/)).+?(?=\\\")");
+        moeGirlPattern.matcher(content).results().forEach(result -> {
+            String matchKeyword = result.group();
+            System.out.println(matchKeyword + ",");
+        });
     }
 
     public static boolean queryRelatedKeywordFromBaidu(String keyword) {

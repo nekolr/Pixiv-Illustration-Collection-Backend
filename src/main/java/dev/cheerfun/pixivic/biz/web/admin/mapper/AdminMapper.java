@@ -136,7 +136,7 @@ public interface AdminMapper {
     @Delete("delete from block_illust_set where illust_id =#{illustId}")
     Integer removeIllustFromBlockIllust(Integer illustId);
 
-    @Insert("insert into block_artist_set (artist_id,create_date) values (#{artistId},now())")
+    @Insert("insert ignore into block_artist_set (artist_id,create_date) values (#{artistId},now())")
     int blockArtistById(Integer artistId);
 
 
