@@ -38,6 +38,8 @@ public class RankService {
             illustrationList = rank.getData().stream().skip(pageSize * (page - 1))
                     .limit(pageSize).collect(Collectors.toList());
         }
+        illustrationList = objectMapper.convertValue(illustrationList, new TypeReference<List<Illustration>>() {
+        });
         return illustrationBizService.queryIllustrationByIdList(illustrationList.stream().map(e -> e.getId()).collect(Collectors.toList()));
     }
 
