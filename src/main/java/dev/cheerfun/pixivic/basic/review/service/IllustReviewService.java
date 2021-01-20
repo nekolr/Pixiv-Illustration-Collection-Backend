@@ -20,10 +20,10 @@ import java.util.stream.Collectors;
  * @date 2021/1/20 1:53 PM
  * @description IllustReviewService
  */
-@Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+//@Service
+//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustReviewService {
-    private final ReviewFilter reviewFilter;
+    /*private final ReviewFilter reviewFilter;
     private final ObjectMapper objectMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustReviewMapper illustReviewMapper;
@@ -61,6 +61,7 @@ public class IllustReviewService {
                 collect
                         .forEach(
                                 e -> {
+                                    if(e.getSanityLevel()<=6)
                                     illustReviewMapper.insertIntoReviewBlockTable(e.getId());
                                 }
                         );
@@ -73,5 +74,5 @@ public class IllustReviewService {
         }
 
     }
-
+*/
 }

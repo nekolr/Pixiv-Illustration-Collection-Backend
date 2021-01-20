@@ -28,6 +28,7 @@ import java.util.stream.Collectors;
 public class RankService {
     private final RankMapper rankMapper;
     private final ObjectMapper objectMapper;
+    private final IllustrationBizService illustrationBizService;
 
     @Cacheable(value = "rank")
     public List<Illustration> queryByDateAndMode(String date, String mode, int page, int pageSize) {
@@ -37,8 +38,7 @@ public class RankService {
             illustrationList = rank.getData().stream().skip(pageSize * (page - 1))
                     .limit(pageSize).collect(Collectors.toList());
         }
-        return objectMapper.convertValue(illustrationList, new TypeReference<List<Illustration>>() {
-        });
+        return illustrationBizService.queryIllustrationByIdList(illustrationList.stream().map(e -> e.getId()).collect(Collectors.toList()));
     }
 
     public List<Rank> queryByDate(String date) {

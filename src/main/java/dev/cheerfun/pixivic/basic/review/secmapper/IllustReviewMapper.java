@@ -10,7 +10,7 @@ import java.util.List;
 @Mapper
 public interface IllustReviewMapper {
 
-    @Select("select  * from illusts where illust_id > #{illustId} order by illust_id limit 100000")
+    @Select("select  * from illusts where update_time >'2020-11-18 08:04:07' limit 100000")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
