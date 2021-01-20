@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
  * @date 2021/1/20 1:53 PM
  * @description IllustReviewService
  */
-//@Service
+@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustReviewService {
     private final ReviewFilter reviewFilter;
@@ -28,7 +28,7 @@ public class IllustReviewService {
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustReviewMapper illustReviewMapper;
 
-    @PostConstruct
+    //@PostConstruct
     public void init() {
         System.out.println("开始扫描画作");
         // 遍历画作数据库 每次取10000个画作 offset取之前的最后一个画作的id
@@ -51,7 +51,7 @@ public class IllustReviewService {
                 Illustration illustration = objectMapper.convertValue(e, new TypeReference<Illustration>() {
                 });
                 if (illustration.getTags() != null && illustration.getTags().size() > 0) {
-                    return illustration.getTags().stream().anyMatch(t -> reviewFilter.filter(t.getName(), '*') || reviewFilter.filter(t.getTranslatedName(), '*'));
+                    return illustration.getTags().stream().anyMatch(t -> reviewFilter.filter(t.getName()) || reviewFilter.filter(t.getTranslatedName()));
                 } else {
                     return false;
                 }

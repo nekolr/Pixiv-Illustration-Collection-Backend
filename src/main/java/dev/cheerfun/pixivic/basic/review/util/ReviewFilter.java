@@ -20,8 +20,8 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.NavigableSet;
 
-//@Component
-//@Data
+@Component
+@Data
 public class ReviewFilter {
 
     /**
@@ -140,7 +140,7 @@ public class ReviewFilter {
      * @date 2017年1月5日 下午4:16:31
      */
 
-    public Boolean filter(String sentence, char replace) {
+    public Boolean filter(String sentence) {
         // 先转换为StringPointer
         StringPointer sp = new StringPointer(sentence);
 
@@ -201,7 +201,7 @@ public class ReviewFilter {
                              */
                             if (sp.nextStartsWith(i, word)) {
                                 // 匹配成功，将匹配的部分，用replace制定的内容替代
-                                sp.fill(i, i + word.length, replace);
+
                                 // 跳过已经替代的部分
                                 step = word.length;
                                 // 标示有替换

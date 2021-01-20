@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.basic.review.util.ReviewFilter;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.ModeMeta;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDetailDTO;
@@ -45,6 +46,7 @@ public class IllustrationService {
     private final ExecutorService saveToDBExecutorService;
     private final ArtistIllustRelationMapper artistIllustRelationMapper;
     private final CacheManager cacheManager;
+    private final ReviewFilter reviewFilter;
 
     static {
         taskSum = 162;
@@ -186,7 +188,12 @@ public class IllustrationService {
         }
         //更新画师名称与账号
         illustrations.stream().map(Illustration::getArtistPreView).forEach(illustrationMapper::updateArtistPreView);
-        //Lists.partition(illustrations, 50).forEach(illustrationMapper::insert);
+        //敏感画作过滤
+        illustrations.stream().parallel().forEach(e -> {
+            if (e.getTags().stream().anyMatch(t -> reviewFilter.filter(t.getName()) || reviewFilter.filter(t.getTranslatedName()))) {
+                e.setSanityLevel(7);
+            }
+        });
         illustrationMapper.batchInsert(illustrations);
         System.out.println("画作入库完毕");
         insertArtistIllustRelation(illustrations);

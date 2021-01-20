@@ -27,7 +27,6 @@ public interface IllustReviewMapper {
             @Result(property = "createDate", column = "create_date"),
     })
     List<Illustration> queryIllustrationByIllustId(Integer illustId);
-
-    @Insert("insert ignore into block_review_illusts(illust_id) values(#{e})")
+@Insert("insert ignore into block_review_illusts(illust_id) values(#{e})")
     void insertIntoReviewBlockTable(Integer e);
 }
