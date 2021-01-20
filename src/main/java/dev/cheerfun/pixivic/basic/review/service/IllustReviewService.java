@@ -21,9 +21,9 @@ import java.util.stream.Collectors;
  * @description IllustReviewService
  */
 //@Service
-//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustReviewService {
-    /*private final ReviewFilter reviewFilter;
+    private final ReviewFilter reviewFilter;
     private final ObjectMapper objectMapper;
     private final StringRedisTemplate stringRedisTemplate;
     private final IllustReviewMapper illustReviewMapper;
@@ -42,6 +42,7 @@ public class IllustReviewService {
         boolean flag = true;
 
         while (flag) {
+            System.out.println(illustId);
             stringRedisTemplate.opsForValue().set("illustReview", String.valueOf(illustId));
             List<Illustration> illustrations = illustReviewMapper.queryIllustrationByIllustId(illustId);
             if (illustrations.size() == 0) {
@@ -51,7 +52,7 @@ public class IllustReviewService {
                 Illustration illustration = objectMapper.convertValue(e, new TypeReference<Illustration>() {
                 });
                 if (illustration.getTags() != null && illustration.getTags().size() > 0) {
-                    return illustration.getTags().stream().anyMatch(t -> reviewFilter.filter(t.getName()) || reviewFilter.filter(t.getTranslatedName()));
+                    return illustration.getTags().stream().anyMatch(t -> reviewFilter.filter(t.getName()) || reviewFilter.filter(t.getTranslatedName()) || reviewFilter.filter(e.getTitle()) || reviewFilter.filter(e.getCaption()));
                 } else {
                     return false;
                 }
@@ -74,5 +75,5 @@ public class IllustReviewService {
         }
 
     }
-*/
+
 }
