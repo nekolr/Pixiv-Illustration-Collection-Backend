@@ -205,7 +205,7 @@ public class IllustrationBizService {
             try {
                 illustration = queryIllustrationById(e);
             } catch (BusinessException businessException) {
-                System.out.println("部分画作不存在" + e);
+                //System.out.println("部分画作不存在" + e);
             }
             return illustration;
         }).filter(Objects::nonNull).collect(Collectors.toList());
