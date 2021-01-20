@@ -142,3 +142,5 @@ oauth2:
   tokenEndpoint: https://pix.ipv4.host/oauth/token
   checkToken:
   userinfoEndpoint: https://pix.ipv4.host/user/me
+review:
+  path: /home/PIC/sensitive/政治类-反动词库.txt
