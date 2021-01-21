@@ -190,7 +190,7 @@ public class IllustrationService {
         illustrations.stream().map(Illustration::getArtistPreView).forEach(illustrationMapper::updateArtistPreView);
         //敏感画作过滤
         illustrations.stream().parallel().forEach(e -> {
-            if ((e.getTotalBookmarks() < 100 || reviewFilter.filter(e.getTitle() + e.getCaption()) || e.getTags().stream().anyMatch(t -> reviewFilter.filter(t.getName()) || reviewFilter.filter(t.getTranslatedName()))) && e.getSanityLevel() < 7) {
+            if ((reviewFilter.filter(e.getTitle() + e.getCaption()) || e.getTags().stream().anyMatch(t -> reviewFilter.filter(t.getName()) || reviewFilter.filter(t.getTranslatedName()))) && e.getSanityLevel() < 7) {
                 e.setSanityLevel(7);
             }
         });
