@@ -124,12 +124,12 @@ public class IllustrationBizService {
             return null;
         }
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
-        if (illustration.getSanityLevel() > 3 || illustration.getTotalBookmarks() < 300) {
-            return null;
-        }
         if (illustration == null) {
             log.info("画作：" + illustId + "不存在，加入队列等待爬取");
             waitForPullIllustQueue.offer(illustId);
+        }
+        if (illustration.getSanityLevel() > 3 || illustration.getTotalBookmarks() < 300) {
+            return null;
         }
         return objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
         });
