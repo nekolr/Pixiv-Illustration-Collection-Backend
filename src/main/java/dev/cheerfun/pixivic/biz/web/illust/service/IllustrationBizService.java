@@ -124,7 +124,7 @@ public class IllustrationBizService {
             return null;
         }
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
-        if (illustration.getSanityLevel() > 4) {
+        if (illustration.getSanityLevel() > 5) {
             return null;
         }
         if (illustration == null) {
