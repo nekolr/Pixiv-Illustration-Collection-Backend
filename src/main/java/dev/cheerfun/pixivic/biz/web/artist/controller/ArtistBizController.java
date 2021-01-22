@@ -56,7 +56,7 @@ public class ArtistBizController {
     @RateLimit
     public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws InterruptedException {
         List<Illustration> illustrationList = artistBizService.queryIllustrationsByArtistId(artistId, type, (page - 1) * pageSize, pageSize);
-        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationList));
+        return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", null));
     }
 
     @GetMapping("/artists/{artistId}/summary")
