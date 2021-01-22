@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -32,6 +33,9 @@ public class RankService {
 
     @Cacheable(value = "rank")
     public List<Illustration> queryByDateAndMode(String date, String mode, int page, int pageSize) {
+        if (LocalDate.parse(date).isBefore(LocalDate.now().plusMonths(-1))) {
+            return null;
+        }
         List<Illustration> illustrationList = new ArrayList<>();
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
         if (rank != null) {
