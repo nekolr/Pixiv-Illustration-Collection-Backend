@@ -125,7 +125,7 @@ public class IllustrationBizService {
         }
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         if (illustration == null) {
-            log.info("画作：" + illustId + "不存在，加入队列等待爬取");
+            //log.info("画作：" + illustId + "不存在，加入队列等待爬取");
             return null;
             //waitForPullIllustQueue.offer(illustId);
         }
