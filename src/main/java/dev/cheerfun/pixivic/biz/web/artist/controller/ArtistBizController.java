@@ -61,7 +61,7 @@ public class ArtistBizController {
 
     @GetMapping("/artists/{artistId}/summary")
     public ResponseEntity<Result<ArtistSummary>> querySummaryByArtistId(@PathVariable Integer artistId) {
-        return ResponseEntity.ok().body(new Result<>("获取画师画作汇总成功", artistBizService.querySummaryByArtistId(artistId)));
+        return ResponseEntity.ok().body(new Result<>("获取画师画作汇总成功", null));
     }
 
     @GetMapping("/artists")
