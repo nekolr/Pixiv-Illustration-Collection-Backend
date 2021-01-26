@@ -6,10 +6,7 @@ import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
-import dev.cheerfun.pixivic.biz.web.user.dto.CheckInDTO;
-import dev.cheerfun.pixivic.biz.web.user.dto.ResetPasswordDTO;
-import dev.cheerfun.pixivic.biz.web.user.dto.SignInDTO;
-import dev.cheerfun.pixivic.biz.web.user.dto.SignUpDTO;
+import dev.cheerfun.pixivic.biz.web.user.dto.*;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
 import dev.cheerfun.pixivic.biz.web.user.util.RecaptchaUtil;
@@ -30,6 +27,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.IOException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.ExecutionException;
 
 /**
@@ -51,9 +50,12 @@ public class CommonController {
 
     @GetMapping("/{userId}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<User>> queryUser(@PathVariable("userId") Integer userId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
+    public ResponseEntity<Result<Object>> queryUser(@PathVariable("userId") Integer userId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         User user = userService.queryUser(userId);
-        return ResponseEntity.ok().body(new Result<>("获取用户信息成功", user));
+        if (AppContext.get() != null && AppContext.get().get(AuthConstant.USER_ID) != null && (int) AppContext.get().get(AuthConstant.USER_ID) == userId) {
+            return ResponseEntity.ok().body(new Result<>("获取用户信息成功", user));
+        }
+        return ResponseEntity.ok().body(new Result<>("获取用户信息成功", UserInfoDTO.castByUser(user)));
     }
 
     @GetMapping("/usernames/{username}")
@@ -124,7 +126,9 @@ public class CommonController {
     @PutMapping("/{userId}/email")
     @CheckVerification
     public ResponseEntity<Result<User>> checkEmail(@RequestParam @Email String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        User user = userService.setEmail(email, userId);
+        String emailAddr = value.substring(value.indexOf(":") + 1);
+        userService.setEmail(emailAddr, userId);
+        User user = userService.queryUser(userId);
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
     }
 
@@ -230,5 +234,26 @@ public class CommonController {
     }
 
     //绑定pixiv账户
+
+    //绑定手机号
+    @PutMapping("/{userId}/phone")
+    @PermissionRequired
+    @CheckVerification
+    public ResponseEntity<Result<User>> updatePhone(@RequestParam("vid") String vid, @RequestParam("value") String value, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
+        int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
+        String phone = value.substring(value.indexOf(":") + 1);
+        userService.setPhone(phone, userId);
+        return ResponseEntity.ok().body(new Result<>("更新绑定手机号码成功", userService.queryUser(userId)));
+    }
+
+    //解绑手机
+
+    @PutMapping("/{userId}/verified")
+    @PermissionRequired
+    public ResponseEntity<Result<User>> verified(@RequestBody VerifiedDTO verifiedDTO, @RequestHeader(AuthConstant.AUTHORIZATION) String token) throws ExecutionException, InterruptedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
+        userService.verified(verifiedDTO, userId);
+        return ResponseEntity.ok().body(new Result<>("实名认证成功", userService.queryUser(userId)));
+    }
 
 }

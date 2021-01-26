@@ -8,6 +8,7 @@ package dev.cheerfun.pixivic.basic.verification.constant;
  */
 public final class VerificationType {
     public static final String IMG = "image";
+    public static final String MESSAGE = "message";
     public static final String EMAIL_CHECK = "email_check";
     public static final String PASSWORD_FORGET = "password_forget";
 }

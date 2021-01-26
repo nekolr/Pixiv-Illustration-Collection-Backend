@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.illust.service;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
+import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.illust.domain.SearchSuggestion;
@@ -65,6 +66,7 @@ public class SearchService {
     private final IllustrationMapper illustrationMapper;
     private final IllustrationBizService illustrationBizService;
     private final ExecutorService saveToDBExecutorService;
+    private final SensitiveFilter sensitiveFilter;
     private Pattern moeGirlPattern = Pattern.compile("(?<=(?:title=\")).+?(?=\" data-serp-pos)");
 
     @PostConstruct
@@ -123,7 +125,7 @@ public class SearchService {
                             PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
                             Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
                             List<String> relatedTags = pixivSearchSuggestionDTO.getBody().getRelatedTags();
-                            List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(e, tagTranslation.get(e) == null ? "" : tagTranslation.get(e).getZh())).collect(Collectors.toList());
+                            List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(sensitiveFilter.filter(e), sensitiveFilter.filter(tagTranslation.get(e)) == null ? "" : sensitiveFilter.filter(tagTranslation.get(e).getZh()))).collect(Collectors.toList());
                             if (searchSuggestions.size() > 0) {
                                 //保存
                                 waitSaveToDb.put(keyword, searchSuggestions);

@@ -41,7 +41,11 @@ public interface CommonMapper {
             @Result(property = "isCheckEmail", column = "is_check_email"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
             @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "idCard", column = "id_card"),
+            @Result(property = "addrForVerify", column = "addr_for_verify"),
+            @Result(property = "birthdayForVerify", column = "birthday_for_verify"),
+            @Result(property = "ageForVerify", column = "age_for_verify"),
     })
     User queryUserByusernameAndPassword(String username, String password);
 
@@ -58,7 +62,11 @@ public interface CommonMapper {
             @Result(property = "isCheckEmail", column = "is_check_email"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
             @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "idCard", column = "id_card"),
+            @Result(property = "addrForVerify", column = "addr_for_verify"),
+            @Result(property = "birthdayForVerify", column = "birthday_for_verify"),
+            @Result(property = "ageForVerify", column = "age_for_verify"),
 
     })
     User queryUserByUserId(int userId);
@@ -74,7 +82,11 @@ public interface CommonMapper {
             @Result(property = "isCheckEmail", column = "is_check_email"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
             @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "idCard", column = "id_card"),
+            @Result(property = "addrForVerify", column = "addr_for_verify"),
+            @Result(property = "birthdayForVerify", column = "birthday_for_verify"),
+            @Result(property = "ageForVerify", column = "age_for_verify"),
     })
     User getUserByQQOpenId(String qqOpenId);
 
@@ -86,6 +98,9 @@ public interface CommonMapper {
 
     @Update("update users set email=#{email} , is_check_email=1,permission_level= if(permission_level>1,permission_level,2) where user_id=#{userId}")
     Integer setEmail(String email, int userId);
+
+    @Update("update users set phone=#{phone} ,permission_level= if(permission_level>1,permission_level,2) where user_id=#{userId}")
+    Integer setPhone(String phone, int userId);
 
     @Update("update users set password=#{password} where email=#{email}")
     Integer setPasswordByEmail(String password, String email);
@@ -118,7 +133,11 @@ public interface CommonMapper {
             @Result(property = "isCheckEmail", column = "is_check_email"),
             @Result(property = "createDate", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
             @Result(property = "updateDate", column = "update_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class)
+            @Result(property = "permissionLevelExpireDate", column = "permission_level_expire_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(property = "idCard", column = "id_card"),
+            @Result(property = "addrForVerify", column = "addr_for_verify"),
+            @Result(property = "birthdayForVerify", column = "birthday_for_verify"),
+            @Result(property = "ageForVerify", column = "age_for_verify"),
     })
     User queryUserByEmail(String emailAddr);
 
@@ -178,4 +197,7 @@ public interface CommonMapper {
 
     @Insert("insert into user_update_username_log (user_id,create_time) values (#{userId},now())")
     void insertUserUpdateUsernameLog(Integer userId);
+
+    @Update("update users set id_card = #{idCard},addr_for_verify=#{address},birthday_for_verify=#{birthDate},age_for_verify=#{age} where user_id=#{userId}")
+    void updateUserVerifiedInfo(int userId, String idCard, String birthDate, int age, String address);
 }

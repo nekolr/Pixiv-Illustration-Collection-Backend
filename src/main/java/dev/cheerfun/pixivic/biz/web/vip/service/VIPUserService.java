@@ -84,6 +84,11 @@ public class VIPUserService {
     private void exchangeVIP(Integer userId, ExchangeCode exchangeCode) {
         //更新兑换码是否使用
         if (VIPMapper.updateExchangeCode(exchangeCode.getId(), userId) == 1) {
+            // 如果type是0则是身份验证兑换码
+            if (exchangeCode.getType() == 0) {
+                //
+                return;
+            }
             //更新用户会员状态
             commonService.updateUserPermissionLevel(userId, exchangeCode.getType());
         }

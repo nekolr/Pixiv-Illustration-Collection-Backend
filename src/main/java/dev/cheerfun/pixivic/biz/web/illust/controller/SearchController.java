@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
+import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
 import dev.cheerfun.pixivic.biz.analysis.tag.po.TrendingTags;
 import dev.cheerfun.pixivic.biz.analysis.tag.service.TrendingTagsService;
@@ -49,6 +50,7 @@ public class SearchController {
     private final IllustrationBizService illustrationBizService;
     private final TranslationUtil translationUtil;
     private final TrendingTagsService trendingTagsService;
+    private final SensitiveFilter sensitiveFilter;
 
     @GetMapping("/trendingTags")
     public ResponseEntity<Result<List<TrendingTags>>> getTrendingTags() throws JsonProcessingException {
@@ -57,22 +59,22 @@ public class SearchController {
 
     @GetMapping("/keywords/**/candidates")
     public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
-        return searchService.getCandidateWords(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", r)));
+        return searchService.getCandidateWords(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", r)));
     }
 
     @GetMapping("/keywords/**/suggestions")
     public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getSearchSuggestion(HttpServletRequest request) {
-        return searchService.getSearchSuggestion(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议获取成功", r)));
+        return searchService.getSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议获取成功", r)));
     }
 
     @GetMapping("/keywords/**/pixivSuggestions")
     public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getPixivSearchSuggestion(HttpServletRequest request) {
-        return searchService.getPixivSearchSuggestion(searchService.getKeyword(request)).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", null)));
+        return searchService.getPixivSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", r)));
     }
 
     @GetMapping("/keywords/**/translations")
     public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request) {
-        return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(searchService.getKeyword(request))));
+        return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(sensitiveFilter.filter(searchService.getKeyword(request)))));
     }
 
     @GetMapping("/illustrations")
@@ -89,7 +91,7 @@ public class SearchController {
             @Max(30) @Min(1)
                     int pageSize,
             @RequestParam
-            @Max(2) @Min(1)
+            @Max(333) @Min(1)
                     int page,
             @RequestParam(defaultValue = "original")
                     String searchType,//搜索类型（原生、自动翻译、自动匹配词条）

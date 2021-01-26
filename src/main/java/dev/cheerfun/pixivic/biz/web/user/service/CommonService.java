@@ -12,19 +12,21 @@ import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
-import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
 import dev.cheerfun.pixivic.biz.web.sentence.po.Sentence;
 import dev.cheerfun.pixivic.biz.web.sentence.service.SentenceService;
 import dev.cheerfun.pixivic.biz.web.user.dto.CheckInDTO;
+import dev.cheerfun.pixivic.biz.web.user.dto.VerifiedDTO;
+import dev.cheerfun.pixivic.biz.web.user.dto.VerifiedResponseResult;
 import dev.cheerfun.pixivic.biz.web.user.mapper.CommonMapper;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
+import dev.cheerfun.pixivic.biz.web.user.util.VerifiedUtil;
+import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.util.email.EmailUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -34,15 +36,17 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.web.servlet.HandlerMapping;
 
-import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
@@ -71,9 +75,10 @@ public class CommonService {
     private final CreditEventCustomer creditEventCustomer;
     private final SearchService searchService;
     private final SentenceService sentenceService;
-    private final IllustrationBizService illustrationBizService;
+    private final VIPUserService vipUserService;
     private final SensitiveFilter sensitiveFilter;
     private final CollectionService collectionService;
+    private final VerifiedUtil verifiedUtil;
 
     public User signUp(User user) {
         //检测用户名或邮箱是否重复
@@ -131,11 +136,9 @@ public class CommonService {
         return userMapper.setAvatar(avatar, userId);
     }
 
-    @Transactional(rollbackFor = Exception.class)
     @CacheEvict(value = "users", key = "#userId")
-    public User setEmail(String email, int userId) {
+    public void setEmail(String email, int userId) {
         userMapper.setEmail(email, userId);
-        return userMapper.queryUserByUserId(userId);
     }
 
     public int setPasswordByEmail(String password, String email) {
@@ -358,6 +361,44 @@ public class CommonService {
         LocalDateTime localDateTime = userMapper.queryUserUpdateUsernameLog(userId);
         //没修改过,或者在三个月之前
         return localDateTime == null || localDateTime.toLocalDate().isBefore(LocalDate.now().plusMonths(-6));
+    }
+
+    @CacheEvict(value = "users", key = "#userId")
+    public void setPhone(String phone, int userId) {
+        userMapper.setPhone(phone, userId);
+    }
+
+    //绑定身份信息
+    //前端调用前需要提示用户确认信息是否准确 不准确也会消耗码
+    public void verified(VerifiedDTO verifiedDTO, int userId) throws InterruptedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
+        //校验是否绑定手机
+        User user = queryUser(userId);
+        if (user.getPhone() == null) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "请先绑定手机号");
+        }
+        if (user.getIdCard() != null) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "已经实名过暂时不可更改");
+        }
+        //验证兑换码
+        vipUserService.exchangeVIP(userId, verifiedDTO.getExchangeCode());
+        //校验通过则调用实名验证api
+        VerifiedResponseResult verifiedResponseResult = verifiedUtil.verifyUser(verifiedDTO.getName(), verifiedDTO.getIdCard(), user.getPhone());
+        if (verifiedResponseResult == null) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "实名信息有误请重新购买兑换码后输入正确信息");
+        }
+        //调用后如果成功则更新addr和年龄以及生日信息
+        updateUserVerifiedInfo(userId, verifiedResponseResult);
+
+    }
+
+    @CacheEvict(value = "users", key = "#userId")
+    public void updateUserVerifiedInfo(int userId, VerifiedResponseResult verifiedResponseResult) {
+        String birthdate = verifiedResponseResult.getBirthday();
+        String birthYear = birthdate.substring(0, 4);
+        String birthMonth = birthdate.substring(4, 6);
+        String birthDay = birthdate.substring(6, 8);
+        int age = Period.between(LocalDate.of(Integer.valueOf(birthYear), Integer.valueOf(birthMonth), Integer.valueOf(birthDay)), LocalDate.now()).getYears();
+        userMapper.updateUserVerifiedInfo(userId, verifiedResponseResult.getIdcard(), birthYear + "-" + birthMonth + "-" + birthDay, age, verifiedResponseResult.getAddress());
     }
 
 }

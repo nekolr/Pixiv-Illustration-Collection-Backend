@@ -54,6 +54,12 @@ public class User implements Authable {
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime permissionLevelExpireDate;
 
+    private String phone;
+    private String idCard;
+    private String addrForVerify;
+    private String birthdayForVerify;
+    private String ageForVerify;
+
     public User(String username, String email, String password) {
         this.username = username;
         this.email = email;

@@ -11,7 +11,7 @@ public class EmailBindingVerificationCode extends AbstractVerificationCode {
 
     public EmailBindingVerificationCode(String value, String email) {
         super(value);
-        this.value = value + email;
+        this.value = value + ":" + email;
         this.email = email;
     }
 

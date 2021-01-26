@@ -33,9 +33,6 @@ public class RankService {
 
     @Cacheable(value = "rank")
     public List<Illustration> queryByDateAndMode(String date, String mode, int page, int pageSize) {
-        if (LocalDate.parse(date).isBefore(LocalDate.now().plusMonths(-1))) {
-            return null;
-        }
         List<Illustration> illustrationList = new ArrayList<>();
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
         if (rank != null) {

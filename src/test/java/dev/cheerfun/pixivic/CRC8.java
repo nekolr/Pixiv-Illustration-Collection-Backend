@@ -54,6 +54,12 @@ public class CRC8 {
 
     // 测试
     public static void main(String[] args) {
+        String a = "19970401";
+        String birthYear = a.substring(0, 4);
+        String birthMonth = a.substring(4, 6);
+        String birthd = a.substring(6, 8);
+
+        System.out.println("111:3@q.com".substring("111:3@q.com".indexOf(":") + 1));
         byte crc = CRC8.calcCrc8(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         System.out.println("" + Integer.toHexString(0x00ff & crc));
     }
