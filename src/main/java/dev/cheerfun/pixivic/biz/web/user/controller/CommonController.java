@@ -248,7 +248,7 @@ public class CommonController {
 
     //解绑手机
 
-    @PutMapping("/{userId}/verified")
+    @PutMapping("/{userId}/verifiedInfo")
     @PermissionRequired
     public ResponseEntity<Result<User>> verified(@RequestBody VerifiedDTO verifiedDTO, @RequestHeader(AuthConstant.AUTHORIZATION) String token) throws ExecutionException, InterruptedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);

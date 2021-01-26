@@ -1,5 +1,8 @@
 package dev.cheerfun.pixivic;
 
+import java.time.LocalDate;
+import java.time.Period;
+
 /**
  * @author OysterQAQ
  * @version 1.0
@@ -57,8 +60,9 @@ public class CRC8 {
         String a = "19970401";
         String birthYear = a.substring(0, 4);
         String birthMonth = a.substring(4, 6);
-        String birthd = a.substring(6, 8);
-
+        String birthDay = a.substring(6, 8);
+        int age = Period.between(LocalDate.of(Integer.valueOf(birthYear), Integer.valueOf(birthMonth), Integer.valueOf(birthDay)), LocalDate.now()).getYears();
+        System.out.println(age);
         System.out.println("111:3@q.com".substring("111:3@q.com".indexOf(":") + 1));
         byte crc = CRC8.calcCrc8(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
         System.out.println("" + Integer.toHexString(0x00ff & crc));

@@ -9,7 +9,7 @@ package dev.cheerfun.pixivic.basic.verification.domain;
 public class PhoneMessageVerificationCode extends AbstractVerificationCode {
     private String phone;
 
-    public PhoneMessageVerificationCode(String value, String email) {
+    public PhoneMessageVerificationCode(String value, String phone) {
         super(value);
         this.value = value + ":" + phone;
         this.phone = phone;

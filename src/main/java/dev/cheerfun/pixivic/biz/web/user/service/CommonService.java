@@ -388,7 +388,6 @@ public class CommonService {
         }
         //调用后如果成功则更新addr和年龄以及生日信息
         updateUserVerifiedInfo(userId, verifiedResponseResult);
-
     }
 
     @CacheEvict(value = "users", key = "#userId")

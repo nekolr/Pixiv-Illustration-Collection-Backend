@@ -33,7 +33,7 @@ public class VerificationCodeController {
     @GetMapping("/messageVerificationCode")
     @CheckVerification
     @RateLimit
-    public ResponseEntity<Result<PhoneMessageVerificationCode>> getMessageVerificationCode(@RequestParam("vid") String vid, @RequestParam("value") String value) {
+    public ResponseEntity<Result<PhoneMessageVerificationCode>> getMessageVerificationCode(@RequestParam("phone") String phone, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         PhoneMessageVerificationCode verificationCode = verificationCodeService.getMessageVerificationCode();
         return ResponseEntity.ok().body(new Result<>("短信验证码获取成功", verificationCode));
     }
