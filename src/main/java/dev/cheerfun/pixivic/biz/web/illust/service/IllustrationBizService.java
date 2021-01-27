@@ -126,7 +126,6 @@ public class IllustrationBizService {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         illustration.setTitle("");
         illustration.setCaption("");
-        illustration.setArtistPreView(null);
         illustration.setTags(null);
         illustration.getArtistPreView().setName("");
         if (illustration == null) {
