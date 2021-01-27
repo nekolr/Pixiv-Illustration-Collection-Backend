@@ -128,6 +128,7 @@ public class IllustrationBizService {
         illustration.setCaption("");
         illustration.setArtistPreView(null);
         illustration.setTags(null);
+        illustration.getArtistPreView().setName("");
         if (illustration == null) {
             //log.info("画作：" + illustId + "不存在，加入队列等待爬取");
             return null;
