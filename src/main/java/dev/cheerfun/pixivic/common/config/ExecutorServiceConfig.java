@@ -56,6 +56,20 @@ public class ExecutorServiceConfig {
         );
     }
 
+    @Bean(name = "messageExecutorService")
+    public ExecutorService messageExecutorService() {
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("message-pool-%d").build();
+        return new ThreadPoolExecutor(
+                5,
+                5,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(2048 * 1000),
+                namedThreadFactory,
+                new ThreadPoolExecutor.AbortPolicy()
+        );
+    }
+
     @Bean(name = "recommendDownGradeExecutorService")
     public ExecutorService recommendDownGradeExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("recommendDowngrade-pool-%d").build();

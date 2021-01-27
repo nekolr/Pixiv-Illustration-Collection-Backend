@@ -6,7 +6,9 @@ import com.fasterxml.jackson.annotation.JsonSetter;
 import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.util.Date;
 import java.util.List;
@@ -18,6 +20,8 @@ import java.util.List;
  * @description illustration
  */
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class Illustration {
     @JsonSetter("illust_id")
     @JsonAlias({"id", "illust_id"})

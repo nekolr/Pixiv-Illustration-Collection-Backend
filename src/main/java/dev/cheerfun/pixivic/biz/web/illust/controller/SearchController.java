@@ -52,22 +52,22 @@ public class SearchController {
     private final TrendingTagsService trendingTagsService;
     private final SensitiveFilter sensitiveFilter;
 
-    @GetMapping("/trendingTags")
+    //@GetMapping("/trendingTags")
     public ResponseEntity<Result<List<TrendingTags>>> getTrendingTags() throws JsonProcessingException {
         return ResponseEntity.ok().body(new Result<>("搜索热门标签成功", trendingTagsService.queryByDate(LocalDate.now().toString())));
     }
 
-    @GetMapping("/keywords/**/candidates")
+    //@GetMapping("/keywords/**/candidates")
     public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
         return searchService.getCandidateWords(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", r)));
     }
 
-    @GetMapping("/keywords/**/suggestions")
+    //@GetMapping("/keywords/**/suggestions")
     public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getSearchSuggestion(HttpServletRequest request) {
         return searchService.getSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议获取成功", r)));
     }
 
-    @GetMapping("/keywords/**/pixivSuggestions")
+    //@GetMapping("/keywords/**/pixivSuggestions")
     public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getPixivSearchSuggestion(HttpServletRequest request) {
         return searchService.getPixivSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", r)));
     }
@@ -91,7 +91,7 @@ public class SearchController {
             @Max(30) @Min(1)
                     int pageSize,
             @RequestParam
-            @Max(333) @Min(1)
+            @Max(4) @Min(1)
                     int page,
             @RequestParam(defaultValue = "original")
                     String searchType,//搜索类型（原生、自动翻译、自动匹配词条）

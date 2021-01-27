@@ -1,3 +1,4 @@
+/*
 package dev.cheerfun.pixivic.biz.web.cibr.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -33,12 +34,14 @@ import java.util.stream.IntStream;
 
 import static org.opencv.imgproc.Imgproc.COLOR_BGR2RGB;
 
+*/
 /**
  * @author OysterQAQ
  * @version 1.0
  * @date 2020/11/30 9:28 PM
  * @description DeepDanbooruService
- */
+ *//*
+
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DeepDanbooruService {
@@ -116,3 +119,4 @@ public class DeepDanbooruService {
     }
 
 }
+*/

@@ -148,3 +148,7 @@ verifiedAPI:
   secretId: AKID9GO4RsrMlSTTPnf3Yc7aH1ndWddDaKHppcQ
   secretKey: iNRRsAbupPjZwcjrmjCm1dMqh6t07v8uLs4Cml3W
   url: https://service-mlmeeiob-1256140209.ap-shanghai.apigateway.myqcloud.com/release/mobile/verify_real_name?idcard=
+messageApi:
+  endpoint: sms.ap-shanghai.tencentcloudapi.com
+  secretId:
+  secretKey:

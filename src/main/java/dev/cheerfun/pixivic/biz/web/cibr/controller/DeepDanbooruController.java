@@ -1,3 +1,4 @@
+/*
 package dev.cheerfun.pixivic.biz.web.cibr.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
@@ -18,12 +19,14 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 
+*/
 /**
  * @author OysterQAQ
  * @version 1.0
  * @date 2020/11/30 11:35 PM
  * @description DeepDanbooruController
- */
+ *//*
+
 @RestController
 @Validated
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -35,3 +38,4 @@ public class DeepDanbooruController {
         return ResponseEntity.ok().body(new Result<>("生成图片标签成功", deepDanbooruService.generateImageTagList(file)));
     }
 }
+*/

@@ -38,6 +38,7 @@
         <gm4java.version>1.1.1</gm4java.version>
         <deeplearning4j.version>1.0.0-beta7</deeplearning4j.version>
         <im4java.version>1.4.0</im4java.version>
+        <tencentcloud-sdk-java.version>3.1.201</tencentcloud-sdk-java.version>
     </properties>
 
     <dependencies>
@@ -172,11 +173,11 @@
             <type>pom</type>
             <scope>runtime</scope>
         </dependency>
-        <!--        <dependency>
-                    <groupId>org.mybatis</groupId>
-                    <artifactId>mybatis-typehandlers-jsr310</artifactId>
-                    <version>${mybatis-typehandlers-jsr310.version}</version>
-                </dependency>-->
+        <dependency>
+            <groupId>com.tencentcloudapi</groupId>
+            <artifactId>tencentcloud-sdk-java</artifactId>
+            <version>${tencentcloud-sdk-java.version}</version>
+        </dependency>
         <dependency>
             <groupId>com.sharneng</groupId>
             <artifactId>gm4java</artifactId>
@@ -195,17 +196,7 @@
             <artifactId>im4java</artifactId>
             <version>${im4java.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.nd4j</groupId>
-            <artifactId>nd4j-native-platform</artifactId>
-            <version>${deeplearning4j.version}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.datavec/datavec-data-image -->
-        <dependency>
-            <groupId>org.datavec</groupId>
-            <artifactId>datavec-data-image</artifactId>
-            <version>1.0.0-beta7</version>
-        </dependency>
+
 
         <!--      不要删除  <dependency>
       <groupId>org.deeplearning4j</groupId>
