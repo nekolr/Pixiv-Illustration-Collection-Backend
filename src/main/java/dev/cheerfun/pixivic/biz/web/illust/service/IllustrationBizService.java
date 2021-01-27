@@ -125,6 +125,8 @@ public class IllustrationBizService {
         }
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         illustration.setTitle("");
+        illustration.setTotalBookmarks(0);
+        illustration.setTotalView(0);
         illustration.setCaption("");
         illustration.setTags(new ArrayList<>());
         illustration.getArtistPreView().setName("");
