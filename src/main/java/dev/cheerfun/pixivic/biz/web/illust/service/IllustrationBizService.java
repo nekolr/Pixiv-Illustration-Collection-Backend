@@ -126,7 +126,7 @@ public class IllustrationBizService {
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
         illustration.setTitle("");
         illustration.setCaption("");
-        illustration.setTags(null);
+        illustration.setTags(new ArrayList<>());
         illustration.getArtistPreView().setName("");
         if (illustration == null) {
             //log.info("画作：" + illustId + "不存在，加入队列等待爬取");
