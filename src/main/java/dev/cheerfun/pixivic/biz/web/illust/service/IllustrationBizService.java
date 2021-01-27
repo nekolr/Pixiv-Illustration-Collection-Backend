@@ -135,9 +135,9 @@ public class IllustrationBizService {
             return null;
             //waitForPullIllustQueue.offer(illustId);
         }
-        if (illustration.getSanityLevel() > 2 || illustration.getTotalBookmarks() < 700) {
+    /*    if (illustration.getSanityLevel() > 2 || illustration.getTotalBookmarks() < 700) {
             return null;
-        }
+        }*/
         return objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
         });
     }
