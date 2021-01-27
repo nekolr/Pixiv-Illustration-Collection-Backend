@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -29,12 +30,16 @@ import java.util.List;
  * @description VIPUserService
  */
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VIPUserService {
-    private final ExchangeCodeUtil exchangeCodeUtil;
-    private final StringRedisTemplate stringRedisTemplate;
-    private final CommonService commonService;
-    private final VIPMapper VIPMapper;
+    @Autowired
+    private ExchangeCodeUtil exchangeCodeUtil;
+    @Autowired
+    private StringRedisTemplate stringRedisTemplate;
+    @Lazy
+    private CommonService commonService;
+    @Autowired
+    private VIPMapper VIPMapper;
 
     //按照类型和数量生成兑换码
     public List<String> generateExchangeCode(byte type, Integer sum) {
