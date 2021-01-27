@@ -119,22 +119,25 @@ public class IllustrationBizService {
     @Cacheable(value = "illust")
     @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
     public Illustration queryIllustrationByIdFromDb(Integer illustId) {
-        return new Illustration(1, 1, "", "illust", "", null, null, null, null, null, 1, 300, 300, 3, 0, 0, 0, 0);
         //判断是否在封禁集合中
-       /* if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId))) {
+        if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ILLUSTS_SET, String.valueOf(illustId))) {
             return null;
         }
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
+        illustration.setTitle("");
+        illustration.setCaption("");
+        illustration.setArtistPreView(null);
+        illustration.setTags(null);
         if (illustration == null) {
             //log.info("画作：" + illustId + "不存在，加入队列等待爬取");
             return null;
             //waitForPullIllustQueue.offer(illustId);
         }
-        if (illustration.getSanityLevel() > 2 || illustration.getTotalBookmarks() < 150) {
+        if (illustration.getSanityLevel() > 2 || illustration.getTotalBookmarks() < 700) {
             return null;
         }
         return objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
-        });*/
+        });
     }
 
     @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
