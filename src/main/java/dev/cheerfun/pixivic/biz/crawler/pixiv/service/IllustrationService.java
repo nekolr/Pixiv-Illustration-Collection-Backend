@@ -207,7 +207,7 @@ public class IllustrationService {
                 try {
                     List<Illustration> illustrationList = waitForSaveToDbIllustList.take();
                     saveToDbSync(illustrationList);
-                    putIllustCache(illustrationList);
+                    //putIllustCache(illustrationList);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
