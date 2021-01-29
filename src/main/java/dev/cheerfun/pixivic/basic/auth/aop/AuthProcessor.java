@@ -78,7 +78,7 @@ public class AuthProcessor {
             Map<String, Object> claims = jwtUtil.validateToken(token);
             //放入threadlocal
             AppContext.set(claims);
-            if ((Integer) claims.get(AuthConstant.IS_BAN) == 0 || stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(claims.get(AuthConstant.USER_ID)))) {
+            if (/*(Integer) claims.get(AuthConstant.IS_BAN) == 0 || */stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(claims.get(AuthConstant.USER_ID)))) {
                 throw new AuthBanException(HttpStatus.FORBIDDEN, "账户异常");
             }
             if ((Integer) claims.get(AuthConstant.PERMISSION_LEVEL) < authLevel) {

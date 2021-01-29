@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
+import dev.cheerfun.pixivic.basic.verification.constant.VerificationType;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.*;
@@ -75,7 +76,7 @@ public class CommonController {
     }
 
     @PostMapping
-    @CheckVerification
+    @CheckVerification(VerificationType.MESSAGE)
     public ResponseEntity<Result<User>> signUp(@RequestBody @Valid SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userInfo.castToUser();
         user = userService.signUp(user);
@@ -238,22 +239,22 @@ public class CommonController {
     //绑定手机号
     @PutMapping("/{userId}/phone")
     @PermissionRequired
-    @CheckVerification
-    public ResponseEntity<Result<User>> updatePhone(@RequestParam("vid") String vid, @RequestParam("value") String value, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
-        int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
-        String phone = value.substring(value.indexOf(":") + 1);
-        userService.setPhone(phone, userId);
-        return ResponseEntity.ok().body(new Result<>("更新绑定手机号码成功", userService.queryUser(userId)));
+    @CheckVerification(VerificationType.MESSAGE)
+    public ResponseEntity<Result<User>> updatePhone(@PathVariable("userId") Integer userId, @RequestParam("vid") String vid, @RequestParam("value") String value, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
+        int uid = (int) AppContext.get().get(AuthConstant.USER_ID);
+        userService.setPhone(vid, uid);
+        User user = userService.queryUser(uid);
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("更新绑定手机号码成功", user));
     }
 
     //解绑手机
-
     @PutMapping("/{userId}/verifiedInfo")
     @PermissionRequired
     public ResponseEntity<Result<User>> verified(@RequestBody VerifiedDTO verifiedDTO, @RequestHeader(AuthConstant.AUTHORIZATION) String token) throws ExecutionException, InterruptedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
-        int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
-        userService.verified(verifiedDTO, userId);
-        return ResponseEntity.ok().body(new Result<>("实名认证成功", userService.queryUser(userId)));
+        int uid = (int) AppContext.get().get(AuthConstant.USER_ID);
+        userService.verified(verifiedDTO, uid);
+        User user = userService.queryUser(uid);
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("实名认证成功", user));
     }
 
 }

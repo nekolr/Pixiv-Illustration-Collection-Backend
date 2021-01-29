@@ -31,6 +31,7 @@ public class RedisKeyConstant {
     public final static String USER_RECOMMEND_VIEW_ILLUST = "u:r:v:i:";
     public final static String USER_RECOMMEND_ARTIST = "u:r:a:";
     public final static String VERIFICATION_CODE = "v:";
+    public final static String MESSAGE_VERIFICATION_CODE = "v:m:";
     public final static String BLOCK_ARTISTS_SET = "bas";
     public final static String BLOCK_ILLUSTS_SET = "bis";
     public final static String VIP_CODE_SERIAL_NUMBER = "v:c:sn";

@@ -25,9 +25,9 @@ public class VerificationCodeBuildUtil {
     }
 
     private String type;
+    private String vid;
     private String value;
     private String email;
-    private String phone;
 
     private VerificationCodeBuildUtil(String type) {
         this.type = type;
@@ -79,6 +79,11 @@ public class VerificationCodeBuildUtil {
         return this;
     }
 
+    public VerificationCodeBuildUtil vid(String vid) {
+        this.vid = vid;
+        return this;
+    }
+
     public AbstractVerificationCode build() throws RuntimeException {
         if (type == null) {
             throw new RuntimeException("未指定类型");
@@ -89,7 +94,7 @@ public class VerificationCodeBuildUtil {
             case VerificationType.EMAIL_CHECK:
                 return new EmailBindingVerificationCode(generateRandomStr(4), email);
             case VerificationType.MESSAGE:
-                return new PhoneMessageVerificationCode(generateRandomNumberStr(6), phone);
+                return new PhoneMessageVerificationCode(generateRandomNumberStr(6), vid);
             default:
                 return null;
         }

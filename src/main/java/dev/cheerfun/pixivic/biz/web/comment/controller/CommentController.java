@@ -11,11 +11,14 @@ import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.biz.web.comment.dto.Like;
 import dev.cheerfun.pixivic.biz.web.comment.po.Comment;
 import dev.cheerfun.pixivic.biz.web.comment.service.CommentService;
+import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
+import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,6 +35,7 @@ import java.util.List;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommentController {
     private final CommentService commentService;
+    private final CommonService commonService;
     private final EventPublisher eventPublisher;
 
     @PostMapping("/{commentAppType}/{commentAppId}/comments")
@@ -39,6 +43,10 @@ public class CommentController {
     @RateLimit
     public ResponseEntity<Result<Integer>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @SensitiveCheck Comment comment, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
+        if (commonService.queryUser(userId).getPhone() == null) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "请在绑定手机号后评论");
+        }
+        //TODO 接入百度云审核 修改成token校验
         comment.init(commentAppType, commentAppId, userId);
         commentService.pushComment(comment);
         eventPublisher.publish(new Event(userId, ActionType.PUBLISH, ObjectType.COMMENT, comment.getId(), LocalDateTime.now()));

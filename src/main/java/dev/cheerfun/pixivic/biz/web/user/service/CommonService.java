@@ -80,6 +80,7 @@ public class CommonService {
     private final CollectionService collectionService;
     private final VerifiedUtil verifiedUtil;
 
+    @Transactional
     public User signUp(User user) {
         //检测用户名或邮箱是否重复
         if (userMapper.checkUserName(user.getUsername()) == 1 || userMapper.checkUserEmail(user.getEmail()) == 1) {

@@ -6,6 +6,8 @@ import dev.cheerfun.pixivic.basic.verification.domain.ImageVerificationCode;
 import dev.cheerfun.pixivic.basic.verification.domain.PhoneMessageVerificationCode;
 import dev.cheerfun.pixivic.basic.verification.util.VerificationCodeBuildUtil;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
+import dev.cheerfun.pixivic.common.po.Message;
+import dev.cheerfun.pixivic.common.util.message.MessageUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -23,12 +25,13 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VerificationCodeService {
     private final StringRedisTemplate stringRedisTemplate;
+    private final MessageUtil messageUtil;
 
-    public PhoneMessageVerificationCode getMessageVerificationCode() {
-        PhoneMessageVerificationCode verificationCode = (PhoneMessageVerificationCode) VerificationCodeBuildUtil.create(VerificationType.MESSAGE).build();
-        stringRedisTemplate.opsForValue().set(RedisKeyConstant.VERIFICATION_CODE + verificationCode.getVid(), verificationCode.getValue(), 3, TimeUnit.MINUTES);
+    public PhoneMessageVerificationCode getMessageVerificationCode(String phone) {
+        PhoneMessageVerificationCode verificationCode = (PhoneMessageVerificationCode) VerificationCodeBuildUtil.create(VerificationType.MESSAGE).vid(phone).build();
+        stringRedisTemplate.opsForValue().set(RedisKeyConstant.MESSAGE_VERIFICATION_CODE + verificationCode.getVid(), verificationCode.getValue(), 5, TimeUnit.MINUTES);
         //调用发送短信api
-
+        messageUtil.sendMessageAsync(new Message(phone, verificationCode.getValue()));
         return verificationCode;
     }
 

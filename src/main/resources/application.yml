@@ -150,5 +150,8 @@ verifiedAPI:
   url: https://service-mlmeeiob-1256140209.ap-shanghai.apigateway.myqcloud.com/release/mobile/verify_real_name?idcard=
 messageApi:
   endpoint: sms.ap-shanghai.tencentcloudapi.com
-  secretId:
-  secretKey:
+  secretId: AKIDBDxTUHQDNI1rStw2t1wgV4kCeqnV5A85
+  secretKey: qkPpysWuFLciZAVaQ7kHYZMKU5T9Xcqp
+  appid: 1400478972
+  templateID: 858513
+  sign: 御宅电波

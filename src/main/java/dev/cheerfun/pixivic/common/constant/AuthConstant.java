@@ -14,4 +14,5 @@ public class AuthConstant {
     public final static String PERMISSION_LEVEL = "permissionLevel";
     public final static String NEW_TOKEN = "newToken";
     public final static String USER_ID = "userId";
+    public final static String IS_CHECK_PHONE = "isCheckPhone";
 }

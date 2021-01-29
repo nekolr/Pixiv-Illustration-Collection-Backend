@@ -7,17 +7,14 @@ package dev.cheerfun.pixivic.basic.verification.domain;
  * @description 邮箱绑定验证码
  */
 public class PhoneMessageVerificationCode extends AbstractVerificationCode {
-    private String phone;
 
-    public PhoneMessageVerificationCode(String value, String phone) {
-        super(value);
-        this.value = value + ":" + phone;
-        this.phone = phone;
+    public PhoneMessageVerificationCode(String value, String vid) {
+        super.vid = vid;
+        super.value = value;
     }
 
     @Override
     public String toString() {
-        return value + phone;
+        return vid;
     }
-
 }

@@ -53,10 +53,12 @@ public class User implements Authable {
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     private LocalDateTime permissionLevelExpireDate;
-
     private String phone;
+    @JsonIgnore
     private String idCard;
+    @JsonIgnore
     private String addrForVerify;
+    @JsonIgnore
     private String birthdayForVerify;
     private String ageForVerify;
 
@@ -93,7 +95,8 @@ public class User implements Authable {
     public Map<String, Object> getClaims() {
         Map<String, Object> claims = new HashMap<>();
         claims.put(AuthConstant.PERMISSION_LEVEL, permissionLevel);
-        claims.put(AuthConstant.IS_BAN, isBan);
+        //claims.put(AuthConstant.IS_BAN, isBan);
+        claims.put(AuthConstant.IS_CHECK_PHONE, getIsCheckPhone());
         claims.put(AuthConstant.REFRESH_COUNT, 0);
         claims.put(AuthConstant.USER_ID, id);
         return claims;
@@ -111,6 +114,10 @@ public class User implements Authable {
 
     public boolean getIsCheckEmail() {
         return isCheckEmail != null && isCheckEmail == 1;
+    }
+
+    public int getIsCheckPhone() {
+        return phone == null ? 0 : 1;
     }
 
 }
