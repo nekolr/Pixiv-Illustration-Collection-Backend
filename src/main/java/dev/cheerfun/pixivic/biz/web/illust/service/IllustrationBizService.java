@@ -131,11 +131,10 @@ public class IllustrationBizService {
         illustration.setTags(new ArrayList<>());
         illustration.getArtistPreView().setName("");
         if (illustration == null) {
-            //log.info("画作：" + illustId + "不存在，加入队列等待爬取");
-            return null;
-            //waitForPullIllustQueue.offer(illustId);
+            log.info("画作：" + illustId + "不存在，加入队列等待爬取");
+            waitForPullIllustQueue.offer(illustId);
         }
-    /*    if (illustration.getSanityLevel() > 2 || illustration.getTotalBookmarks() < 700) {
+    /*    if (illustration.getSanityLevel() > 2 || illustration.getTotalBookmarks() < 200) {
             return null;
         }*/
         return objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
