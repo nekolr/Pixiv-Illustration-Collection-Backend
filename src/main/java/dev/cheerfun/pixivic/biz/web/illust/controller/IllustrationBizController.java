@@ -46,7 +46,7 @@ public class IllustrationBizController {
         return ResponseEntity.ok().body(new Result<>("获取存在详情成功", illustrationBizService.queryExistsById(id)));
     }
 
-    //@GetMapping("/illusts/{illustId}")
+    @GetMapping("/illusts/{illustId}")
     @RateLimit
     @PermissionRequired
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {

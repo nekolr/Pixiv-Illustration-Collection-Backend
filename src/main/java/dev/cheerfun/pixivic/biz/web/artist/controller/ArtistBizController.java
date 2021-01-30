@@ -33,7 +33,7 @@ import java.util.concurrent.CompletableFuture;
 public class ArtistBizController {
     private final ArtistBizService artistBizService;
 
-    //@GetMapping("/artists/{artistId}")
+    @GetMapping("/artists/{artistId}")
     @RateLimit
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<Artist>> queryArtistById(@PathVariable Integer artistId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws InterruptedException {
@@ -50,7 +50,7 @@ public class ArtistBizController {
         return ResponseEntity.ok().body(new Result<>("获取关注该画师的用户列表成功", userList));
     }
 
-    //@GetMapping("/artists/{artistId}/illusts/{type}")
+    @GetMapping("/artists/{artistId}/illusts/{type}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithUserInfo
     @RateLimit
@@ -59,7 +59,7 @@ public class ArtistBizController {
         return ResponseEntity.ok().body(new Result<>("获取画师画作列表成功", illustrationList));
     }
 
-    //@GetMapping("/artists/{artistId}/summary")
+    @GetMapping("/artists/{artistId}/summary")
     public ResponseEntity<Result<ArtistSummary>> querySummaryByArtistId(@PathVariable Integer artistId) {
         return ResponseEntity.ok().body(new Result<>("获取画师画作汇总成功", artistBizService.querySummaryByArtistId(artistId)));
     }
