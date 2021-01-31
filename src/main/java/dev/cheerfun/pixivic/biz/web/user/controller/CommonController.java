@@ -104,6 +104,13 @@ public class CommonController {
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
     }
 
+    @GetMapping("/tokenWithPhone")
+    @CheckVerification
+    public ResponseEntity<Result<User>> signInByQQ(@RequestParam("vid") String vid, @RequestParam("value") String value) throws IOException, InterruptedException {
+        User user = userService.signInWithPhone(vid);
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
+    }
+
     @PutMapping("/{userId}/qqAccessToken")
     @PermissionRequired
     public ResponseEntity<Result<User>> bindQQ(@RequestParam String qqAccessToken, @PathVariable("userId") int userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) throws IOException, InterruptedException {

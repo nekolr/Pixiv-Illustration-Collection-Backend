@@ -93,7 +93,7 @@ public class CommonService {
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
         emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId() + "&email=" + user.getEmail());
-        user = userMapper.queryUserByusernameAndPassword(user.getUsername(), user.getPassword());
+        user = queryUser(userMapper.queryUserByusernameAndPassword(user.getUsername(), user.getPassword()));
         userMapper.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS, user.getId());
         //初始化汇总表
         userMapper.initSummary(user.getId());
@@ -102,7 +102,7 @@ public class CommonService {
     }
 
     public User signIn(String username, String password) {
-        User user = userMapper.queryUserByusernameAndPassword(username, passwordUtil.encrypt(password));
+        User user = queryUser(userMapper.queryUserByusernameAndPassword(username, passwordUtil.encrypt(password)));
         if (user == null) {
             throw new UserCommonException(HttpStatus.BAD_REQUEST, "用户名或密码不正确");
         }
@@ -119,7 +119,7 @@ public class CommonService {
 
     public User signIn(String qqAccessToken) throws IOException, InterruptedException {
         String qqOpenId = getQQOpenId(qqAccessToken);
-        User user = userMapper.getUserByQQOpenId(qqOpenId);
+        User user = queryUser(userMapper.getUserByQQOpenId(qqOpenId));
         if (user == null) {
             throw new UserCommonException(HttpStatus.BAD_REQUEST, "不存在此QQ绑定的帐号");
         }
@@ -160,7 +160,7 @@ public class CommonService {
     }
 
     public void getCheckEmail(String email, int userId) {
-        User user = userMapper.queryUserByUserId(userId);
+        User user = queryUser(userId);
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
         emailUtil.sendEmail(email, user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + userId + "&email=" + email);
     }
@@ -207,7 +207,7 @@ public class CommonService {
     }
 
     public Boolean queryIsBindQQ(int userId) {
-        User user = userMapper.queryUserByUserId(userId);
+        User user = queryUser(userId);
         return user.getIsBindQQ();
     }
 
@@ -222,7 +222,7 @@ public class CommonService {
     }
 
     public User queryUserByEmail(String emailAddr) {
-        User user = userMapper.queryUserByEmail(emailAddr);
+        User user = queryUser(userMapper.queryUserByEmail(emailAddr));
         if (user == null) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "用户不存在");
         }
@@ -401,4 +401,7 @@ public class CommonService {
         userMapper.updateUserVerifiedInfo(userId, verifiedResponseResult.getIdcard(), birthYear + "-" + birthMonth + "-" + birthDay, age, verifiedResponseResult.getAddress());
     }
 
+    public User signInWithPhone(String phone) {
+        return queryUser(userMapper.queryUserByPhone(phone));
+    }
 }
