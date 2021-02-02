@@ -81,10 +81,15 @@ public class CommonService {
     private final VerifiedUtil verifiedUtil;
 
     @Transactional
+    @Caching(evict = {
+            @CacheEvict(value = "checkUsername", key = "#user.username"),
+            @CacheEvict(value = "checkEmail", key = "#user.email"),
+            @CacheEvict(value = "checkPhone", key = "#user.phone")
+    })
     public User signUp(User user) {
         //检测用户名或邮箱是否重复
-        if (userMapper.checkUserName(user.getUsername()) == 1 || userMapper.checkUserEmail(user.getEmail()) == 1) {
-            throw new UserCommonException(HttpStatus.CONFLICT, "用户名或邮箱已存在");
+        if (userMapper.checkUserName(user.getUsername()) == 1 || userMapper.checkUserEmail(user.getEmail()) == 1 || userMapper.checkUserPhone(user.getPhone()) == 1) {
+            throw new UserCommonException(HttpStatus.CONFLICT, "用户、邮箱或手机号已存在");
         }
         user.setPassword(passwordUtil.encrypt(user.getPassword()));
         user.init();
@@ -109,12 +114,19 @@ public class CommonService {
         return user;
     }
 
+    @Cacheable("checkUsername")
     public boolean checkUsername(String username) {
         return userMapper.checkUserName(username) == 1;
     }
 
+    @Cacheable("checkEmail")
     public boolean checkEmail(String email) {
         return userMapper.checkUserEmail(email) == 1;
+    }
+
+    @Cacheable("checkPhone")
+    public boolean checkPhone(String phone) {
+        return userMapper.checkUserPhone(phone) == 1;
     }
 
     public User signIn(String qqAccessToken) throws IOException, InterruptedException {

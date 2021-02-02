@@ -75,10 +75,19 @@ public class CommonController {
         return ResponseEntity.ok().body(new Result<>("邮箱不存在"));
     }
 
+    @GetMapping("/phones/{phone}")
+    public ResponseEntity<Result<Boolean>> checkPhone(@Email @NotBlank @PathVariable("phone") String phone) {
+        if (userService.checkPhone(phone)) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("手机号已存在"));
+        }
+        return ResponseEntity.ok().body(new Result<>("手机号不存在"));
+    }
+
     @PostMapping
     @CheckVerification(VerificationType.MESSAGE)
     public ResponseEntity<Result<User>> signUp(@RequestBody @Valid SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userInfo.castToUser();
+        user.setPhone(vid);
         user = userService.signUp(user);
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
     }

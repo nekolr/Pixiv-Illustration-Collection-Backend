@@ -24,7 +24,16 @@ public interface CommonMapper {
     })
     int checkUserEmail(String email);
 
-    @Insert("insert into users (email, username,password,permission_level,is_ban,star,create_date) values (#{email}, #{username}, #{password}, #{permissionLevel}, #{isBan},#{star},#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
+    @Select({
+            "SELECT IFNULL((\n" +
+                    "SELECT 1\n" +
+                    "FROM users\n" +
+                    "WHERE phone=#{phone} \n" +
+                    "LIMIT 1),0)",
+    })
+    int checkUserPhone(String phone);
+
+    @Insert("insert into users (email,phone, username,password,permission_level,is_ban,star,create_date) values (#{email}, #{phone}, #{username}, #{password}, #{permissionLevel}, #{isBan},#{star},#{createDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler})")
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "user_id")
     Integer insertUser(User user);
 
