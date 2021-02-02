@@ -76,7 +76,7 @@ public class CommonController {
     }
 
     @GetMapping("/phones/{phone}")
-    public ResponseEntity<Result<Boolean>> checkPhone(@Email @NotBlank @PathVariable("phone") String phone) {
+    public ResponseEntity<Result<Boolean>> checkPhone(@NotBlank @PathVariable("phone") String phone) {
         if (userService.checkPhone(phone)) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new Result<>("手机号已存在"));
         }
