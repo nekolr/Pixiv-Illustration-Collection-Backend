@@ -8,58 +8,43 @@
     "list": [
       {
         "query_path": {
-          "path": "/users",
+          "path": "/users/check-in",
           "params": []
         },
         "edit_uid": 0,
         "status": "done",
         "type": "static",
-        "req_body_is_json_schema": true,
+        "req_body_is_json_schema": false,
         "res_body_is_json_schema": true,
         "api_opened": false,
         "index": 0,
         "tag": [],
-        "_id": 47,
+        "_id": 945,
         "method": "POST",
         "catid": 11,
-        "title": "用户注册",
-        "path": "/users",
+        "title": "每日签到",
+        "path": "/users/check-in",
         "project_id": 12,
         "req_params": [],
         "res_body_type": "json",
         "uid": 22,
-        "add_time": 1584610317,
-        "up_time": 1584610766,
-        "req_query": [
-          {
-            "required": "1",
-            "_id": "5e733dce74367310d57d4c00",
-            "name": "vid",
-            "desc": "验证码id"
-          },
-          {
-            "required": "1",
-            "_id": "5e733dce74367310d57d4bff",
-            "name": "value",
-            "example": "",
-            "desc": "验证码值"
-          }
-        ],
+        "add_time": 1604321987,
+        "up_time": 1604322151,
+        "req_query": [],
         "req_headers": [
           {
             "required": "1",
-            "_id": "5e733dce74367310d57d4c01",
+            "_id": "5fa00367793c4c6d2f164a59",
             "name": "Content-Type",
-            "value": "application/json"
+            "value": "application/x-www-form-urlencoded"
           }
         ],
         "req_body_form": [],
         "__v": 0,
         "desc": "",
         "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名(4-10位)\"},\"email\":{\"type\":\"string\",\"description\":\"邮箱\"},\"password\":{\"type\":\"string\",\"description\":\"密码(8-20位)\"}}}",
-        "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"string\",\"description\":\"token\"}}}"
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"score\":{\"type\":\"number\",\"description\":\"签到获得的分数\"},\"sentence\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"content\":{\"type\":\"string\",\"description\":\"台词内容\"},\"originateFrom\":{\"type\":\"string\",\"description\":\"来源作品\"},\"originateFromJP\":{\"type\":\"null\",\"description\":\"来源作品日语（可能没有）\"},\"author\":{\"type\":\"string\",\"description\":\"作者\"}},\"description\":\"随机动漫台词\"},\"illustration\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"number\"},\"title\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"artistPreView\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\"},\"account\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"}}},\"tags\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"translatedName\":{\"type\":\"string\"},\"id\":{\"type\":\"number\"}},\"required\":[\"name\",\"translatedName\",\"id\"]}},\"imageUrls\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"squareMedium\":{\"type\":\"string\"},\"medium\":{\"type\":\"string\"},\"large\":{\"type\":\"string\"},\"original\":{\"type\":\"string\"}}}},\"tools\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"createDate\":{\"type\":\"string\"},\"pageCount\":{\"type\":\"number\"},\"width\":{\"type\":\"number\"},\"height\":{\"type\":\"number\"},\"sanityLevel\":{\"type\":\"number\"},\"restrict\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalBookmarks\":{\"type\":\"number\"},\"xrestrict\":{\"type\":\"number\"}},\"description\":\"动漫台词作品匹配的画作\"}}}}}"
       },
       {
         "query_path": {
@@ -99,6 +84,59 @@
         "desc": "",
         "markdown": "",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/{userId}/username",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 975,
+        "method": "PUT",
+        "catid": 11,
+        "title": "修改用户名",
+        "path": "/{userId}/username",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5fcc96bd793c4c6d2f164a6e",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1607242235,
+        "up_time": 1607243453,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5fcc96bd793c4c6d2f164a6f",
+            "name": "username",
+            "desc": "用户名"
+          }
+        ],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5fcc96bd793c4c6d2f164a70",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"},\"gender\":{\"type\":\"null\"},\"signature\":{\"type\":\"null\"},\"location\":{\"type\":\"null\"},\"permissionLevel\":{\"type\":\"number\"},\"isBan\":{\"type\":\"number\"},\"star\":{\"type\":\"number\"},\"isCheckEmail\":{\"type\":\"boolean\"},\"createDate\":{\"type\":\"string\"},\"updateDate\":{\"type\":\"string\"},\"permissionLevelExpireDate\":{\"type\":\"null\"},\"isBindQQ\":{\"type\":\"boolean\"}}}},\"description\":\"如果返回码为400 需要展示message\"}"
       },
       {
         "query_path": {
@@ -225,6 +263,96 @@
       },
       {
         "query_path": {
+          "path": "/users/{userId}/creditHistory",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 927,
+        "method": "GET",
+        "catid": 11,
+        "title": "查询用户最近积分历史",
+        "path": "/users/{userId}/creditHistory",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f9bf82f793c4c6d2f164a53",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1604057051,
+        "up_time": 1604057135,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f9bf82f793c4c6d2f164a55",
+            "name": "page",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f9bf82f793c4c6d2f164a54",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"total\":{\"type\":\"number\",\"description\":\"总数\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"objectType\":{\"type\":\"string\",\"description\":\"对象类型\"},\"objectId\":{\"type\":\"number\",\"description\":\"对象id\"},\"action\":{\"type\":\"string\",\"description\":\"动作\"},\"creditOption\":{\"type\":\"number\",\"description\":\"加分1/扣分0\"},\"creditScore\":{\"type\":\"number\",\"description\":\"分数值\"},\"creditDesc\":{\"type\":\"string\",\"description\":\"描述信息\"},\"createTime\":{\"type\":\"string\",\"description\":\"创建日期\"}}}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/users/phones/{phone}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 1071,
+        "method": "GET",
+        "catid": 11,
+        "title": "校验手机号可用性",
+        "path": "/users/phones/{phone}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "60195535793c4c6d2f164ab4",
+            "name": "phone",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1612272810,
+        "up_time": 1612272949,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}"
+      },
+      {
+        "query_path": {
           "path": "/users/usernames/{username}",
           "params": []
         },
@@ -348,57 +476,105 @@
       },
       {
         "query_path": {
-          "path": "/users/{userId}/permissionLevel",
+          "path": "/users/{userId}/verifiedInfo",
           "params": []
         },
         "edit_uid": 0,
-        "status": "done",
+        "status": "undone",
         "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
         "api_opened": false,
         "index": 0,
         "tag": [],
-        "_id": 831,
+        "_id": 1053,
         "method": "PUT",
         "catid": 11,
-        "title": "兑换会员码",
-        "path": "/users/{userId}/permissionLevel",
+        "title": "三要素认证",
+        "path": "/users/{userId}/verifiedInfo",
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5f870efa793c4c6d2f164a1f",
+            "_id": "600fd02b793c4c6d2f164aa3",
             "name": "userId",
             "desc": ""
           }
         ],
         "res_body_type": "json",
         "uid": 22,
-        "add_time": 1602686685,
-        "up_time": 1602686714,
-        "req_query": [
-          {
-            "required": "1",
-            "_id": "5f870efa793c4c6d2f164a20",
-            "name": "exchangeCode",
-            "example": "兑换码",
-            "desc": ""
-          }
-        ],
+        "add_time": 1611648979,
+        "up_time": 1611649067,
+        "req_query": [],
         "req_headers": [
           {
             "required": "1",
-            "_id": "5f870efa793c4c6d2f164a21",
+            "_id": "600fd02b793c4c6d2f164aa4",
             "name": "Content-Type",
-            "value": "application/x-www-form-urlencoded"
+            "value": "application/json"
           }
         ],
         "req_body_form": [],
         "__v": 0,
         "desc": "",
         "markdown": "",
-        "req_body_type": "form",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"exchangeCode\":{\"type\":\"string\"},\"idCard\":{\"type\":\"string\"}}}",
+        "req_body_type": "json",
+        "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/users",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 47,
+        "method": "POST",
+        "catid": 11,
+        "title": "用户注册",
+        "path": "/users",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1584610317,
+        "up_time": 1584610766,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5e733dce74367310d57d4c00",
+            "name": "vid",
+            "desc": "验证码id"
+          },
+          {
+            "required": "1",
+            "_id": "5e733dce74367310d57d4bff",
+            "name": "value",
+            "example": "",
+            "desc": "验证码值"
+          }
+        ],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5e733dce74367310d57d4c01",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名(4-10位)\"},\"email\":{\"type\":\"string\",\"description\":\"邮箱\"},\"password\":{\"type\":\"string\",\"description\":\"密码(8-20位)\"}}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"string\",\"description\":\"token\"}}}"
       },
       {
         "query_path": {
@@ -667,35 +843,109 @@
       },
       {
         "query_path": {
-          "path": "/verificationCode",
+          "path": "/users/tokenWithPhone",
           "params": []
         },
         "edit_uid": 0,
         "status": "done",
         "type": "static",
         "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
         "api_opened": false,
         "index": 0,
         "tag": [],
-        "_id": 23,
+        "_id": 1065,
         "method": "GET",
         "catid": 11,
-        "title": "获取图形验证码",
-        "path": "/verificationCode",
+        "title": "短信登陆",
+        "path": "/users/tokenWithPhone",
         "project_id": 12,
         "req_params": [],
         "res_body_type": "json",
         "uid": 22,
-        "add_time": 1584609532,
-        "up_time": 1584609871,
-        "req_query": [],
+        "add_time": 1612062994,
+        "up_time": 1612063007,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "6016211f793c4c6d2f164ab2",
+            "name": "vid",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "6016211f793c4c6d2f164ab1",
+            "name": "value",
+            "example": "",
+            "desc": ""
+          }
+        ],
         "req_headers": [],
         "req_body_form": [],
         "__v": 0,
         "desc": "",
         "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"vid\":{\"type\":\"string\",\"description\":\"验证码id\"},\"imageBase64\":{\"type\":\"string\",\"description\":\"验证码base64编码\"}}}}}"
+        "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/users/{userId}/phone",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 1059,
+        "method": "PUT",
+        "catid": 11,
+        "title": "绑定手机号",
+        "path": "/users/{userId}/phone",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "6013ae80793c4c6d2f164aad",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1611902558,
+        "up_time": 1611902592,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "6013ae80793c4c6d2f164aaf",
+            "name": "vid",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "6013ae80793c4c6d2f164aae",
+            "name": "value",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "6013ae80793c4c6d2f164ab0",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"},\"gender\":{\"type\":\"null\"},\"signature\":{\"type\":\"null\"},\"location\":{\"type\":\"null\"},\"permissionLevel\":{\"type\":\"number\"},\"isBan\":{\"type\":\"number\"},\"star\":{\"type\":\"number\"},\"isCheckEmail\":{\"type\":\"boolean\"},\"createDate\":{\"type\":\"string\"},\"updateDate\":{\"type\":\"string\"},\"permissionLevelExpireDate\":{\"type\":\"string\"},\"phone\":{\"type\":\"string\"},\"idCard\":{\"type\":\"null\"},\"addrForVerify\":{\"type\":\"null\"},\"birthdayForVerify\":{\"type\":\"null\"},\"ageForVerify\":{\"type\":\"null\"},\"isBindQQ\":{\"type\":\"boolean\"}}}}}"
       },
       {
         "query_path": {
@@ -741,6 +991,38 @@
         "desc": "",
         "markdown": "",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\",\"description\":\"是否验证邮箱flag\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/users/check-in",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 939,
+        "method": "GET",
+        "catid": 11,
+        "title": "获取签到状态",
+        "path": "/users/check-in",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1604321921,
+        "up_time": 1604321966,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\",\"description\":\"状态 true表示已经签到\"}}}"
       },
       {
         "query_path": {
@@ -792,90 +1074,14 @@
   },
   {
     "index": 0,
-    "name": "后台管理",
+    "name": "壁纸模块",
     "desc": null,
-    "add_time": 1587716025,
-    "up_time": 1587716025,
+    "add_time": 1603460029,
+    "up_time": 1603460029,
     "list": [
       {
         "query_path": {
-          "path": "/admin/users",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "static",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 723,
-        "method": "POST",
-        "catid": 91,
-        "title": "用户分页查询",
-        "path": "/admin/users",
-        "project_id": 12,
-        "req_params": [],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1598605899,
-        "up_time": 1598858858,
-        "req_query": [
-          {
-            "required": "1",
-            "_id": "5f4ca66a793c4c6d2f1649d6",
-            "name": "page",
-            "desc": ""
-          },
-          {
-            "required": "1",
-            "_id": "5f4ca66a793c4c6d2f1649d5",
-            "name": "pageSize",
-            "example": "",
-            "desc": ""
-          },
-          {
-            "required": "1",
-            "_id": "5f4ca66a793c4c6d2f1649d4",
-            "name": "orderBy",
-            "example": "",
-            "desc": ""
-          },
-          {
-            "required": "1",
-            "_id": "5f4ca66a793c4c6d2f1649d3",
-            "name": "orderByMode",
-            "example": "",
-            "desc": ""
-          }
-        ],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5f4ca66a793c4c6d2f1649d7",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [
-          {
-            "required": "1",
-            "_id": "5f4ca66a793c4c6d2f1649d8",
-            "name": "page",
-            "type": "text"
-          }
-        ],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"total\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"},\"gender\":{\"type\":\"null\"},\"signature\":{\"type\":\"null\"},\"location\":{\"type\":\"null\"},\"permissionLevel\":{\"type\":\"number\"},\"isBan\":{\"type\":\"number\"},\"star\":{\"type\":\"null\"},\"isCheckEmail\":{\"type\":\"number\"},\"createDate\":{\"type\":\"string\"},\"updateDate\":{\"type\":\"string\"}}}}}}",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"}}}"
-      },
-      {
-        "query_path": {
-          "path": "/{moduleName}/image/{uuid}",
+          "path": "/wallpaper/category/{categotyId}/tags",
           "params": []
         },
         "edit_uid": 0,
@@ -886,33 +1092,247 @@
         "api_opened": false,
         "index": 0,
         "tag": [],
-        "_id": 753,
-        "method": "DELETE",
-        "catid": 91,
-        "title": "删除图片",
-        "path": "/{moduleName}/image/{uuid}",
+        "_id": 873,
+        "method": "GET",
+        "catid": 131,
+        "title": "获取分类下标签列表",
+        "path": "/wallpaper/category/{categotyId}/tags",
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5f64a2da793c4c6d2f1649f4",
-            "name": "moduleName",
-            "desc": "模块名"
-          },
-          {
-            "_id": "5f64a2da793c4c6d2f1649f3",
-            "name": "uuid",
-            "desc": "图片uuid"
+            "_id": "5f92dc76793c4c6d2f164a33",
+            "name": "categotyId",
+            "desc": ""
           }
         ],
         "res_body_type": "json",
         "uid": 22,
-        "add_time": 1600430057,
-        "up_time": 1600430810,
+        "add_time": 1603460130,
+        "up_time": 1603460214,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f92dc76793c4c6d2f164a35",
+            "name": "offset",
+            "desc": "第一次请求这个参数不传 后续请求这个参数为上次请求的最后一个元素的id"
+          },
+          {
+            "required": "1",
+            "_id": "5f92dc76793c4c6d2f164a34",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"total\":{\"type\":\"number\",\"description\":\"总数\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\",\"description\":\"标签名\"},\"translatedName\":{\"type\":\"string\",\"description\":\"标签翻译\"},\"id\":{\"type\":\"number\",\"description\":\"id\"}},\"required\":[\"name\",\"translatedName\",\"id\"]}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/wallpaper/category",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 867,
+        "method": "GET",
+        "catid": 131,
+        "title": "获取壁纸分类",
+        "path": "/wallpaper/category",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603460038,
+        "up_time": 1603460141,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"分类id\"},\"name\":{\"type\":\"string\",\"description\":\"分类名\"},\"tagCount\":{\"type\":\"number\",\"description\":\"分类下标签数量\"}},\"required\":[\"id\",\"name\",\"tagCount\"]}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/wallpaper/category/{categotyId}/tags/{tagId}/type/{type}/illusts",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 879,
+        "method": "GET",
+        "catid": 131,
+        "title": "获取标签下画作列表",
+        "path": "/wallpaper/category/{categotyId}/tags/{tagId}/type/{type}/illusts",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f92dd14793c4c6d2f164a3b",
+            "name": "categotyId",
+            "desc": "分类id"
+          },
+          {
+            "_id": "5f92dd14793c4c6d2f164a3a",
+            "name": "tagId",
+            "desc": "标签id"
+          },
+          {
+            "_id": "5f92dd14793c4c6d2f164a39",
+            "name": "type",
+            "desc": "壁纸类型 1 电脑壁纸  2 手机壁纸"
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603460279,
+        "up_time": 1603460372,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f92dd14793c4c6d2f164a3d",
+            "name": "offset",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f92dd14793c4c6d2f164a3c",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"total\":{\"type\":\"number\",\"description\":\"总数\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"number\"},\"title\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"artistPreView\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\"},\"account\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"},\"isFollowed\":{\"type\":\"boolean\"}}},\"tags\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\"},\"translatedName\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\",\"translatedName\"]}},\"imageUrls\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"squareMedium\":{\"type\":\"string\"},\"medium\":{\"type\":\"string\"},\"large\":{\"type\":\"string\"},\"original\":{\"type\":\"string\"}},\"required\":[\"squareMedium\",\"medium\",\"large\",\"original\"]}},\"tools\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"createDate\":{\"type\":\"string\"},\"pageCount\":{\"type\":\"number\"},\"width\":{\"type\":\"number\"},\"height\":{\"type\":\"number\"},\"sanityLevel\":{\"type\":\"number\"},\"restrict\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalBookmarks\":{\"type\":\"number\"},\"isLiked\":{\"type\":\"boolean\"},\"xrestrict\":{\"type\":\"number\"}},\"required\":[\"id\",\"artistId\",\"title\",\"type\",\"caption\",\"artistPreView\",\"tags\",\"imageUrls\",\"tools\",\"createDate\",\"pageCount\",\"width\",\"height\",\"sanityLevel\",\"restrict\",\"totalView\",\"totalBookmarks\",\"isLiked\",\"xrestrict\"],\"description\":\"画作列表\"}}}}"
+      }
+    ]
+  },
+  {
+    "index": 0,
+    "name": "图像识别",
+    "desc": null,
+    "add_time": 1606831277,
+    "up_time": 1606831277,
+    "list": [
+      {
+        "query_path": {
+          "path": "/images/tags",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 963,
+        "method": "POST",
+        "catid": 140,
+        "title": "根据图片生成标签",
+        "path": "/images/tags",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1606831295,
+        "up_time": 1606831314,
         "req_query": [],
         "req_headers": [
           {
             "required": "1",
-            "_id": "5f64a2da793c4c6d2f1649f5",
+            "_id": "5fc64cd2793c4c6d2f164a5e",
+            "name": "Content-Type",
+            "value": "multipart/form-data"
+          }
+        ],
+        "req_body_form": [
+          {
+            "required": "1",
+            "_id": "5fc64cd2793c4c6d2f164a5f",
+            "name": "file",
+            "type": "file"
+          }
+        ],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}}}}"
+      }
+    ]
+  },
+  {
+    "index": 0,
+    "name": "vip模块",
+    "desc": null,
+    "add_time": 1608605103,
+    "up_time": 1608605103,
+    "list": [
+      {
+        "query_path": {
+          "path": "/users/{userId}/permissionLevel",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 831,
+        "method": "PUT",
+        "catid": 146,
+        "title": "兑换会员码",
+        "path": "/users/{userId}/permissionLevel",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5fe15dc6793c4c6d2f164a74",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1602686685,
+        "up_time": 1608605126,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5fe15dc6793c4c6d2f164a75",
+            "name": "exchangeCode",
+            "example": "兑换码",
+            "desc": ""
+          }
+        ],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5fe15dc6793c4c6d2f164a76",
             "name": "Content-Type",
             "value": "application/x-www-form-urlencoded"
           }
@@ -923,6 +1343,1272 @@
         "markdown": "",
         "req_body_type": "form",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/vipActivity/{activityName}/participateStatus",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 993,
+        "method": "PUT",
+        "catid": 146,
+        "title": "参与活动",
+        "path": "/vipActivity/{activityName}/participateStatus",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5fe1619a793c4c6d2f164a7a",
+            "name": "activityName",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1608606077,
+        "up_time": 1608606106,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5fe1619a793c4c6d2f164a7b",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "<p>会返回新的token</p>\n",
+        "markdown": "会返回新的token",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"},\"gender\":{\"type\":\"null\"},\"signature\":{\"type\":\"null\"},\"location\":{\"type\":\"null\"},\"permissionLevel\":{\"type\":\"number\"},\"isBan\":{\"type\":\"number\"},\"star\":{\"type\":\"number\"},\"isCheckEmail\":{\"type\":\"boolean\"},\"createDate\":{\"type\":\"string\"},\"updateDate\":{\"type\":\"string\"},\"permissionLevelExpireDate\":{\"type\":\"string\"},\"isBindQQ\":{\"type\":\"boolean\"}},\"description\":\"用户信息\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/vipActivity/{activityName}/canParticipateStatus",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 987,
+        "method": "GET",
+        "catid": 146,
+        "title": "获取活动可参与状态",
+        "path": "/vipActivity/{activityName}/canParticipateStatus",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5fe15f40793c4c6d2f164a78",
+            "name": "activityName",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1608605460,
+        "up_time": 1608605504,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\",\"description\":\"true为可以参与 false为不可以参与（参与过了）\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/vipProxyServer",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 885,
+        "method": "GET",
+        "catid": 146,
+        "title": "获取高速服务器",
+        "path": "/vipProxyServer",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603600241,
+        "up_time": 1608605155,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"serverAddress\":{\"type\":\"string\"}}}}}}"
+      }
+    ]
+  },
+  {
+    "index": 0,
+    "name": "OAuth2模块",
+    "desc": null,
+    "add_time": 1609759640,
+    "up_time": 1609759640,
+    "list": [
+      {
+        "query_path": {
+          "path": "/oauth/authorize",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "undone",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 1011,
+        "method": "GET",
+        "catid": 155,
+        "title": "授权接口",
+        "path": "/oauth/authorize",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1609759664,
+        "up_time": 1609759754,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5ff2fc0a793c4c6d2f164a85",
+            "name": "scope",
+            "example": "user_info",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5ff2fc0a793c4c6d2f164a84",
+            "name": "state",
+            "example": "ab0cd241b7aa5be5ed006359a4dbf71d",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5ff2fc0a793c4c6d2f164a83",
+            "name": "response_type",
+            "example": "code",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5ff2fc0a793c4c6d2f164a82",
+            "name": "approval_prompt",
+            "example": "auto",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5ff2fc0a793c4c6d2f164a81",
+            "name": "redirect_uri",
+            "example": "https%3A%2F%2Fdiscuss.pixivic.net%2Fauth%2Fpassport",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5ff2fc0a793c4c6d2f164a80",
+            "name": "client_id",
+            "example": "1",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "<p>响应码：302<br>\nLocation响应头会返回需要跳转的链接</p>\n",
+        "markdown": "响应码：302\nLocation响应头会返回需要跳转的链接",
+        "res_body": "{\"type\":\"object\",\"title\":\"empty object\",\"properties\":{}}"
+      }
+    ]
+  },
+  {
+    "index": 0,
+    "name": "验证码模块",
+    "desc": null,
+    "add_time": 1611648532,
+    "up_time": 1611648532,
+    "list": [
+      {
+        "query_path": {
+          "path": "/verificationCode",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 23,
+        "method": "GET",
+        "catid": 170,
+        "title": "获取图形验证码",
+        "path": "/verificationCode",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1584609532,
+        "up_time": 1611648549,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"vid\":{\"type\":\"string\",\"description\":\"验证码id\"},\"imageBase64\":{\"type\":\"string\",\"description\":\"验证码base64编码\"}}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/messageVerificationCode",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 1047,
+        "method": "GET",
+        "catid": 170,
+        "title": "获取手机验证码",
+        "path": "/messageVerificationCode",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1611648594,
+        "up_time": 1611902027,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "6013ac4b793c4c6d2f164aa7",
+            "name": "vid",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "6013ac4b793c4c6d2f164aa6",
+            "name": "value",
+            "example": "",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "6013ac4b793c4c6d2f164aa5",
+            "name": "phone",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"vid\":{\"type\":\"string\"}}}}}"
+      }
+    ]
+  },
+  {
+    "index": 1,
+    "name": "画集模块",
+    "desc": null,
+    "add_time": 1588508440,
+    "up_time": 1588508440,
+    "list": [
+      {
+        "query_path": {
+          "path": "/collections/{collectionId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 455,
+        "method": "PUT",
+        "catid": 99,
+        "title": "更新画集",
+        "path": "/collections/{collectionId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5eaebe0d74367310d57d4cdd",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588510183,
+        "up_time": 1588510221,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5eaebe0d74367310d57d4cde",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}}}},\"isPublic\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"}}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/127.0.0.1:8080/collections/{collectionId}/illustrations/{illustId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 479,
+        "method": "DELETE",
+        "catid": 99,
+        "title": "从画集中删除画作",
+        "path": "/127.0.0.1:8080/collections/{collectionId}/illustrations/{illustId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5eaec51874367310d57d4ce8",
+            "name": "collectionId",
+            "desc": ""
+          },
+          {
+            "_id": "5eaec51874367310d57d4ce7",
+            "name": "illustId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588512016,
+        "up_time": 1588512024,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5eaec51874367310d57d4ce9",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/collections/{collectionId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 463,
+        "method": "DELETE",
+        "catid": 99,
+        "title": "删除画集",
+        "path": "/collections/{collectionId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5eaebfc474367310d57d4ce0",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588510611,
+        "up_time": 1588510660,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5eaebfc474367310d57d4ce1",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections/{collectionId}/illustrations",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 933,
+        "method": "DELETE",
+        "catid": 99,
+        "title": "批量删除画作",
+        "path": "/collections/{collectionId}/illustrations",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f9d84d2793c4c6d2f164a57",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1604158649,
+        "up_time": 1604158674,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f9d84d2793c4c6d2f164a58",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"画作id\"}}",
+        "req_body_type": "json",
+        "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/collections/{collectionId}/illustrations/orderByDrag",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 759,
+        "method": "PUT",
+        "catid": 99,
+        "title": "拖动更新画集内画作排序",
+        "path": "/collections/{collectionId}/illustrations/orderByDrag",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f7993bc793c4c6d2f1649f9",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1601803102,
+        "up_time": 1601803196,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f7993bc793c4c6d2f1649fa",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"upIllustrationId\":{\"type\":\"number\",\"description\":\"拖动的画作id\"},\"lowIllustrationId\":{\"type\":\"number\",\"description\":\"拖动后画作存放位置的前一个画作的id\"},\"reOrderIllustrationId\":{\"type\":\"number\",\"description\":\"拖动后画作存放位置的后一个画作的id\"}}}",
+        "req_body_type": "json",
+        "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/collections/{collectionId}/illustrations/order",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 487,
+        "method": "PUT",
+        "catid": 99,
+        "title": "排序画集画作(全量)",
+        "path": "/collections/{collectionId}/illustrations/order",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f7992d2793c4c6d2f1649f6",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588514574,
+        "up_time": 1601802962,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f7992d2793c4c6d2f1649f7",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"画作id\"}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 969,
+        "method": "GET",
+        "catid": 99,
+        "title": "搜索画集",
+        "path": "/collections",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1606833045,
+        "up_time": 1606833856,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5fc656c0793c4c6d2f164a66",
+            "name": "keyword",
+            "desc": "搜索词"
+          },
+          {
+            "required": "0",
+            "_id": "5fc656c0793c4c6d2f164a65",
+            "name": "startCreateDate",
+            "example": "2020-10-10",
+            "desc": "创建日期开始边界（可以不传）"
+          },
+          {
+            "required": "0",
+            "_id": "5fc656c0793c4c6d2f164a64",
+            "name": "endCreateDate",
+            "example": "2020-10-10",
+            "desc": "创建日期结束边界（可以不传）"
+          },
+          {
+            "required": "0",
+            "_id": "5fc656c0793c4c6d2f164a63",
+            "name": "startUpdateDate",
+            "example": "2020-10-10",
+            "desc": "更新日期开始边界（可以不传）"
+          },
+          {
+            "required": "0",
+            "_id": "5fc656c0793c4c6d2f164a62",
+            "name": "endUpdateDate",
+            "example": "2020-10-10",
+            "desc": "更新日期结束边界（可以不传）"
+          },
+          {
+            "required": "1",
+            "_id": "5fc656c0793c4c6d2f164a61",
+            "name": "page",
+            "example": "",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5fc656c0793c4c6d2f164a60",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"cover\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"squareMedium\":{\"type\":\"string\"},\"medium\":{\"type\":\"string\"},\"large\":{\"type\":\"string\"},\"original\":{\"type\":\"string\"}},\"required\":[\"squareMedium\",\"medium\",\"large\",\"original\"]}},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"null\"},\"tagName\":{\"type\":\"string\"}},\"required\":[\"id\",\"tagName\"]}},\"illustCount\":{\"type\":\"number\"},\"illustrationList\":{\"type\":\"null\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalPeopleSeen\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}},\"required\":[\"id\",\"userId\",\"username\",\"cover\",\"title\",\"caption\",\"tagList\",\"illustCount\",\"illustrationList\",\"isPublic\",\"useFlag\",\"forbidComment\",\"pornWarning\",\"totalBookmarked\",\"totalView\",\"totalPeopleSeen\",\"totalLiked\",\"totalReward\",\"createTime\"]}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 447,
+        "method": "POST",
+        "catid": 99,
+        "title": "新建画集",
+        "path": "/collections",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588508453,
+        "up_time": 1591544494,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5edd0aae74367310d57d4d16",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名\"},\"title\":{\"type\":\"string\",\"description\":\"标题\"},\"caption\":{\"type\":\"string\",\"description\":\"简介\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"tagName\":{\"type\":\"string\"}}},\"description\":\"标签list\"},\"isPublic\":{\"type\":\"number\",\"description\":\"是否公开\"},\"forbidComment\":{\"type\":\"number\",\"description\":\"禁止评论\"},\"pornWarning\":{\"type\":\"number\",\"description\":\"色情警告\"}}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"number\",\"description\":\"画集id\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections/{collectionId}/cover",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 861,
+        "method": "PUT",
+        "catid": 99,
+        "title": "修改画集封面",
+        "path": "/collections/{collectionId}/cover",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f95535a793c4c6d2f164a3e",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603028462,
+        "up_time": 1603621722,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f95535a793c4c6d2f164a3f",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"integer\",\"description\":\"画作id\"},\"description\":\"画作id数组\"}",
+        "req_body_type": "json",
+        "res_body": "{\n   \"type\": \"object\",\n   \"title\": \"empty object\",\n   \"properties\": {}\n}"
+      },
+      {
+        "query_path": {
+          "path": "/users/{userId}/collections",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 495,
+        "method": "GET",
+        "catid": 99,
+        "title": "查看用户画集",
+        "path": "/users/{userId}/collections",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5eafaec574367310d57d4cf7",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588571684,
+        "up_time": 1599826950,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5eafaec574367310d57d4cf6",
+            "name": "page",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5eafaec574367310d57d4cf5",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          },
+          {
+            "required": "0",
+            "_id": "5eafaec574367310d57d4cf4",
+            "name": "isPublic",
+            "example": "",
+            "desc": "在用户获取自己画集的时候添加 可以选择公开活着非公开"
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"cover\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"null\"},\"title\":{\"type\":\"null\"},\"type\":{\"type\":\"null\"},\"caption\":{\"type\":\"null\"},\"artistPreView\":{\"type\":\"null\"},\"tags\":{\"type\":\"null\"},\"imageUrls\":{\"type\":\"null\"},\"tools\":{\"type\":\"null\"},\"createDate\":{\"type\":\"null\"},\"pageCount\":{\"type\":\"null\"},\"width\":{\"type\":\"null\"},\"height\":{\"type\":\"null\"},\"sanityLevel\":{\"type\":\"null\"},\"restrict\":{\"type\":\"null\"},\"totalView\":{\"type\":\"null\"},\"totalBookmarks\":{\"type\":\"null\"},\"xrestrict\":{\"type\":\"null\"}},\"description\":\"画作对象\"},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}},\"required\":[\"id\",\"tagName\"]}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}},\"required\":[\"id\",\"userId\",\"username\",\"title\",\"caption\",\"tagList\",\"illustCount\",\"isPublic\",\"useFlag\",\"forbidComment\",\"pornWarning\",\"totalBookmarked\",\"totalView\",\"totalLiked\",\"totalReward\",\"createTime\"]}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections/{collectoinId}/illustrations",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 503,
+        "method": "GET",
+        "catid": 99,
+        "title": "查看画集下画作列表",
+        "path": "/collections/{collectoinId}/illustrations",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5eafb07874367310d57d4cf9",
+            "name": "collectoinId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588572240,
+        "up_time": 1588572280,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5eafb07874367310d57d4cfb",
+            "name": "page",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5eafb07874367310d57d4cfa",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"number\"},\"title\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"artistPreView\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\"},\"account\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"}}},\"tags\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\"},\"translatedName\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\",\"translatedName\"]}},\"imageUrls\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"squareMedium\":{\"type\":\"string\"},\"medium\":{\"type\":\"string\"},\"large\":{\"type\":\"string\"},\"original\":{\"type\":\"string\"}}}},\"tools\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"createDate\":{\"type\":\"string\"},\"pageCount\":{\"type\":\"number\"},\"width\":{\"type\":\"number\"},\"height\":{\"type\":\"number\"},\"sanityLevel\":{\"type\":\"number\"},\"restrict\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalBookmarks\":{\"type\":\"number\"},\"xrestrict\":{\"type\":\"number\"}},\"description\":\"画作list\"}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections/tags",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 527,
+        "method": "GET",
+        "catid": 99,
+        "title": "标签补全",
+        "path": "/collections/tags",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1589169068,
+        "up_time": 1589169171,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5eb8cc1374367310d57d4d00",
+            "name": "keyword",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"标签id\"},\"tagName\":{\"type\":\"string\",\"description\":\"标签名\"}},\"required\":[\"id\",\"tagName\"]}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections/{collctionId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 591,
+        "method": "GET",
+        "catid": 99,
+        "title": "根据id查看画集",
+        "path": "/collections/{collctionId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5ed99b5d74367310d57d4d15",
+            "name": "collctionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1591319368,
+        "up_time": 1591319389,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"cover\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"null\"},\"title\":{\"type\":\"null\"},\"type\":{\"type\":\"null\"},\"caption\":{\"type\":\"null\"},\"artistPreView\":{\"type\":\"null\"},\"tags\":{\"type\":\"null\"},\"imageUrls\":{\"type\":\"null\"},\"tools\":{\"type\":\"null\"},\"createDate\":{\"type\":\"null\"},\"pageCount\":{\"type\":\"null\"},\"width\":{\"type\":\"null\"},\"height\":{\"type\":\"null\"},\"sanityLevel\":{\"type\":\"null\"},\"restrict\":{\"type\":\"null\"},\"totalView\":{\"type\":\"null\"},\"totalBookmarks\":{\"type\":\"null\"},\"xrestrict\":{\"type\":\"null\"}}},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}}}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalPeopleSeen\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections/{collectionId}/illustrations",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 471,
+        "method": "POST",
+        "catid": 99,
+        "title": "添加画作到画集中",
+        "path": "/collections/{collectionId}/illustrations",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f79b11d793c4c6d2f1649fb",
+            "name": "collectionId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588511663,
+        "up_time": 1601810717,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f79b11d793c4c6d2f1649fc",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"画作id数组例如[1,2,3,4]\"}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"因为重复而添加失败的画作id\"}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/users/{userId}/collectionsDigest",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 765,
+        "method": "GET",
+        "catid": 99,
+        "title": "用户获取自己的画集摘要列表（用于快速添加）",
+        "path": "/users/{userId}/collectionsDigest",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f79cff4793c4c6d2f1649fe",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1601818482,
+        "up_time": 1601818612,
+        "req_query": [
+          {
+            "required": "0",
+            "_id": "5f79cff4793c4c6d2f1649ff",
+            "name": "isPublic",
+            "desc": "不传就是全部 传了就是对应值"
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"画集id\"},\"title\":{\"type\":\"string\",\"description\":\"画集title\"}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections/latest",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 511,
+        "method": "GET",
+        "catid": 99,
+        "title": "获取最新公开画集",
+        "path": "/collections/latest",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588572508,
+        "up_time": 1588572530,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5eafb17274367310d57d4cfd",
+            "name": "page",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5eafb17274367310d57d4cfc",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"cover\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"null\"},\"title\":{\"type\":\"null\"},\"type\":{\"type\":\"null\"},\"caption\":{\"type\":\"null\"},\"artistPreView\":{\"type\":\"null\"},\"tags\":{\"type\":\"null\"},\"imageUrls\":{\"type\":\"null\"},\"tools\":{\"type\":\"null\"},\"createDate\":{\"type\":\"null\"},\"pageCount\":{\"type\":\"null\"},\"width\":{\"type\":\"null\"},\"height\":{\"type\":\"null\"},\"sanityLevel\":{\"type\":\"null\"},\"restrict\":{\"type\":\"null\"},\"totalView\":{\"type\":\"null\"},\"totalBookmarks\":{\"type\":\"null\"},\"xrestrict\":{\"type\":\"null\"}}},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}},\"required\":[\"id\",\"tagName\"]}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}},\"required\":[\"id\",\"userId\",\"username\",\"title\",\"caption\",\"tagList\",\"illustCount\",\"isPublic\",\"useFlag\",\"forbidComment\",\"pornWarning\",\"totalBookmarked\",\"totalView\",\"totalLiked\",\"totalReward\",\"createTime\"]}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/collections/pop",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 519,
+        "method": "GET",
+        "catid": 99,
+        "title": "获取最热门画集",
+        "path": "/collections/pop",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1588572556,
+        "up_time": 1588572579,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5eafb1a374367310d57d4cff",
+            "name": "page",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5eafb1a374367310d57d4cfe",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"cover\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"null\"},\"title\":{\"type\":\"null\"},\"type\":{\"type\":\"null\"},\"caption\":{\"type\":\"null\"},\"artistPreView\":{\"type\":\"null\"},\"tags\":{\"type\":\"null\"},\"imageUrls\":{\"type\":\"null\"},\"tools\":{\"type\":\"null\"},\"createDate\":{\"type\":\"null\"},\"pageCount\":{\"type\":\"null\"},\"width\":{\"type\":\"null\"},\"height\":{\"type\":\"null\"},\"sanityLevel\":{\"type\":\"null\"},\"restrict\":{\"type\":\"null\"},\"totalView\":{\"type\":\"null\"},\"totalBookmarks\":{\"type\":\"null\"},\"xrestrict\":{\"type\":\"null\"}}},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}},\"required\":[\"id\",\"tagName\"]}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}},\"required\":[\"id\",\"userId\",\"username\",\"title\",\"caption\",\"tagList\",\"illustCount\",\"isPublic\",\"useFlag\",\"forbidComment\",\"pornWarning\",\"totalBookmarked\",\"totalView\",\"totalLiked\",\"totalReward\",\"createTime\"]}}}}"
+      }
+    ]
+  },
+  {
+    "index": 2,
+    "name": "后台管理",
+    "desc": null,
+    "add_time": 1587716025,
+    "up_time": 1587716025,
+    "list": [
+      {
+        "query_path": {
+          "path": "/admin/comments/{commentId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 711,
+        "method": "PUT",
+        "catid": 91,
+        "title": "更新评论",
+        "path": "/admin/comments/{commentId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f48c976793c4c6d2f1649c4",
+            "name": "commentId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1598605652,
+        "up_time": 1599826956,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f48c976793c4c6d2f1649c5",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"type\":\"object\",\"title\":\"empty object\",\"properties\":{},\"description\":\"评论对象\"}",
+        "req_body_type": "json",
+        "res_body": ""
+      },
+      {
+        "query_path": {
+          "path": "/admin/appVersionInfos/{appVersionInfoId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 915,
+        "method": "DELETE",
+        "catid": 91,
+        "title": "删除app系统版本记录",
+        "path": "/admin/appVersionInfos/{appVersionInfoId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f993499793c4c6d2f164a4c",
+            "name": "appVersionInfoId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603875975,
+        "up_time": 1603875993,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f993499793c4c6d2f164a4d",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/users/{userId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 717,
+        "method": "DELETE",
+        "catid": 91,
+        "title": "删除用户",
+        "path": "/admin/users/{userId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f48c9b0793c4c6d2f1649c6",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1598605744,
+        "up_time": 1599826957,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0
       },
       {
         "query_path": {
@@ -1004,6 +2690,47 @@
         "req_headers": [],
         "req_body_form": [],
         "__v": 0
+      },
+      {
+        "query_path": {
+          "path": "/admin/appVersionInfos",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 897,
+        "method": "POST",
+        "catid": 91,
+        "title": "发布新版本app",
+        "path": "/admin/appVersionInfos",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603861091,
+        "up_time": 1603876092,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f9934fc793c4c6d2f164a51",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"version\":{\"type\":\"string\",\"description\":\"版本号 格式 数字.数字.数字\"},\"releaseDate\":{\"type\":\"string\",\"description\":\"发布日期\"},\"updateLog\":{\"type\":\"string\",\"description\":\"更新内容\"},\"androidLink\":{\"type\":\"string\",\"description\":\"安卓链接\"},\"iosLink\":{\"type\":\"string\",\"description\":\"ios链接\"},\"isTest\":{\"type\":\"number\",\"description\":\"是否测试\"}}}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"version\":{\"type\":\"string\"},\"releaseDate\":{\"type\":\"string\"},\"updateLog\":{\"type\":\"string\"},\"androidLink\":{\"type\":\"string\"},\"iosLink\":{\"type\":\"string\"},\"isTest\":{\"type\":\"number\"}}}}}"
       },
       {
         "query_path": {
@@ -1183,6 +2910,53 @@
       },
       {
         "query_path": {
+          "path": "/admin/appVersionInfos/{appVersionInfoId}",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": false,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 921,
+        "method": "PUT",
+        "catid": 91,
+        "title": "更新app版本记录",
+        "path": "/admin/appVersionInfos/{appVersionInfoId}",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5f9934f1793c4c6d2f164a4f",
+            "name": "appVersionInfoId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603876019,
+        "up_time": 1603876081,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f9934f1793c4c6d2f164a50",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"version\":{\"type\":\"string\"},\"releaseDate\":{\"type\":\"string\"},\"updateLog\":{\"type\":\"string\"},\"androidLink\":{\"type\":\"string\"},\"iosLink\":{\"type\":\"string\"},\"isTest\":{\"type\":\"number\"}}}",
+        "req_body_type": "json",
+        "res_body": ""
+      },
+      {
+        "query_path": {
           "path": "/admin/collections/{collectionId}",
           "params": []
         },
@@ -1230,85 +3004,206 @@
       },
       {
         "query_path": {
-          "path": "/admin/comments/{commentId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": false,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 711,
-        "method": "PUT",
-        "catid": 91,
-        "title": "更新评论",
-        "path": "/admin/comments/{commentId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f48c976793c4c6d2f1649c4",
-            "name": "commentId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1598605652,
-        "up_time": 1599826956,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5f48c976793c4c6d2f1649c5",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"type\":\"object\",\"title\":\"empty object\",\"properties\":{},\"description\":\"评论对象\"}",
-        "req_body_type": "json",
-        "res_body": ""
-      },
-      {
-        "query_path": {
-          "path": "/admin/users/{userId}",
+          "path": "/{moduleName}/image/{uuid}",
           "params": []
         },
         "edit_uid": 0,
         "status": "done",
         "type": "var",
         "req_body_is_json_schema": false,
-        "res_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
         "api_opened": false,
         "index": 0,
         "tag": [],
-        "_id": 717,
+        "_id": 753,
         "method": "DELETE",
         "catid": 91,
-        "title": "删除用户",
-        "path": "/admin/users/{userId}",
+        "title": "删除图片",
+        "path": "/{moduleName}/image/{uuid}",
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5f48c9b0793c4c6d2f1649c6",
-            "name": "userId",
-            "desc": ""
+            "_id": "5f64a2da793c4c6d2f1649f4",
+            "name": "moduleName",
+            "desc": "模块名"
+          },
+          {
+            "_id": "5f64a2da793c4c6d2f1649f3",
+            "name": "uuid",
+            "desc": "图片uuid"
           }
         ],
         "res_body_type": "json",
         "uid": 22,
-        "add_time": 1598605744,
-        "up_time": 1599826957,
+        "add_time": 1600430057,
+        "up_time": 1600430810,
         "req_query": [],
-        "req_headers": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f64a2da793c4c6d2f1649f5",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
         "req_body_form": [],
-        "__v": 0
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/appVersionInfoList",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 909,
+        "method": "POST",
+        "catid": 91,
+        "title": "查询app版本列表",
+        "path": "/admin/appVersionInfoList",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603875840,
+        "up_time": 1603875906,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f993442793c4c6d2f164a48",
+            "name": "page",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f993442793c4c6d2f164a47",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f993442793c4c6d2f164a46",
+            "name": "orderBy",
+            "example": "",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f993442793c4c6d2f164a45",
+            "name": "orderByMode",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f993442793c4c6d2f164a49",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [
+          {
+            "required": "1",
+            "_id": "5f993442793c4c6d2f164a4a",
+            "name": "pa g",
+            "type": "text"
+          }
+        ],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"version\":{\"type\":\"string\"},\"releaseDate\":{\"type\":\"string\"},\"updateLog\":{\"type\":\"string\"},\"androidLink\":{\"type\":\"string\"},\"iosLink\":{\"type\":\"string\"},\"isTest\":{\"type\":\"number\"},\"id\":{\"type\":\"string\"}},\"required\":[\"id\"]}",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"total\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"version\":{\"type\":\"string\"},\"releaseDate\":{\"type\":\"string\"},\"updateLog\":{\"type\":\"string\"},\"androidLink\":{\"type\":\"string\"},\"iosLink\":{\"type\":\"string\"},\"isTest\":{\"type\":\"number\"}}}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/admin/users",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": true,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 723,
+        "method": "POST",
+        "catid": 91,
+        "title": "用户分页查询",
+        "path": "/admin/users",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1598605899,
+        "up_time": 1598858858,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f4ca66a793c4c6d2f1649d6",
+            "name": "page",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f4ca66a793c4c6d2f1649d5",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f4ca66a793c4c6d2f1649d4",
+            "name": "orderBy",
+            "example": "",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f4ca66a793c4c6d2f1649d3",
+            "name": "orderByMode",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5f4ca66a793c4c6d2f1649d7",
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "req_body_form": [
+          {
+            "required": "1",
+            "_id": "5f4ca66a793c4c6d2f1649d8",
+            "name": "page",
+            "type": "text"
+          }
+        ],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "json",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"total\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"},\"gender\":{\"type\":\"null\"},\"signature\":{\"type\":\"null\"},\"location\":{\"type\":\"null\"},\"permissionLevel\":{\"type\":\"number\"},\"isBan\":{\"type\":\"number\"},\"star\":{\"type\":\"null\"},\"isCheckEmail\":{\"type\":\"number\"},\"createDate\":{\"type\":\"string\"},\"updateDate\":{\"type\":\"string\"}}}}}}",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"email\":{\"type\":\"string\"}}}"
       },
       {
         "query_path": {
@@ -1753,667 +3648,7 @@
     ]
   },
   {
-    "index": 0,
-    "name": "画集模块",
-    "desc": null,
-    "add_time": 1588508440,
-    "up_time": 1588508440,
-    "list": [
-      {
-        "query_path": {
-          "path": "/collections/{collectoinId}/illustrations",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 503,
-        "method": "GET",
-        "catid": 99,
-        "title": "查看画集下画作列表",
-        "path": "/collections/{collectoinId}/illustrations",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5eafb07874367310d57d4cf9",
-            "name": "collectoinId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588572240,
-        "up_time": 1588572280,
-        "req_query": [
-          {
-            "required": "1",
-            "_id": "5eafb07874367310d57d4cfb",
-            "name": "page",
-            "desc": ""
-          },
-          {
-            "required": "1",
-            "_id": "5eafb07874367310d57d4cfa",
-            "name": "pageSize",
-            "example": "",
-            "desc": ""
-          }
-        ],
-        "req_headers": [],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"number\"},\"title\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"artistPreView\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\"},\"account\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"}}},\"tags\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\"},\"translatedName\":{\"type\":\"string\"}},\"required\":[\"id\",\"name\",\"translatedName\"]}},\"imageUrls\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"squareMedium\":{\"type\":\"string\"},\"medium\":{\"type\":\"string\"},\"large\":{\"type\":\"string\"},\"original\":{\"type\":\"string\"}}}},\"tools\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"createDate\":{\"type\":\"string\"},\"pageCount\":{\"type\":\"number\"},\"width\":{\"type\":\"number\"},\"height\":{\"type\":\"number\"},\"sanityLevel\":{\"type\":\"number\"},\"restrict\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalBookmarks\":{\"type\":\"number\"},\"xrestrict\":{\"type\":\"number\"}},\"description\":\"画作list\"}}}}"
-      },
-      {
-        "query_path": {
-          "path": "/127.0.0.1:8080/collections/{collectionId}/illustrations/{illustId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": false,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 479,
-        "method": "DELETE",
-        "catid": 99,
-        "title": "从画集中删除画作",
-        "path": "/127.0.0.1:8080/collections/{collectionId}/illustrations/{illustId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5eaec51874367310d57d4ce8",
-            "name": "collectionId",
-            "desc": ""
-          },
-          {
-            "_id": "5eaec51874367310d57d4ce7",
-            "name": "illustId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588512016,
-        "up_time": 1588512024,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5eaec51874367310d57d4ce9",
-            "name": "Content-Type",
-            "value": "application/x-www-form-urlencoded"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_type": "form",
-        "res_body": ""
-      },
-      {
-        "query_path": {
-          "path": "/collections/{collectionId}/illustrations/orderByDrag",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": false,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 759,
-        "method": "PUT",
-        "catid": 99,
-        "title": "拖动更新画集内画作排序",
-        "path": "/collections/{collectionId}/illustrations/orderByDrag",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f7993bc793c4c6d2f1649f9",
-            "name": "collectionId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1601803102,
-        "up_time": 1601803196,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5f7993bc793c4c6d2f1649fa",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"upIllustrationId\":{\"type\":\"number\",\"description\":\"拖动的画作id\"},\"lowIllustrationId\":{\"type\":\"number\",\"description\":\"拖动后画作存放位置的前一个画作的id\"},\"reOrderIllustrationId\":{\"type\":\"number\",\"description\":\"拖动后画作存放位置的后一个画作的id\"}}}",
-        "req_body_type": "json",
-        "res_body": ""
-      },
-      {
-        "query_path": {
-          "path": "/collections/{collectionId}/illustrations/order",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 487,
-        "method": "PUT",
-        "catid": 99,
-        "title": "排序画集画作(全量)",
-        "path": "/collections/{collectionId}/illustrations/order",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f7992d2793c4c6d2f1649f6",
-            "name": "collectionId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588514574,
-        "up_time": 1601802962,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5f7992d2793c4c6d2f1649f7",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"画作id\"}}",
-        "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
-      },
-      {
-        "query_path": {
-          "path": "/collections",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "static",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 447,
-        "method": "POST",
-        "catid": 99,
-        "title": "新建画集",
-        "path": "/collections",
-        "project_id": 12,
-        "req_params": [],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588508453,
-        "up_time": 1591544494,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5edd0aae74367310d57d4d16",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名\"},\"title\":{\"type\":\"string\",\"description\":\"标题\"},\"caption\":{\"type\":\"string\",\"description\":\"简介\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"tagName\":{\"type\":\"string\"}}},\"description\":\"标签list\"},\"isPublic\":{\"type\":\"number\",\"description\":\"是否公开\"},\"forbidComment\":{\"type\":\"number\",\"description\":\"禁止评论\"},\"pornWarning\":{\"type\":\"number\",\"description\":\"色情警告\"}}}",
-        "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"number\",\"description\":\"画集id\"}}}"
-      },
-      {
-        "query_path": {
-          "path": "/collections/{collectionId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 455,
-        "method": "PUT",
-        "catid": 99,
-        "title": "更新画集",
-        "path": "/collections/{collectionId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5eaebe0d74367310d57d4cdd",
-            "name": "collectionId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588510183,
-        "up_time": 1588510221,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5eaebe0d74367310d57d4cde",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}}}},\"isPublic\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"}}}",
-        "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
-      },
-      {
-        "query_path": {
-          "path": "/users/{userId}/collections",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 495,
-        "method": "GET",
-        "catid": 99,
-        "title": "查看用户画集",
-        "path": "/users/{userId}/collections",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5eafaec574367310d57d4cf7",
-            "name": "userId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588571684,
-        "up_time": 1599826950,
-        "req_query": [
-          {
-            "required": "1",
-            "_id": "5eafaec574367310d57d4cf6",
-            "name": "page",
-            "desc": ""
-          },
-          {
-            "required": "1",
-            "_id": "5eafaec574367310d57d4cf5",
-            "name": "pageSize",
-            "example": "",
-            "desc": ""
-          },
-          {
-            "required": "0",
-            "_id": "5eafaec574367310d57d4cf4",
-            "name": "isPublic",
-            "example": "",
-            "desc": "在用户获取自己画集的时候添加 可以选择公开活着非公开"
-          }
-        ],
-        "req_headers": [],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"cover\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"null\"},\"title\":{\"type\":\"null\"},\"type\":{\"type\":\"null\"},\"caption\":{\"type\":\"null\"},\"artistPreView\":{\"type\":\"null\"},\"tags\":{\"type\":\"null\"},\"imageUrls\":{\"type\":\"null\"},\"tools\":{\"type\":\"null\"},\"createDate\":{\"type\":\"null\"},\"pageCount\":{\"type\":\"null\"},\"width\":{\"type\":\"null\"},\"height\":{\"type\":\"null\"},\"sanityLevel\":{\"type\":\"null\"},\"restrict\":{\"type\":\"null\"},\"totalView\":{\"type\":\"null\"},\"totalBookmarks\":{\"type\":\"null\"},\"xrestrict\":{\"type\":\"null\"}},\"description\":\"画作对象\"},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}},\"required\":[\"id\",\"tagName\"]}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}},\"required\":[\"id\",\"userId\",\"username\",\"title\",\"caption\",\"tagList\",\"illustCount\",\"isPublic\",\"useFlag\",\"forbidComment\",\"pornWarning\",\"totalBookmarked\",\"totalView\",\"totalLiked\",\"totalReward\",\"createTime\"]}}}}"
-      },
-      {
-        "query_path": {
-          "path": "/collections/{collectionId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 463,
-        "method": "DELETE",
-        "catid": 99,
-        "title": "删除画集",
-        "path": "/collections/{collectionId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5eaebfc474367310d57d4ce0",
-            "name": "collectionId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588510611,
-        "up_time": 1588510660,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5eaebfc474367310d57d4ce1",
-            "name": "Content-Type",
-            "value": "application/x-www-form-urlencoded"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_type": "form",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
-      },
-      {
-        "query_path": {
-          "path": "/collections/tags",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "static",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 527,
-        "method": "GET",
-        "catid": 99,
-        "title": "标签补全",
-        "path": "/collections/tags",
-        "project_id": 12,
-        "req_params": [],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1589169068,
-        "up_time": 1589169171,
-        "req_query": [
-          {
-            "required": "1",
-            "_id": "5eb8cc1374367310d57d4d00",
-            "name": "keyword",
-            "desc": ""
-          }
-        ],
-        "req_headers": [],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"标签id\"},\"tagName\":{\"type\":\"string\",\"description\":\"标签名\"}},\"required\":[\"id\",\"tagName\"]}}}}"
-      },
-      {
-        "query_path": {
-          "path": "/collections/{collctionId}",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 591,
-        "method": "GET",
-        "catid": 99,
-        "title": "根据id查看画集",
-        "path": "/collections/{collctionId}",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5ed99b5d74367310d57d4d15",
-            "name": "collctionId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1591319368,
-        "up_time": 1591319389,
-        "req_query": [],
-        "req_headers": [],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"cover\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"null\"},\"title\":{\"type\":\"null\"},\"type\":{\"type\":\"null\"},\"caption\":{\"type\":\"null\"},\"artistPreView\":{\"type\":\"null\"},\"tags\":{\"type\":\"null\"},\"imageUrls\":{\"type\":\"null\"},\"tools\":{\"type\":\"null\"},\"createDate\":{\"type\":\"null\"},\"pageCount\":{\"type\":\"null\"},\"width\":{\"type\":\"null\"},\"height\":{\"type\":\"null\"},\"sanityLevel\":{\"type\":\"null\"},\"restrict\":{\"type\":\"null\"},\"totalView\":{\"type\":\"null\"},\"totalBookmarks\":{\"type\":\"null\"},\"xrestrict\":{\"type\":\"null\"}}},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}}}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalPeopleSeen\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}}}}}"
-      },
-      {
-        "query_path": {
-          "path": "/collections/{collectionId}/illustrations",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": true,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 471,
-        "method": "POST",
-        "catid": 99,
-        "title": "添加画作到画集中",
-        "path": "/collections/{collectionId}/illustrations",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f79b11d793c4c6d2f1649fb",
-            "name": "collectionId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588511663,
-        "up_time": 1601810717,
-        "req_query": [],
-        "req_headers": [
-          {
-            "required": "1",
-            "_id": "5f79b11d793c4c6d2f1649fc",
-            "name": "Content-Type",
-            "value": "application/json"
-          }
-        ],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"画作id数组例如[1,2,3,4]\"}}",
-        "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"number\",\"description\":\"因为重复而添加失败的画作id\"}}}}"
-      },
-      {
-        "query_path": {
-          "path": "/users/{userId}/collectionsDigest",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "var",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 765,
-        "method": "GET",
-        "catid": 99,
-        "title": "用户获取自己的画集摘要列表（用于快速添加）",
-        "path": "/users/{userId}/collectionsDigest",
-        "project_id": 12,
-        "req_params": [
-          {
-            "_id": "5f79cff4793c4c6d2f1649fe",
-            "name": "userId",
-            "desc": ""
-          }
-        ],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1601818482,
-        "up_time": 1601818612,
-        "req_query": [
-          {
-            "required": "0",
-            "_id": "5f79cff4793c4c6d2f1649ff",
-            "name": "isPublic",
-            "desc": "不传就是全部 传了就是对应值"
-          }
-        ],
-        "req_headers": [],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\",\"description\":\"画集id\"},\"title\":{\"type\":\"string\",\"description\":\"画集title\"}}}}"
-      },
-      {
-        "query_path": {
-          "path": "/collections/latest",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "static",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 511,
-        "method": "GET",
-        "catid": 99,
-        "title": "获取最新公开画集",
-        "path": "/collections/latest",
-        "project_id": 12,
-        "req_params": [],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588572508,
-        "up_time": 1588572530,
-        "req_query": [
-          {
-            "required": "1",
-            "_id": "5eafb17274367310d57d4cfd",
-            "name": "page",
-            "desc": ""
-          },
-          {
-            "required": "1",
-            "_id": "5eafb17274367310d57d4cfc",
-            "name": "pageSize",
-            "example": "",
-            "desc": ""
-          }
-        ],
-        "req_headers": [],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"cover\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"null\"},\"title\":{\"type\":\"null\"},\"type\":{\"type\":\"null\"},\"caption\":{\"type\":\"null\"},\"artistPreView\":{\"type\":\"null\"},\"tags\":{\"type\":\"null\"},\"imageUrls\":{\"type\":\"null\"},\"tools\":{\"type\":\"null\"},\"createDate\":{\"type\":\"null\"},\"pageCount\":{\"type\":\"null\"},\"width\":{\"type\":\"null\"},\"height\":{\"type\":\"null\"},\"sanityLevel\":{\"type\":\"null\"},\"restrict\":{\"type\":\"null\"},\"totalView\":{\"type\":\"null\"},\"totalBookmarks\":{\"type\":\"null\"},\"xrestrict\":{\"type\":\"null\"}}},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}},\"required\":[\"id\",\"tagName\"]}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}},\"required\":[\"id\",\"userId\",\"username\",\"title\",\"caption\",\"tagList\",\"illustCount\",\"isPublic\",\"useFlag\",\"forbidComment\",\"pornWarning\",\"totalBookmarked\",\"totalView\",\"totalLiked\",\"totalReward\",\"createTime\"]}}}}"
-      },
-      {
-        "query_path": {
-          "path": "/collections/pop",
-          "params": []
-        },
-        "edit_uid": 0,
-        "status": "done",
-        "type": "static",
-        "req_body_is_json_schema": false,
-        "res_body_is_json_schema": true,
-        "api_opened": false,
-        "index": 0,
-        "tag": [],
-        "_id": 519,
-        "method": "GET",
-        "catid": 99,
-        "title": "获取最热门画集",
-        "path": "/collections/pop",
-        "project_id": 12,
-        "req_params": [],
-        "res_body_type": "json",
-        "uid": 22,
-        "add_time": 1588572556,
-        "up_time": 1588572579,
-        "req_query": [
-          {
-            "required": "1",
-            "_id": "5eafb1a374367310d57d4cff",
-            "name": "page",
-            "desc": ""
-          },
-          {
-            "required": "1",
-            "_id": "5eafb1a374367310d57d4cfe",
-            "name": "pageSize",
-            "example": "",
-            "desc": ""
-          }
-        ],
-        "req_headers": [],
-        "req_body_form": [],
-        "__v": 0,
-        "desc": "",
-        "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"userId\":{\"type\":\"number\"},\"username\":{\"type\":\"string\"},\"cover\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"null\"},\"title\":{\"type\":\"null\"},\"type\":{\"type\":\"null\"},\"caption\":{\"type\":\"null\"},\"artistPreView\":{\"type\":\"null\"},\"tags\":{\"type\":\"null\"},\"imageUrls\":{\"type\":\"null\"},\"tools\":{\"type\":\"null\"},\"createDate\":{\"type\":\"null\"},\"pageCount\":{\"type\":\"null\"},\"width\":{\"type\":\"null\"},\"height\":{\"type\":\"null\"},\"sanityLevel\":{\"type\":\"null\"},\"restrict\":{\"type\":\"null\"},\"totalView\":{\"type\":\"null\"},\"totalBookmarks\":{\"type\":\"null\"},\"xrestrict\":{\"type\":\"null\"}}},\"title\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"tagList\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"tagName\":{\"type\":\"string\"}},\"required\":[\"id\",\"tagName\"]}},\"illustCount\":{\"type\":\"number\"},\"isPublic\":{\"type\":\"number\"},\"useFlag\":{\"type\":\"number\"},\"forbidComment\":{\"type\":\"number\"},\"pornWarning\":{\"type\":\"number\"},\"totalBookmarked\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalLiked\":{\"type\":\"number\"},\"totalReward\":{\"type\":\"number\"},\"createTime\":{\"type\":\"string\"}},\"required\":[\"id\",\"userId\",\"username\",\"title\",\"caption\",\"tagList\",\"illustCount\",\"isPublic\",\"useFlag\",\"forbidComment\",\"pornWarning\",\"totalBookmarked\",\"totalView\",\"totalLiked\",\"totalReward\",\"createTime\"]}}}}"
-      }
-    ]
-  },
-  {
-    "index": 0,
+    "index": 3,
     "name": "推荐模块",
     "desc": null,
     "add_time": 1594797116,
@@ -2536,7 +3771,7 @@
     ]
   },
   {
-    "index": 0,
+    "index": 4,
     "name": "讨论模块",
     "desc": null,
     "add_time": 1596100232,
@@ -2853,7 +4088,7 @@
     ]
   },
   {
-    "index": 0,
+    "index": 5,
     "name": "公告模块",
     "desc": null,
     "add_time": 1597222951,
@@ -2940,7 +4175,101 @@
     ]
   },
   {
-    "index": 0,
+    "index": 6,
+    "name": "app模块",
+    "desc": null,
+    "add_time": 1598869304,
+    "up_time": 1598871252,
+    "list": [
+      {
+        "query_path": {
+          "path": "/app/versions",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 903,
+        "method": "GET",
+        "catid": 119,
+        "title": "查询app版本列表",
+        "path": "/app/versions",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603861992,
+        "up_time": 1603862023,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f98fe07793c4c6d2f164a44",
+            "name": "page",
+            "desc": ""
+          },
+          {
+            "required": "1",
+            "_id": "5f98fe07793c4c6d2f164a43",
+            "name": "pageSize",
+            "example": "",
+            "desc": ""
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"total\":{\"type\":\"number\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"version\":{\"type\":\"string\"},\"releaseDate\":{\"type\":\"string\"},\"updateLog\":{\"type\":\"string\"},\"androidLink\":{\"type\":\"string\"},\"iosLink\":{\"type\":\"string\"},\"isTest\":{\"type\":\"number\"}},\"required\":[\"id\",\"version\",\"releaseDate\",\"updateLog\",\"androidLink\",\"iosLink\",\"isTest\"]}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/app/latest",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 891,
+        "method": "GET",
+        "catid": 119,
+        "title": "获取app版本",
+        "path": "/app/latest",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1603859223,
+        "up_time": 1603862034,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "5f98fbf5793c4c6d2f164a42",
+            "name": "version",
+            "desc": "当前app版本"
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"version\":{\"type\":\"string\",\"description\":\"版本号\"},\"releaseDate\":{\"type\":\"string\",\"description\":\"更新日期\"},\"updateLog\":{\"type\":\"string\",\"description\":\"更新内容\"},\"androidLink\":{\"type\":\"string\",\"description\":\"安卓链接\"},\"iosLink\":{\"type\":\"string\",\"description\":\"ios链接\"},\"isTest\":{\"type\":\"number\",\"description\":\"是否测试版\"}}}}}"
+      }
+    ]
+  },
+  {
+    "index": 7,
     "name": "图片模块",
     "desc": "该模块域名为https://upload.pixivic.net",
     "add_time": 1600425514,
@@ -3010,12 +4339,66 @@
     ]
   },
   {
-    "index": 0,
+    "index": 8,
     "name": "消息模块",
     "desc": null,
     "add_time": 1602420138,
     "up_time": 1602420138,
     "list": [
+      {
+        "query_path": {
+          "path": "/users/{userId}/unreadRemindsCount",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "var",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 1029,
+        "method": "PUT",
+        "catid": 125,
+        "title": "清空某分类下未读消息数量",
+        "path": "/users/{userId}/unreadRemindsCount",
+        "project_id": 12,
+        "req_params": [
+          {
+            "_id": "5ffd2e22793c4c6d2f164a98",
+            "name": "userId",
+            "desc": ""
+          }
+        ],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1610427664,
+        "up_time": 1610427938,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "5ffd2e22793c4c6d2f164a99",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
+        "req_body_form": [
+          {
+            "required": "1",
+            "_id": "5ffd2e22793c4c6d2f164a9a",
+            "name": "type",
+            "type": "text",
+            "desc": "消息分类"
+          }
+        ],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"boolean\"}}}"
+      },
       {
         "query_path": {
           "path": "/users/{userId}/remindSummary",
@@ -3113,7 +4496,7 @@
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5f83010b793c4c6d2f164a15",
+            "_id": "5ffb1165793c4c6d2f164a89",
             "name": "userId",
             "desc": ""
           }
@@ -3121,14 +4504,21 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1602420284,
-        "up_time": 1602421003,
+        "up_time": 1610289509,
         "req_query": [
           {
             "required": "1",
-            "_id": "5f83010b793c4c6d2f164a16",
+            "_id": "5ffb1165793c4c6d2f164a8b",
             "name": "type",
             "example": "1",
             "desc": "类型 分别有1（评论与回复）2（点赞）3（收藏）4（关注）"
+          },
+          {
+            "required": "1",
+            "_id": "5ffb1165793c4c6d2f164a8a",
+            "name": "offset",
+            "example": "",
+            "desc": "分页用时间戳"
           }
         ],
         "req_headers": [],
@@ -3141,7 +4531,7 @@
     ]
   },
   {
-    "index": 0,
+    "index": 9,
     "name": "打赏模块",
     "desc": null,
     "add_time": 1602766974,
@@ -3259,7 +4649,7 @@
     ]
   },
   {
-    "index": 1,
+    "index": 10,
     "name": "用户业务模块",
     "desc": null,
     "add_time": 1584631335,
@@ -4219,7 +5609,7 @@
     ]
   },
   {
-    "index": 2,
+    "index": 11,
     "name": "排行模块",
     "desc": "排行模块",
     "add_time": 1584609372,
@@ -4288,7 +5678,7 @@
     ]
   },
   {
-    "index": 3,
+    "index": 12,
     "name": "搜索模块",
     "desc": "搜索模块",
     "add_time": 1584609379,
@@ -4488,7 +5878,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "done",
+        "status": "undone",
         "type": "var",
         "req_body_is_json_schema": false,
         "res_body_is_json_schema": true,
@@ -4503,7 +5893,7 @@
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5e73972c74367310d57d4c71",
+            "_id": "5ff5768e793c4c6d2f164a87",
             "name": "keyword",
             "desc": ""
           }
@@ -4511,13 +5901,13 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584633615,
-        "up_time": 1584633644,
+        "up_time": 1609922190,
         "req_query": [],
         "req_headers": [],
         "req_body_form": [],
         "__v": 0,
-        "desc": "",
-        "markdown": "",
+        "desc": "<p>已经弃用</p>\n",
+        "markdown": "已经弃用",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"keywordList\":{\"type\":\"array\",\"items\":{\"type\":\"string\"},\"description\":\"候选词列表\"}}}}}"
       },
       {
@@ -4637,7 +6027,7 @@
     ]
   },
   {
-    "index": 4,
+    "index": 13,
     "name": "画作模块",
     "desc": "画作模块",
     "add_time": 1584607992,
@@ -4788,7 +6178,7 @@
     ]
   },
   {
-    "index": 5,
+    "index": 14,
     "name": "画师模块",
     "desc": "画师模块",
     "add_time": 1584609389,
@@ -5035,7 +6425,7 @@
     ]
   },
   {
-    "index": 6,
+    "index": 15,
     "name": "评论模块",
     "desc": "评论模块",
     "add_time": 1584609409,
@@ -5226,12 +6616,12 @@
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5f1adf2e793c4c6d2f164986",
+            "_id": "5ffb1716793c4c6d2f164a8d",
             "name": "commentAppType",
             "desc": "评论对象类型（illusts\\news）"
           },
           {
-            "_id": "5f1adf2e793c4c6d2f164985",
+            "_id": "5ffb1716793c4c6d2f164a8c",
             "name": "commentAppId",
             "desc": "评论对象id（illusts\\news）"
           }
@@ -5239,18 +6629,18 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584634510,
-        "up_time": 1599826946,
+        "up_time": 1610290966,
         "req_query": [],
         "req_headers": [
           {
             "required": "1",
-            "_id": "5f1adf2e793c4c6d2f164988",
+            "_id": "5ffb1716793c4c6d2f164a8f",
             "name": "Content-Type",
             "value": "application/json"
           },
           {
             "required": "1",
-            "_id": "5f1adf2e793c4c6d2f164987",
+            "_id": "5ffb1716793c4c6d2f164a8e",
             "name": "Authorization",
             "value": ""
           }
@@ -5261,7 +6651,7 @@
         "markdown": "",
         "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"parentId\":{\"type\":\"number\",\"description\":\"父级评论id,顶级就是0\"},\"replyTo\":{\"type\":\"number\",\"description\":\"回复者，没有就是0\"},\"replyFromName\":{\"type\":\"string\",\"description\":\"评论者用户名\"},\"replyToName\":{\"type\":\"string\",\"description\":\"回复者用户名\"},\"content\":{\"type\":\"string\",\"description\":\"内容\"},\"platform\":{\"type\":\"string\",\"description\":\"来源平台\"}}}",
         "req_body_type": "json",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}"
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"number\",\"description\":\"创建好的评论id\"}},\"required\":[\"data\"]}"
       },
       {
         "query_path": {
@@ -5350,7 +6740,7 @@
     ]
   },
   {
-    "index": 7,
+    "index": 16,
     "name": "spotlight模块",
     "desc": "spotlight模块",
     "add_time": 1584609424,
@@ -5481,7 +6871,7 @@
     ]
   },
   {
-    "index": 8,
+    "index": 17,
     "name": "acg资讯模块",
     "desc": "acg资讯模块",
     "add_time": 1584609453,
