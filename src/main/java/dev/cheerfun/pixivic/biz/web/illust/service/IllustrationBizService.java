@@ -124,19 +124,20 @@ public class IllustrationBizService {
             return null;
         }
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
-        illustration.setTitle("");
+       /* illustration.setTitle("");
         illustration.setTotalBookmarks(0);
         illustration.setTotalView(0);
         illustration.setCaption("");
         illustration.setTags(new ArrayList<>());
-        illustration.getArtistPreView().setName("");
+        illustration.getArtistPreView().setName("");*/
         if (illustration == null) {
             log.info("画作：" + illustId + "不存在，加入队列等待爬取");
             waitForPullIllustQueue.offer(illustId);
-        }
-    /*    if (illustration.getSanityLevel() > 2 || illustration.getTotalBookmarks() < 200) {
             return null;
-        }*/
+        }
+        if (illustration.getSanityLevel() > 6 || illustration.getTotalBookmarks() < 200) {
+            return null;
+        }
         return objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
         });
     }

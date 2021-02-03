@@ -38,7 +38,7 @@ public interface CommonMapper {
     Integer insertUser(User user);
 
     @Select({
-            " SELECT user_id FROM (SELECT * FROM users WHERE username= #{username} OR email=#{username})  temp where temp.PASSWORD=#{password}",
+            " SELECT user_id FROM (SELECT * FROM users WHERE username= #{username} OR email=#{username} OR phone=#{username})  temp where temp.PASSWORD=#{password}",
     })
     Integer queryUserByusernameAndPassword(String username, String password);
 
