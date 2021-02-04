@@ -58,6 +58,9 @@ public class AdvertisementService {
     }
 
     public List<Advertisement> serveAds() {
+        if (advertisementList.size() == 0) {
+            return null;
+        }
         String identification;
         //先获取用户id
         Integer userId = requestParamUtil.queryUserIdFromAppContext();
