@@ -82,7 +82,10 @@ public class AdminService {
     }
 
     public Illustration queryIllustrationById(Integer illustId) throws JsonProcessingException {
-        Illustration illustration = objectMapper.readValue(objectMapper.writeValueAsString(illustrationBizService.queryIllustrationByIdFromDb(illustId)), Illustration.class);
+        Illustration illustration = illustrationBizService.queryIllustrationByIdFromDb(illustId);
+        if (illustration == null) {
+            return null;
+        }
         String title = translationUtil.translateToChineseByAzureForAdmin(illustration.getTitle());
         if (!"".equals(title)) {
             illustration.setTitle("【" + title + "】" + illustration.getTitle());
