@@ -125,7 +125,7 @@ public class SearchService {
                             PixivSearchSuggestionDTO pixivSearchSuggestionDTO = objectMapper.readValue(body, PixivSearchSuggestionDTO.class);
                             Map<String, TagTranslation> tagTranslation = pixivSearchSuggestionDTO.getBody().getTagTranslation();
                             List<String> relatedTags = pixivSearchSuggestionDTO.getBody().getRelatedTags();
-                            List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(sensitiveFilter.filter(e), sensitiveFilter.filter(tagTranslation.get(e)) == null ? "" : sensitiveFilter.filter(tagTranslation.get(e).getZh()))).collect(Collectors.toList());
+                            List<SearchSuggestion> searchSuggestions = relatedTags.stream().map(e -> new SearchSuggestion(sensitiveFilter.filter(e), sensitiveFilter.filter(tagTranslation.get(e) == null ? "" : tagTranslation.get(e).getZh()))).collect(Collectors.toList());
                             if (searchSuggestions.size() > 0) {
                                 //保存
                                 waitSaveToDb.put(keyword, searchSuggestions);
