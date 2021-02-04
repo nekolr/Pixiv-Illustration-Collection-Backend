@@ -91,7 +91,7 @@ public class SearchController {
             @Max(30) @Min(1)
                     int pageSize,
             @RequestParam
-            @Max(4) @Min(1)
+            @Max(333) @Min(1)
                     int page,
             @RequestParam(defaultValue = "original")
                     String searchType,//搜索类型（原生、自动翻译、自动匹配词条）
