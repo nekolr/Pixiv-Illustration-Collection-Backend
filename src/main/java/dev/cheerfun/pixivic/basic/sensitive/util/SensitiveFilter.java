@@ -138,7 +138,7 @@ public class SensitiveFilter {
      * @date 2017年1月5日 下午4:16:31
      */
     public String filter(String sentence) {
-        if (sentence.length() == 0) {
+        if (sentence == null || sentence.length() == 0) {
             return sentence;
         }
         return filter(sentence, '*');
