@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.user.dto.*;
 import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
+import dev.cheerfun.pixivic.biz.web.user.service.VerifService;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
 import dev.cheerfun.pixivic.biz.web.user.util.RecaptchaUtil;
 import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
@@ -45,6 +46,7 @@ import java.util.concurrent.ExecutionException;
 public class CommonController {
     private final CommonService userService;
     private final VIPUserService vipUserService;
+    private final VerifService verifService;
     private final PasswordUtil passwordUtil;
     private final RecaptchaUtil recaptchaUtil;
     private final JWTUtil jwtUtil;
@@ -268,7 +270,7 @@ public class CommonController {
     @PermissionRequired
     public ResponseEntity<Result<User>> verified(@RequestBody VerifiedDTO verifiedDTO, @RequestHeader(AuthConstant.AUTHORIZATION) String token) throws ExecutionException, InterruptedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
         int uid = (int) AppContext.get().get(AuthConstant.USER_ID);
-        userService.verified(verifiedDTO, uid);
+        verifService.verified(verifiedDTO, uid);
         User user = userService.queryUser(uid);
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("实名认证成功", user));
     }

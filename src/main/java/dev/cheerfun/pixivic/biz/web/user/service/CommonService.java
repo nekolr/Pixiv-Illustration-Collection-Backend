@@ -68,17 +68,14 @@ public class CommonService {
     private final static String QQ_BIND_URL_PRE = "https://graph.qq.com/oauth2.0/me?access_token=";
     private final CommonMapper userMapper;
     private final HttpClient httpClient;
-    private final JWTUtil jwtUtil;
     private final PasswordUtil passwordUtil;
     private final EmailUtil emailUtil;
     private final VerificationCodeService verificationCodeService;
     private final CreditEventCustomer creditEventCustomer;
     private final SearchService searchService;
     private final SentenceService sentenceService;
-    private final VIPUserService vipUserService;
     private final SensitiveFilter sensitiveFilter;
     private final CollectionService collectionService;
-    private final VerifiedUtil verifiedUtil;
 
     @Transactional
     @Caching(evict = {
@@ -381,37 +378,7 @@ public class CommonService {
         userMapper.setPhone(phone, userId);
     }
 
-    //绑定身份信息
-    //前端调用前需要提示用户确认信息是否准确 不准确也会消耗码
-    public void verified(VerifiedDTO verifiedDTO, int userId) throws InterruptedException, NoSuchAlgorithmException, InvalidKeyException, IOException {
-        //校验是否绑定手机
-        User user = queryUser(userId);
-        if (user.getPhone() == null) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "请先绑定手机号");
-        }
-        if (user.getIdCard() != null) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "已经实名过暂时不可更改");
-        }
-        //验证兑换码
-        vipUserService.exchangeVIP(userId, verifiedDTO.getExchangeCode());
-        //校验通过则调用实名验证api
-        VerifiedResponseResult verifiedResponseResult = verifiedUtil.verifyUser(verifiedDTO.getName(), verifiedDTO.getIdCard(), user.getPhone());
-        if (verifiedResponseResult == null) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "实名信息有误请重新购买兑换码后输入正确信息");
-        }
-        //调用后如果成功则更新addr和年龄以及生日信息
-        updateUserVerifiedInfo(userId, verifiedResponseResult);
-    }
 
-    @CacheEvict(value = "users", key = "#userId")
-    public void updateUserVerifiedInfo(int userId, VerifiedResponseResult verifiedResponseResult) {
-        String birthdate = verifiedResponseResult.getBirthday();
-        String birthYear = birthdate.substring(0, 4);
-        String birthMonth = birthdate.substring(4, 6);
-        String birthDay = birthdate.substring(6, 8);
-        int age = Period.between(LocalDate.of(Integer.valueOf(birthYear), Integer.valueOf(birthMonth), Integer.valueOf(birthDay)), LocalDate.now()).getYears();
-        userMapper.updateUserVerifiedInfo(userId, verifiedResponseResult.getIdcard(), birthYear + "-" + birthMonth + "-" + birthDay, age, verifiedResponseResult.getAddress());
-    }
 
     public User signInWithPhone(String phone) {
         return queryUser(userMapper.queryUserByPhone(phone));

@@ -30,16 +30,12 @@ import java.util.List;
  * @description VIPUserService
  */
 @Service
-//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VIPUserService {
-    @Autowired
-    private ExchangeCodeUtil exchangeCodeUtil;
-    @Autowired
-    private StringRedisTemplate stringRedisTemplate;
-    @Lazy
-    private CommonService commonService;
-    @Autowired
-    private VIPMapper VIPMapper;
+    private final ExchangeCodeUtil exchangeCodeUtil;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final CommonService commonService;
+    private final VIPMapper VIPMapper;
 
     //按照类型和数量生成兑换码
     public List<String> generateExchangeCode(byte type, Integer sum) {
