@@ -2,6 +2,7 @@ package dev.cheerfun.pixivic.biz.analysis.tag.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import dev.cheerfun.pixivic.basic.review.util.ReviewFilter;
 import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.biz.analysis.tag.dto.PixivTrendingTagResponse;
 import dev.cheerfun.pixivic.biz.analysis.tag.mapper.TrendingTagsMapper;
@@ -136,7 +137,7 @@ public class TrendingTagsService {
     public List<Tag> queryPixivTrendingTag() {
         PixivTrendingTagResponse pixivTrendingTagResponse = (PixivTrendingTagResponse) requestUtil.getJsonSync("http://proxy.pixivic.com:23334/v1/trending-tags/illust?filter=for_ios", PixivTrendingTagResponse.class);
         if (pixivTrendingTagResponse != null) {
-            List<Tag> searchRecommends = pixivTrendingTagResponse.getTrendTags().stream().map(e -> {
+            List<Tag> searchRecommends = pixivTrendingTagResponse.getTrendTags().stream().filter(e -> !sensitiveFilter.check(e.getTranslatedName())).map(e -> {
                 Illustration illustration = IllustrationDTO.castToIllustration(e.getIllust());
                 illustrationMapper.simpleInsert(illustration);
                 return new TrendingTags(e.getTag(), e.getTranslatedName(), illustration);
