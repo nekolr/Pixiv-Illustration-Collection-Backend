@@ -194,7 +194,7 @@ public class CommonController {
     @PutMapping("/password")
     @CheckVerification
     public ResponseEntity<Result> resetPassword(@RequestBody ResetPasswordDTO item, @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        userService.setPasswordByEmail(item.getPassword(), value.substring(4));
+        userService.setPasswordByEmail(item.getPassword(), value.substring(value.indexOf(":") + 1));
         return ResponseEntity.ok().body(new Result<>("重置密码成功"));
     }
 
