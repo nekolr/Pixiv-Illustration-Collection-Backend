@@ -91,10 +91,10 @@ public class CommonService {
         if (userMapper.checkUserName(user.getUsername()) == 1 || userMapper.checkUserEmail(user.getEmail()) == 1 || userMapper.checkUserPhone(user.getPhone()) == 1) {
             throw new UserCommonException(HttpStatus.CONFLICT, "用户、邮箱或手机号已存在");
         }
-        exchangeCodeService.exchangeCode(0, exchangeCode, ExchangeCodeBizType.VERIFY);
         user.setPassword(passwordUtil.encrypt(user.getPassword()));
         user.init();
         userMapper.insertUser(user);
+        exchangeCodeService.exchangeCode(user.getId(), exchangeCode, ExchangeCodeBizType.INVITE);
         //签发token
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
