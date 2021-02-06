@@ -78,7 +78,12 @@ public class CommonService {
     private final SentenceService sentenceService;
     private final SensitiveFilter sensitiveFilter;
     private final CollectionService collectionService;
-    private final ExchangeCodeService exchangeCodeService;
+    private ExchangeCodeService exchangeCodeService;
+
+    @Autowired
+    public void setExchangeCodeService(ExchangeCodeService exchangeCodeService) {
+        this.exchangeCodeService = exchangeCodeService;
+    }
 
     @Transactional
     @Caching(evict = {
