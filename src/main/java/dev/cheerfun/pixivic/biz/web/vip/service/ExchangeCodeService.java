@@ -87,7 +87,7 @@ public class ExchangeCodeService {
         if (!checkBizType(exchangeCode.getType(), exchangeCodeBizType)) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码类型不正确");
         }
-        vipUserService.exchangeCode(userId, exchangeCode);
+        vipUserService.exchangeCodeToDb(userId, exchangeCode);
         stringRedisTemplate.opsForValue().setBit(RedisKeyConstant.VIP_CODE_USAGE_RECORD_BITMAP, exchangeCode.getId(), true);
         //返回
         return true;

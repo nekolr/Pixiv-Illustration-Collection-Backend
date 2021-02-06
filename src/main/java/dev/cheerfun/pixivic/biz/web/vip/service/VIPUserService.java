@@ -46,7 +46,7 @@ public class VIPUserService {
     }
 
     @Transactional
-    public void exchangeCode(Integer userId, ExchangeCode exchangeCode) {
+    public void exchangeCodeToDb(Integer userId, ExchangeCode exchangeCode) {
         //更新兑换码是否使用
         if (vipMapper.updateExchangeCode(exchangeCode.getId(), userId) == 1) {
             // 如果type是0则是身份验证兑换码 -1则是邀请码
