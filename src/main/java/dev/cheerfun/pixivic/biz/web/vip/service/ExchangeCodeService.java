@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import javax.transaction.Transactional;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -68,7 +69,7 @@ public class ExchangeCodeService {
     }
 
     //使用验证码
-
+    @Transactional
     public Boolean exchangeCode(Integer userId, String exchangeStringCode, String exchangeCodeBizType) {
         if (exchangeStringCode.length() != 16) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码无效");
