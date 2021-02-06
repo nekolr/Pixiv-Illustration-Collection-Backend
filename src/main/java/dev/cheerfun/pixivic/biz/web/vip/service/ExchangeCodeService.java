@@ -33,8 +33,13 @@ public class ExchangeCodeService {
     private final ExchangeCodeUtil exchangeCodeUtil;
     private final VIPMapper vipMapper;
     private final StringRedisTemplate stringRedisTemplate;
-    private final VIPUserService vipUserService;
+    private VIPUserService vipUserService;
     private Set<Byte> VIPExchangeCodeTypeSet;
+
+    @Autowired
+    public void setVipUserService(VIPUserService vipUserService) {
+        this.vipUserService = vipUserService;
+    }
 
     @PostConstruct
     public void init() {
