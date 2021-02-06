@@ -76,7 +76,7 @@ public class ExchangeCodeService {
     //使用验证码
     @Transactional
     public Boolean exchangeCode(Integer userId, String exchangeStringCode, String exchangeCodeBizType) {
-        if (exchangeStringCode.length() != 16) {
+        if (exchangeStringCode == null || exchangeStringCode.length() != 16) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码无效");
         }
         //校验转化
