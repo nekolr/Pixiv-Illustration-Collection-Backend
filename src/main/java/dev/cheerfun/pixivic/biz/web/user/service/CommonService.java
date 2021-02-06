@@ -94,7 +94,7 @@ public class CommonService {
         user.setPassword(passwordUtil.encrypt(user.getPassword()));
         user.init();
         userMapper.insertUser(user);
-        exchangeCodeService.exchangeCode(user.getId(), exchangeCode, ExchangeCodeBizType.VERIFY);
+        exchangeCodeService.exchangeCode(user.getId(), exchangeCode, ExchangeCodeBizType.INVITE);
         //签发token
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
