@@ -34,15 +34,17 @@ import java.util.Set;
  */
 @Service
 public class VIPUserService {
-    @Autowired
+
     private CommonService commonService;
-    @Autowired
+
     private VIPMapper vipMapper;
 
+    @Autowired
     public void setCommonService(CommonService commonService) {
         this.commonService = commonService;
     }
 
+    @Autowired
     public void setVipMapper(VIPMapper vipMapper) {
         this.vipMapper = vipMapper;
     }
