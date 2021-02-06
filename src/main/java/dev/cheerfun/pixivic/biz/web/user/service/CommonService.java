@@ -60,7 +60,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @description UserService
  */
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+//@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonService {
     private final static String AVATAR_PRE = "https://static.pixivic.net/avatar/299x299/";
     private final static String AVATAR_POS = ".jpg";
@@ -68,17 +68,31 @@ public class CommonService {
     private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
     private final static String QQ_BIND_URL_PRE = "https://graph.qq.com/oauth2.0/me?access_token=";
-    private final CommonMapper userMapper;
-    private final HttpClient httpClient;
-    private final PasswordUtil passwordUtil;
-    private final EmailUtil emailUtil;
-    private final VerificationCodeService verificationCodeService;
-    private final CreditEventCustomer creditEventCustomer;
-    private final SearchService searchService;
-    private final SentenceService sentenceService;
-    private final SensitiveFilter sensitiveFilter;
-    private final CollectionService collectionService;
+    private CommonMapper userMapper;
+    private HttpClient httpClient;
+    private PasswordUtil passwordUtil;
+    private EmailUtil emailUtil;
+    private VerificationCodeService verificationCodeService;
+    private CreditEventCustomer creditEventCustomer;
+    private SearchService searchService;
+    private SentenceService sentenceService;
+    private SensitiveFilter sensitiveFilter;
+    private CollectionService collectionService;
     private ExchangeCodeService exchangeCodeService;
+
+    @Autowired
+    public CommonService(CommonMapper commonMapper, HttpClient httpClient, PasswordUtil passwordUtil, EmailUtil emailUtil, VerificationCodeService verificationCodeService, CreditEventCustomer creditEventCustomer, SearchService searchService, SentenceService sentenceService, SensitiveFilter sensitiveFilter, CollectionService collectionService) {
+        this.userMapper = commonMapper;
+        this.httpClient = httpClient;
+        this.passwordUtil = passwordUtil;
+        this.emailUtil = emailUtil;
+        this.verificationCodeService = verificationCodeService;
+        this.creditEventCustomer = creditEventCustomer;
+        this.searchService = searchService;
+        this.sentenceService = sentenceService;
+        this.sensitiveFilter = sensitiveFilter;
+        this.collectionService = collectionService;
+    }
 
     @Autowired
     public void setExchangeCodeService(ExchangeCodeService exchangeCodeService) {
