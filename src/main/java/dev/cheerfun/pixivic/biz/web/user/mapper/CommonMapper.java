@@ -108,8 +108,6 @@ public interface CommonMapper {
     @Update("update users set permission_level_expire_date = #{plusDays,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler},permission_level=#{permissionLevel} where user_id=#{userId}")
     void updatePermissionLevelExpirationTime(Integer userId, int permissionLevel, LocalDateTime plusDays);
 
-    @Update("update users set permission_level=if(phone is null,1, if(permission_level>3,permission_level,2)) where permission_level=3 and permission_level_expire_date<=now()")
-    void refreshUserPermissionLevel();
 
     @Update("update users set star=star+#{star} where user_id=#{userId}")
     int modifyUserPoint(Integer userId, int star);

@@ -16,4 +16,7 @@ public interface VIPMapper {
 
     @Insert("insert into user_vip_activity_log(user_id, activity_name, create_time) values (#{userId},#{activityName},now())")
     void addParticipateActivityLog(Integer userId, String activityName);
+
+    @Update("update users set permission_level=if(phone is null,1, if(permission_level>3,permission_level,2)) where permission_level=3 and permission_level_expire_date<=now()")
+    void refreshUserPermissionLevel();
 }

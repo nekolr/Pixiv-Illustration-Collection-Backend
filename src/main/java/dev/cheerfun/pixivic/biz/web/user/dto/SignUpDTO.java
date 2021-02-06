@@ -27,6 +27,7 @@ public class SignUpDTO {
     @Length(min = 6, max = 25, message = "密码长度应该在6-25之间")
     private String password;
     private String gRecaptchaResponse;
+    private String exchangeCode;
 
     public User castToUser() {
         return new User(username, email, password);

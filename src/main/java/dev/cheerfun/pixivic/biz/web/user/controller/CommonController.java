@@ -12,6 +12,8 @@ import dev.cheerfun.pixivic.biz.web.user.service.CommonService;
 import dev.cheerfun.pixivic.biz.web.user.service.VerifService;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
 import dev.cheerfun.pixivic.biz.web.user.util.RecaptchaUtil;
+import dev.cheerfun.pixivic.biz.web.vip.constant.ExchangeCodeBizType;
+import dev.cheerfun.pixivic.biz.web.vip.service.ExchangeCodeService;
 import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
@@ -45,7 +47,7 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/users")
 public class CommonController {
     private final CommonService userService;
-    private final VIPUserService vipUserService;
+    private final ExchangeCodeService exchangeCodeService;
     private final VerifService verifService;
     private final PasswordUtil passwordUtil;
     private final RecaptchaUtil recaptchaUtil;
@@ -90,17 +92,17 @@ public class CommonController {
     public ResponseEntity<Result<User>> signUp(@RequestBody @Valid SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         User user = userInfo.castToUser();
         user.setPhone(vid);
-        user = userService.signUp(user);
+        user = userService.signUp(user, userInfo.getExchangeCode());
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
     }
 
-    @PostMapping("/checkByRecaptcha")
+/*    @PostMapping("/checkByRecaptcha")
     public ResponseEntity<Result<User>> signUpCheckByRecaptcha(@RequestBody SignUpDTO userInfo) throws IOException, InterruptedException {
         recaptchaUtil.check(userInfo.getGRecaptchaResponse());
         User user = userInfo.castToUser();
         user = userService.signUp(user);
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("注册成功", user));
-    }
+    }*/
 
     @PostMapping("/token")
     @CheckVerification
@@ -235,7 +237,7 @@ public class CommonController {
     @PermissionRequired
     public ResponseEntity<Result<User>> updatePermissionLevel(@RequestParam String exchangeCode, @PathVariable("userId") int userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         Integer uid = (Integer) AppContext.get().get(AuthConstant.USER_ID);
-        vipUserService.exchangeVIP(uid, exchangeCode);
+        exchangeCodeService.exchangeCode(uid, exchangeCode, ExchangeCodeBizType.VIP);
         User user = userService.queryUser(uid);
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("兑换成功", user));
     }

@@ -6,6 +6,8 @@ import dev.cheerfun.pixivic.biz.web.user.dto.VerifiedDTO;
 import dev.cheerfun.pixivic.biz.web.user.dto.VerifiedResponseResult;
 import dev.cheerfun.pixivic.biz.web.user.mapper.CommonMapper;
 import dev.cheerfun.pixivic.biz.web.user.util.VerifiedUtil;
+import dev.cheerfun.pixivic.biz.web.vip.constant.ExchangeCodeBizType;
+import dev.cheerfun.pixivic.biz.web.vip.service.ExchangeCodeService;
 import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +31,7 @@ import java.time.Period;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VerifService {
     private final CommonService commonService;
-    private final VIPUserService vipUserService;
+    private final ExchangeCodeService exchangeCodeService;
     private final CommonMapper userMapper;
     private final VerifiedUtil verifiedUtil;
 
@@ -45,7 +47,7 @@ public class VerifService {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "已经实名过暂时不可更改");
         }
         //验证兑换码
-        vipUserService.exchangeVIP(userId, verifiedDTO.getExchangeCode());
+        exchangeCodeService.exchangeCode(userId, verifiedDTO.getExchangeCode(), ExchangeCodeBizType.VERIFY);
         //校验通过则调用实名验证api
         VerifiedResponseResult verifiedResponseResult = verifiedUtil.verifyUser(verifiedDTO.getName(), verifiedDTO.getIdCard(), user.getPhone());
         if (verifiedResponseResult == null) {

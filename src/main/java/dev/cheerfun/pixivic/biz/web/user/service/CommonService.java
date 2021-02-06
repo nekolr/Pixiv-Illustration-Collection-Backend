@@ -21,6 +21,8 @@ import dev.cheerfun.pixivic.biz.web.user.dto.VerifiedResponseResult;
 import dev.cheerfun.pixivic.biz.web.user.mapper.CommonMapper;
 import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
 import dev.cheerfun.pixivic.biz.web.user.util.VerifiedUtil;
+import dev.cheerfun.pixivic.biz.web.vip.constant.ExchangeCodeBizType;
+import dev.cheerfun.pixivic.biz.web.vip.service.ExchangeCodeService;
 import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Picture;
@@ -76,6 +78,7 @@ public class CommonService {
     private final SentenceService sentenceService;
     private final SensitiveFilter sensitiveFilter;
     private final CollectionService collectionService;
+    private final ExchangeCodeService exchangeCodeService;
 
     @Transactional
     @Caching(evict = {
@@ -83,11 +86,12 @@ public class CommonService {
             @CacheEvict(value = "checkEmail", key = "#user.email"),
             @CacheEvict(value = "checkPhone", key = "#user.phone")
     })
-    public User signUp(User user) {
+    public User signUp(User user, String exchangeCode) {
         //检测用户名或邮箱是否重复
         if (userMapper.checkUserName(user.getUsername()) == 1 || userMapper.checkUserEmail(user.getEmail()) == 1 || userMapper.checkUserPhone(user.getPhone()) == 1) {
             throw new UserCommonException(HttpStatus.CONFLICT, "用户、邮箱或手机号已存在");
         }
+        exchangeCodeService.exchangeCode(0, exchangeCode, ExchangeCodeBizType.VERIFY);
         user.setPassword(passwordUtil.encrypt(user.getPassword()));
         user.init();
         userMapper.insertUser(user);
@@ -270,10 +274,6 @@ public class CommonService {
         }
     }
 
-    @CacheEvict(value = "users", allEntries = true)
-    public void refreshUserPermissionLevel() {
-        userMapper.refreshUserPermissionLevel();
-    }
 
     @CacheEvict(value = "users", key = "#userId")
     public Boolean modifyUserPoint(Integer userId, int star) {

@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.proxy.po.VIPProxyServer;
 import dev.cheerfun.pixivic.biz.proxy.service.VIPProxyServerService;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.biz.web.vip.service.ExchangeCodeService;
 import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
@@ -29,14 +30,14 @@ import java.util.List;
 @Slf4j
 @RequestMapping("/admin")
 public class VIPAdminController {
-    private final VIPUserService vipUserService;
+    private final ExchangeCodeService exchangeCodeService;
     private final VIPProxyServerService vipProxyServerService;
 
     //生成兑换码
     @GetMapping("/exchangeCode")
     @PermissionRequired(PermissionLevel.ADMIN)
     public ResponseEntity<Result<List<String>>> getCheckEmail(@RequestParam byte type, @RequestParam Integer sum, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
-        return ResponseEntity.ok().body(new Result<>("生成兑换码成功", vipUserService.generateExchangeCode(type, sum)));
+        return ResponseEntity.ok().body(new Result<>("生成兑换码成功", exchangeCodeService.generateExchangeCode(type, sum)));
     }
 
     //添加高速服务器
