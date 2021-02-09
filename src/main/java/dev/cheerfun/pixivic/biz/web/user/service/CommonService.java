@@ -231,6 +231,9 @@ public class CommonService {
 
     @Cacheable(value = "users", key = "#userId")
     public User queryUser(Integer userId) {
+        if (userId == null) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "用户不存在");
+        }
         User user = userMapper.queryUserByUserId(userId);
         if (user == null) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "用户不存在");
