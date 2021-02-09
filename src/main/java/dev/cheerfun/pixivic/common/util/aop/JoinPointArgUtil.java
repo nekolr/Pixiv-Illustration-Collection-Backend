@@ -1,7 +1,9 @@
 package dev.cheerfun.pixivic.common.util.aop;
 
+import dev.cheerfun.pixivic.common.exception.BaseException;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
 import java.lang.annotation.Annotation;
@@ -19,7 +21,11 @@ import java.util.List;
 @Component
 public class JoinPointArgUtil {
     public String getFirstMethodArgByAnnotationValueMethodValue(JoinPoint joinPoint, Class argAnnotationClass, String annotationMethodValue) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
-        return (String) getJoinPointArgsByAnnotation(joinPoint, argAnnotationClass, "value", annotationMethodValue).get(0).getValue();
+        List<JoinPointArg> joinPointArgs = getJoinPointArgsByAnnotation(joinPoint, argAnnotationClass, "value", annotationMethodValue);
+        if (joinPointArgs.size() == 0) {
+            throw new BaseException(HttpStatus.BAD_REQUEST, "缺少参数");
+        }
+        return (String) joinPointArgs.get(0).getValue();
     }
 
     public List<JoinPointArg> getMethodArgsByAnnotationValueMethodValue(JoinPoint joinPoint, Class argAnnotationClass) throws IllegalAccessException, NoSuchMethodException, InvocationTargetException {
