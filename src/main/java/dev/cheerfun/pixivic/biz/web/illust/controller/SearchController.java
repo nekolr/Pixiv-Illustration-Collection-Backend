@@ -58,21 +58,25 @@ public class SearchController {
     }
 
     @GetMapping("/keywords/**/candidates")
+    @PermissionRequired
     public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
         return searchService.getCandidateWords(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", r)));
     }
 
     @GetMapping("/keywords/**/suggestions")
+    @PermissionRequired
     public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getSearchSuggestion(HttpServletRequest request) {
         return searchService.getSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议获取成功", r)));
     }
 
     @GetMapping("/keywords/**/pixivSuggestions")
+    @PermissionRequired
     public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getPixivSearchSuggestion(HttpServletRequest request) {
         return searchService.getPixivSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", r)));
     }
 
     @GetMapping("/keywords/**/translations")
+    @PermissionRequired
     public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request) {
         return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(sensitiveFilter.filter(searchService.getKeyword(request)))));
     }
