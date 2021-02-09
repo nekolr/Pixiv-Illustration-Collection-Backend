@@ -229,7 +229,7 @@ public class CommonService {
         return user.getIsBindQQ();
     }
 
-    @Cacheable(value = "users", key = "'user_'.concat(#a0)")
+    @Cacheable(value = "users", key = "'u-'+#userId")
     public User queryUser(Integer userId) {
         User user = userMapper.queryUserByUserId(userId);
         if (user == null) {
