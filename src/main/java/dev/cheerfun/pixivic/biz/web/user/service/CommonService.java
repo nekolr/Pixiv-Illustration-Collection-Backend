@@ -137,11 +137,11 @@ public class CommonService {
 
     public User signIn(String qqAccessToken) throws IOException, InterruptedException {
         String qqOpenId = getQQOpenId(qqAccessToken);
-        User user = queryUser(userMapper.getUserByQQOpenId(qqOpenId));
-        if (user == null) {
+        Integer uid = userMapper.getUserByQQOpenId(qqOpenId);
+        if (uid == null) {
             throw new UserCommonException(HttpStatus.BAD_REQUEST, "不存在此QQ绑定的帐号");
         }
-        return user;
+        return queryUser(uid);
     }
 
     @CacheEvict(value = "users", key = "#userId")
@@ -231,9 +231,6 @@ public class CommonService {
 
     @Cacheable(value = "users", key = "#userId")
     public User queryUser(Integer userId) {
-        if (userId == null) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "用户不存在");
-        }
         User user = userMapper.queryUserByUserId(userId);
         if (user == null) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "用户不存在");
