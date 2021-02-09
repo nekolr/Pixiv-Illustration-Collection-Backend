@@ -240,12 +240,11 @@ public class CommonService {
     }
 
     public User queryUserByEmail(String emailAddr) {
-        User user = queryUser(userMapper.queryUserByEmail(emailAddr));
-        if (user == null) {
+        Integer uid = userMapper.queryUserByEmail(emailAddr);
+        if (uid == null) {
             throw new BusinessException(HttpStatus.NOT_FOUND, "用户不存在");
         }
-        return
-                user;
+        return queryUser(uid);
     }
 
     @CacheEvict(value = "users", key = "#userId")

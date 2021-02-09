@@ -21,12 +21,8 @@ import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Decrypt;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        System.out.println();
-        String s = UUID.randomUUID().toString() + "#123";
-        System.out.println(s
-                .substring(s.indexOf("#") + 1));
-        System.out.println(Period.between(LocalDate.of(2020, 12, 22), LocalDate.of(2020, 12, 22)).getDays());
-        System.out.println(validateExchangeCode("PNRJ7KVAHFHXGYD7"));
+        System.out.println(1300000 * 8 * 4 / 1024 / 1024);
+
     }
 
     public static ExchangeCode validateExchangeCode(String exchangeCode) {
