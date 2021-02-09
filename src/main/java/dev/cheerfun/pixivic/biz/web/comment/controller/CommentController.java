@@ -43,9 +43,9 @@ public class CommentController {
     @RateLimit
     public ResponseEntity<Result<Integer>> pushComment(@PathVariable String commentAppType, @PathVariable int commentAppId, @RequestBody @SensitiveCheck Comment comment, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
-        if (commonService.queryUser(userId).getPhone() == null) {
+        /*if (commonService.queryUser(userId).getPhone() == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "请在绑定手机号后评论");
-        }
+        }*/
         //TODO 接入百度云审核 修改成token校验
         comment.init(commentAppType, commentAppId, userId);
         commentService.pushComment(comment);
