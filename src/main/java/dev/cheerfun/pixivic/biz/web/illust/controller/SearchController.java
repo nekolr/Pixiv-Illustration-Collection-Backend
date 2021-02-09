@@ -80,7 +80,7 @@ public class SearchController {
     @GetMapping("/illustrations")
     @WithUserInfo
     @WithAdvertisement
-    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    @PermissionRequired
     @RateLimit
     public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
             @SensitiveCheck
