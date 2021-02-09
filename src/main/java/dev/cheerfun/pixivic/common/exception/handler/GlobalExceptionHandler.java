@@ -66,6 +66,11 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("登录信息异常"));
     }
 
+    @ExceptionHandler(value = NumberFormatException.class)
+    public ResponseEntity<Result> handleNumberFormatException(NumberFormatException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("参数非法"));
+    }
+
     @ExceptionHandler(value = ExecutionException.class)
     public ResponseEntity<Result> handleExecutionException(ExecutionException e) {
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("请求超时"));
