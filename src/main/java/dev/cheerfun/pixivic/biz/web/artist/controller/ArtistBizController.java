@@ -51,7 +51,7 @@ public class ArtistBizController {
     }
 
     @GetMapping("/artists/{artistId}/illusts/{type}")
-    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    @PermissionRequired
     @WithUserInfo
     @RateLimit
     public ResponseEntity<Result<List<Illustration>>> queryIllustrationsByArtistId(@PathVariable Integer artistId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws InterruptedException {
