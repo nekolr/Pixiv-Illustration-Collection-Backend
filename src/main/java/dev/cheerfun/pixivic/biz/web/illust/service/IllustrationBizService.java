@@ -207,6 +207,9 @@ public class IllustrationBizService {
     }
 
     public List<Illustration> queryIllustrationByIllustIdList(List<Integer> illustIdList) {
+        if (illustIdList == null) {
+            return null;
+        }
         return illustIdList.stream().parallel().map(e -> {
             Illustration illustration = null;
             try {
