@@ -22,6 +22,7 @@ public class PixivUser {
     final ReentrantReadWriteLock.ReadLock readLock = lock.readLock();
     final ReentrantReadWriteLock.WriteLock writeLock = lock.writeLock();
     private volatile String accessToken;
+    private Integer id;
     private String deviceToken;
     private String refreshToken;
     private String grantType;
@@ -32,8 +33,7 @@ public class PixivUser {
 
     {
         deviceToken = "fb12e7c1945000850deb5f7001c02745";
-        refreshToken = "";
-        grantType = "password";
+        grantType = "refresh_token";
         bucket = Bucket4j.builder()
                 .addLimit(Bandwidth.classic(800, Refill.intervally(800, Duration.ofMinutes(10))))
                 .build();
@@ -79,7 +79,7 @@ public class PixivUser {
         writeLock.lock();
         try {
             accessToken = null;
-            grantType = "password";
+            // grantType = "password";
             isBan = 1;
         } finally {
             writeLock.unlock();

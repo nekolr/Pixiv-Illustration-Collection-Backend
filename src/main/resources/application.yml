@@ -105,7 +105,6 @@ pixiv:
     client_id: KzEZED7aC0vird8jWyHM38mXjNTY
     client_secret: W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP
     device_token: fb12e7c1945000850deb5f7001c02745
-    config: /home/PIC/user2.json
 saucenao:
   token:
     path: /home/PIC/saucenao.json

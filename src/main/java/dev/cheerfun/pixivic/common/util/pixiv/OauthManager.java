@@ -3,20 +3,23 @@ package dev.cheerfun.pixivic.common.util.pixiv;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
+import dev.cheerfun.pixivic.common.util.pixiv.mapper.PixivAccountMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -25,10 +28,9 @@ import java.util.concurrent.ThreadLocalRandom;
 public class OauthManager {
 
     private final HttpClient httpClient;
+    private final PixivAccountMapper pixivAccountMapper;
     private final ObjectMapper objectMapper;
-    private final ExecutorService executorService;
-    @Value("${pixiv.oauth.config}")
-    private String path;
+    private final ExecutorService pixivAccountManagerExecutorService;
     @Getter
     private volatile List<PixivUser> pixivUserList;
     private volatile int pixivUserSize;
@@ -37,18 +39,18 @@ public class OauthManager {
 
     @PostConstruct
     private void init() throws IOException {
+        //数据库读取账号信息
+        //马上刷新，异步写回数据库
         //读取账号信息
-        File json = new File(path);
         refreshErrorSet = new HashSet<>();
-        pixivUserList = objectMapper.readValue(json, new TypeReference<ArrayList<PixivUser>>() {
-        });
+        pixivUserList = pixivAccountMapper.queryPixivUser();
         //账号初始化
         pixivUserSize = pixivUserList.size();
         refresh();
     }
 
     public void refresh() {
-        executorService.submit(() -> {
+        pixivAccountManagerExecutorService.submit(() -> {
             while (true) {
                 refreshAccessToken();
                 Thread.sleep(30 *
@@ -90,6 +92,7 @@ public class OauthManager {
                 });
                 if (pixivUser.refresh(body)) {
                     System.out.println(pixivUser.getUsername() + "账号刷新成功");
+                    saveRefreshTokenToDb(pixivUser);
                     return true;
                 }
             } catch (Exception e) {
@@ -123,4 +126,10 @@ public class OauthManager {
         //refreshAccessToken();
         throw new RuntimeException("获取token失败，开始重新刷新");
     }
+
+    @Async()
+    void saveRefreshTokenToDb(PixivUser pixivUser) {
+        pixivAccountMapper.saveRefreshTokenToDb(pixivUser.getId(), pixivUser.getRefreshToken());
+    }
+
 }

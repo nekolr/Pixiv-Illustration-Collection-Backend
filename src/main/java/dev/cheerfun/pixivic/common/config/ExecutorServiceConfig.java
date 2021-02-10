@@ -33,7 +33,21 @@ public class ExecutorServiceConfig {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("crawler-pool-%d").build();
         return new ThreadPoolExecutor(
                 10,
-                70,
+                20,
+                0L,
+                TimeUnit.MILLISECONDS,
+                new LinkedBlockingQueue<>(2048 * 1000),
+                namedThreadFactory,
+                new ThreadPoolExecutor.AbortPolicy()
+        );
+    }
+
+    @Bean(name = "pixivAccountManagerExecutorService")
+    public ExecutorService pixivAccountManagerExecutorService() {
+        ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("pixivAccountManager-pool-%d").build();
+        return new ThreadPoolExecutor(
+                4,
+                8,
                 0L,
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(2048 * 1000),
