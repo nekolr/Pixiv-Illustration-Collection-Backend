@@ -62,7 +62,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonService {
-    private final static String AVATAR_PRE = "https://static.pixivic.net/avatar/299x299/";
+    private final static String AVATAR_PRE = "https://static.sharemoe.net/avatar/299x299/";
     private final static String AVATAR_POS = ".jpg";
     private final static String PIXIVIC = "Pixivic酱";
     private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
