@@ -118,7 +118,7 @@ public class SearchController {
             @RequestParam(required = false)
                     Integer minTotalView,
             @RequestParam(defaultValue = "5")
-                    Integer maxSanityLevel, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
+                    Integer maxSanityLevel, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
             String[] keywords = keyword.split("\\|\\|");
