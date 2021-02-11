@@ -59,25 +59,25 @@ public class SearchController {
 
     @GetMapping("/keywords/**/candidates")
     @PermissionRequired
-    public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request) {
+    public CompletableFuture<ResponseEntity<Result<PixivSearchCandidatesResponse>>> getCandidateWords(HttpServletRequest request, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return searchService.getCandidateWords(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索候选词获取成功", r)));
     }
 
     @GetMapping("/keywords/**/suggestions")
     @PermissionRequired
-    public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getSearchSuggestion(HttpServletRequest request) {
+    public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getSearchSuggestion(HttpServletRequest request, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return searchService.getSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议获取成功", r)));
     }
 
     @GetMapping("/keywords/**/pixivSuggestions")
     @PermissionRequired
-    public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getPixivSearchSuggestion(HttpServletRequest request) {
+    public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getPixivSearchSuggestion(HttpServletRequest request, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return searchService.getPixivSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", r)));
     }
 
     @GetMapping("/keywords/**/translations")
     @PermissionRequired
-    public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request) {
+    public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(sensitiveFilter.filter(searchService.getKeyword(request)))));
     }
 
@@ -118,7 +118,7 @@ public class SearchController {
             @RequestParam(required = false)
                     Integer minTotalView,
             @RequestParam(defaultValue = "5")
-                    Integer maxSanityLevel, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
+                    Integer maxSanityLevel, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
             String[] keywords = keyword.split("\\|\\|");
