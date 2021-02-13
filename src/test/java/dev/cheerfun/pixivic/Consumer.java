@@ -1,12 +1,22 @@
 package dev.cheerfun.pixivic;
 
 import com.google.common.io.BaseEncoding;
+import com.squareup.okhttp.*;
 import dev.cheerfun.pixivic.biz.web.vip.po.ExchangeCode;
 import dev.cheerfun.pixivic.common.util.encrypt.CRC8;
 import lombok.Data;
+import org.buildobjects.process.ProcBuilder;
 
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.UUID;
@@ -21,34 +31,39 @@ import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Decrypt;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        System.out.println(1300000 * 8 * 4 / 1024 / 1024);
+        download("https://i.pximg.net/img-original/img/2021/02/09/01/12/48/87632329_p1.png", "/Users/oysterqaq/Desktop/");
 
+        System.out.println();
     }
 
-    public static ExchangeCode validateExchangeCode(String exchangeCode) {
-        byte[] decode = BaseEncoding.base32().decode(exchangeCode);
-        //首先校验 校验和
-        byte c = CRC8.calcCrc8(decode, 0, 9);
-        if (c == decode[9]) {
-            //解密
-            byte[] ciphertext = new byte[9];
-            System.arraycopy(decode, 0, ciphertext, 0, ciphertext.length);
-            byte[] payload = chacha20Decrypt(ciphertext, "".getBytes(StandardCharsets.UTF_8), "".getBytes(StandardCharsets.UTF_8), 21);
-            //得到编号
-            byte[] codeId = new byte[4];
-            codeId[0] = payload[0];
-            codeId[1] = payload[2];
-            codeId[2] = payload[4];
-            codeId[3] = payload[6];
-            ByteBuffer wrapped = ByteBuffer.wrap(codeId, 0, 4);
-            return new ExchangeCode(wrapped.getInt(), payload[8]);
+    public static void download(String url, String savePath) throws IOException {
+        OkHttpClient client = new OkHttpClient();
+        Request request = new Request.Builder()
+                .addHeader("referer", "https://pixiv.net")
+                .addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36")
+                .url(url)
+                .build();
+        Call call = client.newCall(request);
+        Response response = call.execute();
+        URL u = new URL(url);
+        InputStream is = null;
+        try {
+            is = response.body().byteStream();
+            // 将流写入到文件
+            Path path = Path.of(savePath, u.getFile());
+            Files.createDirectories(path.getParent());
+            Files.write(path, is.readAllBytes(), StandardOpenOption.CREATE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (is != null) {
+                    is.close();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
-        return null;
+
     }
-}
-
-@Data
-class Predictions {
-    Float[][] predictions;
-
 }

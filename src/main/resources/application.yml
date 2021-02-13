@@ -105,6 +105,7 @@ pixiv:
     client_id: KzEZED7aC0vird8jWyHM38mXjNTY
     client_secret: W9JZoJe00qPvJsiyCGT3CCtC6ZUtdpKpzMbNlUGP
     device_token: fb12e7c1945000850deb5f7001c02745
+  imageSavePath: /home
 saucenao:
   token:
     path: /home/PIC/saucenao.json
@@ -154,3 +155,5 @@ messageApi:
   appid: 1400478972
   templateID: 858513
   sign: 御宅电波
+rclone:
+  path: /usr/local/bin/rclone
