@@ -14,6 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.http.HttpClient;
 import java.nio.file.Files;
@@ -43,20 +44,70 @@ public class ImageService {
     public void init() {
 
         //初始化50个爬取线程与40个上传线程
+        //设置一个同步的id变量
+        //每个下载线程不停的每次取二十个画作然后修改变量
+        //取个画作
+        //进行
+
+    }
+
+    public void downloadProcess(Illustration illustration) {
+
+        illustration.getImageUrls().forEach(e -> {
+            download(e.getSquareMedium());
+            download(e.getMedium());
+            download(e.getLarge());
+            download(e.getLarge());
+        });
+
+        waitForUploadQueue.offer(illustration);
+
+    }
+
+    public void uploadProcess(Illustration illustration) {
+
+        illustration.getImageUrls().forEach(e -> {
+            try {
+
+                URL sm = new URL(e.getSquareMedium());
+                URL m = new URL(e.getMedium());
+                URL l = new URL(e.getLarge());
+                URL o = new URL(e.getOriginal());
+                upload(Path.of(imageSavePath, sm.getFile()).toString(), null);
+                upload(Path.of(imageSavePath, m.getFile()).toString(), null);
+                upload(Path.of(imageSavePath, l.getFile()).toString(), null);
+                upload(Path.of(imageSavePath, o.getFile()).toString(), null);
+                //删除本地文件
+                Files.delete(Path.of(imageSavePath, sm.getFile()));
+                Files.delete(Path.of(imageSavePath, m.getFile()));
+                Files.delete(Path.of(imageSavePath, l.getFile()));
+                Files.delete(Path.of(imageSavePath, o.getFile()));
+                //更新数据库中记录
+
+            } catch (IOException malformedURLException) {
+                malformedURLException.printStackTrace();
+            }
+        });
 
     }
 
     //下载工具方法
-    public Boolean download(URL url) throws IOException {
+    public Boolean download(String urlString) {
+        URL url = null;
+        try {
+            url = new URL(urlString);
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        }
         Request request = new Request.Builder()
                 .addHeader("referer", "https://pixiv.net")
                 .addHeader("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 11_1_0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.150 Safari/537.36")
                 .url(url)
                 .build();
         Call call = client.newCall(request);
-        Response response = call.execute();
         InputStream is = null;
         try {
+            Response response = call.execute();
             is = response.body().byteStream();
             // 将流写入到文件
             Path path = Path.of(imageSavePath, url.getFile());
@@ -79,6 +130,7 @@ public class ImageService {
 
     //上传工具方法
     public void upload(String from, String to) {
+        rcloneUtil.upload(from, "bak:/");
     }
 
 }
