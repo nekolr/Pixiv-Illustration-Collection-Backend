@@ -4,9 +4,12 @@ import com.squareup.okhttp.Call;
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
+import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.ImageMapper;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.util.RcloneUtil;
+import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -20,6 +23,7 @@ import java.net.http.HttpClient;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 
@@ -30,60 +34,88 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @description ImageService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageService {
     private LinkedBlockingQueue<Illustration> waitForUploadQueue;
     private final ExecutorService crawlerExecutorService;
+    private final IllustrationBizService illustrationBizService;
     private final HttpClient httpClient;
     private final RcloneUtil rcloneUtil;
+    private final ImageMapper imageMapper;
     private final OkHttpClient client = new OkHttpClient();
     @Value("${pixiv.imageSavePath}")
     private String imageSavePath;
 
+    private int illustIdFlag;
+
     @PostConstruct
     public void init() {
-
+        //初始化flag
+        log.info("开始进行图片持久化任务");
+        illustIdFlag = imageMapper.queryLatest();
+        waitForUploadQueue = new LinkedBlockingQueue<>(10000000);
         //初始化50个爬取线程与40个上传线程
-        //设置一个同步的id变量
-        //每个下载线程不停的每次取二十个画作然后修改变量
-        //取个画作
-        //进行
+        for (int i = 0; i < 30; i++) {
+            crawlerExecutorService.submit(() -> {
+                while (true) {
+                    List<Integer> queryIllustIdList = queryIllustIdList();
+                    List<Illustration> illustrations = illustrationBizService.queryIllustrationByIdList(queryIllustIdList);
+                    illustrations.forEach(this::downloadProcess);
+                }
+            });
+        }
+
+        for (int i = 0; i < 10; i++) {
+            crawlerExecutorService.submit(() -> {
+                while (true) {
+                    Illustration illustration = waitForUploadQueue.take();
+                    uploadProcess(illustration);
+
+                }
+            });
+        }
 
     }
 
-    public void downloadProcess(Illustration illustration) {
+    public synchronized List<Integer> queryIllustIdList() {
+        //获取50个画作
+        List<Integer> illustIdList = imageMapper.queryIllustIdList(illustIdFlag);
+        //修改illustIdFlag
+        illustIdFlag = illustIdList.get(illustIdList.size() - 1);
+        return illustIdList;
+    }
 
+    public void downloadProcess(Illustration illustration) {
+        log.info("画作：" + illustration.getId() + "开始下载");
         illustration.getImageUrls().forEach(e -> {
             download(e.getSquareMedium());
             download(e.getMedium());
             download(e.getLarge());
-            download(e.getLarge());
+            download(e.getOriginal());
         });
-
+        log.info("画作：" + illustration.getId() + "下载完毕");
         waitForUploadQueue.offer(illustration);
 
     }
 
     public void uploadProcess(Illustration illustration) {
-
+        log.info("画作：" + illustration.getId() + "开始上传");
         illustration.getImageUrls().forEach(e -> {
             try {
-
                 URL sm = new URL(e.getSquareMedium());
                 URL m = new URL(e.getMedium());
                 URL l = new URL(e.getLarge());
                 URL o = new URL(e.getOriginal());
-                upload(Path.of(imageSavePath, sm.getFile()).toString(), null);
-                upload(Path.of(imageSavePath, m.getFile()).toString(), null);
-                upload(Path.of(imageSavePath, l.getFile()).toString(), null);
-                upload(Path.of(imageSavePath, o.getFile()).toString(), null);
+                if (upload(Path.of(imageSavePath, sm.getFile()).toString(), sm.getFile()) && upload(Path.of(imageSavePath, m.getFile()).toString(), m.getFile()) && upload(Path.of(imageSavePath, l.getFile()).toString(), l.getFile()) && upload(Path.of(imageSavePath, o.getFile()).toString(), o.getFile())) {
+                    Files.delete(Path.of(imageSavePath, sm.getFile()));
+                    Files.delete(Path.of(imageSavePath, m.getFile()));
+                    Files.delete(Path.of(imageSavePath, l.getFile()));
+                    Files.delete(Path.of(imageSavePath, o.getFile()));
+                    imageMapper.updateImageSync(illustration.getId());
+                }
+                log.info("画作：" + illustration.getId() + "上传完毕");
                 //删除本地文件
-                Files.delete(Path.of(imageSavePath, sm.getFile()));
-                Files.delete(Path.of(imageSavePath, m.getFile()));
-                Files.delete(Path.of(imageSavePath, l.getFile()));
-                Files.delete(Path.of(imageSavePath, o.getFile()));
-                //更新数据库中记录
-
             } catch (IOException malformedURLException) {
                 malformedURLException.printStackTrace();
             }
@@ -113,7 +145,6 @@ public class ImageService {
             Path path = Path.of(imageSavePath, url.getFile());
             Files.createDirectories(path.getParent());
             Files.write(path, is.readAllBytes(), StandardOpenOption.CREATE);
-            //将
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
@@ -129,8 +160,9 @@ public class ImageService {
     }
 
     //上传工具方法
-    public void upload(String from, String to) {
-        rcloneUtil.upload(from, "bak:/");
+    public Boolean upload(String from, String to) {
+
+        return rcloneUtil.upload(from, "bak:" + to.substring(0, to.lastIndexOf("/")));
     }
 
 }

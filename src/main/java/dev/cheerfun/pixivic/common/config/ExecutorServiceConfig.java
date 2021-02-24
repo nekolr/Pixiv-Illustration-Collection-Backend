@@ -32,8 +32,8 @@ public class ExecutorServiceConfig {
     public ExecutorService crawlerExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("crawler-pool-%d").build();
         return new ThreadPoolExecutor(
-                10,
-                20,
+                50,
+                50,
                 0L,
                 TimeUnit.MILLISECONDS,
                 new LinkedBlockingQueue<>(2048 * 1000),
