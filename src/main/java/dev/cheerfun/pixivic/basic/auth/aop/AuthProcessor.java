@@ -60,7 +60,15 @@ public class AuthProcessor {
 
     @PostConstruct
     public void init() {
-        dealWaitForUpdateUserList();
+        try {
+            log.info("开始初始化权限基础模块");
+            dealWaitForUpdateUserList();
+        } catch (Exception e) {
+            log.error("初始化权限基础模块失败");
+            e.printStackTrace();
+        }
+        log.info("初始化权限基础模块成功");
+
     }
 
     @Around(value = "pointCut()")

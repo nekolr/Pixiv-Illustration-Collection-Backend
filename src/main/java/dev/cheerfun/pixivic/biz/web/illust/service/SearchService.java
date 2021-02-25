@@ -20,6 +20,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpStatus;
@@ -54,6 +55,7 @@ import java.util.stream.Collectors;
  * @description SearchService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SearchService {
     private static volatile ConcurrentHashMap<String, List<SearchSuggestion>> waitSaveToDb = new ConcurrentHashMap(10000);
@@ -71,7 +73,14 @@ public class SearchService {
 
     @PostConstruct
     public void init() {
-        savePixivSuggestionToDb();
+        try {
+            log.info("开始初始化画作搜索服务");
+            savePixivSuggestionToDb();
+        } catch (Exception e) {
+            log.error("初始化画作搜索服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化画作搜索服务成功");
     }
 
     @Cacheable(value = "candidateWords")

@@ -8,6 +8,7 @@ import dev.cheerfun.pixivic.biz.web.vip.po.ExchangeCode;
 import dev.cheerfun.pixivic.biz.web.vip.util.ExchangeCodeUtil;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
@@ -28,6 +29,7 @@ import java.util.Set;
  * @description ExchangeCodeService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ExchangeCodeService {
     private final ExchangeCodeUtil exchangeCodeUtil;
@@ -43,12 +45,20 @@ public class ExchangeCodeService {
 
     @PostConstruct
     public void init() {
-        VIPExchangeCodeTypeSet = new HashSet<>();
-        VIPExchangeCodeTypeSet.add(ExchangeCodeType.ONE_DAY_VIP);
-        VIPExchangeCodeTypeSet.add(ExchangeCodeType.THREE_DAYS_VIP);
-        VIPExchangeCodeTypeSet.add(ExchangeCodeType.SEVEN_DAYS_VIP);
-        VIPExchangeCodeTypeSet.add(ExchangeCodeType.FIFTEEN_DAYS_VIP);
-        VIPExchangeCodeTypeSet.add(ExchangeCodeType.THIRTY_DAYS_VIP);
+        try {
+            log.info("开始初始化兑换服务");
+            VIPExchangeCodeTypeSet = new HashSet<>();
+            VIPExchangeCodeTypeSet.add(ExchangeCodeType.ONE_DAY_VIP);
+            VIPExchangeCodeTypeSet.add(ExchangeCodeType.THREE_DAYS_VIP);
+            VIPExchangeCodeTypeSet.add(ExchangeCodeType.SEVEN_DAYS_VIP);
+            VIPExchangeCodeTypeSet.add(ExchangeCodeType.FIFTEEN_DAYS_VIP);
+            VIPExchangeCodeTypeSet.add(ExchangeCodeType.THIRTY_DAYS_VIP);
+        } catch (Exception e) {
+            log.error("兑换服务兑换服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化兑换服务成功");
+
     }
 
     //按照类型和数量生成兑换码

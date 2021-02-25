@@ -35,10 +35,13 @@ public class CreditEventCustomer {
     void init() {
         //初始化配置
         try {
+            log.info("开始初始化积分事件消费者服务");
             creditConfigMap = creditMapper.queryCreditConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
-        } catch (Exception exception) {
-            log.error("积分事件消费者初始化失败");
+        } catch (Exception e) {
+            log.error("初始化积分事件消费者服务失败");
+            e.printStackTrace();
         }
+        log.info("初始化积分事件消费者服务成功");
     }
 
     @RabbitHandler()

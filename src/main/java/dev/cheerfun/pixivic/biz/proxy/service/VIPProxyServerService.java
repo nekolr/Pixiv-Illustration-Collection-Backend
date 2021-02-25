@@ -13,9 +13,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.stream.Collectors;
@@ -42,13 +40,16 @@ public class VIPProxyServerService {
     @PostConstruct
     public void init() {
         try {
+            log.info("开始初始化高速服务器列表服务");
             //获取服务器列表，并且尝试是否可用
             serverList = vipProxyServerMapper.queryAllServer();
             availableServerList = new ArrayList<>(serverList);
             loopCheck();
         } catch (Exception exception) {
-            log.error("初始化vip高速服务器服务失败");
+            log.error("初始化高速服务器列表服务失败");
         }
+        log.info("初始化高速服务器列表服务成功");
+
     }
 
     public void loopCheck() {

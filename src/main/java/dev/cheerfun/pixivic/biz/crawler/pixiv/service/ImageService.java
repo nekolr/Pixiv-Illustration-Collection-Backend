@@ -33,7 +33,7 @@ import java.util.concurrent.LinkedBlockingQueue;
  * @date 2021/2/12 7:46 PM
  * @description ImageService
  */
-@Service
+//@Service
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageService {
@@ -162,7 +162,7 @@ public class ImageService {
     //上传工具方法
     public Boolean upload(String from, String to) {
 
-        return rcloneUtil.upload(from, "bak:" + to.substring(0, to.lastIndexOf("/")));
+        return rcloneUtil.upload(from, "bak-1:" + to.substring(0, to.lastIndexOf("/")));
     }
 
 }

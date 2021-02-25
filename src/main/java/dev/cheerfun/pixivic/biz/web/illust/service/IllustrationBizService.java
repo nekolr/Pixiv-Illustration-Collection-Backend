@@ -53,8 +53,16 @@ public class IllustrationBizService {
 
     @PostConstruct
     public void init() {
-        waitForPullIllustQueue = new LinkedBlockingQueue<>(1000 * 1000);
-        dealWaitForPullIllustQueue();
+        try {
+            log.info("开始初始化画作基础服务");
+            waitForPullIllustQueue = new LinkedBlockingQueue<>(1000 * 1000);
+            dealWaitForPullIllustQueue();
+        } catch (Exception e) {
+            log.error("初始化画作基础服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化画作基础服务成功");
+
     }
 
     public void dealWaitForPullIllustQueue() {

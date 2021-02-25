@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.illust.domain.response.SaucenaoResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -19,7 +20,6 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -30,6 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @description ImageSearchUtil
  */
 @Component
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ImageSearchUtil {
     private final static String SAUCENAO_URL_1 = "https://saucenao.com/search.php?db=999&output_type=2&testmode=1&numres=3&url=";
@@ -45,10 +46,17 @@ public class ImageSearchUtil {
 
     @PostConstruct
     public void init() throws IOException {
-        File json = new File(path);
-        tokens = objectMapper.readValue(json, new TypeReference<ArrayList<String>>() {
-        });
-        length = tokens.size();
+        try {
+            log.info("开始初始化sao搜图服务");
+            File json = new File(path);
+            tokens = objectMapper.readValue(json, new TypeReference<ArrayList<String>>() {
+            });
+            length = tokens.size();
+        } catch (Exception e) {
+            log.error("初始化sao搜图服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化sao搜图服务成功");
     }
 
     public CompletableFuture<SaucenaoResponse> searchBySaucenao(String url) {

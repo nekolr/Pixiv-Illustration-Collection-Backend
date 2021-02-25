@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ImageUrl;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @description WallpaperService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
 public class WallpaperService {
@@ -34,8 +36,16 @@ public class WallpaperService {
 
     @PostConstruct
     public void init() {
-        pcWallpaperCount = wallpaperMapper.queryPcWallpaperCount();
-        mobileWallpaperCount = wallpaperMapper.queryMobileWallpaperCount();
+        try {
+            log.info("开始初始化壁纸服务");
+            pcWallpaperCount = wallpaperMapper.queryPcWallpaperCount();
+            mobileWallpaperCount = wallpaperMapper.queryMobileWallpaperCount();
+        } catch (Exception e) {
+            log.error("初始化壁纸服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化壁纸服务成功");
+
     }
 
     //查询所有分类

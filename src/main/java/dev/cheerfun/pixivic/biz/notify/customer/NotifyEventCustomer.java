@@ -56,13 +56,20 @@ public abstract class NotifyEventCustomer {
 
     @PostConstruct
     void init() {
-        remindTypeMap = new HashMap<>();
-        remindTypeMap.put(ActionType.COMMENT, 1);
-        remindTypeMap.put(ActionType.REPLY, 1);
-        remindTypeMap.put(ActionType.LIKE, 2);
-        remindTypeMap.put(ActionType.BOOKMARK, 3);
-        remindTypeMap.put(ActionType.REWARD, 3);
-        notifySettingMap = notifyRemindService.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
+        try {
+            log.info("开始初始化消息生成基础模块");
+            remindTypeMap = new HashMap<>();
+            remindTypeMap.put(ActionType.COMMENT, 1);
+            remindTypeMap.put(ActionType.REPLY, 1);
+            remindTypeMap.put(ActionType.LIKE, 2);
+            remindTypeMap.put(ActionType.BOOKMARK, 3);
+            remindTypeMap.put(ActionType.REWARD, 3);
+            notifySettingMap = notifyRemindService.queryNotifySettingConfig().stream().collect(Collectors.toMap(e -> e.getObjectType() + ":" + e.getAction(), e -> e));
+        } catch (Exception e) {
+            log.error("初始化消息生成基础模块失败");
+            e.printStackTrace();
+        }
+        log.info("初始化消息生成基础模块成功");
     }
 
     protected void process(Event event) {

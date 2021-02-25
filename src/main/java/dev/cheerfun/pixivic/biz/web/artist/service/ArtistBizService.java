@@ -72,8 +72,16 @@ public class ArtistBizService {
 
     @PostConstruct
     public void init() {
-        dealWaitForPullArtistQueue();
-        dealWaitForPullArtistInfoQueue();
+        try {
+            log.info("开始初始化画师基础服务");
+            dealWaitForPullArtistQueue();
+            dealWaitForPullArtistInfoQueue();
+        } catch (Exception e) {
+            log.error("初始化画师基础服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化画师基础服务成功");
+
     }
 
     @Scheduled(cron = "0 2 0 * * ?")

@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.basic.sensitive.domain.SensitiveNode;
 import dev.cheerfun.pixivic.basic.sensitive.domain.StringPointer;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +17,11 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Date;
 import java.util.NavigableSet;
 
 @Component
 @Data
+@Slf4j
 public class SensitiveFilter {
 
     /**
@@ -56,19 +57,24 @@ public class SensitiveFilter {
 
     @PostConstruct
     public void init() throws IOException {
-        System.out.println(new Date() + " 开始装载敏感词字典");
-        Files.list(Paths.get(path))
-                .forEach(e -> {
-                    try (BufferedReader br = new BufferedReader(new FileReader(e.toString()))) {
-                        String line;
-                        while ((line = br.readLine()) != null) {
-                            put(line);
+        try {
+            log.info("开始初始化敏感词过滤服务");
+            Files.list(Paths.get(path))
+                    .forEach(e -> {
+                        try (BufferedReader br = new BufferedReader(new FileReader(e.toString()))) {
+                            String line;
+                            while ((line = br.readLine()) != null) {
+                                put(line);
+                            }
+                        } catch (IOException ex) {
+                            ex.printStackTrace();
                         }
-                    } catch (IOException ex) {
-                        ex.printStackTrace();
-                    }
-                });
-        System.out.println(new Date() + "装载完毕");
+                    });
+        } catch (Exception e) {
+            log.error("初始化敏感词过滤服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化敏感词过滤服务成功");
     }
 
     /**

@@ -13,6 +13,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import java.util.stream.IntStream;
  * @description RankService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustrationService {
     private static final List<ModeMeta> modes;
@@ -88,8 +90,16 @@ public class IllustrationService {
 
     @PostConstruct
     public void init() {
-        waitForSaveToDbIllustList = new LinkedBlockingQueue<>(1024 * 1000);
-        dealWaitForSaveToDbIllustList();
+        try {
+            log.info("开始初始化pixiv爬虫服务");
+            waitForSaveToDbIllustList = new LinkedBlockingQueue<>(1024 * 1000);
+            dealWaitForSaveToDbIllustList();
+        } catch (Exception e) {
+            log.error("初始化pixiv爬虫服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化pixiv爬虫服务成功");
+
     }
 
     public List<Integer> pullAllRankInfo(LocalDate date) throws InterruptedException {

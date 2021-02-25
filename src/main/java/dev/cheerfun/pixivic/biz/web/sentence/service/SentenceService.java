@@ -3,12 +3,12 @@ package dev.cheerfun.pixivic.biz.web.sentence.service;
 import dev.cheerfun.pixivic.biz.web.sentence.mapper.SentenceMapper;
 import dev.cheerfun.pixivic.biz.web.sentence.po.Sentence;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
@@ -18,6 +18,7 @@ import java.util.concurrent.ThreadLocalRandom;
  * @description SentenceService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SentenceService {
     private final SentenceMapper sentenceMapper;
@@ -25,8 +26,16 @@ public class SentenceService {
 
     @PostConstruct
     public void init() {
-        //取出数量
-        sentenceListSize = querySentenceListSize();
+        try {
+            log.info("开始初始化签到语句服务");
+            //取出数量
+            sentenceListSize = querySentenceListSize();
+        } catch (Exception e) {
+            log.error("初始化签到语句服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化签到语句服务成功");
+
     }
 
     public Sentence queryRandomSentence() {

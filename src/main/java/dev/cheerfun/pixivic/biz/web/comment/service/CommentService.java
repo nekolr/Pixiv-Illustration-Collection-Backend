@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  * @description CommentService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommentService {
     private final StringRedisTemplate stringRedisTemplate;
@@ -40,7 +42,14 @@ public class CommentService {
 
     @PostConstruct
     public void init() {
-        dealWaitForUpdateApp();
+        try {
+            log.info("开始初始化评论服务");
+            dealWaitForUpdateApp();
+        } catch (Exception e) {
+            log.error("初始化评论服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化评论服务成功");
     }
 
     @Caching(evict = {

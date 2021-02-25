@@ -197,11 +197,7 @@
             <artifactId>im4java</artifactId>
             <version>${im4java.version}</version>
         </dependency>
-        <dependency>
-            <groupId>org.buildobjects</groupId>
-            <artifactId>jproc</artifactId>
-            <version>${jproc.version}</version>
-        </dependency>
+
 
         <!--      不要删除  <dependency>
       <groupId>org.deeplearning4j</groupId>

@@ -11,6 +11,7 @@ import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.util.aop.RequestParamUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ import java.util.stream.Collectors;
  * @description AdvertisementService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class AdvertisementService {
     private List<Integer> randomList;
@@ -41,20 +43,27 @@ public class AdvertisementService {
 
     @PostConstruct
     public void init() {
-        randomList = new ArrayList<>();
-        List<AdvertisementInfo> advertisementInfos = advertisementMapper.queryAllEnableAdvertisementInfo();
-        //构造randomList
-        for (int i = 0; i < advertisementInfos.size(); i++) {
-            for (int j = 0; j < advertisementInfos.get(i).getWeight(); j++) {
-                randomList.add(i);
+        try {
+            log.info("开始初始化广告服务");
+            randomList = new ArrayList<>();
+            List<AdvertisementInfo> advertisementInfos = advertisementMapper.queryAllEnableAdvertisementInfo();
+            //构造randomList
+            for (int i = 0; i < advertisementInfos.size(); i++) {
+                for (int j = 0; j < advertisementInfos.get(i).getWeight(); j++) {
+                    randomList.add(i);
+                }
             }
+            Collections.shuffle(randomList);
+            //构造advertisementList
+            advertisementList = advertisementInfos.stream().map(Advertisement::new).collect(Collectors.toList());
+            //转换成Advertisement分组构造advertisementMap
+            advertisementMap = advertisementList.stream().collect(Collectors.groupingBy(e -> e.getArtistPreView().getName()));
+            bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.US_ASCII), 1000000, 0.001);
+        } catch (Exception e) {
+            log.error("初始化广告服务失败");
+            e.printStackTrace();
         }
-        Collections.shuffle(randomList);
-        //构造advertisementList
-        advertisementList = advertisementInfos.stream().map(Advertisement::new).collect(Collectors.toList());
-        //转换成Advertisement分组构造advertisementMap
-        advertisementMap = advertisementList.stream().collect(Collectors.groupingBy(e -> e.getArtistPreView().getName()));
-        bloomFilter = BloomFilter.create(Funnels.stringFunnel(Charsets.US_ASCII), 1000000, 0.001);
+        log.info("初始化广告服务成功");
     }
 
     public List<Advertisement> serveAds() {

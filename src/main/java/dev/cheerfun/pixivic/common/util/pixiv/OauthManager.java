@@ -6,8 +6,8 @@ import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
 import dev.cheerfun.pixivic.common.util.pixiv.mapper.PixivAccountMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -24,6 +24,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class OauthManager {
 
@@ -42,11 +43,18 @@ public class OauthManager {
         //数据库读取账号信息
         //马上刷新，异步写回数据库
         //读取账号信息
-        refreshErrorSet = new HashSet<>();
-        pixivUserList = pixivAccountMapper.queryPixivUser();
-        //账号初始化
-        pixivUserSize = pixivUserList.size();
-        refresh();
+        try {
+            log.info("开始初始化pixiv请求管理器");
+            refreshErrorSet = new HashSet<>();
+            pixivUserList = pixivAccountMapper.queryPixivUser();
+            //账号初始化
+            pixivUserSize = pixivUserList.size();
+            refresh();
+        } catch (Exception e) {
+            log.error("初始化pixiv请求管理器失败");
+            e.printStackTrace();
+        }
+        log.info("初始化pixiv请求管理器成功");
     }
 
     public void refresh() {

@@ -17,6 +17,7 @@ import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @description OAuth2Service
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class OAuth2Service {
     private final CommonService userService;
@@ -45,8 +47,15 @@ public class OAuth2Service {
 
     @PostConstruct
     public void init() {
-        responseCodeMap = new ConcurrentHashMap<>();
-        oAuth2ClientMap = oAuth2Mapper.queryOAuth2ClientList().stream().collect(Collectors.toMap(OAuth2Client::getClientId, e -> e));
+        try {
+            log.info("开始初始化OAuth2服务");
+            responseCodeMap = new ConcurrentHashMap<>();
+            oAuth2ClientMap = oAuth2Mapper.queryOAuth2ClientList().stream().collect(Collectors.toMap(OAuth2Client::getClientId, e -> e));
+        } catch (Exception e) {
+            log.error("初始化OAuth2服务失败");
+            e.printStackTrace();
+        }
+        log.info("初始化OAuth2服务成功");
     }
 
     public OauthAuthorizationServer queryServerInfo() {
