@@ -42,7 +42,7 @@ public class EmailUtil {
                 "  <head>\n" +
                 "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\" />\n" +
                 "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n" +
-                "    <title>来自Pixivic的回复提醒</title>\n" +
+                "    <title>来自虾萌的回复提醒</title>\n" +
                 "    <!-- \n" +
                 "    The style block is collapsed on page load to save you some scrolling.\n" +
                 "    Postmark automatically inlines all CSS properties for maximum email client \n" +
@@ -445,7 +445,7 @@ public class EmailUtil {
                 "                    <td class=\"content-cell\">\n" +
                 "                      <h1>尊敬的 ";
         p2 = "：</h1>\n" +
-                "                      <p>这是来自Pixivic.com的消息</p>\n" +
+                "                      <p>这是来自Sharemoe.net的消息</p>\n" +
                 "                      <!-- Action -->\n" +
                 "                      <table class=\"attributes\" width=\"100%\" cellpadding=\"0\" cellspacing=\"0\">\n" +
                 "                        <tr>\n" +
@@ -549,9 +549,9 @@ public class EmailUtil {
                         MimeMessage message = mailSender.createMimeMessage();
                         MimeMessageHelper helper = null;
                         helper = new MimeMessageHelper(message, true);
-                        helper.setFrom("Pixivic.com<admin@cheerfun.dev>");
+                        helper.setFrom("Sharemoe.net<admin@cheerfun.dev>");
                         helper.setTo(email.getEmailAddr());
-                        helper.setSubject("来自Pixivic.com的信息");
+                        helper.setSubject("来自Sharemoe.net的信息");
                         helper.setText(p1 + email.getTo() + p2 + email.getFrom() + p3 + email.getContent() + p4 + email.getLink() + p5, true);
                         mailSender.send(message);
                         log.info("发送给" + email.getEmailAddr() + "邮件发送成功");
