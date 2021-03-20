@@ -103,7 +103,7 @@ public class CommonService {
         //签发token
         //发送验证邮件
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(user.getEmail());
-        emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId() + "&email=" + user.getEmail());
+        emailUtil.sendEmail(user.getEmail(), user.getUsername(), PIXIVIC, CONTENT_1, "https://sharemoe.net/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + user.getId() + "&email=" + user.getEmail());
         user = queryUser(userMapper.queryUserByusernameAndPassword(user.getUsername(), user.getPassword()));
         userMapper.setAvatar(AVATAR_PRE + user.getId() + AVATAR_POS, user.getId());
         //初始化汇总表
@@ -171,7 +171,7 @@ public class CommonService {
     public void getResetPasswordEmail(String email) {
         //if (checkEmail(email)) {
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
-        emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
+        emailUtil.sendEmail(email, "亲爱的用户", PIXIVIC, CONTENT_2, "https://sharemoe.net/resetPassword?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue());
        /* } else {
             throw new UserCommonException(HttpStatus.NOT_FOUND, "用户邮箱不存在");
         }*/
