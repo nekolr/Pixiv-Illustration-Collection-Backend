@@ -180,7 +180,7 @@ public class CommonService {
     public void getCheckEmail(String email, int userId) {
         User user = queryUser(userId);
         EmailBindingVerificationCode emailVerificationCode = verificationCodeService.getEmailVerificationCode(email);
-        emailUtil.sendEmail(email, user.getUsername(), PIXIVIC, CONTENT_1, "https://pixivic.com/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + userId + "&email=" + email);
+        emailUtil.sendEmail(email, user.getUsername(), PIXIVIC, CONTENT_1, "https://sharemoe.net/emailCheck?vid=" + emailVerificationCode.getVid() + "&value=" + emailVerificationCode.getValue() + "&userId=" + userId + "&email=" + email);
     }
 
     public String getEmail(HttpServletRequest request) {

@@ -39,7 +39,7 @@
         <deeplearning4j.version>1.0.0-beta7</deeplearning4j.version>
         <im4java.version>1.4.0</im4java.version>
         <tencentcloud-sdk-java.version>3.1.201</tencentcloud-sdk-java.version>
-        <jproc.version>2.4.0</jproc.version>
+        <jproc.version>2.5.1</jproc.version>
     </properties>
 
     <dependencies>
@@ -197,7 +197,11 @@
             <artifactId>im4java</artifactId>
             <version>${im4java.version}</version>
         </dependency>
-
+        <dependency>
+            <groupId>org.buildobjects</groupId>
+            <artifactId>jproc</artifactId>
+            <version>${jproc.version}</version>
+        </dependency>
 
         <!--      不要删除  <dependency>
       <groupId>org.deeplearning4j</groupId>
