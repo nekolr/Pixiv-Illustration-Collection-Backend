@@ -56,7 +56,7 @@ public class TestController {
     private final NewService newService;
     private final static String AVATAR_PRE = "https://pic.pixivic.com/";
     private final static String AVATAR_POS = ".png";
-    private final static String PIXIVIC = "Pixivic酱";
+    private final static String PIXIVIC = "虾萌酱";
     private final static String CONTENT_1 = "点击以下按钮以验证邮箱";
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
     private final static String QQ_BIND_URL_PRE = "https://graph.qq.com/oauth2.0/me?access_token=";
