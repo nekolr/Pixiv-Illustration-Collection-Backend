@@ -75,7 +75,7 @@ public class ArtistBizService {
         try {
             log.info("开始初始化画师基础服务");
             dealWaitForPullArtistQueue();
-            dealWaitForPullArtistInfoQueue();
+            //dealWaitForPullArtistInfoQueue();
         } catch (Exception e) {
             log.error("初始化画师基础服务失败");
             e.printStackTrace();
@@ -140,9 +140,9 @@ public class ArtistBizService {
             return null;
         }
         Artist artist = artistBizMapper.queryArtistById(artistId);
-        if (artist == null) {
+       /* if (artist == null) {
             waitForPullArtistInfoQueue.offer(artistId);
-        }
+        }*/
         return artist;
     }
 
