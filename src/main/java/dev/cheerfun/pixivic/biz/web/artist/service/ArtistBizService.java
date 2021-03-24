@@ -154,11 +154,11 @@ public class ArtistBizService {
     @Cacheable(value = "artist_illusts")
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) throws InterruptedException {
         //如果是近日首次则进行拉取
+        List<Integer> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         String key = artistId + ":" + type;
-        if (currIndex == 0 && pageSize == 30) {
+        if (currIndex == 0 && pageSize == 30 && illustrations.size() > 0) {
             waitForPullArtistQueue.offer(key);
         }
-        List<Integer> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         return illustrationBizService.queryIllustrationByIdList(illustrations);
     }
 
