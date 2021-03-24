@@ -156,6 +156,7 @@ public class ArtistBizService {
         //如果是近日首次则进行拉取
         List<Integer> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
         String key = artistId + ":" + type;
+        //防止抓取不在库内的画师画作
         if (currIndex == 0 && pageSize == 30 && illustrations.size() > 0) {
             waitForPullArtistQueue.offer(key);
         }
