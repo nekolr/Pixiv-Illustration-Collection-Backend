@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.common.util.encrypt.CRC8;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.nio.ByteBuffer;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
@@ -25,6 +26,10 @@ public class ExchangeCodeUtil {
     private byte[] nonce;
     private int counter;
     private BaseEncoding baseEncoding = BaseEncoding.base32();
+/*    @PostConstruct
+    public void test(){
+        System.out.println(validateExchangeCode("PMQJ6F7I3FGCC7XD"));
+    }*/
 
     public ExchangeCodeUtil(@Value("${chacha20.key}") String key, @Value("${chacha20.nonce}") String nonce, @Value("${chacha20.counter}") int counter) {
         this.key = key.getBytes();
