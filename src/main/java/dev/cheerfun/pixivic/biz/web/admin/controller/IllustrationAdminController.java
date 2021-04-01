@@ -3,8 +3,12 @@ package dev.cheerfun.pixivic.biz.web.admin.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
+import dev.cheerfun.pixivic.biz.ad.annotation.WithAdvertisement;
+import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.admin.dto.IllustDTO;
 import dev.cheerfun.pixivic.biz.web.admin.service.AdminService;
+import dev.cheerfun.pixivic.biz.web.illust.service.RankService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
@@ -15,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Max;
 import java.util.List;
 
 /**
@@ -30,6 +35,7 @@ import java.util.List;
 @RequestMapping("/admin")
 public class IllustrationAdminController {
     private final AdminService adminService;
+    private final RankService rankService;
 
     @GetMapping("/illusts/{illustId}")
     public ResponseEntity<Result<Illustration>> queryIllustrationById(@PathVariable Integer illustId, @RequestHeader(value = "Token") String token) throws JsonProcessingException {
@@ -38,6 +44,12 @@ public class IllustrationAdminController {
             return ResponseEntity.ok().body(new Result<>("获取画作详情成功", adminService.queryIllustrationById(illustId)));
         }
         return ResponseEntity.ok().body(new Result<>("获取画作详情成功", null));
+    }
+
+    @GetMapping("/ranks")
+    public ResponseEntity<Result<List<Illustration>>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
+        List<Illustration> rank = rankService.queryByDateAndMode(date, mode, page, pageSize);
+        return ResponseEntity.ok().body(new Result<>("获取排行成功", rank));
     }
 
     @PutMapping("/illusts/{illustId}")
