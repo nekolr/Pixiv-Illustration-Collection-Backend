@@ -33,7 +33,6 @@ public class RankController {
 
     @GetMapping
     @WithUserInfo
-    @RateLimit
     @WithAdvertisement
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<List<Illustration>>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
