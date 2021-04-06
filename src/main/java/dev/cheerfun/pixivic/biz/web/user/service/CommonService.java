@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.basic.auth.exception.AuthBanException;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.event.constant.ActionType;
 import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
@@ -24,6 +25,8 @@ import dev.cheerfun.pixivic.biz.web.user.util.VerifiedUtil;
 import dev.cheerfun.pixivic.biz.web.vip.constant.ExchangeCodeBizType;
 import dev.cheerfun.pixivic.biz.web.vip.service.ExchangeCodeService;
 import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
+import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.util.email.EmailUtil;
@@ -32,6 +35,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,6 +73,7 @@ public class CommonService {
     private final static String CONTENT_2 = "点击以下按钮以重置密码";
     private final static String QQ_BIND_URL_PRE = "https://graph.qq.com/oauth2.0/me?access_token=";
     private final CommonMapper userMapper;
+    private final StringRedisTemplate stringRedisTemplate;
     private final HttpClient httpClient;
     private final PasswordUtil passwordUtil;
     private final EmailUtil emailUtil;
@@ -117,6 +122,9 @@ public class CommonService {
         if (uid == null) {
             throw new UserCommonException(HttpStatus.BAD_REQUEST, "用户名或密码不正确");
         }
+        if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(uid))) {
+            throw new AuthBanException(HttpStatus.FORBIDDEN, "账户异常");
+        }
         return queryUser(uid);
     }
 
@@ -138,6 +146,9 @@ public class CommonService {
     public User signIn(String qqAccessToken) throws IOException, InterruptedException {
         String qqOpenId = getQQOpenId(qqAccessToken);
         Integer uid = userMapper.getUserByQQOpenId(qqOpenId);
+        if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ACCOUNT_BAN_SET, String.valueOf(uid))) {
+            throw new AuthBanException(HttpStatus.FORBIDDEN, "账户异常");
+        }
         if (uid == null) {
             throw new UserCommonException(HttpStatus.BAD_REQUEST, "不存在此QQ绑定的帐号");
         }
