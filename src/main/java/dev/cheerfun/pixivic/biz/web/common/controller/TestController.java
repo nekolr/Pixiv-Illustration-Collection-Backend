@@ -117,7 +117,7 @@ public class TestController {
         for (int i = 0; i < 10; i++) {
             Thread.sleep(1000);
             try {
-                emailUtil.sendEmail("392822872@qq.com", "亲爱的用户", PIXIVIC, CONTENT_2, "https://sharemoe.net/resetPassword?vid=" + "&value=");
+                emailUtil.sendEmail("392822872@qq.com", "亲爱的用户", PIXIVIC, CONTENT_2, "https://pixivic.com/resetPassword?vid=" + "&value=");
             } catch (Exception e) {
                 e.printStackTrace();
             }
