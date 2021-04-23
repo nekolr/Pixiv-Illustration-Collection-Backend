@@ -26,7 +26,7 @@ public class AdvertisementPO {
     @Column(name = "advertiser_avatar")
     private String advertiserAvatar;
     @Column(name = "image_url")
-    private Integer imageUrl;
+    private String imageUrl;
     @Column(name = "image_width")
     private Integer imageWidth;
     @Column(name = "image_height")
