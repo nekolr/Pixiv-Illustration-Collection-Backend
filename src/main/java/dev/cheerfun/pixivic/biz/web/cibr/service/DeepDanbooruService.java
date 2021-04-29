@@ -1,4 +1,4 @@
-/*
+
 package dev.cheerfun.pixivic.biz.web.cibr.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -34,13 +34,32 @@ import java.util.stream.IntStream;
 
 import static org.opencv.imgproc.Imgproc.COLOR_BGR2RGB;
 
-*/
 /**
  * @author OysterQAQ
  * @version 1.0
  * @date 2020/11/30 9:28 PM
  * @description DeepDanbooruService
- *//*
+ */
+
+import dev.cheerfun.pixivic.biz.web.cibr.dto.Predictions;
+import dev.cheerfun.pixivic.biz.web.cibr.mapper.DeepDanbooruMapper;
+import dev.cheerfun.pixivic.biz.web.cibr.po.FeatureTag;
+import lombok.RequiredArgsConstructor;
+import org.im4java.core.ConvertCmd;
+import org.im4java.core.IM4JavaException;
+import org.im4java.core.IMOperation;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.ByteArrayInputStream;
+import java.net.URI;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
@@ -119,4 +138,4 @@ public class DeepDanbooruService {
     }
 
 }
-*/
+

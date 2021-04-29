@@ -1,17 +1,36 @@
 package dev.cheerfun.pixivic;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.io.BaseEncoding;
 import com.squareup.okhttp.*;
+import dev.cheerfun.pixivic.biz.web.cibr.dto.Predictions;
 import dev.cheerfun.pixivic.biz.web.vip.po.ExchangeCode;
 import dev.cheerfun.pixivic.common.util.encrypt.CRC8;
 import lombok.Data;
 import org.buildobjects.process.ProcBuilder;
+import org.datavec.image.loader.NativeImageLoader;
+import org.datavec.image.transform.ColorConversionTransform;
+
+import org.nd4j.linalg.api.buffer.DataType;
+import org.nd4j.linalg.api.ndarray.INDArray;
+import org.nd4j.linalg.api.ops.impl.broadcast.BroadcastSubOp;
+import org.nd4j.linalg.dataset.api.DataSetPreProcessor;
+import org.nd4j.linalg.dataset.api.preprocessor.DataNormalization;
+import org.nd4j.linalg.dataset.api.preprocessor.VGG16ImagePreProcessor;
+import org.nd4j.linalg.factory.Nd4j;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -19,9 +38,12 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Map;
 import java.util.UUID;
 
 import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Decrypt;
+import static org.opencv.imgproc.Imgproc.COLOR_BGR2RGB;
+import static org.opencv.imgproc.Imgproc.COLOR_RGB2BGR;
 
 /**
  * @author OysterQAQ
@@ -31,9 +53,27 @@ import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Decrypt;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        download("https://i.pximg.net/img-original/img/2021/02/09/01/12/48/87632329_p1.png", "/Users/oysterqaq/Desktop/");
+        NativeImageLoader loader = new NativeImageLoader(224, 224, 3/*, new ColorConversionTransform(COLOR_RGB2BGR)*/);
+        INDArray path = loader.asMatrix(new File("/Users/oysterqaq/Desktop/temp/Snipaste_2021-04-29_10-20-48.jpg"), false);
 
-        System.out.println();
+        System.out.println(path.shapeInfo().toString());
+        Nd4j.getExecutioner().execAndReturn(new BroadcastSubOp(path.dup(), Nd4j.create(new double[]{103.939, 116.779, 123.68}).castTo(DataType.FLOAT), path, 3));
+        System.out.println(path);
+        URI uri = URI.create("http://" + "manjaro:8501" + "/v1/models/vgg:predict");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri).POST(HttpRequest.BodyPublishers.ofString("{\"instances\":" + path.toStringFull() + "}")).build();
+        String body = HttpClient.newBuilder().build().send(request, HttpResponse.BodyHandlers.ofString()).body();
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        objectMapper.configure(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY, true);
+        objectMapper.configure(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT, true);
+        objectMapper.enable(DeserializationFeature.ACCEPT_EMPTY_STRING_AS_NULL_OBJECT);
+        objectMapper.registerModule(new JavaTimeModule());
+        objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+        Predictions predictions = objectMapper.readValue(body, Predictions.class);
+        Float[] prediction = predictions.getPredictions()[0];
+        System.out.println(prediction);
+
     }
 
     public static void download(String url, String savePath) throws IOException {
