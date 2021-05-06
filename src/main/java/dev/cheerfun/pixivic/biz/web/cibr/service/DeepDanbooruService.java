@@ -69,26 +69,26 @@ public class DeepDanbooruService {
     private final DeepDanbooruMapper deepDanbooruMapper;
     @Value("${TFServingServer}")
     private String TFServingServer;
+    NativeImageLoader loader = new NativeImageLoader(512, 512, 3, new ColorConversionTransform(COLOR_BGR2RGB));
 
     public List<String> generateImageTagList(MultipartFile file) throws IOException, InterruptedException, IM4JavaException {
         //接受图片，缩放为512，512，转为矩阵后请求tf serving
         //得到结果后过滤出0.6分以上的index，从数据库中查找对应的label，优先列出角色标签，之后显示有对应pixivtab的标签
         //用户在页面上可以点击tag来搜索
-        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+/*        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             zoomPic(outputStream, file.getInputStream(), file.getContentType(), 512, 512);
-            try (InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {
-                NativeImageLoader loader = new NativeImageLoader(512, 512, 3, new ColorConversionTransform(COLOR_BGR2RGB));
-                INDArray indArray = loader.asMatrix(inputStream, false).div(255);
-                URI uri = URI.create("http://" + TFServingServer + "/v1/models/deepdanbooru:predict");
-                HttpRequest request = HttpRequest.newBuilder()
-                        .uri(uri).POST(HttpRequest.BodyPublishers.ofString("{\"instances\":" + indArray.toStringFull() + "}")).build();
-                String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-                Predictions predictions = objectMapper.readValue(body, Predictions.class);
-                Float[] prediction = predictions.getPredictions()[0];
-                return IntStream.range(0, 7722).parallel().filter(e -> prediction[e] > 0.6).mapToObj(e -> queryTagListByIndex(e + 1)
-                ).filter(Objects::nonNull).collect(Collectors.toList());
-            }
-        }
+            try (InputStream inputStream = new ByteArrayInputStream(outputStream.toByteArray())) {*/
+        INDArray indArray = loader.asMatrix(file.getInputStream(), false).div(255);
+        URI uri = URI.create("http://" + TFServingServer + "/v1/models/deepdanbooru:predict");
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(uri).POST(HttpRequest.BodyPublishers.ofString("{\"instances\":" + indArray.toStringFull() + "}")).build();
+        String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+        Predictions predictions = objectMapper.readValue(body, Predictions.class);
+        Float[] prediction = predictions.getPredictions()[0];
+        return IntStream.range(0, 7722).parallel().filter(e -> prediction[e] > 0.6).mapToObj(e -> queryTagListByIndex(e + 1)
+        ).filter(Objects::nonNull).collect(Collectors.toList());
+       /*     }
+        }*/
     }
 
     public OutputStream zoomPic(OutputStream os, InputStream is, String contentType, Integer width, Integer height)

@@ -54,9 +54,8 @@ import static org.opencv.imgproc.Imgproc.COLOR_RGB2BGR;
 public class Consumer {
     public static void main(String[] args) throws Exception {
         NativeImageLoader loader = new NativeImageLoader(224, 224, 3/*, new ColorConversionTransform(COLOR_RGB2BGR)*/);
-        INDArray path = loader.asMatrix(new File("/Users/oysterqaq/Desktop/temp/Snipaste_2021-04-29_10-20-48.jpg"), false);
+        INDArray path = loader.asMatrix(new File("/Users/oysterqaq/Desktop/Snipaste_2021-05-06_19-42-14.jpg"), false);
 
-        System.out.println(path.shapeInfo().toString());
         Nd4j.getExecutioner().execAndReturn(new BroadcastSubOp(path.dup(), Nd4j.create(new double[]{103.939, 116.779, 123.68}).castTo(DataType.FLOAT), path, 3));
         System.out.println(path);
         URI uri = URI.create("http://" + "manjaro:8501" + "/v1/models/vgg:predict");

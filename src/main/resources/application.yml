@@ -157,3 +157,6 @@ messageApi:
   sign: 御宅电波
 rclone:
   path: /usr/bin/rclone
+milvus:
+  host: manjaro
+  port: 19530
