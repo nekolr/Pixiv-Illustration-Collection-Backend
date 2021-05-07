@@ -2,9 +2,7 @@ package dev.cheerfun.pixivic.biz.web.cibr.service;
 
 import com.google.gson.JsonObject;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
-import io.milvus.client.MilvusClient;
-import io.milvus.client.SearchParam;
-import io.milvus.client.SearchResponse;
+import io.milvus.client.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +23,44 @@ import java.util.stream.Collectors;
 public class MilvusService {
     private final MilvusClient client;
 
+    public void init() {
+        String collectionName = "illusts";
+        if (!hasCollection(collectionName)) {
+            createCollection(collectionName, 512, 2048);
+            createIndexForCollection(collectionName, IndexType.IVFLAT, 3400 * 4);
+        }
+
+    }
+
+    public Boolean hasCollection(String collectionName) {
+        return client.hasCollection(collectionName).hasCollection();
+    }
+
+    public Boolean createCollection(String collectionName, Integer dimension, Integer indexFileSize) {
+        final MetricType metricType = MetricType.L2;
+        CollectionMapping collectionMapping =
+                new CollectionMapping.Builder(collectionName, dimension)
+                        .withIndexFileSize(indexFileSize)
+                        .withMetricType(metricType)
+                        .build();
+        Response createCollectionResponse = client.createCollection(collectionMapping);
+        return createCollectionResponse.ok();
+    }
+
+    public void createIndexForCollection(String collectionName, IndexType indexType, Integer nlist) {
+        JsonObject indexParamsJson = new JsonObject();
+        indexParamsJson.addProperty("nlist", nlist);
+        Index index =
+                new Index.Builder(collectionName, indexType)
+                        .withParamsInJson(indexParamsJson.toString())
+                        .build();
+        Response createIndexResponse = client.createIndex(index);
+    }
+
+    public void flush(String collectionName) {
+        client.flush(collectionName);
+    }
+
     public List<Integer> search(List<Float> vector, Integer k) {
         JsonObject searchParamsJson = new JsonObject();
         searchParamsJson.addProperty("nprobe", 20);
@@ -43,6 +79,24 @@ public class MilvusService {
         } else {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "以图搜图出错");
         }
+    }
+
+    //将特征向量存入Milvus
+    public Boolean saveIllustFeatureToMilvus(Long illustId, List<List<Float>> imageFeatureList, String collectionName) {
+        imageFeatureList =
+                imageFeatureList.stream().map(this::normalizeVector).collect(Collectors.toList());
+        InsertParam insertParam =
+                new InsertParam.Builder(collectionName).withFloatVectors(imageFeatureList).withVectorIds(Collections.nCopies(imageFeatureList.size(), illustId)).build();
+        InsertResponse insertResponse = client.insert(insertParam);
+        //List<Long> vectorIds = insertResponse.getVectorIds();
+        return true;
+    }
+
+    private List<Float> normalizeVector(List<Float> vector) {
+        float squareSum = vector.stream().map(x -> x * x).reduce((float) 0, Float::sum);
+        final float norm = (float) Math.sqrt(squareSum);
+        vector = vector.stream().map(x -> x / norm).collect(Collectors.toList());
+        return vector;
     }
 
 }

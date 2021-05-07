@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.web.cibr.dto.Predictions;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.po.Illustration;
+import io.milvus.client.InsertParam;
+import io.milvus.client.InsertResponse;
 import lombok.RequiredArgsConstructor;
 import org.datavec.image.loader.NativeImageLoader;
 import org.nd4j.linalg.api.ndarray.INDArray;
@@ -19,6 +21,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -46,11 +49,6 @@ public class ReverseImageSearchService {
     //从Milvus中检索topk相似向量
     public List<Integer> searchTopKIllustIdFromMilvus(Float[] imageFeature, Integer k) {
         return milvusService.search(Arrays.asList(imageFeature), k);
-    }
-
-    //将特征向量存入Milvus
-    public Boolean saveFeatureToMilvus(Integer illustId, Float[] imageFeature) {
-        return null;
     }
 
     //生成特征向量
