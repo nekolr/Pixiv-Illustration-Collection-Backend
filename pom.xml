@@ -218,6 +218,12 @@
             <artifactId>datavec-data-image</artifactId>
             <version>${deeplearning4j.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
+        <dependency>
+            <groupId>com.google.protobuf</groupId>
+            <artifactId>protobuf-java</artifactId>
+            <version>3.16.0</version>
+        </dependency>
 
     </dependencies>
     <build>

@@ -88,9 +88,10 @@ public class VIPProxyServerService {
     public Boolean check(VIPProxyServer vipProxyServer) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create(vipProxyServer.getServerAddress() + "/test.jpg")).GET().build();
+                    .uri(URI.create(vipProxyServer.getServerAddress().replace("https", "http") + "/test.jpg")).GET().build();
             httpClient.send(request, HttpResponse.BodyHandlers.discarding()).statusCode();
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
         return true;
