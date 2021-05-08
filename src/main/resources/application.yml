@@ -158,5 +158,5 @@ messageApi:
 rclone:
   path: /usr/bin/rclone
 milvus:
-  host: manjaro
+  host: milvus
   port: 19530

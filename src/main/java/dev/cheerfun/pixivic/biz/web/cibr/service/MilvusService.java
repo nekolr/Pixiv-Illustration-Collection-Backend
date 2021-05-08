@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -18,16 +19,17 @@ import java.util.stream.Collectors;
  * @date 2021/5/6 11:02 PM
  * @description MilvusService
  */
-//@Service
+@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MilvusService {
     private final MilvusClient client;
 
+    @PostConstruct
     public void init() {
         String collectionName = "illusts";
         if (!hasCollection(collectionName)) {
             createCollection(collectionName, 512, 2048);
-            createIndexForCollection(collectionName, IndexType.IVFLAT, 3400 * 4);
+            createIndexForCollection(collectionName, IndexType.IVFLAT, 3700 * 4);
         }
 
     }

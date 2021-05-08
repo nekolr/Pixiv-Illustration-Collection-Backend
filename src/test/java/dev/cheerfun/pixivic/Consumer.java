@@ -38,6 +38,7 @@ import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.UUID;
 
@@ -54,7 +55,7 @@ import static org.opencv.imgproc.Imgproc.COLOR_RGB2BGR;
 public class Consumer {
     public static void main(String[] args) throws Exception {
         NativeImageLoader loader = new NativeImageLoader(224, 224, 3/*, new ColorConversionTransform(COLOR_RGB2BGR)*/);
-        INDArray path = loader.asMatrix(new File("/Users/oysterqaq/Desktop/Snipaste_2021-05-06_19-42-14.jpg"), false);
+        INDArray path = loader.asMatrix(new File("/Users/oysterqaq/Desktop/Snipaste_2021-05-06_19-40-27.jpg"), false);
 
         Nd4j.getExecutioner().execAndReturn(new BroadcastSubOp(path.dup(), Nd4j.create(new double[]{103.939, 116.779, 123.68}).castTo(DataType.FLOAT), path, 3));
         System.out.println(path);
@@ -71,7 +72,7 @@ public class Consumer {
         objectMapper.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
         Predictions predictions = objectMapper.readValue(body, Predictions.class);
         Float[] prediction = predictions.getPredictions()[0];
-        System.out.println(prediction);
+        System.out.println(new ObjectMapper().writeValueAsString(prediction));
 
     }
 
