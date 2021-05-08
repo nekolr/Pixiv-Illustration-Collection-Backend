@@ -18,6 +18,7 @@ import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -30,7 +31,7 @@ import java.util.List;
  * @date 2021/5/6 6:14 PM
  * @description ReverseImageSearchService
  */
-@Service
+//@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ReverseImageSearchService {
     private final HttpClient httpClient;
@@ -74,17 +75,23 @@ public class ReverseImageSearchService {
     }
 
     public String imageFeatureExtraction(String imageUrl) throws IOException, InterruptedException {
+
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(imageUrl))
+                .uri(URI.create(imageUrl.replace("https://i.pximg.net", "http://45.89.229.157")))
                 .header("Referer", "https://pixivic.com")
                 .build();
         HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
         if (response.statusCode() == 200) {
             InputStream imageFileInputStream = response.body();
-            Float[] feature = generateImageFeature(loader.asMatrix(imageFileInputStream, false));
-            return objectMapper.writeValueAsString(feature);
+            try {
+                Float[] feature = generateImageFeature(loader.asMatrix(imageFileInputStream, false));
+                return objectMapper.writeValueAsString(feature);
+            } catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         } else {
-            return "";
+            return null;
         }
     }
 

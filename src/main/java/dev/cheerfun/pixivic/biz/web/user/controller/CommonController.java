@@ -2,7 +2,6 @@ package dev.cheerfun.pixivic.biz.web.user.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
-import dev.cheerfun.pixivic.basic.auth.exception.AuthBanException;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
 import dev.cheerfun.pixivic.basic.verification.annotation.CheckVerification;
 import dev.cheerfun.pixivic.basic.verification.constant.VerificationType;
@@ -15,9 +14,7 @@ import dev.cheerfun.pixivic.biz.web.user.util.PasswordUtil;
 import dev.cheerfun.pixivic.biz.web.user.util.RecaptchaUtil;
 import dev.cheerfun.pixivic.biz.web.vip.constant.ExchangeCodeBizType;
 import dev.cheerfun.pixivic.biz.web.vip.service.ExchangeCodeService;
-import dev.cheerfun.pixivic.biz.web.vip.service.VIPUserService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
-import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.po.Result;
@@ -147,12 +144,13 @@ public class CommonController {
     }
 
     @PutMapping("/{userId}/email")
-    @CheckVerification
-    public ResponseEntity<Result<User>> checkEmail(@RequestParam @Email String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
-        String emailAddr = value.substring(value.indexOf(":") + 1);
-        userService.setEmail(emailAddr, userId);
+    @PermissionRequired
+    public ResponseEntity<Result<User>> checkEmail(@RequestParam @Email String email, @PathVariable("userId") int userId, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
+        userId = (int) AppContext.get().get(AuthConstant.USER_ID);
+        userService.setEmail(email, userId);
         User user = userService.queryUser(userId);
-        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
+        userService.getCheckEmail(email, userId);
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("修改邮箱成功，请前往邮箱验证", user));
     }
 
     @PutMapping("/{userId}")
