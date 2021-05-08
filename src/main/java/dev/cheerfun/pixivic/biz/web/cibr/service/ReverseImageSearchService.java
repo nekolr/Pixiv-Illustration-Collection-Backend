@@ -29,7 +29,7 @@ import java.util.stream.Collectors;
  * @date 2021/5/6 6:14 PM
  * @description ReverseImageSearchService
  */
-@Service
+//@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class ReverseImageSearchService {
     private final HttpClient httpClient;
