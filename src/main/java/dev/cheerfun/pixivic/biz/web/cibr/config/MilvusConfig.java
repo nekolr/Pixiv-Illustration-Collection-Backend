@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2021/5/6 11:06 PM
  * @description MilvusConfig
  */
-//@Configuration
+@Configuration
 public class MilvusConfig {
     @Value("${milvus.host}")
     private String host;

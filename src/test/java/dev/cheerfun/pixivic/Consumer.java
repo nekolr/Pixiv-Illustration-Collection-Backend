@@ -14,6 +14,10 @@ import org.buildobjects.process.ProcBuilder;
 import org.datavec.image.loader.NativeImageLoader;
 import org.datavec.image.transform.ColorConversionTransform;
 
+import org.deeplearning4j.nn.graph.ComputationGraph;
+import org.deeplearning4j.zoo.PretrainedType;
+import org.deeplearning4j.zoo.ZooModel;
+import org.deeplearning4j.zoo.model.VGG16;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.api.ops.impl.broadcast.BroadcastSubOp;
@@ -54,7 +58,7 @@ import static org.opencv.imgproc.Imgproc.COLOR_RGB2BGR;
  */
 public class Consumer {
     public static void main(String[] args) throws Exception {
-        NativeImageLoader loader = new NativeImageLoader(224, 224, 3/*, new ColorConversionTransform(COLOR_RGB2BGR)*/);
+        NativeImageLoader loader = new NativeImageLoader(224, 224, 3, new ColorConversionTransform(COLOR_RGB2BGR));
         INDArray path = loader.asMatrix(new File("/Users/oysterqaq/Desktop/Snipaste_2021-05-06_19-40-27.jpg"), false);
 
         Nd4j.getExecutioner().execAndReturn(new BroadcastSubOp(path.dup(), Nd4j.create(new double[]{103.939, 116.779, 123.68}).castTo(DataType.FLOAT), path, 3));
@@ -73,6 +77,20 @@ public class Consumer {
         Predictions predictions = objectMapper.readValue(body, Predictions.class);
         Float[] prediction = predictions.getPredictions()[0];
         System.out.println(new ObjectMapper().writeValueAsString(prediction));
+
+/*        NativeImageLoader loader = new NativeImageLoader(224, 224, 3);
+        INDArray image = loader.asMatrix(new File("/Users/oysterqaq/Desktop/Snipaste_2021-05-06_19-40-27.jpg"));
+        ZooModel zooModel = VGG16.builder().build();
+        ComputationGraph vgg16=   (ComputationGraph) zooModel.initPretrained(PretrainedType.IMAGENET);
+        // Mean subtraction pre-processing step for VGG
+        DataNormalization scaler = new VGG16ImagePreProcessor();
+        scaler.transform(image);
+
+        //Call the feedForward method to get a map of activations for each layer
+       // System.out.println(vgg16.feedForward(image, false));
+        Map<String, INDArray> stringINDArrayMap = vgg16.feedForward(image, false);
+        System.out.println();
+        System.out.println(vgg16.feedForward(image, false));*/
 
     }
 

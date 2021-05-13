@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @date 2021/5/6 11:02 PM
  * @description MilvusService
  */
-//@Service
+@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MilvusService {
     private final MilvusClient client;

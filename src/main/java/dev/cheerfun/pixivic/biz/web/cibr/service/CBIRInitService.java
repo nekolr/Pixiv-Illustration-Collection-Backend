@@ -19,7 +19,7 @@ import java.util.concurrent.ExecutorService;
  * @date 2021/5/8 9:15 PM
  * @description CBIRInitService
  */
-//@Service
+@Service
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CBIRInitService {
@@ -42,7 +42,7 @@ public class CBIRInitService {
         illustIdFlag = cbirInitMapper.queryLatest();
         log.info("-------------------------开始抽取画作特征入库");
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < 1; i++) {
             crawlerExecutorService.submit(() -> {
                 while (true) {
                     List<Integer> queryIllustIdList = queryIllustIdList();
