@@ -2,7 +2,7 @@ package dev.cheerfun.pixivic.common.util.pixiv;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
+import dev.cheerfun.pixivic.common.po.PixivUser;
 import dev.cheerfun.pixivic.common.util.pixiv.mapper.PixivAccountMapper;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

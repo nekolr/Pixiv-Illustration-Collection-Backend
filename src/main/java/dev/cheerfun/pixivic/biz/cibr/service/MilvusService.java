@@ -1,9 +1,11 @@
-package dev.cheerfun.pixivic.biz.web.cibr.service;
+package dev.cheerfun.pixivic.biz.cibr.service;
 
 import com.google.gson.JsonObject;
-import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
+import dev.cheerfun.pixivic.biz.cibr.constant.MilvusInfo;
+import dev.cheerfun.pixivic.common.exception.BaseException;
 import io.milvus.client.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -19,18 +21,32 @@ import java.util.stream.Collectors;
  * @date 2021/5/6 11:02 PM
  * @description MilvusService
  */
-@Service
+//@Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class MilvusService {
     private final MilvusClient client;
 
     @PostConstruct
     public void init() {
-        String collectionName = "illusts";
+        String collectionName = MilvusInfo.COLLECTION;
+        //client.flush(collectionName);
+        //client.dropCollection(collectionName);
         if (!hasCollection(collectionName)) {
             createCollection(collectionName, 512, 2048);
-            createIndexForCollection(collectionName, IndexType.IVFLAT, 3700 * 4);
+            createIndexForCollection(collectionName, IndexType.IVFLAT, 4500 * 4/*145*4*/);
         }
+        log.info("当前集合内实体总数为：" + client.countEntities(collectionName).getCollectionEntityCount());
+        Response getCollectionStatsResponse = client.getCollectionStats(collectionName);
+        if (getCollectionStatsResponse.ok()) {
+            // Collection info is sent back with JSON type string
+            String jsonString = getCollectionStatsResponse.getMessage();
+            System.out.format("Collection Stats: %s\n", jsonString);
+            GetIndexInfoResponse getIndexInfoResponse = client.getIndexInfo(collectionName);
+            System.out.format("Index Info: %s\n", getIndexInfoResponse.getIndex().get().toString());
+        }
+        ListPartitionsResponse listPartitionsResponse = client.listPartitions(collectionName);
+        System.out.println(listPartitionsResponse.getPartitionList());
 
     }
 
@@ -54,7 +70,7 @@ public class MilvusService {
         indexParamsJson.addProperty("nlist", nlist);
         Index index =
                 new Index.Builder(collectionName, indexType)
-                        .withParamsInJson(indexParamsJson.toString())
+                        //   .withParamsInJson(indexParamsJson.toString())
                         .build();
         Response createIndexResponse = client.createIndex(index);
     }
@@ -65,10 +81,10 @@ public class MilvusService {
 
     public List<Integer> search(List<Float> vector, Integer k) {
         JsonObject searchParamsJson = new JsonObject();
-        searchParamsJson.addProperty("nprobe", 20);
+        searchParamsJson.addProperty("nprobe", 256);
         SearchParam searchParam =
-                new SearchParam.Builder("collectionName")
-                        .withFloatVectors(Collections.singletonList(vector))
+                new SearchParam.Builder(MilvusInfo.COLLECTION)
+                        .withFloatVectors(Collections.singletonList(normalizeVector(vector)))
                         .withTopK(k)
                         .withParamsInJson(searchParamsJson.toString())
                         .build();
@@ -79,7 +95,7 @@ public class MilvusService {
             List<SearchResponse.QueryResult> queryResults = queryResultsList.get(0);
             return queryResults.stream().mapToInt(e -> Math.toIntExact(e.getVectorId())).boxed().collect(Collectors.toList());
         } else {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "以图搜图出错");
+            throw new BaseException(HttpStatus.BAD_REQUEST, "以图搜图出错");
         }
     }
 
@@ -89,8 +105,7 @@ public class MilvusService {
                 imageFeatureList.stream().map(this::normalizeVector).collect(Collectors.toList());
         InsertParam insertParam =
                 new InsertParam.Builder(collectionName).withFloatVectors(imageFeatureList).withVectorIds(Collections.nCopies(imageFeatureList.size(), illustId)).build();
-        InsertResponse insertResponse = client.insert(insertParam);
-        //List<Long> vectorIds = insertResponse.getVectorIds();
+        client.insert(insertParam);
         return true;
     }
 

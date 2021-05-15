@@ -1,6 +1,6 @@
-package dev.cheerfun.pixivic.biz.web.cibr.mapper;
+package dev.cheerfun.pixivic.biz.cibr.mapper;
 
-import dev.cheerfun.pixivic.biz.web.cibr.po.FeatureTag;
+import dev.cheerfun.pixivic.biz.cibr.po.FeatureTag;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
 import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;

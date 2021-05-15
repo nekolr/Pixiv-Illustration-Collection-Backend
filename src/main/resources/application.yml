@@ -160,4 +160,5 @@ rclone:
 milvus:
   host: milvus
   port: 19530
+cbirServer: hz
 

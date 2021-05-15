@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.crawler.pixiv.domain;
+package dev.cheerfun.pixivic.common.po;
 
 import dev.cheerfun.pixivic.common.util.pixiv.OathResp;
 import dev.cheerfun.pixivic.common.util.pixiv.OathRespBody;

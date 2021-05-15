@@ -1,6 +1,6 @@
 package dev.cheerfun.pixivic.common.util.pixiv.mapper;
 
-import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
+import dev.cheerfun.pixivic.common.po.PixivUser;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

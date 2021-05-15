@@ -1,13 +1,12 @@
 package dev.cheerfun.pixivic.common.util.pixiv;
 
-import dev.cheerfun.pixivic.biz.crawler.pixiv.domain.PixivUser;
+import dev.cheerfun.pixivic.common.po.PixivUser;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.Resource;
 import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;

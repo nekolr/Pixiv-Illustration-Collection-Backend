@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.cibr.dto;
+package dev.cheerfun.pixivic.biz.cibr.dto;
 
 import lombok.Data;
 

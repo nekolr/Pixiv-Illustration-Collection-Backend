@@ -1,4 +1,4 @@
-package dev.cheerfun.pixivic.biz.web.cibr.config;
+package dev.cheerfun.pixivic.biz.cibr.config;
 
 import io.milvus.client.ConnectParam;
 import io.milvus.client.MilvusClient;
@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
  * @date 2021/5/6 11:06 PM
  * @description MilvusConfig
  */
-@Configuration
+//@Configuration
 public class MilvusConfig {
     @Value("${milvus.host}")
     private String host;
