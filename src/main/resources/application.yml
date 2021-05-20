@@ -160,5 +160,7 @@ rclone:
 milvus:
   host: milvus
   port: 19530
-cbirServer: hz
+cbir:
+  server: hz
+  imageTempPath: /home/temp
 
