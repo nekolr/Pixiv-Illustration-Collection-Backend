@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.io.BaseEncoding;
 import com.squareup.okhttp.*;
-import dev.cheerfun.pixivic.biz.web.cibr.dto.Predictions;
+
+import dev.cheerfun.pixivic.biz.cibr.dto.Predictions;
 import dev.cheerfun.pixivic.biz.web.vip.po.ExchangeCode;
 import dev.cheerfun.pixivic.common.util.encrypt.CRC8;
 import lombok.Data;
