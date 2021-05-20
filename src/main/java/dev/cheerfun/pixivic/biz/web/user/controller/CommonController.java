@@ -89,6 +89,28 @@ public class CommonController {
     @PostMapping
     @CheckVerification(VerificationType.MESSAGE)
     public ResponseEntity<Result<User>> signUp(@RequestBody @Valid SignUpDTO userInfo, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+        if (userInfo.getUsername().isEmpty()) {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "用户名禁止为空");
+        }
+        if (userInfo.getEmail().isEmpty()) {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "邮箱禁止为空");
+        }
+        if (userInfo.getPassword().isEmpty()) {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "密码禁止为空");
+        }
+        if (userInfo.getEmail().contains("@") && userInfo.getEmail().contains(".")) {
+            if (userInfo.getEmail().lastIndexOf(".") < userInfo.getEmail().lastIndexOf("@")) {
+                throw new UserCommonException(HttpStatus.BAD_REQUEST, "邮箱格式错误");
+            }
+        } else {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "邮箱格式错误");
+        }
+        if (userInfo.getUsername().length() > 40 || userInfo.getUsername().length() < 2) {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "用户名长度应该在2-40之间");
+        }
+        if (userInfo.getPassword().length() > 25 || userInfo.getPassword().length() < 6) {
+            throw new UserCommonException(HttpStatus.BAD_REQUEST, "密码长度应该在6-25之间");
+        }
         User user = userInfo.castToUser();
         user.setPhone(vid);
         user = userService.signUp(user, userInfo.getExchangeCode());
