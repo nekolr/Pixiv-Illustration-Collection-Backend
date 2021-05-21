@@ -144,27 +144,28 @@ public class ReverseImageSearchService {
                 .header("Referer", "https://pixiv.net")
                 .build();
         HttpResponse<InputStream> response = httpClient.send(request, HttpResponse.BodyHandlers.ofInputStream());
-        if (response.statusCode() == 200) {
-            InputStream imageFileInputStream = response.body();
-            try {
+        InputStream imageFileInputStream = response.body();
+        try {
+            if (response.statusCode() == 200) {
                 INDArray image = loadImage(imageFileInputStream);
                 Float[] feature = generateImageFeature(image);
                 return objectMapper.writeValueAsString(feature);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } else {
                 return null;
-            } finally {
-                if (imageFileInputStream != null) {
-                    try {
-                        imageFileInputStream.close(); // 关闭流
-                    } catch (IOException e) {
-                        log.error("inputStream close IOException:" + e.getMessage());
-                    }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        } finally {
+            if (imageFileInputStream != null) {
+                try {
+                    imageFileInputStream.close(); // 关闭流
+                } catch (IOException e) {
+                    log.error("inputStream close IOException:" + e.getMessage());
                 }
             }
-        } else {
-            return null;
         }
+
     }
 
     public void saveFeatureToDb(Integer illustId, Integer imagePage, String feature) {
