@@ -44,9 +44,9 @@ public class ImageReverseSearchService {
                 .GET()
                 .build();
         String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-        Result<List<Illustration>> result = objectMapper.readValue(body, new TypeReference<Result<List<Illustration>>>() {
+        Result<List<Integer>> result = objectMapper.readValue(body, new TypeReference<Result<List<Integer>>>() {
         });
-        return result.getData();
+        return illustrationBizService.queryIllustrationByIdList(result.getData());
     }
 
     @Cacheable("generateTag")

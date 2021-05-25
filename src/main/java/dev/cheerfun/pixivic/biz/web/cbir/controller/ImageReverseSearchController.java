@@ -28,7 +28,6 @@ public class ImageReverseSearchController {
     private final ImageReverseSearchService imageReverseSearchService;
 
     @GetMapping("/similarImages")
-    @PermissionRequired
     public ResponseEntity<Result<List<Illustration>>> queryTopKSimilarImage(@RequestParam("imageUrl") String imageUrl, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws IOException, InterruptedException {
         return ResponseEntity.ok().body(new Result<>("获取以图搜图结果成功", imageReverseSearchService.queryTopKSimilarImage(imageUrl)));
     }
