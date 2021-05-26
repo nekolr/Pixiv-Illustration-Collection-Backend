@@ -144,7 +144,7 @@ public class IllustrationBizService {
             //waitForPullIllustQueue.offer(illustId);
             return null;
         }
-        if (illustration.getSanityLevel() > 6 || illustration.getTotalBookmarks() < 200) {
+        if (illustration.getSanityLevel() > 6 || illustration.getTotalBookmarks() < 100) {
             return null;
         }
         return objectMapper.convertValue(illustration, new TypeReference<Illustration>() {
