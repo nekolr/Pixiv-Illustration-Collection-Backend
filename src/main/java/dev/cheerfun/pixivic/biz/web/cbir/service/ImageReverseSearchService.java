@@ -88,7 +88,8 @@ public class ImageReverseSearchService {
             HttpRequest httpRequest = HttpRequest.newBuilder()
                     .uri(URI.create(cbirServer + "/syncIllustsInfo"))
                     .header("Content-Type", "application/json")
-                    .POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(illustrations)))
+                    .POST(HttpRequest.BodyPublishers.ofString(
+                            objectMapper.writeValueAsString(illustrations)))
                     .build();
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
             if (response.statusCode() == 200) {
