@@ -176,4 +176,9 @@ milvus:
 cbir:
   server: https://cbir.pixivic.com
   imageTempPath: /home/temp
-
+wx:
+  mp:
+    appId: wxba62cb763436c3f9
+    secret: a6583b3bf26aa7214d94e723ad80d37b
+    token: CheerfunDEV
+    aesKey: X8SKEphLReI0reXKHCJtEcPSwaZROi0REUtXSFYHeeo
