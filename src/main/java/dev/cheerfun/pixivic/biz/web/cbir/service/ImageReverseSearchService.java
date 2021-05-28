@@ -73,6 +73,7 @@ public class ImageReverseSearchService {
 
     //每日同步画作到cbirServer
     public Boolean syncToCBIRServer(String date) {
+        log.info("开始同步画作到以图搜图服务器");
         String toDate = null;
         if (date == null) {
             date = LocalDate.now().plusDays(-1).toString();
@@ -93,9 +94,11 @@ public class ImageReverseSearchService {
             if (response.statusCode() == 200) {
                 //更新数据库记录
                 cbirSyncMapper.updateSyncLog(date, 1);
+                log.info("同步画作到以图搜图服务器成功");
                 return true;
             } else {
                 cbirSyncMapper.updateSyncLog(date, 0);
+                log.info("同步画作到以图搜图服务器失败");
             }
         } catch (Exception e) {
             e.printStackTrace();
