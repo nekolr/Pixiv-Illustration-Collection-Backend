@@ -100,6 +100,7 @@ public class ImageReverseSearchService {
             } else {
                 cbirSyncMapper.updateSyncLog(date, 0);
                 log.error("同步 " + date + " 画作到以图搜图服务器失败");
+                log.error(response.statusCode() + "\n" + response.body());
             }
         } catch (Exception e) {
             e.printStackTrace();
