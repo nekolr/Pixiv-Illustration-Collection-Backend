@@ -92,7 +92,7 @@ public class ImageReverseSearchService {
                             objectMapper.writeValueAsString(illustrations)))
                     .build();
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
-            if (response.statusCode() == 200) {
+            if (response.statusCode() == 200 || response.statusCode() == 504) {
                 //更新数据库记录
                 cbirSyncMapper.updateSyncLog(date, 1);
                 log.info("同步 " + date + " 画作到以图搜图服务器成功");
