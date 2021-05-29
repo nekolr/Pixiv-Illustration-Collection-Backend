@@ -66,7 +66,7 @@ public class ImageReverseSearchService {
         return result.getData();
     }
 
-    @Scheduled(cron = "0 30 12 * * ?")
+    @Scheduled(cron = "0 30 00 * * ?")
     public void DailySyncTask() {
         syncToCBIRServer(null);
     }
