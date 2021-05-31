@@ -13,7 +13,7 @@ import java.util.List;
  */
 
 public interface CBIRSyncMapper {
-    @Select(" SELECT illust_id from illusts where update_time between #{fromDate} and #{toDate}  and total_bookmarks>100 and sanity_level<7 and x_restrict=0")
+    @Select(" SELECT illust_id from illusts where update_time between #{fromDate} and #{toDate} and type='illust'  and total_bookmarks>100 and sanity_level<7 and x_restrict=0")
     List<Integer> queryForSync(String fromDate, String toDate);
 
     @Insert("replace into cbir_sync_log (sync_date, is_finish) values (#{date},#{isFinish})")
