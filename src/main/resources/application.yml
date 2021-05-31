@@ -182,3 +182,6 @@ wx:
     secret: a6583b3bf26aa7214d94e723ad80d37b
     token: CheerfunDEV
     aesKey: X8SKEphLReI0reXKHCJtEcPSwaZROi0REUtXSFYHeeo
+jdcloud:
+  accessKeyId: 5A84A85CD2C0379657E1C8A6140A079C
+  secretAccessKey: 93173B7EA351CB7E99D99C7D1E90E479

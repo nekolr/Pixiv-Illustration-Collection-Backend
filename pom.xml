@@ -236,6 +236,13 @@
             <artifactId>weixin-java-mp</artifactId>
             <version>${WxJava.version}</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/com.jdcloud.sdk/core -->
+        <dependency>
+            <groupId>com.jdcloud.sdk</groupId>
+            <artifactId>clouddnsservice</artifactId>
+            <version>1.0.12</version>
+        </dependency>
+
     </dependencies>
     <build>
         <plugins>
