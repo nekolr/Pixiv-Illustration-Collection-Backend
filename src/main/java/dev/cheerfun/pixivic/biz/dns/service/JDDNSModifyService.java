@@ -22,7 +22,7 @@ public class JDDNSModifyService {
 
     private final ClouddnsserviceClient clouddnsserviceClient;
 
-    @Scheduled(cron = "0 0 2,10 * * ?")
+    @Scheduled(cron = "0 0 2,22 * * ?")
     public void dailyTask() {
         LocalDateTime now = LocalDateTime.now();
         int hour = now.getHour();
