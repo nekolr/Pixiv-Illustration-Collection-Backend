@@ -36,7 +36,7 @@
         <xstream.version>1.4.15</xstream.version>
         <mahout-mr.version>0.13.0</mahout-mr.version>
         <gm4java.version>1.1.1</gm4java.version>
-        <deeplearning4j.version>1.0.0-beta7</deeplearning4j.version>
+        <deeplearning4j.version>1.0.0-M1</deeplearning4j.version>
         <im4java.version>1.4.0</im4java.version>
         <tencentcloud-sdk-java.version>3.1.201</tencentcloud-sdk-java.version>
         <jproc.version>2.5.1</jproc.version>
@@ -213,11 +213,23 @@
             <groupId>org.nd4j</groupId>
             <artifactId>nd4j-native</artifactId>
             <version>${deeplearning4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.datavec</groupId>
             <artifactId>datavec-data-image</artifactId>
             <version>${deeplearning4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java -->
         <dependency>
@@ -230,6 +242,12 @@
             <groupId>org.deeplearning4j</groupId>
             <artifactId>deeplearning4j-zoo</artifactId>
             <version>${deeplearning4j.version}</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>ch.qos.logback</groupId>
+                    <artifactId>logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>com.github.binarywang</groupId>
