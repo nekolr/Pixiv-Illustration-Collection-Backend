@@ -26,7 +26,7 @@ public class JDDNSConfig {
         CredentialsProvider credentialsProvider = new StaticCredentialsProvider(accessKeyId, secretAccessKey);
         return ClouddnsserviceClient.builder()
                 .credentialsProvider(credentialsProvider)
-                .httpRequestConfig(new HttpRequestConfig.Builder().protocol(Protocol.HTTPS).build()) //默认为HTTPS
+                .httpRequestConfig(new HttpRequestConfig.Builder().protocol(Protocol.HTTP).build()) //默认为HTTPS
                 .build();
     }
 }
