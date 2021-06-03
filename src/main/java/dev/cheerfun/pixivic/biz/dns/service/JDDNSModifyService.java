@@ -1,8 +1,11 @@
 package dev.cheerfun.pixivic.biz.dns.service;
 
+import com.jdcloud.sdk.JdcloudSdkException;
 import com.jdcloud.sdk.service.clouddnsservice.client.ClouddnsserviceClient;
 import com.jdcloud.sdk.service.clouddnsservice.model.*;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.http.NoHttpResponseException;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -18,29 +21,40 @@ import java.util.List;
  */
 @AllArgsConstructor
 @Service
+@Slf4j
 public class JDDNSModifyService {
 
     private final ClouddnsserviceClient clouddnsserviceClient;
 
     @Scheduled(cron = "0 0 2,22 * * ?")
     public void dailyTask() {
+        log.info("开始修改dns解析");
         LocalDateTime now = LocalDateTime.now();
         int hour = now.getHour();
         int dayOfWeek = now.getDayOfWeek().getValue();
-        if (hour == 10) {
-            if (dayOfWeek >= 1 && dayOfWeek < 5) {
-                modifyDNSLB(1);
-            } else {
-                modifyDNSLB(2);
+        boolean flag = true;
+        while (flag) {
+            try {
+                if (hour == 10) {
+                    if (dayOfWeek >= 1 && dayOfWeek < 5) {
+                        modifyDNSLB(1);
+                    } else {
+                        modifyDNSLB(2);
+                    }
+                }
+                if (hour == 3) {
+                    if (dayOfWeek >= 1 && dayOfWeek < 5) {
+                        modifyDNSLB(0);
+                    } else {
+                        modifyDNSLB(1);
+                    }
+                }
+                flag = false;
+            } catch (JdcloudSdkException e) {
+                log.info("修改dns解析失败，即将重试");
             }
         }
-        if (hour == 3) {
-            if (dayOfWeek >= 1 && dayOfWeek < 5) {
-                modifyDNSLB(0);
-            } else {
-                modifyDNSLB(1);
-            }
-        }
+        log.info("修改dns解析结束");
     }
 
     //晚高峰前调整dns负载均衡
