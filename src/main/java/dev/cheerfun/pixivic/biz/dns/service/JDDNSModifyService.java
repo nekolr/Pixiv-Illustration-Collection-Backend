@@ -42,7 +42,7 @@ public class JDDNSModifyService {
                         modifyDNSLB(2);
                     }
                 }
-                if (hour == 3) {
+                if (hour == 2) {
                     if (dayOfWeek >= 1 && dayOfWeek < 5) {
                         modifyDNSLB(0);
                     } else {
