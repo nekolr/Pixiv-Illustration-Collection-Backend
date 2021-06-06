@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.basic.event.constant.ActionType;
 import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
 import dev.cheerfun.pixivic.basic.event.domain.Event;
 import dev.cheerfun.pixivic.basic.event.publisher.EventPublisher;
+import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
@@ -62,6 +63,7 @@ public class BusinessController {
     @GetMapping("/{userId}/bookmarked/{type}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithUserInfo
+    @RateLimit
     public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable Integer userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         List<Illustration> illustrations = businessService.queryBookmarked(userId, type, (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
