@@ -26,7 +26,7 @@ public class JDDNSModifyService {
 
     private final ClouddnsserviceClient clouddnsserviceClient;
 
-    @Scheduled(cron = "0 0 2,22 * * ?")
+    @Scheduled(cron = "0 30 1,22 * * ?")
     @PostConstruct
     public void dailyTask() {
         log.info("开始修改dns解析");
@@ -44,7 +44,7 @@ public class JDDNSModifyService {
                     }
                     return;
                 }
-                if (hour >= 2) {
+                if (hour >= 1) {
                     if (dayOfWeek >= 1 && dayOfWeek < 5) {
                         modifyDNSLB(0);
                     } else {
