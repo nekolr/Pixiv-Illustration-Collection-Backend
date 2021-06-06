@@ -480,7 +480,7 @@
           "params": []
         },
         "edit_uid": 0,
-        "status": "undone",
+        "status": "done",
         "type": "var",
         "req_body_is_json_schema": true,
         "res_body_is_json_schema": false,
@@ -495,7 +495,7 @@
         "project_id": 12,
         "req_params": [
           {
-            "_id": "600fd02b793c4c6d2f164aa3",
+            "_id": "601bf7dc793c4c6d2f164ab5",
             "name": "userId",
             "desc": ""
           }
@@ -503,12 +503,12 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1611648979,
-        "up_time": 1611649067,
+        "up_time": 1612445660,
         "req_query": [],
         "req_headers": [
           {
             "required": "1",
-            "_id": "600fd02b793c4c6d2f164aa4",
+            "_id": "601bf7dc793c4c6d2f164ab6",
             "name": "Content-Type",
             "value": "application/json"
           }
@@ -544,17 +544,17 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584610317,
-        "up_time": 1584610766,
+        "up_time": 1612614243,
         "req_query": [
           {
             "required": "1",
-            "_id": "5e733dce74367310d57d4c00",
+            "_id": "601e8a63793c4c6d2f164abe",
             "name": "vid",
             "desc": "验证码id"
           },
           {
             "required": "1",
-            "_id": "5e733dce74367310d57d4bff",
+            "_id": "601e8a63793c4c6d2f164abd",
             "name": "value",
             "example": "",
             "desc": "验证码值"
@@ -563,7 +563,7 @@
         "req_headers": [
           {
             "required": "1",
-            "_id": "5e733dce74367310d57d4c01",
+            "_id": "601e8a63793c4c6d2f164abf",
             "name": "Content-Type",
             "value": "application/json"
           }
@@ -572,7 +572,7 @@
         "__v": 0,
         "desc": "",
         "markdown": "",
-        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名(4-10位)\"},\"email\":{\"type\":\"string\",\"description\":\"邮箱\"},\"password\":{\"type\":\"string\",\"description\":\"密码(8-20位)\"}}}",
+        "req_body_other": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"username\":{\"type\":\"string\",\"description\":\"用户名(4-10位)\"},\"email\":{\"type\":\"string\",\"description\":\"邮箱\"},\"password\":{\"type\":\"string\",\"description\":\"密码(8-20位)\"},\"exchangeCode\":{\"type\":\"string\",\"description\":\"邀请码\"}}}",
         "req_body_type": "json",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"string\",\"description\":\"token\"}}}"
       },
@@ -705,14 +705,14 @@
         "index": 0,
         "tag": [],
         "_id": 95,
-        "method": "GET",
+        "method": "PUT",
         "catid": 11,
         "title": "用户设置邮箱",
         "path": "/users/{userId}/email",
         "project_id": 12,
         "req_params": [
           {
-            "_id": "5e738ca474367310d57d4c19",
+            "_id": "6096b393793c4c6d2f164ac7",
             "name": "userId",
             "desc": ""
           }
@@ -720,35 +720,30 @@
         "res_body_type": "json",
         "uid": 22,
         "add_time": 1584630868,
-        "up_time": 1584630948,
+        "up_time": 1620489107,
         "req_query": [
           {
             "required": "1",
-            "_id": "5e738ca474367310d57d4c18",
-            "name": "vid",
-            "desc": "验证码id"
-          },
-          {
-            "required": "1",
-            "_id": "5e738ca474367310d57d4c17",
-            "name": "value",
-            "example": "",
-            "desc": "验证码"
-          },
-          {
-            "required": "1",
-            "_id": "5e738ca474367310d57d4c16",
+            "_id": "6096b393793c4c6d2f164ac8",
             "name": "email",
             "example": "",
             "desc": "新邮箱地址"
           }
         ],
-        "req_headers": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "6096b393793c4c6d2f164ac9",
+            "name": "Content-Type",
+            "value": "application/x-www-form-urlencoded"
+          }
+        ],
         "req_body_form": [],
         "__v": 0,
         "desc": "",
         "markdown": "",
-        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"}}}"
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{},\"description\":\"用户信息\"}},\"required\":[\"data\"]}",
+        "req_body_type": "form"
       },
       {
         "query_path": {
@@ -1637,6 +1632,102 @@
         "desc": "",
         "markdown": "",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"vid\":{\"type\":\"string\"}}}}}"
+      }
+    ]
+  },
+  {
+    "index": 0,
+    "name": "以图搜图",
+    "desc": null,
+    "add_time": 1621958713,
+    "up_time": 1621958719,
+    "list": [
+      {
+        "query_path": {
+          "path": "/images",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 1089,
+        "method": "POST",
+        "catid": 179,
+        "title": "上传图片",
+        "path": "/images",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1621958733,
+        "up_time": 1622042745,
+        "req_query": [],
+        "req_headers": [
+          {
+            "required": "1",
+            "_id": "60ae6879793c4c6d2f164acd",
+            "name": "Content-Type",
+            "value": "multipart/form-data"
+          }
+        ],
+        "req_body_form": [
+          {
+            "required": "1",
+            "_id": "60ae6879793c4c6d2f164ace",
+            "name": "image",
+            "type": "file"
+          }
+        ],
+        "__v": 0,
+        "desc": "<p>域名是<span class=\"colour\" style=\"color:rgb(80, 80, 80)\"><a href=\"https://cbir.pixivic.com/\">https://cbir.pixivic.com/</a></span></p>\n",
+        "markdown": "域名是<span class=\"colour\" style=\"color:rgb(80, 80, 80)\">[https://cbir.pixivic.com/](https://cbir.pixivic.com/)</span>",
+        "req_body_type": "form",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"string\"}}}"
+      },
+      {
+        "query_path": {
+          "path": "/similarImages",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 1095,
+        "method": "GET",
+        "catid": 179,
+        "title": "搜索图片",
+        "path": "/similarImages",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1621959233,
+        "up_time": 1621959268,
+        "req_query": [
+          {
+            "required": "1",
+            "_id": "60ad2264793c4c6d2f164acc",
+            "name": "imageUrl",
+            "example": "2081cb44-a9d3-4a20-86ab-ed4dc262658a.jpg",
+            "desc": "上传图片返回的data"
+          }
+        ],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"artistId\":{\"type\":\"number\"},\"title\":{\"type\":\"string\"},\"type\":{\"type\":\"string\"},\"caption\":{\"type\":\"string\"},\"artistPreView\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"name\":{\"type\":\"string\"},\"account\":{\"type\":\"string\"},\"avatar\":{\"type\":\"string\"}}},\"tags\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"name\":{\"type\":\"string\"},\"translatedName\":{\"type\":\"string\"},\"id\":{\"type\":\"number\"}},\"required\":[\"name\",\"translatedName\",\"id\"]}},\"imageUrls\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"squareMedium\":{\"type\":\"string\"},\"medium\":{\"type\":\"string\"},\"large\":{\"type\":\"string\"},\"original\":{\"type\":\"string\"}},\"required\":[\"squareMedium\",\"medium\",\"large\",\"original\"]}},\"tools\":{\"type\":\"array\",\"items\":{\"type\":\"string\"}},\"createDate\":{\"type\":\"string\"},\"pageCount\":{\"type\":\"number\"},\"width\":{\"type\":\"number\"},\"height\":{\"type\":\"number\"},\"sanityLevel\":{\"type\":\"number\"},\"restrict\":{\"type\":\"number\"},\"totalView\":{\"type\":\"number\"},\"totalBookmarks\":{\"type\":\"number\"},\"xrestrict\":{\"type\":\"number\"}},\"required\":[\"id\",\"artistId\",\"title\",\"type\",\"caption\",\"artistPreView\",\"tags\",\"imageUrls\",\"tools\",\"createDate\",\"pageCount\",\"width\",\"height\",\"sanityLevel\",\"restrict\",\"totalView\",\"totalBookmarks\",\"xrestrict\"]}}}}"
       }
     ]
   },
@@ -4265,6 +4356,38 @@
         "desc": "",
         "markdown": "",
         "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"version\":{\"type\":\"string\",\"description\":\"版本号\"},\"releaseDate\":{\"type\":\"string\",\"description\":\"更新日期\"},\"updateLog\":{\"type\":\"string\",\"description\":\"更新内容\"},\"androidLink\":{\"type\":\"string\",\"description\":\"安卓链接\"},\"iosLink\":{\"type\":\"string\",\"description\":\"ios链接\"},\"isTest\":{\"type\":\"number\",\"description\":\"是否测试版\"}}}}}"
+      },
+      {
+        "query_path": {
+          "path": "/app/externalLinks",
+          "params": []
+        },
+        "edit_uid": 0,
+        "status": "done",
+        "type": "static",
+        "req_body_is_json_schema": false,
+        "res_body_is_json_schema": true,
+        "api_opened": false,
+        "index": 0,
+        "tag": [],
+        "_id": 1101,
+        "method": "GET",
+        "catid": 119,
+        "title": "获取外链",
+        "path": "/app/externalLinks",
+        "project_id": 12,
+        "req_params": [],
+        "res_body_type": "json",
+        "uid": 22,
+        "add_time": 1622983788,
+        "up_time": 1622984011,
+        "req_query": [],
+        "req_headers": [],
+        "req_body_form": [],
+        "__v": 0,
+        "desc": "",
+        "markdown": "",
+        "res_body": "{\"$schema\":\"http://json-schema.org/draft-04/schema#\",\"type\":\"object\",\"properties\":{\"message\":{\"type\":\"string\"},\"data\":{\"type\":\"array\",\"items\":{\"type\":\"object\",\"properties\":{\"id\":{\"type\":\"number\"},\"key\":{\"type\":\"string\",\"description\":\"键\"},\"value\":{\"type\":\"string\",\"description\":\"值\"}},\"required\":[\"id\",\"key\",\"value\"]}}}}"
       }
     ]
   },
