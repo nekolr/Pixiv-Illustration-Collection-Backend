@@ -26,10 +26,6 @@ public class ExchangeCodeUtil {
     private byte[] nonce;
     private int counter;
     private BaseEncoding baseEncoding = BaseEncoding.base32();
-    @PostConstruct
-    public void test() {
-        System.out.println(validateExchangeCode("PPWJ5P72LWFRDAO6"));
-    }
 
     public ExchangeCodeUtil(@Value("${chacha20.key}") String key, @Value("${chacha20.nonce}") String nonce, @Value("${chacha20.counter}") int counter) {
         this.key = key.getBytes();
