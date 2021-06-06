@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.EnableLoadTimeWeaving;
@@ -20,7 +21,6 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
  */
 @SpringBootApplication
 @EnableAsync(mode = AdviceMode.ASPECTJ)
-@EnableScheduling
 @EnableCaching(mode = AdviceMode.ASPECTJ)
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @EnableLoadTimeWeaving(aspectjWeaving = EnableLoadTimeWeaving.AspectJWeaving.ENABLED)
