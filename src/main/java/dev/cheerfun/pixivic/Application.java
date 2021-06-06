@@ -24,7 +24,7 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 @EnableCaching(mode = AdviceMode.ASPECTJ)
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ)
 @EnableLoadTimeWeaving(aspectjWeaving = EnableLoadTimeWeaving.AspectJWeaving.ENABLED)
-@EnableJpaRepositories(basePackages = {"dev.cheerfun.pixivic.biz.web.admin.repository"})
+@EnableJpaRepositories(basePackages = {"dev.cheerfun.pixivic.biz.web.admin.repository", "dev.cheerfun.pixivic.biz.web.app.repository"})
 public class Application {
     public static void main(String[] args) {
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Referer");
