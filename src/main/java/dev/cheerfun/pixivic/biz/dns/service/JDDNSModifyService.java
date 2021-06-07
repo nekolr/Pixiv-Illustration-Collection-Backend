@@ -27,7 +27,6 @@ public class JDDNSModifyService {
     private final ClouddnsserviceClient clouddnsserviceClient;
 
     @Scheduled(cron = "0 30 1,22 * * ?")
-    @PostConstruct
     public void dailyTask() {
         log.info("开始修改dns解析");
         LocalDateTime now = LocalDateTime.now();
