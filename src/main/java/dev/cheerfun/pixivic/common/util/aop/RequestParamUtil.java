@@ -46,9 +46,16 @@ public class RequestParamUtil {
             }
         }
         String xForwardedFor = queryRequestParam(RequestParamType.HEADER, AuthConstant.X_FORWARDED_FOR);
+        System.out.println(xForwardedFor);
         int i = xForwardedFor.indexOf(",");
+        int ip;
+        if (i == -1) {
+            ip = ip2Int(xForwardedFor);
+        } else {
+            ip = ip2Int(xForwardedFor.substring(0, i));
+        }
         //ip地址转int节省内存
-        int ip = ip2Int(xForwardedFor.substring(0, i));
+
         //放进threadLocal
         if (AppContext.get() != null) {
             AppContext.get().put(AuthConstant.X_FORWARDED_FOR, ip);
