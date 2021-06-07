@@ -46,7 +46,6 @@ public class RequestParamUtil {
             }
         }
         String xForwardedFor = queryRequestParam(RequestParamType.HEADER, AuthConstant.X_FORWARDED_FOR);
-        System.out.println(xForwardedFor);
         int i = xForwardedFor.indexOf(",");
         int ip;
         if (i == -1) {
