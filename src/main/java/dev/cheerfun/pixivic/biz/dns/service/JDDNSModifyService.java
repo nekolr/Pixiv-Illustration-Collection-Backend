@@ -53,6 +53,7 @@ public class JDDNSModifyService {
                 flag = false;
             } catch (JdcloudSdkException e) {
                 log.info("修改dns解析失败，即将重试");
+                flag = true;
             }
         }
         log.info("修改dns解析结束");
