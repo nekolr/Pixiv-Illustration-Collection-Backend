@@ -61,7 +61,7 @@ public class JDDNSModifyService {
 
     //晚高峰前调整dns负载均衡
     public void modifyDNSLB(Integer weight) {
-        SearchRRResponse searchRRResponse = clouddnsserviceClient.searchRR(new SearchRRRequest().domainId("4304").regionId("cn-north-1").pageNumber(2).pageSize(10));
+        SearchRRResponse searchRRResponse = clouddnsserviceClient.searchRR(new SearchRRRequest().domainId("4304").regionId("cn-north-1").pageNumber(1).pageSize(10));
         SearchRRResult result = searchRRResponse.getResult();
         List<RR> dataList = result.getDataList();
         dataList.stream().filter(e -> e.getId() == 32622660 || e.getId() == 26235035 || e.getId() == 26235034).map(e -> {

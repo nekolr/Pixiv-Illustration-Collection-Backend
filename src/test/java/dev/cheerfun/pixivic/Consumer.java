@@ -72,8 +72,8 @@ public class Consumer {
                 .credentialsProvider(credentialsProvider)
                 .httpRequestConfig(new HttpRequestConfig.Builder().protocol(Protocol.HTTPS).build()) //默认为HTTPS
                 .build();
-        GetDomainsResponse domains = clouddnsserviceClient.getDomains(new GetDomainsRequest().pageNumber(1).pageSize(40).regionId("cn-north-1"));
-        SearchRRResponse searchRRResponse = clouddnsserviceClient.searchRR(new SearchRRRequest().domainId("4304").regionId("cn-north-1").pageNumber(2).pageSize(10));
+        GetDomainsResponse domains = clouddnsserviceClient.getDomains(new GetDomainsRequest().pageNumber(0).pageSize(40).regionId("cn-north-1"));
+        SearchRRResponse searchRRResponse = clouddnsserviceClient.searchRR(new SearchRRRequest().domainId("4304").regionId("cn-north-1").pageNumber(1).pageSize(10));
         SearchRRResult result = searchRRResponse.getResult();
         List<RR> dataList = result.getDataList();
         dataList.stream().filter(e -> {
@@ -81,7 +81,7 @@ public class Consumer {
         }).map(e -> {
                     UpdateRR updateRR = new UpdateRR();
 
-                    updateRR.id(e.getId()).hostRecord(e.getHostRecord()).hostValue(e.getHostValue()).type(e.getType()).viewValue(e.getViewValue().get(0)).ttl(60).weight(2);
+                    updateRR.id(e.getId()).hostRecord(e.getHostRecord()).hostValue(e.getHostValue()).type(e.getType()).viewValue(e.getViewValue().get(0)).ttl(60).weight(1);
                     return updateRR;
                 }
 
