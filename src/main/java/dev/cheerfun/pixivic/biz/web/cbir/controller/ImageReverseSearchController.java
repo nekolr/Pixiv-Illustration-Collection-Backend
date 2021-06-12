@@ -1,6 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.cbir.controller;
 
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
+import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.cbir.service.ImageReverseSearchService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
@@ -28,6 +30,8 @@ public class ImageReverseSearchController {
     private final ImageReverseSearchService imageReverseSearchService;
 
     @GetMapping("/similarImages")
+    @WithUserInfo
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<List<Illustration>>> queryTopKSimilarImage(@RequestParam("imageUrl") String imageUrl, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws IOException, InterruptedException {
         return ResponseEntity.ok().body(new Result<>("获取以图搜图结果成功", imageReverseSearchService.queryTopKSimilarImage(imageUrl)));
     }
