@@ -59,13 +59,17 @@ public class VerifiedUtil {
                 .uri(URI.create(url + idCard + "&mobile=" + phone + "&name=" + name))
                 .GET()
                 .build();
-
-        String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-        VerifiedResponseDTO verifiedResponseDTO = objectMapper.readValue(body, new TypeReference<VerifiedResponseDTO>() {
-        });
-        if ("0".equals(verifiedResponseDTO.getCode())) {
-            return verifiedResponseDTO.getResult();
+        try {
+            String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
+            VerifiedResponseDTO verifiedResponseDTO = objectMapper.readValue(body, new TypeReference<VerifiedResponseDTO>() {
+            });
+            if ("0".equals(verifiedResponseDTO.getCode())) {
+                return verifiedResponseDTO.getResult();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+
         return null;
     }
 
