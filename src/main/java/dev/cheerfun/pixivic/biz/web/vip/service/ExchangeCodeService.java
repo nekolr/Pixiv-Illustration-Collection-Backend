@@ -94,13 +94,13 @@ public class ExchangeCodeService {
         if (exchangeCode == null) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码无效");
         }
+        if (!checkBizType(exchangeCode.getType(), exchangeCodeBizType)) {
+            throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码类型不正确");
+        }
         //校验兑换码是否使用
         Boolean useFlag = stringRedisTemplate.opsForValue().getBit(RedisKeyConstant.VIP_CODE_USAGE_RECORD_BITMAP, exchangeCode.getId());
         if (useFlag) {
             throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码已经被使用");
-        }
-        if (!checkBizType(exchangeCode.getType(), exchangeCodeBizType)) {
-            throw new BusinessException(HttpStatus.BAD_REQUEST, "兑换码类型不正确");
         }
         vipUserService.exchangeCodeToDb(userId, exchangeCode);
         stringRedisTemplate.opsForValue().setBit(RedisKeyConstant.VIP_CODE_USAGE_RECORD_BITMAP, exchangeCode.getId(), true);
