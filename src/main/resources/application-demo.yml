@@ -142,3 +142,33 @@ oauth2:
   tokenEndpoint:
   checkToken:
   userinfoEndpoint:
+review:
+  path:
+verifiedAPI:
+  secretId:
+  secretKey:
+  url:
+messageApi:
+  endpoint:
+  secretId:
+  secretKey:
+  appid:
+  templateID:
+  sign:
+rclone:
+  path:
+milvus:
+  host:
+  port:
+cbir:
+  server:
+  imageTempPath:
+wx:
+  mp:
+    appId:
+    secret:
+    token:
+    aesKey:
+jdcloud:
+  accessKeyId:
+  secretAccessKey:

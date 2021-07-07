@@ -27,6 +27,11 @@ public class ExchangeCodeUtil {
     private int counter;
     private BaseEncoding baseEncoding = BaseEncoding.base32();
 
+/*    @PostConstruct
+    public void init(){
+        System.out.println(validateExchangeCode("PMGZZNMJVTYLBAMC"));
+    }*/
+
     public ExchangeCodeUtil(@Value("${chacha20.key}") String key, @Value("${chacha20.nonce}") String nonce, @Value("${chacha20.counter}") int counter) {
         this.key = key.getBytes();
         this.nonce = nonce.getBytes();
