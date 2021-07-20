@@ -4,10 +4,7 @@ import dev.cheerfun.pixivic.basic.auth.config.AuthProperties;
 import dev.cheerfun.pixivic.basic.auth.domain.Authable;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthExpirationException;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtParser;
-import io.jsonwebtoken.JwtParserBuilder;
-import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +34,8 @@ public class JWTUtil implements Serializable {
         Claims body = null;
         try {
             body = jwtParser.parseClaimsJws(token).getBody();
+        } catch (ExpiredJwtException exception) {
+            throw new AuthExpirationException(HttpStatus.UNAUTHORIZED, "登录身份信息过期");
         } catch (Exception exception) {
             throw new AuthExpirationException(HttpStatus.UNAUTHORIZED, "token无效");
         }
