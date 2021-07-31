@@ -33,12 +33,7 @@ public class RunTest {
     volatile int j = 0;
 
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        String content = Files.readString(Path.of("/Users/oysterqaq/Desktop/1.txt"));
-        Pattern moeGirlPattern = Pattern.compile("(?<=(?:gtm-illust-recommend-user-name\" href=\"/users\\/)).+?(?=\\\")");
-        moeGirlPattern.matcher(content).results().forEach(result -> {
-            String matchKeyword = result.group();
-            System.out.println(matchKeyword + ",");
-        });
+        System.out.println(UUID.randomUUID());
     }
 
     public static boolean queryRelatedKeywordFromBaidu(String keyword) {

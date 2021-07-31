@@ -65,9 +65,20 @@ public class VIPUserService {
         return vipMapper.checkActivity(userId, activityName) == null;
     }
 
+    //判断是否试用过
+    @Cacheable(value = "CanParticipateWXActivity", key = "#openid+'-'+#activityName")
+    public Boolean checkCanParticipateWXActivity(String openid, String activityName) {
+        return vipMapper.checkWXActivity(openid, activityName) == null;
+    }
+
     @CacheEvict(value = "CanParticipateActivity", key = "#userId+'-'+#activityName")
     public void addParticipateActivityLog(Integer userId, String activityName) {
         vipMapper.addParticipateActivityLog(userId, activityName);
+    }
+
+    @CacheEvict(value = "CanParticipateWXActivity", key = "#openid+'-'+#activityName")
+    public void addParticipateWXActivityLog(String openid, String activityName) {
+        vipMapper.addParticipateWXActivityLog(openid, activityName);
     }
 
     //试用会员活动
