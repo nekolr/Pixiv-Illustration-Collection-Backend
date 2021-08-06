@@ -175,6 +175,15 @@ public class CommonController {
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("修改邮箱成功，请前往邮箱验证", user));
     }
 
+    @PutMapping("/{userId}/emailCheck")
+    @CheckVerification
+    public ResponseEntity<Result<User>> checkEmail(@RequestParam @Email String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
+        String emailAddr = value.substring(value.indexOf(":") + 1);
+        userService.setEmail(emailAddr, userId);
+        User user = userService.queryUser(userId);
+        return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
+    }
+
     @PutMapping("/{userId}")
     @PermissionRequired
     public ResponseEntity<Result<User>> updateUserInfo(@PathVariable("userId") Integer userId, @RequestBody User user, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
