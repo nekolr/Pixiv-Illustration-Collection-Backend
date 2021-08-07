@@ -76,6 +76,9 @@ public interface CommonMapper {
     @Update("update users set email=#{email} , is_check_email=0 where user_id=#{userId}")
     Integer setEmail(String email, int userId);
 
+    @Update("update users set email=#{email} , is_check_email=1 where user_id=#{userId}")
+    Integer checkEmail(String email, int userId);
+
     @Update("update users set phone=#{phone} ,permission_level= if(permission_level>1,permission_level,2) where user_id=#{userId}")
     Integer setPhone(String phone, int userId);
 

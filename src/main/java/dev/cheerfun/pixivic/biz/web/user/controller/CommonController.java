@@ -179,8 +179,9 @@ public class CommonController {
     @CheckVerification
     public ResponseEntity<Result<User>> checkEmail(@RequestParam @Email String email, @PathVariable("userId") int userId, @RequestParam("vid") String vid, @RequestParam("value") String value) {
         String emailAddr = value.substring(value.indexOf(":") + 1);
-        userService.setEmail(emailAddr, userId);
-        User user = userService.queryUser(userId);
+        User user = userService.queryUserByEmail(emailAddr);
+        userService.checkEmail(emailAddr, user.getId());
+        user = userService.queryUser(userId);
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("完成重置邮箱", user));
     }
 

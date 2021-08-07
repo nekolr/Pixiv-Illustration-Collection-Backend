@@ -171,6 +171,11 @@ public class CommonService {
         userMapper.setEmail(email, userId);
     }
 
+    @CacheEvict(value = "users", key = "#userId")
+    public void checkEmail(String email, int userId) {
+        userMapper.checkEmail(email, userId);
+    }
+
     public int setPasswordByEmail(String password, String email) {
         User user = queryUserByEmail(email);
         if (user != null) {
