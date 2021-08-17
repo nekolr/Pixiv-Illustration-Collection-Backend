@@ -84,8 +84,8 @@ public class ExecutorServiceConfig {
         );
     }
 
-    @Bean(name = "recommendDownGradeExecutorService")
-    public ExecutorService recommendDownGradeExecutorService() {
+    @Bean(name = "recommendExecutorService")
+    public ExecutorService recommendExecutorService() {
         ThreadFactory namedThreadFactory = new ThreadFactoryBuilder().setNameFormat("recommendDowngrade-pool-%d").build();
         return new ThreadPoolExecutor(
                 4,

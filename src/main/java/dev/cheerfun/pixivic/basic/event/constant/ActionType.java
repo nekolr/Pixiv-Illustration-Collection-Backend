@@ -12,6 +12,7 @@ public class ActionType {
     public final static String LIKE = "like";
     public final static String CANCEL = "cancel";
     public final static String BOOKMARK = "bookmark";
+    public final static String UN_BOOKMARK = "unBookmark";
     public final static String FOLLOW = "follow";
     public final static String PUBLISH = "publish";
     public final static String REWARD = "reward";

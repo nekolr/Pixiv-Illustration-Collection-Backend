@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.recommend.secmapper;
 
+import dev.cheerfun.pixivic.biz.recommend.domain.UREvent;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.ArtistPreView;
 import dev.cheerfun.pixivic.common.util.json.JsonTypeHandler;
@@ -33,4 +34,12 @@ public interface RecommendInitMapper {
 
     @Insert("insert ignore into items (item_id,time_stamp,labels,comment) values(#{id},#{createDate},#{collect,typeHandler=dev.cheerfun.pixivic.common.util.json.JsonTypeHandler},'')")
     void insertIterm(Integer id, List<String> collect, Date createDate);
+
+    @Select("select * from feedback limit 10000")
+    @Results({
+            @Result(property = "entityId", column = "user_id"),
+            @Result(property = "targetEntityId", column = "item_id"),
+            @Result(property = "eventTime", column = "time_stamp", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+    })
+    List<UREvent> queryAllFeedback();
 }

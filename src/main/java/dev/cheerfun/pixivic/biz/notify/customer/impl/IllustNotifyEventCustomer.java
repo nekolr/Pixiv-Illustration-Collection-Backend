@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.notify.customer.impl;
 
+import dev.cheerfun.pixivic.basic.event.constant.ActionType;
 import dev.cheerfun.pixivic.basic.event.constant.ObjectType;
 import dev.cheerfun.pixivic.basic.event.domain.Event;
 import dev.cheerfun.pixivic.biz.notify.constant.NotifyChannel;
@@ -33,9 +34,12 @@ public class IllustNotifyEventCustomer extends NotifyEventCustomer {
     @Override
     protected List<Integer> querySendTo(Event event) {
         //找出画师关注者
-        Set<String> members = stringRedisTemplate.opsForSet().members(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + event.getUserId());
-        assert members != null;
-        return members.stream().map(Integer::parseInt).collect(Collectors.toList());
+        if (event.getAction().equals(ActionType.PUBLISH)) {
+            Set<String> members = stringRedisTemplate.opsForSet().members(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + event.getUserId());
+            assert members != null;
+            return members.stream().map(Integer::parseInt).collect(Collectors.toList());
+        }
+        return null;
     }
 
     @Override

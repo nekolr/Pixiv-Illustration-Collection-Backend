@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
 import com.google.common.collect.Lists;
+import dev.cheerfun.pixivic.biz.recommend.service.RecommendSyncService;
 import dev.cheerfun.pixivic.biz.userInfo.dto.ArtistWithIsFollowedInfo;
 import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
@@ -91,6 +92,7 @@ public class BusinessService {
     public void bookmark(int userId, String username, int illustId) {
         bookmarkOperation(userId, username, illustId, 1, 0);
         recommendBizService.deleteFromRecommendationSet(userId, RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST, illustId);
+        //recommendInitService.syncUnBookmarkToHarness(userId,illustId);
         //recommendBizService.deleteFromRecommendationSet(userId, RedisKeyConstant.USER_RECOMMEND_VIEW_ILLUST, illustId);
     }
 

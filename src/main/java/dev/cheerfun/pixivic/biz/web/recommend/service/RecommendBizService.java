@@ -82,7 +82,7 @@ public class RecommendBizService {
         return null;
     }
 
-    @Async("recommendDownGradeExecutorService")
+    @Async("recommendExecutorService")
     public void downGrade(String key, Set<ZSetOperations.TypedTuple<String>> set) {
         set.forEach(e -> {
             try {

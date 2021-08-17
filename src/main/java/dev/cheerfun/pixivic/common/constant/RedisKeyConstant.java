@@ -38,5 +38,6 @@ public class RedisKeyConstant {
     public final static String VIP_CODE_SERIAL_NUMBER_PRE = "v:c:sn:";
     public final static String VIP_CODE_USAGE_RECORD_BITMAP = "v:c:u:r:b";
     public final static String VIP_CODE_USAGE_RECORD_BITMAP_PRE = "v:c:u:r:b:";
+    public final static String SYNC_BOOKMARK_TO_HARNESS_INDEX = "s:b:t:h:i";
 
 }
