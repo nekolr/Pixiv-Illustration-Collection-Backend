@@ -62,11 +62,11 @@ public class IllustBookmarkRecommendService extends RecommendService {
         String threeDaysAgo = now.plusDays(-3).toString();
         String sixDaysAgo = now.plusDays(-6).toString();
         String twelveDaysAgo = now.plusDays(-12).toString();
-        String twentyDaysAgo = now.plusDays(-20).toString();
+        String monthAgo = now.plusDays(-30).toString();
 
         //清理推荐
         //不活跃用户推荐删除
-        recommendMapper.queryUserIdByDateBefore(twentyDaysAgo).forEach(e -> {
+        recommendMapper.queryUserIdByDateBefore(monthAgo).forEach(e -> {
             stringRedisTemplate.delete(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e);
         });
 

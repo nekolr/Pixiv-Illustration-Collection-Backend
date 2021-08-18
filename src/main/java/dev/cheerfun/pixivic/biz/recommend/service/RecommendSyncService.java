@@ -1,32 +1,29 @@
 package dev.cheerfun.pixivic.biz.recommend.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.recommend.domain.UREvent;
+import dev.cheerfun.pixivic.biz.recommend.domain.URRec;
 import dev.cheerfun.pixivic.biz.recommend.mapper.RecommendMapper;
 import dev.cheerfun.pixivic.biz.recommend.secmapper.RecommendInitMapper;
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
-import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -36,21 +33,13 @@ import java.util.stream.Collectors;
  */
 @Service
 @Slf4j
+@RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecommendSyncService {
-    @Autowired
-    protected StringRedisTemplate stringRedisTemplate;
-    @Autowired
-    protected RecommendInitMapper recommendInitMapper;
-    @Autowired
-    protected IllustrationBizService illustrationBizService;
-    @Autowired
-    protected ObjectMapper objectMapper;
-    @Autowired
-    protected HttpClient httpClient;
-    @Autowired
-    protected RecommendMapper recommendMapper;
-    @Autowired
-    protected ExecutorService recommendExecutorService;
+    private final StringRedisTemplate stringRedisTemplate;
+    private final ObjectMapper objectMapper;
+    private final HttpClient httpClient;
+    private final RecommendMapper recommendMapper;
+    private final ExecutorService recommendExecutorService;
 
     @Value("${harness.url}")
     private String harnessUrl;
@@ -66,8 +55,12 @@ public class RecommendSyncService {
     public void initTask() {
         recommendExecutorService.submit(() -> {
             while (true) {
-                syncBookmarkToHarness();
-                Thread.sleep(60 * 1000);
+                try {
+                    syncBookmarkToHarness();
+                    Thread.sleep(60 * 1000);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         });
     }
@@ -88,7 +81,7 @@ public class RecommendSyncService {
                 //发送到
                 try {
                     HttpRequest request = HttpRequest.newBuilder()
-                            .uri(new URI(harnessUrl + "/engines/pixivic/events")).POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(e))).build();
+                            .uri(new URI(harnessUrl + "/engines/pixivic/queries")).POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(e))).build();
                     String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
                 } catch (Exception ex) {
                     log.error("同步到harness出错" + e);
@@ -100,9 +93,24 @@ public class RecommendSyncService {
         }
     }
 
-    //拉取推荐
-    //还是按照活跃用户来
-    //新用户实时拉取一次
+    public List<URRec> queryRecommendByUser(int userId, int num) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(harnessUrl + "/engines/pixivic/events")).POST(HttpRequest.BodyPublishers.ofString("{\"user\":\"" + userId + "\",\"num\":" + num + "}")).build();
+            String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            return objectMapper.readValue(body, new TypeReference<List<URRec>>() {
+            });
+        } catch (Exception ex) {
+            log.error("从harness拉取推荐出错" + ex);
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
+    @Cacheable("queryRecommendByPop")
+    public List<URRec> queryRecommendByPop() {
+        return queryRecommendByUser(0, 900);
+    }
 
     //异步删除
     @Async("recommendExecutorService")
@@ -110,8 +118,8 @@ public class RecommendSyncService {
 
     }
 
-    public void newRecommendDataInit() throws IOException {
-/*        //取ID index
+    /*    public void newRecommendDataInit() throws IOException {
+     *//*        //取ID index
         Integer id = Integer.valueOf(Optional.ofNullable(stringRedisTemplate.opsForValue().get("r:l:id:")).orElse("434721"));
         //抽取illust,每万个一批次,记录末尾元素id到redis
         List<Illustration> illsuIdList = recommendInitMapper.queryIllustToInertItem(id);
@@ -131,7 +139,7 @@ public class RecommendSyncService {
         //插入到item表中 （insert ignore）
         //取bookmark表 限制类型为illust 每万个一批次
         //插入feedback表
-        //从feedbak插入user表（无label）*/
+        //从feedbak插入user表（无label）*//*
 
         //取出所有feedback转为json 存入文件
         List<UREvent> urEvents = recommendInitMapper.queryAllFeedback();
@@ -148,5 +156,5 @@ public class RecommendSyncService {
         Path file = Paths.get("/Users/oysterqaq/Desktop/import.txt");
         Files.write(file, lines, StandardCharsets.UTF_8);
 
-    }
+    }*/
 }
