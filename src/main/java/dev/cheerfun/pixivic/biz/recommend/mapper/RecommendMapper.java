@@ -25,4 +25,13 @@ public interface RecommendMapper {
             @Result(property = "eventTime", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
     })
     List<UREvent> queryBookmarkById(Integer bookmarkId);
+
+    @Select("select * from user_illust_bookmarked")
+    @Results({
+            @Result(property = "eventId", column = "id"),
+            @Result(property = "entityId", column = "user_id"),
+            @Result(property = "targetEntityId", column = "illust_id"),
+            @Result(property = "eventTime", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+    })
+    List<UREvent> queryAllBookmark();
 }

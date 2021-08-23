@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.recommend.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.biz.recommend.domain.UREvent;
@@ -18,12 +19,18 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+import java.util.stream.Collectors;
 
 /**
  * @author OysterQAQ
@@ -44,12 +51,11 @@ public class RecommendSyncService {
     @Value("${harness.url}")
     private String harnessUrl;
 
-    @PostConstruct
-    public void init() {
+    //@PostConstruct
+    public void init() throws IOException {
         log.info("开始初始化推荐服务");
         initTask();
         log.info("初始化推荐服务成功");
-
     }
 
     public void initTask() {
@@ -75,28 +81,31 @@ public class RecommendSyncService {
                 flag = false;
             }
             urEvents.forEach(e -> {
+                log.error("开始同步" + e);
                 e.setEvent("bookmark");
                 e.setEntityType("user");
                 e.setTargetEntityType("illust");
                 //发送到
                 try {
                     HttpRequest request = HttpRequest.newBuilder()
-                            .uri(new URI(harnessUrl + "/engines/pixivic/queries")).POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(e))).build();
+                            .uri(new URI(harnessUrl + "/engines/pixivic/events")).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(e))).build();
                     String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+                    log.info(body);
                 } catch (Exception ex) {
                     log.error("同步到harness出错" + e);
                     ex.printStackTrace();
                     return;
                 }
             });
-            stringRedisTemplate.opsForValue().set(RedisKeyConstant.SYNC_BOOKMARK_TO_HARNESS_INDEX, urEvents.get(urEvents.size() - 1).getEventId());
+            bookMarkIdIndex = Integer.valueOf(urEvents.get(urEvents.size() - 1).getEventId());
+            stringRedisTemplate.opsForValue().set(RedisKeyConstant.SYNC_BOOKMARK_TO_HARNESS_INDEX, String.valueOf(bookMarkIdIndex));
         }
     }
 
     public List<URRec> queryRecommendByUser(int userId, int num) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(harnessUrl + "/engines/pixivic/events")).POST(HttpRequest.BodyPublishers.ofString("{\"user\":\"" + userId + "\",\"num\":" + num + "}")).build();
+                    .uri(new URI(harnessUrl + "/engines/pixivic/queries")).POST(HttpRequest.BodyPublishers.ofString("{\"user\":\"" + userId + "\",\"num\":" + num + "}")).build();
             String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
             return objectMapper.readValue(body, new TypeReference<List<URRec>>() {
             });

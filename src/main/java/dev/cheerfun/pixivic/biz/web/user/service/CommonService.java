@@ -166,7 +166,10 @@ public class CommonService {
         return userMapper.setAvatar(avatar, userId);
     }
 
-    @CacheEvict(value = "users", key = "#userId")
+    @Caching(evict = {
+            @CacheEvict(value = "users", key = "#userId"),
+            @CacheEvict(value = "checkEmail", key = "#email")
+    })
     public void setEmail(String email, int userId) {
         userMapper.setEmail(email, userId);
     }
