@@ -203,11 +203,11 @@ public class CommonController {
     @PermissionRequired
     public ResponseEntity<Result<User>> updateUsername(@RequestParam String username, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         User user = null;
-        try {
+     //   try {
             user = userService.updateUsername((Integer) AppContext.get().get(AuthConstant.USER_ID), username);
-        } catch (Exception e) {
+      /*  } catch (Exception e) {
             throw new UserCommonException(HttpStatus.BAD_REQUEST, "修改失败，可能是用户名重复");
-        }
+        }*/
         return ResponseEntity.ok().body(new Result<>("修改用户名成功，部分模块缓存等待自动刷新", user));
     }
 
