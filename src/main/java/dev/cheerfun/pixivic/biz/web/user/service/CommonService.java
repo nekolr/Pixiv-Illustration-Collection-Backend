@@ -373,7 +373,8 @@ public class CommonService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "users", key = "#userId")
+            @CacheEvict(value = "users", key = "#userId"),
+            @CacheEvict(value = "checkUsername", key = "#username")
     })
     @Transactional
     public void updateUsernameToDb(Integer userId, String username) {
