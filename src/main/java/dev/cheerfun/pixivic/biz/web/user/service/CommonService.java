@@ -402,9 +402,12 @@ public class CommonService {
         userMapper.setPhone(phone, userId);
     }
 
-
-
     public User signInWithPhone(String phone) {
         return queryUser(userMapper.queryUserByPhone(phone));
+    }
+
+    public boolean validatePassword(int userId, String oldPassword) {
+        User user = queryUser(userId);
+        return passwordUtil.encrypt(oldPassword).equals(user.getPassword());
     }
 }

@@ -235,7 +235,10 @@ public class CommonController {
     @PutMapping("/{userId}/password")
     @PermissionRequired
     public ResponseEntity<Result> setPassword(@RequestHeader(AuthConstant.AUTHORIZATION) String token, @RequestBody ResetPasswordDTO item) {
-        userService.setPasswordById(passwordUtil.encrypt(item.getPassword()), (int) AppContext.get().get(AuthConstant.USER_ID));
+        int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
+        if (userService.validatePassword(userId, item.getOldPassword())) {
+            userService.setPasswordById(passwordUtil.encrypt(item.getPassword()), userId);
+        }
         return ResponseEntity.ok().body(new Result<>("修改密码成功"));
     }
 
