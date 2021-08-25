@@ -238,8 +238,10 @@ public class CommonController {
         int userId = (int) AppContext.get().get(AuthConstant.USER_ID);
         if (userService.validatePassword(userId, item.getOldPassword())) {
             userService.setPasswordById(passwordUtil.encrypt(item.getPassword()), userId);
+            return ResponseEntity.ok().body(new Result<>("修改密码成功"));
         }
-        return ResponseEntity.ok().body(new Result<>("修改密码成功"));
+        return ResponseEntity.badRequest().body(new Result<>("旧密码不正确"));
+
     }
 
     @GetMapping("/emails/{email:.+}/resetPasswordEmail")
