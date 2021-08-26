@@ -61,7 +61,7 @@ public class BusinessController {
     }
 
     @GetMapping("/{userId}/bookmarked/{type}")
-    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    @PermissionRequired
     @WithUserInfo
     @RateLimit
     public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable Integer userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
