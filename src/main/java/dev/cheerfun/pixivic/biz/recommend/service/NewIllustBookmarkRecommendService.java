@@ -63,8 +63,8 @@ public class NewIllustBookmarkRecommendService {
 
     }
 
-    public void dealPerUser(List<Integer> u, Integer size) {
-        u.stream().parallel().forEach(e -> {
+    public void dealPerUser(List<Integer> userList, Integer size) {
+        userList.stream().parallel().forEach(e -> {
             try {
                 List<URRec> urRecList = recommendSyncService.queryRecommendByUser(e, size);
                 //重置分数
@@ -72,9 +72,9 @@ public class NewIllustBookmarkRecommendService {
                         //过滤已经收藏的
                         .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + e, r.getItem())))
                         .map(recommendedItem -> {
-                                    Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
-                                    if (score == null) {
-                                        score = (double) recommendedItem.getScore();
+                            Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
+                            if (score == null) {
+                                score = (double) recommendedItem.getScore();
                                     }
                                     return new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItem()), score);
                                 }
