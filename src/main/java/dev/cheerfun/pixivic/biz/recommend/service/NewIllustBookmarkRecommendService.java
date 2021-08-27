@@ -1,8 +1,13 @@
 package dev.cheerfun.pixivic.biz.recommend.service;
 
 import dev.cheerfun.pixivic.biz.recommend.domain.URRec;
+import dev.cheerfun.pixivic.biz.recommend.mapper.RecommendMapper;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.mahout.cf.taste.common.TasteException;
+import org.apache.mahout.cf.taste.model.DataModel;
+import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -10,6 +15,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,14 +28,43 @@ import java.util.stream.Collectors;
  */
 
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NewIllustBookmarkRecommendService {
     private final RecommendSyncService recommendSyncService;
     private final StringRedisTemplate stringRedisTemplate;
+    private final RecommendMapper recommendMapper;
 
     //@PostConstruct()
     public void test() {
         dealPerUser(List.of(2623, 53), 3000);
+    }
+
+    public void recommend() throws TasteException {
+        log.info("开始生成推荐，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
+        //根据活跃度分级生成
+        LocalDate now = LocalDate.now();
+        String today = now.plusDays(2).toString();
+        String threeDaysAgo = now.plusDays(-3).toString();
+        String sixDaysAgo = now.plusDays(-6).toString();
+        String twelveDaysAgo = now.plusDays(-12).toString();
+        String monthAgo = now.plusDays(-30).toString();
+
+        //清理推荐
+        //不活跃用户推荐删除
+        recommendMapper.queryUserIdByDateBefore(monthAgo).forEach(e -> {
+            stringRedisTemplate.delete(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e);
+        });
+
+        List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
+        dealPerUser(u1, 6000);
+        List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
+        dealPerUser(u2, 4000);
+        List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
+        dealPerUser(u3, 2000);
+        System.gc();
+        log.info("垃圾清理结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
+
     }
 
     public void dealPerUser(List<Integer> u, Integer size) {
@@ -40,7 +75,7 @@ public class NewIllustBookmarkRecommendService {
                     //过滤已经收藏的
                     .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + e, r.getItem())))
                     .map(recommendedItem -> {
-                                Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
+                        Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
                                 if (score == null) {
                                     score = (double) recommendedItem.getScore();
                                 }

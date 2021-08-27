@@ -19,15 +19,16 @@ import java.util.Objects;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecommendDailyTaskService {
     private final RecommendService illustBookmarkRecommendService;
-    private final RecommendService illustViewRecommendService;
+    private final NewIllustBookmarkRecommendService newIllustBookmarkRecommendService;
     private final RecommendService artistRecommendService;
     private final CacheManager cacheManager;
 
-    @Scheduled(cron = "0 0 1 * * ?")
+    @Scheduled(cron = "0 0 1 * * WED")
     public void genarateTask() throws TasteException {
         clearCache();
-        illustBookmarkRecommendService.recommend();
-        artistRecommendService.recommend();
+        //illustBookmarkRecommendService.recommend();
+        //artistRecommendService.recommend();
+        newIllustBookmarkRecommendService.recommend();
         //illustViewRecommendService.recommend();
     }
 

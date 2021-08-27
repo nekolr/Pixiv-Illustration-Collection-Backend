@@ -51,7 +51,7 @@ public class RecommendSyncService {
     @Value("${harness.url}")
     private String harnessUrl;
 
-    //@PostConstruct
+    @PostConstruct
     public void init() throws IOException {
         log.info("开始初始化推荐服务");
         initTask();
@@ -76,13 +76,13 @@ public class RecommendSyncService {
     public void syncBookmarkToHarness() {
         Boolean flag = true;
         Integer bookMarkIdIndex = Integer.valueOf(stringRedisTemplate.opsForValue().get(RedisKeyConstant.SYNC_BOOKMARK_TO_HARNESS_INDEX));
+        log.info("开始同步收藏数据，bookMarkIdIndex为：" + bookMarkIdIndex);
         while (flag) {
             List<UREvent> urEvents = recommendMapper.queryBookmarkById(bookMarkIdIndex);
             if (urEvents.size() == 0) {
-                flag = false;
+                return;
             }
             urEvents.forEach(e -> {
-                log.error("开始同步" + e);
                 e.setEvent("bookmark");
                 e.setEntityType("user");
                 e.setTargetEntityType("illust");
@@ -91,7 +91,6 @@ public class RecommendSyncService {
                     HttpRequest request = HttpRequest.newBuilder()
                             .uri(new URI(harnessUrl + "/engines/pixivic/events")).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(e))).build();
                     String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-                    log.info(body);
                 } catch (Exception ex) {
                     log.error("同步到harness出错" + e);
                     ex.printStackTrace();
