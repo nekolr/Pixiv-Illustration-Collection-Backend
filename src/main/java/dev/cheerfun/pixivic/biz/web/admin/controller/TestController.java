@@ -3,10 +3,12 @@ package dev.cheerfun.pixivic.biz.web.admin.controller;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.recommend.service.NewIllustBookmarkRecommendService;
+import dev.cheerfun.pixivic.biz.recommend.service.RecommendDailyTaskService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.mahout.cf.taste.common.TasteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -27,10 +29,11 @@ import java.util.List;
 @RequestMapping("/test")
 public class TestController {
     private final NewIllustBookmarkRecommendService newIllustBookmarkRecommendService;
+    private final RecommendDailyTaskService recommendDailyTaskService;
 
     @GetMapping("/recInit")
-    public ResponseEntity<Result<List<String>>> getCheckEmail(@RequestParam Integer userId) {
-        newIllustBookmarkRecommendService.dealPerUser(List.of(userId), 3000);
+    public ResponseEntity<Result<List<String>>> getCheckEmail() throws TasteException {
+        recommendDailyTaskService.genarateTask();
         return ResponseEntity.ok().body(new Result<>("生成推荐成功"));
     }
 }

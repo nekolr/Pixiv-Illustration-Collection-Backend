@@ -18,25 +18,12 @@ import java.util.Objects;
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecommendDailyTaskService {
-    private final RecommendService illustBookmarkRecommendService;
     private final NewIllustBookmarkRecommendService newIllustBookmarkRecommendService;
-    private final RecommendService artistRecommendService;
-    private final CacheManager cacheManager;
 
     @Scheduled(cron = "0 0 1 * * WED")
     public void genarateTask() throws TasteException {
-        clearCache();
-        //illustBookmarkRecommendService.recommend();
-        //artistRecommendService.recommend();
         newIllustBookmarkRecommendService.recommend();
-        //illustViewRecommendService.recommend();
     }
 
-    private void clearCache() {
-        //清理缓存
-        cacheManager.getCacheNames()
-                .forEach(cacheName -> Objects.requireNonNull(cacheManager.getCache(cacheName)).clear());
-        System.gc();
-    }
 
 }

@@ -57,11 +57,11 @@ public class NewIllustBookmarkRecommendService {
         });
 
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
-        dealPerUser(u1, 6000);
+        dealPerUser(u1, 7000);
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
-        dealPerUser(u2, 4000);
+        dealPerUser(u2, 5000);
         List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
-        dealPerUser(u3, 2000);
+        dealPerUser(u3, 3000);
         System.gc();
         log.info("垃圾清理结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
 
