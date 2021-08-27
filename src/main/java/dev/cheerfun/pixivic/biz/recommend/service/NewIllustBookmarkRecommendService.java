@@ -35,10 +35,6 @@ public class NewIllustBookmarkRecommendService {
     private final StringRedisTemplate stringRedisTemplate;
     private final RecommendMapper recommendMapper;
 
-    //@PostConstruct()
-    public void test() {
-        dealPerUser(List.of(2623, 53), 3000);
-    }
 
     public void recommend() throws TasteException {
         log.info("开始生成推荐，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
