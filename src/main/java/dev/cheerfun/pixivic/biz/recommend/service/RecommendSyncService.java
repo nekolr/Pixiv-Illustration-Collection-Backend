@@ -63,7 +63,8 @@ public class RecommendSyncService {
             while (true) {
                 try {
                     syncBookmarkToHarness();
-                    Thread.sleep(60 * 1000);
+                    //十分钟同步一次
+                    Thread.sleep(60 * 1000 * 10);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

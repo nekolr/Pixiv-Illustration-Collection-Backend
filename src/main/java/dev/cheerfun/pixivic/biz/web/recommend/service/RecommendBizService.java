@@ -86,7 +86,7 @@ public class RecommendBizService {
     public void downGrade(String key, Set<ZSetOperations.TypedTuple<String>> set) {
         set.forEach(e -> {
             try {
-                double result = e.getScore() - random.nextDouble();
+                double result = e.getScore() - random.nextInt(21);
                 if (result < 0) {
                     stringRedisTemplate.opsForZSet().remove(key, e.getValue());
                 } else {
