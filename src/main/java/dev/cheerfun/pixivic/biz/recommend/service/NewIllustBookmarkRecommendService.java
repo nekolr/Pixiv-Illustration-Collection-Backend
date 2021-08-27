@@ -65,25 +65,30 @@ public class NewIllustBookmarkRecommendService {
 
     public void dealPerUser(List<Integer> u, Integer size) {
         u.stream().parallel().forEach(e -> {
-            List<URRec> urRecList = recommendSyncService.queryRecommendByUser(e, size);
-            //重置分数
-            Set<ZSetOperations.TypedTuple<String>> typedTuples = urRecList.stream()
-                    //过滤已经收藏的
-                    .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + e, r.getItem())))
-                    .map(recommendedItem -> {
-                        Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
-                                if (score == null) {
-                                    score = (double) recommendedItem.getScore();
+            try {
+                List<URRec> urRecList = recommendSyncService.queryRecommendByUser(e, size);
+                //重置分数
+                Set<ZSetOperations.TypedTuple<String>> typedTuples = urRecList.stream()
+                        //过滤已经收藏的
+                        .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + e, r.getItem())))
+                        .map(recommendedItem -> {
+                                    Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
+                                    if (score == null) {
+                                        score = (double) recommendedItem.getScore();
+                                    }
+                                    return new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItem()), score);
                                 }
-                                return new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItem()), score);
-                            }
-                    ).collect(Collectors.toSet());
-            if (typedTuples.size() > 0) {
-                //清空
-                stringRedisTemplate.delete(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e);
-                //新增
-                stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, typedTuples);
+                        ).collect(Collectors.toSet());
+                if (typedTuples.size() > 0) {
+                    //清空
+                    stringRedisTemplate.delete(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e);
+                    //新增
+                    stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, typedTuples);
+                }
+            } catch (Exception exception) {
+                exception.printStackTrace();
             }
+
         });
     }
 }
