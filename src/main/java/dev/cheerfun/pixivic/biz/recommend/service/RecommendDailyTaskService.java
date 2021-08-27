@@ -27,7 +27,7 @@ public class RecommendDailyTaskService {
     public void genarateTask() throws TasteException {
         clearCache();
         //illustBookmarkRecommendService.recommend();
-        artistRecommendService.recommend();
+        //artistRecommendService.recommend();
         newIllustBookmarkRecommendService.recommend();
         //illustViewRecommendService.recommend();
     }
