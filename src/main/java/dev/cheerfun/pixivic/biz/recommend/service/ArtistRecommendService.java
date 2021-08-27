@@ -76,7 +76,7 @@ public class ArtistRecommendService extends RecommendService {
 
         生成10*30个推荐画师*/
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
-        dealPerUser(u1, recommender, 30);
+        dealPerUser(u1, recommender, 60);
      /*
         3-6天
 
@@ -86,7 +86,7 @@ public class ArtistRecommendService extends RecommendService {
 
         生成10*10个推荐画师*/
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
-        dealPerUser(u2, recommender, 15);
+        dealPerUser(u2, recommender, 30);
 
      /*   6-12天
 
@@ -96,7 +96,7 @@ public class ArtistRecommendService extends RecommendService {
 
         生成10*10个推荐画师*/
         List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
-        dealPerUser(u3, recommender, 10);
+        dealPerUser(u3, recommender, 20);
         return true;
     }
 
