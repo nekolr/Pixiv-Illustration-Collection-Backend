@@ -31,6 +31,6 @@ public class TestController {
     @GetMapping("/recInit")
     public ResponseEntity<Result<List<String>>> getCheckEmail(@RequestParam Integer userId) {
         newIllustBookmarkRecommendService.dealPerUser(List.of(userId), 3000);
-        return ResponseEntity.ok().body(new Result<>("rec测试成功"));
+        return ResponseEntity.ok().body(new Result<>("生成推荐成功"));
     }
 }
