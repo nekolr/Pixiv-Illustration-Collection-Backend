@@ -105,9 +105,9 @@ public class RecommendSyncService {
     public List<URRec> queryRecommendByUser(int userId, int num) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(new URI(harnessUrl + "/engines/pixivic/queries")).POST(HttpRequest.BodyPublishers.ofString("{\"user\":\"" + userId + "\",\"num\":" + num + "}")).build();
+                    .uri(new URI(harnessUrl + "/engines/pixivic/queries")).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString("{\"user\":\"" + userId + "\",\"num\":" + num + "}")).build();
             String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
-            return objectMapper.readValue(body, new TypeReference<List<URRec>>() {
+            return objectMapper.readValue(body.substring(10, body.length() - 1), new TypeReference<List<URRec>>() {
             });
         } catch (Exception ex) {
             log.error("从harness拉取推荐出错" + ex);
