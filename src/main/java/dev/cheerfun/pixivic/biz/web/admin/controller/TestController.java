@@ -43,7 +43,7 @@ public class TestController {
         String sixDaysAgo = now.plusDays(-6).toString();
         String twelveDaysAgo = now.plusDays(-12).toString();
         String monthAgo = now.plusDays(-30).toString();
-        recommendDailyTaskService.genarateTask();
+        //recommendDailyTaskService.genarateTask();
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
         newIllustBookmarkRecommendService.dealPerUser(u2, 3000);
         List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
