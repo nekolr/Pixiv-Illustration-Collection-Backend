@@ -5,12 +5,14 @@ import dev.cheerfun.pixivic.biz.recommend.mapper.RecommendMapper;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.mahout.cf.taste.common.TasteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -30,6 +32,31 @@ public class NewArtistRecommendService {
     private final StringRedisTemplate stringRedisTemplate;
     private final RecommendMapper recommendMapper;
 
+    public void recommend() throws TasteException {
+        //根据活跃度分级生成
+        LocalDate now = LocalDate.now();
+        String today = now.plusDays(2).toString();
+        String threeDaysAgo = now.plusDays(-3).toString();
+        String sixDaysAgo = now.plusDays(-6).toString();
+        String twelveDaysAgo = now.plusDays(-12).toString();
+        String monthAgo = now.plusDays(-30).toString();
+
+        //清理推荐
+        //不活跃用户推荐删除
+        recommendMapper.queryUserIdByDateBefore(monthAgo).forEach(e -> {
+            stringRedisTemplate.delete(RedisKeyConstant.USER_RECOMMEND_ARTIST + e);
+        });
+
+        List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
+        dealPerUser(u1, 600);
+        List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
+        dealPerUser(u2, 500);
+        List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
+        dealPerUser(u3, 200);
+        System.gc();
+
+    }
+
     public void dealPerUser(List<Integer> userList, Integer size) {
         userList.stream().parallel().forEach(e -> {
             try {
@@ -37,7 +64,7 @@ public class NewArtistRecommendService {
                 //重置分数
                 Set<ZSetOperations.TypedTuple<String>> typedTuples = urRecList.stream()
                         //过滤已经收藏的
-                        .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + r.getItem(), e)))
+                        .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + r.getItem(), String.valueOf(e))))
                         .map(recommendedItem -> {
                                     Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_ARTIST + e, String.valueOf(recommendedItem.getItem()));
                                     if (score == null) {

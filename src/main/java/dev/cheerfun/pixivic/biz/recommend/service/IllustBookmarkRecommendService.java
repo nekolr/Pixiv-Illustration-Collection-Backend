@@ -32,7 +32,7 @@ import java.util.stream.Collectors;
  * @date 2020/7/8 10:05 下午
  * @description IllustBookmarkRecommender
  */
-@Service
+//@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustBookmarkRecommendService extends RecommendService {
     @Override

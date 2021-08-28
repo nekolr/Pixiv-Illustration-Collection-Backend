@@ -29,7 +29,7 @@ import java.io.IOException;
  * @date 2020/7/7 3:18 下午
  * @description RecommendService
  */
-@Service
+//@Service
 @Slf4j
 public abstract class RecommendService {
     @Autowired

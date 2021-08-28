@@ -32,7 +32,6 @@ public class NewIllustBookmarkRecommendService {
     private final StringRedisTemplate stringRedisTemplate;
     private final RecommendMapper recommendMapper;
 
-
     public void recommend() throws TasteException {
         log.info("开始生成推荐，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
         //根据活跃度分级生成
@@ -69,9 +68,9 @@ public class NewIllustBookmarkRecommendService {
                         //过滤已经收藏的
                         .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + e, r.getItem())))
                         .map(recommendedItem -> {
-                            Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
-                            if (score == null) {
-                                score = (double) recommendedItem.getScore();
+                                    Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
+                                    if (score == null) {
+                                        score = (double) recommendedItem.getScore();
                                     }
                                     return new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItem()), score);
                                 }

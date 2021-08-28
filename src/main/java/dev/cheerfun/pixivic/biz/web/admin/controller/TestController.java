@@ -1,11 +1,8 @@
 package dev.cheerfun.pixivic.biz.web.admin.controller;
 
-import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
-import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.biz.recommend.mapper.RecommendMapper;
 import dev.cheerfun.pixivic.biz.recommend.service.NewIllustBookmarkRecommendService;
-import dev.cheerfun.pixivic.biz.recommend.service.RecommendDailyTaskService;
-import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.biz.recommend.service.RecommendTaskService;
 import dev.cheerfun.pixivic.common.po.Result;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,7 +12,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -32,7 +28,7 @@ import java.util.List;
 public class TestController {
     private final NewIllustBookmarkRecommendService newIllustBookmarkRecommendService;
     private final RecommendMapper recommendMapper;
-    private final RecommendDailyTaskService recommendDailyTaskService;
+    private final RecommendTaskService recommendTaskService;
 
 
     @GetMapping("/recInit")

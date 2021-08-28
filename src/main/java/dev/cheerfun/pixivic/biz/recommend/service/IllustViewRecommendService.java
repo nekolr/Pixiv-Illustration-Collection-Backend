@@ -33,7 +33,7 @@ import java.util.stream.Collectors;
  * @date 2020/7/8 10:06 下午
  * @description IllustViewRecommendService
  */
-@Service
+//@Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustViewRecommendService extends RecommendService {
     @Override
