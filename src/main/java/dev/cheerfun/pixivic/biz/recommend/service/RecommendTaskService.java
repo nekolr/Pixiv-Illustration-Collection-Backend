@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.recommend.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
@@ -16,17 +17,20 @@ import java.util.Objects;
  * @description RecommendDailyTaskService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RecommendTaskService {
     private final NewIllustBookmarkRecommendService newIllustBookmarkRecommendService;
     private final NewArtistRecommendService newArtistRecommendService;
     private final CacheManager cacheManager;
 
-    @Scheduled(cron = "0 0 1 * * SUN,TUE,THU")
+    @Scheduled(cron = "0 0 4 * * SUN,TUE,THU")
     public void genarateTask() throws TasteException {
+        log.info("开始拉取推荐");
         clearCache();
         newIllustBookmarkRecommendService.recommend();
         newArtistRecommendService.recommend();
+        log.info("拉取推荐结束");
     }
 
     private void clearCache() {
