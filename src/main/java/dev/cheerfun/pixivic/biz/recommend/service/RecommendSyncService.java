@@ -7,7 +7,6 @@ import dev.cheerfun.pixivic.biz.recommend.domain.UREvent;
 import dev.cheerfun.pixivic.biz.recommend.domain.URRec;
 import dev.cheerfun.pixivic.biz.recommend.mapper.RecommendMapper;
 import dev.cheerfun.pixivic.biz.recommend.secmapper.RecommendInitMapper;
-import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -46,6 +45,7 @@ public class RecommendSyncService {
     private final ObjectMapper objectMapper;
     private final HttpClient httpClient;
     private final RecommendMapper recommendMapper;
+    private final RecommendInitMapper recommendInitMapper;
     private final ExecutorService recommendExecutorService;
 
     @Value("${harness.url}")
@@ -53,6 +53,7 @@ public class RecommendSyncService {
 
     @PostConstruct
     public void init() throws IOException {
+
         log.info("开始初始化推荐服务");
         initTask();
         log.info("初始化推荐服务成功");
@@ -63,6 +64,7 @@ public class RecommendSyncService {
             while (true) {
                 try {
                     syncBookmarkToHarness();
+                    syncFollowToHarness();
                     //十分钟同步一次
                     Thread.sleep(60 * 1000 * 10);
                 } catch (Exception e) {
@@ -72,7 +74,7 @@ public class RecommendSyncService {
         });
     }
 
-    //每分钟从收藏表中取数据取数据，进行插入到harness，更新redis的indexId
+    //每十分钟从收藏表中取数据取数据，进行插入到harness，更新redis的indexId
     public void syncBookmarkToHarness() {
         Boolean flag = true;
         Integer bookMarkIdIndex = Integer.valueOf(stringRedisTemplate.opsForValue().get(RedisKeyConstant.SYNC_BOOKMARK_TO_HARNESS_INDEX));
@@ -102,7 +104,37 @@ public class RecommendSyncService {
         }
     }
 
-    public List<URRec> queryRecommendByUser(int userId, int num) {
+    //每十分钟从收藏表中取数据取数据，进行插入到harness，更新redis的indexId
+    public void syncFollowToHarness() {
+        Boolean flag = true;
+        Integer followIdIndex = Integer.valueOf(stringRedisTemplate.opsForValue().get(RedisKeyConstant.SYNC_FOLLOW_TO_HARNESS_INDEX));
+        log.info("开始同步收藏数据，followIdIndex为：" + followIdIndex);
+        while (flag) {
+            List<UREvent> urEvents = recommendMapper.queryFollowById(followIdIndex);
+            if (urEvents.size() == 0) {
+                return;
+            }
+            urEvents.forEach(e -> {
+                e.setEvent("follow");
+                e.setEntityType("user");
+                e.setTargetEntityType("artist");
+                //发送到
+                try {
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .uri(new URI(harnessUrl + "/engines/pixivic-artist/events")).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString(objectMapper.writeValueAsString(e))).build();
+                    String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+                } catch (Exception ex) {
+                    log.error("同步到harness出错" + e);
+                    ex.printStackTrace();
+                    return;
+                }
+            });
+            followIdIndex = Integer.valueOf(urEvents.get(urEvents.size() - 1).getEventId());
+            stringRedisTemplate.opsForValue().set(RedisKeyConstant.SYNC_FOLLOW_TO_HARNESS_INDEX, String.valueOf(followIdIndex));
+        }
+    }
+
+    public List<URRec> queryRecommendIllustByUser(int userId, int num) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(new URI(harnessUrl + "/engines/pixivic/queries")).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString("{\"user\":\"" + userId + "\",\"num\":" + num + "}")).build();
@@ -116,9 +148,23 @@ public class RecommendSyncService {
         return null;
     }
 
+    public List<URRec> queryRecommendArtistByUser(int userId, int num) {
+        try {
+            HttpRequest request = HttpRequest.newBuilder()
+                    .uri(new URI(harnessUrl + "/engines/pixivic-artist/queries")).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString("{\"user\":\"" + userId + "\",\"num\":" + num + "}")).build();
+            String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
+            return objectMapper.readValue(body.substring(10, body.length() - 1), new TypeReference<List<URRec>>() {
+            });
+        } catch (Exception ex) {
+            log.error("从harness拉取推荐出错" + ex);
+            ex.printStackTrace();
+        }
+        return null;
+    }
+
     @Cacheable("queryRecommendByPop")
     public List<URRec> queryRecommendByPop() {
-        return queryRecommendByUser(0, 900);
+        return queryRecommendIllustByUser(0, 900);
     }
 
     //异步删除
@@ -164,6 +210,18 @@ public class RecommendSyncService {
         }).collect(Collectors.toList());
         Path file = Paths.get("/Users/oysterqaq/Desktop/import.txt");
         Files.write(file, lines, StandardCharsets.UTF_8);
-
+        List<UREvent> urEvents = recommendMapper.queryAllFollow();
+        List<String> lines = urEvents.stream().map(e -> {
+            e.setEvent("follow");
+            e.setEntityType("user");
+            e.setTargetEntityType("artist");
+            try {
+                return objectMapper.writeValueAsString(e);
+            } catch (JsonProcessingException jsonProcessingException) {
+                return "";
+            }
+        }).collect(Collectors.toList());
+        Path file = Paths.get("/Users/oysterqaq/Desktop/artist-import.txt");
+        Files.write(file, lines, StandardCharsets.UTF_8);
     }*/
 }

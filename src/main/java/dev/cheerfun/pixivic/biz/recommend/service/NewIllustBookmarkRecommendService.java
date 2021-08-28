@@ -6,15 +6,12 @@ import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mahout.cf.taste.common.TasteException;
-import org.apache.mahout.cf.taste.model.DataModel;
-import org.apache.mahout.cf.taste.recommender.Recommender;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.DefaultTypedTuple;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
@@ -66,7 +63,7 @@ public class NewIllustBookmarkRecommendService {
     public void dealPerUser(List<Integer> userList, Integer size) {
         userList.stream().parallel().forEach(e -> {
             try {
-                List<URRec> urRecList = recommendSyncService.queryRecommendByUser(e, size);
+                List<URRec> urRecList = recommendSyncService.queryRecommendIllustByUser(e, size);
                 //重置分数
                 Set<ZSetOperations.TypedTuple<String>> typedTuples = urRecList.stream()
                         //过滤已经收藏的

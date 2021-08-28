@@ -26,6 +26,15 @@ public interface RecommendMapper {
     })
     List<UREvent> queryBookmarkById(Integer bookmarkId);
 
+    @Select("select * from user_artist_followed  where id>#{followId} limit 100")
+    @Results({
+            @Result(property = "eventId", column = "id"),
+            @Result(property = "entityId", column = "user_id"),
+            @Result(property = "targetEntityId", column = "artist_id"),
+            @Result(property = "eventTime", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+    })
+    List<UREvent> queryFollowById(Integer followId);
+
     @Select("select * from user_illust_bookmarked")
     @Results({
             @Result(property = "eventId", column = "id"),
@@ -34,4 +43,13 @@ public interface RecommendMapper {
             @Result(property = "eventTime", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
     })
     List<UREvent> queryAllBookmark();
+
+    @Select("select * from user_artist_followed")
+    @Results({
+            @Result(property = "eventId", column = "id"),
+            @Result(property = "entityId", column = "user_id"),
+            @Result(property = "targetEntityId", column = "artist_id"),
+            @Result(property = "eventTime", column = "create_date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+    })
+    List<UREvent> queryAllFollow();
 }
