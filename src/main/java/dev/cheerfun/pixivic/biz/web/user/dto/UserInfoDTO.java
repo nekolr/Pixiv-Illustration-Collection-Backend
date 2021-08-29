@@ -22,7 +22,6 @@ import java.time.LocalDateTime;
 public class UserInfoDTO {
     private Integer id;
     private String username;
-    private String email;
     private String avatar;
     private Integer gender;
     private String signature;
@@ -33,6 +32,6 @@ public class UserInfoDTO {
     private LocalDateTime permissionLevelExpireDate;
 
     public static UserInfoDTO castByUser(User user) {
-        return new UserInfoDTO(user.getId(), user.getUsername(), user.getEmail(), user.getAvatar(), user.getGender(), user.getSignature(), user.getLocation(), user.getPermissionLevel(), user.getPermissionLevelExpireDate());
+        return new UserInfoDTO(user.getId(), user.getUsername(), user.getAvatar(), user.getGender(), user.getSignature(), user.getLocation(), user.getPermissionLevel(), user.getPermissionLevelExpireDate());
     }
 }
