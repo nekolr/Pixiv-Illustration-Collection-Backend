@@ -10,7 +10,6 @@ import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.biz.userInfo.annotation.WithUserInfo;
 import dev.cheerfun.pixivic.biz.web.collection.po.Collection;
 import dev.cheerfun.pixivic.biz.web.user.dto.ArtistWithRecentlyIllusts;
-import dev.cheerfun.pixivic.biz.web.user.dto.UserListDTO;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkCollectionRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.BookmarkRelation;
 import dev.cheerfun.pixivic.biz.web.user.po.FollowedRelation;
@@ -21,7 +20,6 @@ import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Artist;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
-import dev.cheerfun.pixivic.common.po.illust.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -65,6 +63,9 @@ public class BusinessController {
     @WithUserInfo
     @RateLimit
     public ResponseEntity<Result<List<Illustration>>> queryBookmark(@PathVariable Integer userId, @PathVariable String type, @RequestParam(defaultValue = "1") @Max(300) int page, @RequestParam(defaultValue = "30") @Max(30) int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
+        if ((int) AppContext.get().get(AuthConstant.USER_ID) != userId && page > 3) {
+            return ResponseEntity.badRequest().body(new Result<>("仅能查看他人部分收藏画作"));
+        }
         List<Illustration> illustrations = businessService.queryBookmarked(userId, type, (page - 1) * pageSize, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取收藏画作成功", illustrations));
     }
