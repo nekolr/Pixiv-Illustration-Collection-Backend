@@ -24,7 +24,7 @@ public class RecommendTaskService {
     private final NewArtistRecommendService newArtistRecommendService;
     private final CacheManager cacheManager;
 
-    @Scheduled(cron = "0 0 4 * * WED,SAT")
+    @Scheduled(cron = "0 0 4 * * SUN,TUE,THU")
     public void genarateTask() throws TasteException {
         log.info("开始拉取推荐");
         clearCache();
