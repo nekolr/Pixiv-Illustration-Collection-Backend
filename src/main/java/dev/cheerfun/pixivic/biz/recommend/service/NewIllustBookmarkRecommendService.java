@@ -5,7 +5,6 @@ import dev.cheerfun.pixivic.biz.recommend.mapper.RecommendMapper;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import lombok.val;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.DefaultTypedTuple;
@@ -33,6 +32,7 @@ public class NewIllustBookmarkRecommendService {
     private final RecommendSyncService recommendSyncService;
     private final StringRedisTemplate stringRedisTemplate;
     private final RecommendMapper recommendMapper;
+    private LocalDateTime localDateTimeIndex = LocalDateTime.now();
 
     public void recommend() throws TasteException {
         log.info("开始生成推荐，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
@@ -51,11 +51,11 @@ public class NewIllustBookmarkRecommendService {
         });
 
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
-        dealPerUser(u1, 5000);
+        dealPerUser(u1, 3000);
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
-        dealPerUser(u2, 3000);
+        dealPerUser(u2, 2000);
         List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
-        dealPerUser(u3, 2000);
+        dealPerUser(u3, 1000);
         System.gc();
         log.info("垃圾清理结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
 
@@ -63,8 +63,8 @@ public class NewIllustBookmarkRecommendService {
 
     public void recommendForNewUser() {
         LocalDateTime now = LocalDateTime.now();
-        LocalDateTime oneHourAgo = now.plusMinutes(-30);
-        List<Integer> userList = recommendMapper.queryUserIdByCreateDateRange(oneHourAgo, now);
+        List<Integer> userList = recommendMapper.queryUserIdByCreateDateRange(localDateTimeIndex, now);
+        localDateTimeIndex = now;
         dealPerUser(userList, 600);
     }
 
@@ -89,6 +89,7 @@ public class NewIllustBookmarkRecommendService {
                     stringRedisTemplate.delete(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e);
                     //新增
                     stringRedisTemplate.opsForZSet().add(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, typedTuples);
+                    urRecList = null;
                 }
             } catch (Exception exception) {
                 exception.printStackTrace();

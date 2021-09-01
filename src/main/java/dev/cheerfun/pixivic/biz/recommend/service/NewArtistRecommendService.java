@@ -13,6 +13,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +32,7 @@ public class NewArtistRecommendService {
     private final RecommendSyncService recommendSyncService;
     private final StringRedisTemplate stringRedisTemplate;
     private final RecommendMapper recommendMapper;
+    private LocalDateTime localDateTimeIndex = LocalDateTime.now();
 
     public void recommend() throws TasteException {
         //根据活跃度分级生成
@@ -48,11 +50,11 @@ public class NewArtistRecommendService {
         });
 
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
-        dealPerUser(u1, 600);
+        dealPerUser(u1, 400);
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
-        dealPerUser(u2, 500);
+        dealPerUser(u2, 300);
         List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
-        dealPerUser(u3, 200);
+        dealPerUser(u3, 100);
         System.gc();
 
     }
@@ -85,4 +87,12 @@ public class NewArtistRecommendService {
 
         });
     }
+
+    public void recommendForNewUser() {
+        LocalDateTime now = LocalDateTime.now();
+        List<Integer> userList = recommendMapper.queryUserIdByCreateDateRange(localDateTimeIndex, now);
+        localDateTimeIndex = now;
+        dealPerUser(userList, 200);
+    }
+
 }

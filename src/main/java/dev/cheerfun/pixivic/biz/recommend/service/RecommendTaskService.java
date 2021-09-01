@@ -35,13 +35,14 @@ public class RecommendTaskService {
     }
 
     public void newUserGenerateTask() {
-        //TODO 每半小时新用户推荐拉取600个（缓存一下新用户推荐列表）
+        //每分钟为新用户拉取600个推荐（缓存一下新用户推荐列表）
         recommendExecutorService.submit(() -> {
             while (true) {
                 try {
                     newIllustBookmarkRecommendService.recommendForNewUser();
+                    newArtistRecommendService.recommendForNewUser();
                     //十分钟同步一次
-                    Thread.sleep(60 * 1000 * 30);
+                    Thread.sleep(60 * 1000);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -55,7 +56,6 @@ public class RecommendTaskService {
         clearCache();
         newIllustBookmarkRecommendService.recommend();
         newArtistRecommendService.recommend();
-
         log.info("拉取推荐结束");
     }
 
