@@ -24,12 +24,13 @@ public class RecommendTaskService {
     private final NewArtistRecommendService newArtistRecommendService;
     private final CacheManager cacheManager;
 
-    @Scheduled(cron = "0 0 4 * * SUN,TUE,THU")
+    @Scheduled(cron = "0 0 2 * * MON,WEB,FRI")
     public void genarateTask() throws TasteException {
         log.info("开始拉取推荐");
         clearCache();
         newIllustBookmarkRecommendService.recommend();
         newArtistRecommendService.recommend();
+        //TODO 每1小时新用户推荐拉取
         log.info("拉取推荐结束");
     }
 
