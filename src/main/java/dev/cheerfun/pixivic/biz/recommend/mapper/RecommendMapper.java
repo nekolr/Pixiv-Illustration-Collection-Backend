@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Result;
 import org.apache.ibatis.annotations.Results;
 import org.apache.ibatis.annotations.Select;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 public interface RecommendMapper {
@@ -12,6 +13,10 @@ public interface RecommendMapper {
     //根据活跃时间查询用户
     @Select("select user_id from users where last_active_time between #{startDate} and #{endDate}")
     List<Integer> queryUserIdByDateRange(String startDate, String endDate);
+
+    //根据活跃时间查询用户
+    @Select("select user_id from users where create_date between #{startDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler} and #{endDate,typeHandler=org.apache.ibatis.type.LocalDateTimeTypeHandler}")
+    List<Integer> queryUserIdByCreateDateRange(LocalDateTime startDate, LocalDateTime endDate);
 
     //根据活跃时间查询用户
     @Select("select user_id from users where last_active_time < #{startDate}")

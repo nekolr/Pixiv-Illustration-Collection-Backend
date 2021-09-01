@@ -8,7 +8,9 @@ import org.springframework.cache.CacheManager;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.Objects;
+import java.util.concurrent.ExecutorService;
 
 /**
  * @author OysterQAQ
@@ -23,14 +25,37 @@ public class RecommendTaskService {
     private final NewIllustBookmarkRecommendService newIllustBookmarkRecommendService;
     private final NewArtistRecommendService newArtistRecommendService;
     private final CacheManager cacheManager;
+    private final ExecutorService recommendExecutorService;
+
+    @PostConstruct
+    public void init() {
+        log.info("开始初始化推荐任务服务");
+        newUserGenerateTask();
+        log.info("初始化推荐服务任务成功");
+    }
+
+    public void newUserGenerateTask() {
+        //TODO 每半小时新用户推荐拉取600个（缓存一下新用户推荐列表）
+        recommendExecutorService.submit(() -> {
+            while (true) {
+                try {
+                    newIllustBookmarkRecommendService.recommendForNewUser();
+                    //十分钟同步一次
+                    Thread.sleep(60 * 1000 * 30);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
 
     @Scheduled(cron = "0 0 2 * * MON,WEB,FRI")
-    public void genarateTask() throws TasteException {
+    public void generateTask() throws TasteException {
         log.info("开始拉取推荐");
         clearCache();
         newIllustBookmarkRecommendService.recommend();
         newArtistRecommendService.recommend();
-        //TODO 每1小时新用户推荐拉取
+
         log.info("拉取推荐结束");
     }
 

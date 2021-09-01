@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.biz.recommend.mapper.RecommendMapper;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import lombok.val;
 import org.apache.mahout.cf.taste.common.TasteException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.DefaultTypedTuple;
@@ -13,6 +14,7 @@ import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,6 +59,13 @@ public class NewIllustBookmarkRecommendService {
         System.gc();
         log.info("垃圾清理结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
 
+    }
+
+    public void recommendForNewUser() {
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime oneHourAgo = now.plusMinutes(-30);
+        List<Integer> userList = recommendMapper.queryUserIdByCreateDateRange(oneHourAgo, now);
+        dealPerUser(userList, 600);
     }
 
     public void dealPerUser(List<Integer> userList, Integer size) {
