@@ -25,7 +25,7 @@ public class AppService {
         //输入当前版本并查询是否最新版本，如果有更新就返回对应信息
         AppVersionInfo appVersionInfo = queryLatest();
         if (appVersionInfo != null) {
-            if (versionCompare(appVersionInfo.getVersion(), version) == 1) {
+            if (versionCompare(version, appVersionInfo.getVersion()) == 1) {
                 return appVersionInfo;
             }
         }
@@ -48,6 +48,7 @@ public class AppService {
         return appMapper.queryCount();
     }
 
+    @Cacheable(value = "versionCompare")
     public int versionCompare(String v1, String v2) {
         int v1Len = StringUtils.countMatches(v1, ".");
         int v2Len = StringUtils.countMatches(v2, ".");
