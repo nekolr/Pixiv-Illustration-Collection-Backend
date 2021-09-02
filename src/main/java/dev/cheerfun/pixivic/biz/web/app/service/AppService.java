@@ -25,7 +25,7 @@ public class AppService {
         //输入当前版本并查询是否最新版本，如果有更新就返回对应信息
         AppVersionInfo appVersionInfo = queryLatest();
         if (appVersionInfo != null) {
-            if (versionCompare(version, appVersionInfo.getVersion()) == 1) {
+            if (versionCompare(appVersionInfo.getVersion(), version) == 1) {
                 return appVersionInfo;
             }
         }
