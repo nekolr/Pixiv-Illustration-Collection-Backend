@@ -50,7 +50,7 @@ public class RecommendTaskService {
         });
     }
 
-    @Scheduled(cron = "0 0 2 * * MON,WEB,FRI")
+    @Scheduled(cron = "0 0 2 * * MON,WED,FRI")
     public void generateTask() throws TasteException {
         log.info("开始拉取推荐");
         clearCache();
