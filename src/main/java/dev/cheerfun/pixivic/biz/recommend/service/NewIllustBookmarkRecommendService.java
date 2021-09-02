@@ -51,11 +51,11 @@ public class NewIllustBookmarkRecommendService {
         });
 
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
-        dealPerUser(u1, 3000);
+        dealPerUser(u1, 3000, false);
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
-        dealPerUser(u2, 2000);
+        dealPerUser(u2, 2000, false);
         List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
-        dealPerUser(u3, 1000);
+        dealPerUser(u3, 1000, false);
         System.gc();
         log.info("垃圾清理结束，当前内存消耗" + Runtime.getRuntime().totalMemory() / 1024 / 1024 + " M");
 
@@ -65,25 +65,32 @@ public class NewIllustBookmarkRecommendService {
         LocalDateTime now = LocalDateTime.now();
         List<Integer> userList = recommendMapper.queryUserIdByCreateDateRange(localDateTimeIndex, now);
         localDateTimeIndex = now;
-        dealPerUser(userList, 600);
+        dealPerUser(userList, 600, true);
     }
 
-    public void dealPerUser(List<Integer> userList, Integer size) {
+    public void dealPerUser(List<Integer> userList, Integer size, Boolean isNewUser) {
         userList.stream().parallel().forEach(e -> {
             try {
-                List<URRec> urRecList = recommendSyncService.queryRecommendIllustByUser(e, size);
-                //重置分数
-                Set<ZSetOperations.TypedTuple<String>> typedTuples = urRecList.stream()
-                        //过滤已经收藏的
-                        .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + e, r.getItem())))
-                        .map(recommendedItem -> {
-                                    Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
-                                    if (score == null) {
-                                        score = (double) recommendedItem.getScore();
+                List<URRec> urRecList = null;
+                Set<ZSetOperations.TypedTuple<String>> typedTuples = null;
+                if (isNewUser) {
+                    urRecList = recommendSyncService.queryRecommendIllustForNewUser();
+                    typedTuples = urRecList.stream().map(u -> new DefaultTypedTuple<>(String.valueOf(u.getItem()), (double) u.getScore())).collect(Collectors.toSet());
+                } else {
+                    recommendSyncService.queryRecommendIllustByUser(e, size);
+                    //重置分数
+                    typedTuples = urRecList.stream()
+                            //过滤已经收藏的
+                            .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BOOKMARK_REDIS_PRE + e, r.getItem())))
+                            .map(recommendedItem -> {
+                                        Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e, String.valueOf(recommendedItem.getItem()));
+                                        if (score == null) {
+                                            score = (double) recommendedItem.getScore();
+                                        }
+                                        return new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItem()), score);
                                     }
-                                    return new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItem()), score);
-                                }
-                        ).collect(Collectors.toSet());
+                            ).collect(Collectors.toSet());
+                }
                 if (typedTuples.size() > 0) {
                     //清空
                     stringRedisTemplate.delete(RedisKeyConstant.USER_RECOMMEND_BOOKMARK_ILLUST + e);

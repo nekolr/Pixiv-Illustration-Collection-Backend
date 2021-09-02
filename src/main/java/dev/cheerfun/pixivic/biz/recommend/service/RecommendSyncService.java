@@ -128,6 +128,11 @@ public class RecommendSyncService {
         }
     }
 
+    @Cacheable("recommendIllustForNewUser")
+    public List<URRec> queryRecommendIllustForNewUser() {
+        return queryRecommendIllustByUser(-1, 900);
+    }
+
     public List<URRec> queryRecommendIllustByUser(int userId, int num) {
         try {
             HttpRequest request = HttpRequest.newBuilder()
@@ -140,6 +145,11 @@ public class RecommendSyncService {
             ex.printStackTrace();
         }
         return null;
+    }
+
+    @Cacheable("recommendArtistForNewUser")
+    public List<URRec> queryRecommendArtistForNewUser() {
+        return queryRecommendArtistByUser(-1, 900);
     }
 
     public List<URRec> queryRecommendArtistByUser(int userId, int num) {

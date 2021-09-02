@@ -50,31 +50,39 @@ public class NewArtistRecommendService {
         });
 
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
-        dealPerUser(u1, 400);
+        dealPerUser(u1, 400, false);
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
-        dealPerUser(u2, 300);
+        dealPerUser(u2, 300, false);
         List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
-        dealPerUser(u3, 100);
+        dealPerUser(u3, 100, false);
         System.gc();
 
     }
 
-    public void dealPerUser(List<Integer> userList, Integer size) {
+    public void dealPerUser(List<Integer> userList, Integer size, Boolean isNewUser) {
         userList.stream().parallel().forEach(e -> {
             try {
-                List<URRec> urRecList = recommendSyncService.queryRecommendArtistByUser(e, size);
+                List<URRec> urRecList = null;
+                Set<ZSetOperations.TypedTuple<String>> typedTuples = null;
                 //重置分数
-                Set<ZSetOperations.TypedTuple<String>> typedTuples = urRecList.stream()
-                        //过滤已经收藏的
-                        .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + r.getItem(), String.valueOf(e))))
-                        .map(recommendedItem -> {
-                                    Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_ARTIST + e, String.valueOf(recommendedItem.getItem()));
-                                    if (score == null) {
-                                        score = (double) recommendedItem.getScore();
+                if (isNewUser) {
+                    urRecList = recommendSyncService.queryRecommendArtistForNewUser();
+                    typedTuples = urRecList.stream().map(u -> new DefaultTypedTuple<>(String.valueOf(u.getItem()), (double) u.getScore())).collect(Collectors.toSet());
+                } else {
+                    urRecList = recommendSyncService.queryRecommendArtistByUser(e, size);
+                    typedTuples = urRecList.stream()
+                            //过滤已经收藏的
+                            .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + r.getItem(), String.valueOf(e))))
+                            .map(recommendedItem -> {
+                                        Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_ARTIST + e, String.valueOf(recommendedItem.getItem()));
+                                        if (score == null) {
+                                            score = (double) recommendedItem.getScore();
+                                        }
+                                        return new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItem()), score);
                                     }
-                                    return new DefaultTypedTuple<>(String.valueOf(recommendedItem.getItem()), score);
-                                }
-                        ).collect(Collectors.toSet());
+                            ).collect(Collectors.toSet());
+                }
+
                 if (typedTuples.size() > 0) {
                     //清空
                     stringRedisTemplate.delete(RedisKeyConstant.USER_RECOMMEND_ARTIST + e);
@@ -92,7 +100,7 @@ public class NewArtistRecommendService {
         LocalDateTime now = LocalDateTime.now();
         List<Integer> userList = recommendMapper.queryUserIdByCreateDateRange(localDateTimeIndex, now);
         localDateTimeIndex = now;
-        dealPerUser(userList, 200);
+        dealPerUser(userList, 200, true);
     }
 
 }
