@@ -19,13 +19,23 @@ import java.util.List;
 public interface AppMapper {
     @Select("select * from app_version_info order by release_date desc limit 1")
     @Results({
-            @Result(column = "app_version_info_id", property = "id")
+            @Result(column = "app_version_info_id", property = "id"),
+            @Result(column = "release_date", property = "releaseDate", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(column = "update_log", property = "updateLog"),
+            @Result(column = "android_link", property = "androidLink"),
+            @Result(column = "ios_link", property = "iosLink"),
+            @Result(column = "is_test", property = "isTest"),
     })
     AppVersionInfo queryLatest();
 
     @Select("select * from app_version_info order by release_date desc limit #{currIndex},#{pageSize}")
     @Results({
-            @Result(column = "app_version_info_id", property = "id")
+            @Result(column = "app_version_info_id", property = "id"),
+            @Result(column = "release_date", property = "releaseDate", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
+            @Result(column = "update_log", property = "updateLog"),
+            @Result(column = "android_link", property = "androidLink"),
+            @Result(column = "ios_link", property = "iosLink"),
+            @Result(column = "is_test", property = "isTest"),
     })
     List<AppVersionInfo> queryList(Integer currIndex, Integer pageSize);
 
