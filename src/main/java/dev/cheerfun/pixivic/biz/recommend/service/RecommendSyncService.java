@@ -130,7 +130,7 @@ public class RecommendSyncService {
 
     @Cacheable("recommendIllustForNewUser")
     public List<URRec> queryRecommendIllustForNewUser() {
-        return queryRecommendIllustByUser(-1, 600);
+        return queryRecommendIllustByUser(-1, 900);
     }
 
     public List<URRec> queryRecommendIllustByUser(int userId, int num) {
