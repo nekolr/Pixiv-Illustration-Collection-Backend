@@ -99,7 +99,7 @@ public class RunTest {
         return -1;
     }
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        System.out.println(versionCompare("2.0.0", "2.1.0") == 1);
+        System.out.println(versionCompare("4.0.0", "2.1.0") == 1);
     }
 
     public static boolean queryRelatedKeywordFromBaidu(String keyword) {
