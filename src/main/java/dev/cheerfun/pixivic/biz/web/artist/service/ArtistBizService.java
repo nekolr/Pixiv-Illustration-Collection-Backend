@@ -123,6 +123,7 @@ public class ArtistBizService {
 
     public Artist queryArtistById(Integer artistId) {
         if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId))) {
+            waitForPullArtistInfoQueue.offer(artistId);
             throw new BusinessException(HttpStatus.NOT_FOUND, "画师不存在");
         }
         Artist artist = queryArtistByIdFromDb(artistId);
