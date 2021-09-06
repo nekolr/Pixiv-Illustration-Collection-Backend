@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.user.service;
 
+import com.google.common.base.Strings;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
 import dev.cheerfun.pixivic.basic.auth.exception.AuthBanException;
 import dev.cheerfun.pixivic.basic.auth.util.JWTUtil;
@@ -9,11 +10,13 @@ import dev.cheerfun.pixivic.basic.event.domain.Event;
 import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
 import dev.cheerfun.pixivic.basic.verification.domain.EmailBindingVerificationCode;
 import dev.cheerfun.pixivic.biz.credit.customer.CreditEventCustomer;
+import dev.cheerfun.pixivic.biz.sitemap.po.Url;
 import dev.cheerfun.pixivic.biz.web.collection.service.CollectionService;
 import dev.cheerfun.pixivic.biz.web.common.exception.BusinessException;
 import dev.cheerfun.pixivic.biz.web.common.exception.UserCommonException;
 import dev.cheerfun.pixivic.biz.web.common.po.User;
 import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
+import dev.cheerfun.pixivic.biz.web.oauth2.service.OAuth2Service;
 import dev.cheerfun.pixivic.biz.web.sentence.po.Sentence;
 import dev.cheerfun.pixivic.biz.web.sentence.service.SentenceService;
 import dev.cheerfun.pixivic.biz.web.user.dto.CheckInDTO;
@@ -31,6 +34,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.util.email.EmailUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -44,7 +48,10 @@ import org.springframework.web.servlet.HandlerMapping;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
+import java.net.URL;
+import java.net.URLDecoder;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
@@ -53,9 +60,13 @@ import java.security.NoSuchAlgorithmException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.mapping;
+import static java.util.stream.Collectors.toList;
 
 /**
  * @author OysterQAQ
@@ -84,6 +95,7 @@ public class CommonService {
     private final SensitiveFilter sensitiveFilter;
     private final CollectionService collectionService;
     private ExchangeCodeService exchangeCodeService;
+    private OAuth2Service oAuth2Service;
 
     @Autowired
     public void setExchangeCodeService(ExchangeCodeService exchangeCodeService) {
@@ -409,5 +421,50 @@ public class CommonService {
     public boolean validatePassword(int userId, String oldPassword) {
         User user = queryUser(userId);
         return passwordUtil.encrypt(oldPassword).equals(user.getPassword());
+    }
+
+    public String generateDiscussToken(int userId) throws IOException, InterruptedException {
+        HttpRequest build = HttpRequest.newBuilder()
+                .uri(URI.create("https://url.ipv4.host/discuss/auth/passport")).GET()
+                .build();
+        HttpResponse<String> response = httpClient.send(build, HttpResponse.BodyHandlers.ofString());
+        String locationUrl = response.headers().firstValue("location").get();
+        String cookie = response.headers().firstValue("set-cookie").get();
+        String flarumSession = cookie.split(";")[0];
+        Map<String, List<String>> param = splitQuery(new URL(locationUrl));
+        String authorizeUrl = oAuth2Service.authorize(Integer.valueOf(param.get("clientId").get(0)), param.get("state").get(0), param.get("redirectUri").get(0));
+        HttpRequest queryDiscussToken = HttpRequest.newBuilder()
+                .uri(URI.create(authorizeUrl)).GET()
+                .header("Cookie", flarumSession)
+                .build();
+        HttpResponse<String> queryDiscussTokenResponse = httpClient.send(queryDiscussToken, HttpResponse.BodyHandlers.ofString());
+        String discussToken = queryDiscussTokenResponse.headers().firstValue("set-cookie").get();
+        return discussToken;
+    }
+
+    public Map<String, List<String>> splitQuery(URL url) {
+        if (Strings.isNullOrEmpty(url.getQuery())) {
+            return Collections.emptyMap();
+        }
+        return Arrays.stream(url.getQuery().split("&"))
+                .map(e -> {
+                    try {
+                        return splitQueryParameter(e)
+                    } catch (UnsupportedEncodingException ex) {
+                        ex.printStackTrace();
+                    }
+                    return null;
+                })
+                .collect(Collectors.groupingBy(AbstractMap.SimpleImmutableEntry::getKey, LinkedHashMap::new, mapping(Map.Entry::getValue, toList())));
+    }
+
+    public AbstractMap.SimpleImmutableEntry<String, String> splitQueryParameter(String it) throws UnsupportedEncodingException {
+        final int idx = it.indexOf("=");
+        final String key = idx > 0 ? it.substring(0, idx) : it;
+        final String value = idx > 0 && it.length() > idx + 1 ? it.substring(idx + 1) : null;
+        return new AbstractMap.SimpleImmutableEntry<>(
+                URLDecoder.decode(key, "UTF-8"),
+                URLDecoder.decode(value, "UTF-8")
+        );
     }
 }
