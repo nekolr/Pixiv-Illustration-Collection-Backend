@@ -39,6 +39,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -96,6 +97,11 @@ public class CommonService {
     private final CollectionService collectionService;
     private ExchangeCodeService exchangeCodeService;
     private OAuth2Service oAuth2Service;
+
+    @Autowired
+    public void setoAuth2Service(OAuth2Service oAuth2Service) {
+        this.oAuth2Service = oAuth2Service;
+    }
 
     @Autowired
     public void setExchangeCodeService(ExchangeCodeService exchangeCodeService) {
@@ -425,14 +431,14 @@ public class CommonService {
 
     public String generateDiscussToken(int userId) throws IOException, InterruptedException {
         HttpRequest build = HttpRequest.newBuilder()
-                .uri(URI.create("https://url.ipv4.host/discuss/auth/passport")).GET()
+                .uri(URI.create("https://discuss.sharemoe.net/auth/passport")).GET()
                 .build();
         HttpResponse<String> response = httpClient.send(build, HttpResponse.BodyHandlers.ofString());
         String locationUrl = response.headers().firstValue("location").get();
         String cookie = response.headers().firstValue("set-cookie").get();
         String flarumSession = cookie.split(";")[0];
         Map<String, List<String>> param = splitQuery(new URL(locationUrl));
-        String authorizeUrl = oAuth2Service.authorize(Integer.valueOf(param.get("clientId").get(0)), param.get("state").get(0), param.get("redirectUri").get(0));
+        String authorizeUrl = oAuth2Service.authorize(Integer.valueOf(param.get("client_id").get(0)), param.get("state").get(0), param.get("redirect_uri").get(0));
         HttpRequest queryDiscussToken = HttpRequest.newBuilder()
                 .uri(URI.create(authorizeUrl)).GET()
                 .header("Cookie", flarumSession)
@@ -449,7 +455,7 @@ public class CommonService {
         return Arrays.stream(url.getQuery().split("&"))
                 .map(e -> {
                     try {
-                        return splitQueryParameter(e)
+                        return splitQueryParameter(e);
                     } catch (UnsupportedEncodingException ex) {
                         ex.printStackTrace();
                     }

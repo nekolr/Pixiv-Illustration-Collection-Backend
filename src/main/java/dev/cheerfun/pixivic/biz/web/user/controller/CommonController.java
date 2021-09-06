@@ -139,7 +139,7 @@ public class CommonController {
         return ResponseEntity.ok().header(AuthConstant.AUTHORIZATION, jwtUtil.getToken(user)).body(new Result<>("登录成功", user));
     }
 
-    @PostMapping("/discussToken")
+    @GetMapping("/discussToken")
     @PermissionRequired
     public ResponseEntity<Result<String>> signInDiscuss(@RequestHeader(AuthConstant.AUTHORIZATION) String token) throws IOException, InterruptedException {
         return ResponseEntity.ok().body(new Result<>("获取论坛token成功", userService.generateDiscussToken((int) AppContext.get().get(AuthConstant.USER_ID))));
