@@ -444,8 +444,8 @@ public class CommonService {
                 .header("Cookie", flarumSession)
                 .build();
         HttpResponse<String> queryDiscussTokenResponse = httpClient.send(queryDiscussToken, HttpResponse.BodyHandlers.ofString());
-        String discussToken = queryDiscussTokenResponse.headers().firstValue("set-cookie").get();
-        return discussToken;
+        String discussCookie = queryDiscussTokenResponse.headers().firstValue("set-cookie").get();
+        return discussCookie.split(";")[0].replace("flarum_remember=", "");
     }
 
     public Map<String, List<String>> splitQuery(URL url) {
