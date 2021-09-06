@@ -52,6 +52,13 @@ public class CommonController {
     private final RecaptchaUtil recaptchaUtil;
     private final JWTUtil jwtUtil;
 
+    @GetMapping("/userInfo")
+    @PermissionRequired(PermissionLevel.ANONYMOUS)
+    public ResponseEntity<Result<Object>> querySelfInfo(@RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
+        User user = userService.queryUser((int) AppContext.get().get(AuthConstant.USER_ID));
+        return ResponseEntity.ok().body(new Result<>("获取用户信息成功", user));
+    }
+
     @GetMapping("/{userId}")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     public ResponseEntity<Result<Object>> queryUser(@PathVariable("userId") Integer userId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
@@ -203,8 +210,8 @@ public class CommonController {
     @PermissionRequired
     public ResponseEntity<Result<User>> updateUsername(@RequestParam String username, @RequestHeader(AuthConstant.AUTHORIZATION) String token) {
         User user = null;
-     //   try {
-            user = userService.updateUsername((Integer) AppContext.get().get(AuthConstant.USER_ID), username);
+        //   try {
+        user = userService.updateUsername((Integer) AppContext.get().get(AuthConstant.USER_ID), username);
       /*  } catch (Exception e) {
             throw new UserCommonException(HttpStatus.BAD_REQUEST, "修改失败，可能是用户名重复");
         }*/
