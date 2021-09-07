@@ -471,7 +471,6 @@ public class CommonService {
                     log.info(registerResponse.body());
                 }
             }
-            log.info(registerResponse.headers().map().toString());
             discussCookie = registerResponse.headers().firstValue("set-cookie").get();
         }
         return discussCookie.split(";")[0].replace("flarum_remember=", "");
