@@ -99,7 +99,10 @@ public class RunTest {
         return -1;
     }
     public static void main(String[] args) throws IOException, TimeoutException, InterruptedException {
-        System.out.println(versionCompare("4.0.0", "2.1.0") == 1);
+        System.out.println(UUID.randomUUID());
+        String body = "<script>window.close(); window.opener.app.authenticationComplete({\"email\":\"403827354@qq1.com\",\"token\":\"On9HoPUQ4tAgncChKh4mTIWcQ2zLW5qqR3n0e48V\",\"provided\":[\"email\"]});</script>";
+        String token = body.substring(body.indexOf("\"token\":\"") + 9, body.indexOf("\",\"provided\""));
+        System.out.println(token);
     }
 
     public static boolean queryRelatedKeywordFromBaidu(String keyword) {

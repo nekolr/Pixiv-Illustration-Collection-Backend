@@ -445,6 +445,24 @@ public class CommonService {
                 .build();
         HttpResponse<String> queryDiscussTokenResponse = httpClient.send(queryDiscussToken, HttpResponse.BodyHandlers.ofString());
         String discussCookie = queryDiscussTokenResponse.headers().firstValue("set-cookie").get();
+        if (!discussCookie.contains("flarum_remember")) {
+            final String body = queryDiscussTokenResponse.body();
+            String token = body.substring(body.indexOf("\"token\":\"") + 9, body.indexOf("\",\"provided\""));
+            //自动注册
+            User user = queryUser(userId);
+            HttpRequest register = HttpRequest.newBuilder()
+                    .uri(URI.create("https://discuss.sharemoe.net/register")).POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"" + user.getUsername() + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}"))
+                    .build();
+            HttpResponse<String> registerResponse = httpClient.send(build, HttpResponse.BodyHandlers.ofString());
+            if (registerResponse.statusCode() == 422) {
+                register = HttpRequest.newBuilder()
+                        .uri(URI.create("https://discuss.sharemoe.net/register")).POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"" + user.getUsername().substring(0, 2) + userId + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}"))
+                        .build();
+                registerResponse = httpClient.send(build, HttpResponse.BodyHandlers.ofString());
+            }
+            discussCookie = registerResponse.headers().firstValue("set-cookie").get().split(";")[0].replace("flarum_remember=", "");
+            ;
+        }
         return discussCookie.split(";")[0].replace("flarum_remember=", "");
     }
 
