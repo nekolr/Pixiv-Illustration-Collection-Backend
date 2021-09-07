@@ -34,6 +34,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Picture;
 import dev.cheerfun.pixivic.common.util.email.EmailUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
@@ -76,6 +77,7 @@ import static java.util.stream.Collectors.toList;
  * @description UserService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class CommonService {
     private final static String AVATAR_PRE = "https://static.sharemoe.net/avatar/299x299/";
@@ -446,6 +448,7 @@ public class CommonService {
         HttpResponse<String> queryDiscussTokenResponse = httpClient.send(queryDiscussToken, HttpResponse.BodyHandlers.ofString());
         String discussCookie = queryDiscussTokenResponse.headers().firstValue("set-cookie").get();
         if (!discussCookie.contains("flarum_remember")) {
+            log.info("用户未注册论坛，将进行自动注册");
             final String body = queryDiscussTokenResponse.body();
             String token = body.substring(body.indexOf("\"token\":\"") + 9, body.indexOf("\",\"provided\""));
             //自动注册
@@ -455,11 +458,13 @@ public class CommonService {
                     .build();
             HttpResponse<String> registerResponse = httpClient.send(register, HttpResponse.BodyHandlers.ofString());
             if (registerResponse.statusCode() == 422) {
+                log.info("用户论坛用户名重复，进行重新注册");
                 register = HttpRequest.newBuilder()
                         .uri(URI.create("https://discuss.sharemoe.net/register")).POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"" + user.getUsername().substring(0, 2) + userId + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}"))
                         .build();
                 registerResponse = httpClient.send(register, HttpResponse.BodyHandlers.ofString());
             }
+            log.info(registerResponse.headers().map().toString());
             discussCookie = registerResponse.headers().firstValue("set-cookie").get();
         }
         return discussCookie.split(";")[0].replace("flarum_remember=", "");
