@@ -460,8 +460,7 @@ public class CommonService {
                         .build();
                 registerResponse = httpClient.send(register, HttpResponse.BodyHandlers.ofString());
             }
-            discussCookie = registerResponse.headers().firstValue("set-cookie").get().split(";")[0].replace("flarum_remember=", "");
-            ;
+            discussCookie = registerResponse.headers().firstValue("set-cookie").get();
         }
         return discussCookie.split(";")[0].replace("flarum_remember=", "");
     }
