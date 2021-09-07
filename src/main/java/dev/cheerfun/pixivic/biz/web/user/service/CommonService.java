@@ -455,13 +455,16 @@ public class CommonService {
             User user = queryUser(userId);
             HttpRequest register = HttpRequest.newBuilder()
                     .uri(URI.create("https://discuss.sharemoe.net/register")).POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"" + user.getUsername() + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}"))
+                    .headers("Cookie", flarumSession)
                     .build();
             HttpResponse<String> registerResponse = httpClient.send(register, HttpResponse.BodyHandlers.ofString());
             if (registerResponse.statusCode() == 422) {
+                log.info("{\"username\":\"" + user.getUsername() + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}");
                 log.info(registerResponse.body());
                 log.info("用户论坛用户名重复，进行重新注册");
                 register = HttpRequest.newBuilder()
                         .uri(URI.create("https://discuss.sharemoe.net/register")).POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"" + user.getUsername().substring(0, 2) + userId + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}"))
+                        .headers("Cookie", flarumSession)
                         .build();
                 registerResponse = httpClient.send(register, HttpResponse.BodyHandlers.ofString());
                 if (registerResponse.statusCode() != 200) {
