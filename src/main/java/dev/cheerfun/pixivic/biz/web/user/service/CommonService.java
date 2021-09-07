@@ -453,12 +453,12 @@ public class CommonService {
             HttpRequest register = HttpRequest.newBuilder()
                     .uri(URI.create("https://discuss.sharemoe.net/register")).POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"" + user.getUsername() + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}"))
                     .build();
-            HttpResponse<String> registerResponse = httpClient.send(build, HttpResponse.BodyHandlers.ofString());
+            HttpResponse<String> registerResponse = httpClient.send(register, HttpResponse.BodyHandlers.ofString());
             if (registerResponse.statusCode() == 422) {
                 register = HttpRequest.newBuilder()
                         .uri(URI.create("https://discuss.sharemoe.net/register")).POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"" + user.getUsername().substring(0, 2) + userId + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}"))
                         .build();
-                registerResponse = httpClient.send(build, HttpResponse.BodyHandlers.ofString());
+                registerResponse = httpClient.send(register, HttpResponse.BodyHandlers.ofString());
             }
             discussCookie = registerResponse.headers().firstValue("set-cookie").get().split(";")[0].replace("flarum_remember=", "");
             ;
