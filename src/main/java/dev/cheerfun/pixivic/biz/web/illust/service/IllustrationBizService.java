@@ -25,12 +25,18 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
+import java.io.InputStream;
+import java.net.URI;
 import java.net.URLEncoder;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
 
 /**
@@ -48,11 +54,13 @@ public class IllustrationBizService {
     private final IllustrationService illustrationService;
     private final StringRedisTemplate stringRedisTemplate;
     private final ObjectMapper objectMapper;
+    private final HttpClient httpClient;
     private LinkedBlockingQueue<Integer> waitForPullIllustQueue;
     private final ExecutorService crawlerExecutorService;
 
     @PostConstruct
     public void init() {
+        scan404Illusts();
         try {
             log.info("开始初始化画作基础服务");
             waitForPullIllustQueue = new LinkedBlockingQueue<>(1000 * 1000);
@@ -132,12 +140,6 @@ public class IllustrationBizService {
             return null;
         }
         Illustration illustration = illustrationBizMapper.queryIllustrationByIllustId(illustId);
-       /* illustration.setTitle("");
-        illustration.setTotalBookmarks(0);
-        illustration.setTotalView(0);
-        illustration.setCaption("");
-        illustration.setTags(new ArrayList<>());
-        illustration.getArtistPreView().setName("");*/
         if (illustration == null) {
             //TODO 需要审核
             //log.info("画作：" + illustId + "不存在，加入队列等待爬取");
@@ -260,4 +262,42 @@ public class IllustrationBizService {
         }
     }
 
+    //TODO 扫描404画作 屏蔽
+    public void scan404Illusts() {
+        Boolean flag = true;
+        Integer notFoundCheckIndex = Integer.valueOf(stringRedisTemplate.opsForValue().get(RedisKeyConstant.NOT_FOUND_ILLUST_CHECK_INDEX));
+        log.info("开始检测404画作，notFoundCheckIndex为：" + notFoundCheckIndex);
+        while (flag) {
+            log.info("开始检测404画作，notFoundCheckIndex为：" + notFoundCheckIndex);
+
+            List<Illustration> illustrationList = illustrationBizMapper.queryIllustrationByIllustIdForNotFoundCheck(notFoundCheckIndex);
+            if (illustrationList.size() == 0) {
+                return;
+            }
+            illustrationList.stream().parallel().map(e -> objectMapper.convertValue(e, new TypeReference<Illustration>() {
+            })).filter(e -> e.getSanityLevel() <= 6 && e.getTotalBookmarks() >= 100 && e.getXRestrict() == 0
+            ).forEach(e -> {
+                //http请求检测图片url是否404
+                try {
+                    HttpRequest request = HttpRequest.newBuilder()
+                            .header("referer", "https://pixiv.net")
+                            .uri(URI.create(e.getImageUrls().get(0).getSquareMedium())).GET()
+                            .build();
+                    HttpResponse response = httpClient.send(request, HttpResponse.BodyHandlers.discarding());
+                    if (response.statusCode() == 404) {
+                        log.info("检测到404画作：" + e.getId());
+                        //入库
+                        illustrationBizMapper.markNotFoudIllust(e.getId());
+                    }
+                } catch (Exception exception) {
+                    exception.printStackTrace();
+                }
+
+            });
+            notFoundCheckIndex = Integer.valueOf(illustrationList.get(illustrationList.size() - 1).getId());
+            stringRedisTemplate.opsForValue().set(RedisKeyConstant.NOT_FOUND_ILLUST_CHECK_INDEX, String.valueOf(notFoundCheckIndex));
+
+        }
+
+    }
 }
