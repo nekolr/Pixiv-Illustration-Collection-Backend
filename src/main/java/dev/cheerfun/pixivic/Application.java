@@ -28,6 +28,8 @@ import org.springframework.web.context.request.async.AsyncRequestTimeoutExceptio
 public class Application {
     public static void main(String[] args) {
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Referer");
+        //System.setProperty("jdk.httpclient.keepalive.timeout", "1000");
+        System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Connection");
         System.setProperty("jdk.httpclient.redirects.retrylimit", "3");
         System.setProperty("jdk.httpclient.disableRetryConnect", "true");
         System.setProperty("jdk.httpclient.enableAllMethodRetry", "true");

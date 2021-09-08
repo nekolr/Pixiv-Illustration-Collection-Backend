@@ -104,7 +104,7 @@ public interface IllustrationBizMapper {
     @Update("update illusts set total_bookmarks=total_bookmarks+#{increment}  where illust_id=#{illustId}")
     int updateIllustBookmark(int illustId, int increment);
 
-    @Select("select SQL_NO_CACHE * from illusts where illust_id > #{illustId} order by illust_id limit 1000  ")
+    @Select("select SQL_NO_CACHE * from illusts where illust_id > #{illustId} order by illust_id limit 50000  ")
     @Results({
             @Result(property = "id", column = "illust_id"),
             @Result(property = "artistPreView", column = "artist", javaType = ArtistPreView.class, typeHandler = JsonTypeHandler.class),
@@ -124,4 +124,7 @@ public interface IllustrationBizMapper {
 
     @Insert("insert ignore into `404_illusts`(illust_id) values (#{id}) ")
     void markNotFoudIllust(Integer id);
+
+    @Insert("insert ignore into `error_illusts`(illust_id) values (#{id}) ")
+    void markErrorIllust(Integer id);
 }

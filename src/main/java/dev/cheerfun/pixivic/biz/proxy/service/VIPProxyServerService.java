@@ -5,6 +5,7 @@ import dev.cheerfun.pixivic.biz.proxy.po.VIPProxyServer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class VIPProxyServerService {
     private final VIPProxyServerMapper vipProxyServerMapper;
+    private final Environment env;
     private List<VIPProxyServer> availableServerList;
     private List<VIPProxyServer> serverList;
     private final ExecutorService crawlerExecutorService;
@@ -44,6 +46,9 @@ public class VIPProxyServerService {
             //获取服务器列表，并且尝试是否可用
             serverList = vipProxyServerMapper.queryAllServer();
             availableServerList = new ArrayList<>(serverList);
+            if ("prod".equals(env.getProperty("spring.profiles.active"))) {
+                loopCheck();
+            }
             loopCheck();
         } catch (Exception exception) {
             log.error("初始化高速服务器列表服务失败");

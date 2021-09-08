@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +30,7 @@ import java.util.concurrent.ThreadLocalRandom;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class OauthManager {
 
+    private final Environment env;
     private final HttpClient httpClient;
     private final PixivAccountMapper pixivAccountMapper;
     private final ObjectMapper objectMapper;
@@ -39,7 +42,7 @@ public class OauthManager {
     private Set<Integer> refreshErrorSet;
 
     @PostConstruct
-    private void init() throws IOException {
+    private void init() {
         //数据库读取账号信息
         //马上刷新，异步写回数据库
         //读取账号信息
@@ -48,8 +51,10 @@ public class OauthManager {
             refreshErrorSet = new HashSet<>();
             pixivUserList = pixivAccountMapper.queryPixivUser();
             //账号初始化
-            pixivUserSize = pixivUserList.size();
-            refresh();
+            if ("prod".equals(env.getProperty("spring.profiles.active"))) {
+                pixivUserSize = pixivUserList.size();
+                refresh();
+            }
         } catch (Exception e) {
             log.error("初始化pixiv请求管理器失败");
             e.printStackTrace();

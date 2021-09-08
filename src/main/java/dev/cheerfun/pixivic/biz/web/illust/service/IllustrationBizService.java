@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.PostConstruct;
-import java.io.InputStream;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -33,10 +33,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,8 +56,7 @@ public class IllustrationBizService {
     private final ExecutorService crawlerExecutorService;
 
     @PostConstruct
-    public void init() {
-        scan404Illusts();
+    public void init() throws ExecutionException, InterruptedException {
         try {
             log.info("开始初始化画作基础服务");
             waitForPullIllustQueue = new LinkedBlockingQueue<>(1000 * 1000);
@@ -262,8 +258,7 @@ public class IllustrationBizService {
         }
     }
 
-    //TODO 扫描404画作 屏蔽
-    public void scan404Illusts() {
+    public void scan404Illusts() throws ExecutionException, InterruptedException {
         Boolean flag = true;
         Integer notFoundCheckIndex = Integer.valueOf(stringRedisTemplate.opsForValue().get(RedisKeyConstant.NOT_FOUND_ILLUST_CHECK_INDEX));
         log.info("开始检测404画作，notFoundCheckIndex为：" + notFoundCheckIndex);
@@ -274,7 +269,62 @@ public class IllustrationBizService {
             if (illustrationList.size() == 0) {
                 return;
             }
-            illustrationList.stream().parallel().map(e -> objectMapper.convertValue(e, new TypeReference<Illustration>() {
+            ForkJoinPool forkJoinPool = new ForkJoinPool(24);
+            forkJoinPool.submit(() ->
+                            illustrationList.stream().parallel().map(e -> objectMapper.convertValue(e, new TypeReference<Illustration>() {
+                            })).filter(e -> e.getSanityLevel() <= 6 && e.getTotalBookmarks() >= 100 && e.getXRestrict() == 0
+                            ).forEach(e -> {
+                                //http请求检测图片url是否404
+                                String url = null;
+                                long s = System.currentTimeMillis() % 3;
+                                if (s == 0) {
+                                    url = e.getImageUrls().get(0).getSquareMedium().replace("https://i.pximg.net", "http://107.173.140.148:808");
+                                }
+                                if (s == 1) {
+                                    url = e.getImageUrls().get(0).getSquareMedium().replace("https://i.pximg.net", "http://107.175.62.148:808");
+                                }
+                                if (s == 2) {
+                                    url = e.getImageUrls().get(0).getSquareMedium().replace("https://i.pximg.net", "http://172.245.36.203:808");
+                                }
+                                try {
+                                    HttpRequest request = HttpRequest.newBuilder()
+                                            .header("referer", "https://pixiv.net")
+                                            .uri(URI.create(url)).method("HEAD", HttpRequest.BodyPublishers.noBody())
+                                            .build();
+                                    httpClient.sendAsync(request, HttpResponse.BodyHandlers.discarding()).thenAccept(
+                                            r -> {
+                                                if (r.statusCode() == 404) {
+                                                    log.info("检测到404画作：" + e.getId());
+                                                    //入库
+                                                    illustrationBizMapper.markNotFoudIllust(e.getId());
+                                                }
+                                            }
+                                    ).get();
+                                } catch (Exception exception) {
+                                    exception.printStackTrace();
+                                    illustrationBizMapper.markErrorIllust(e.getId());
+                                    log.error(url);
+/*                            HttpRequest request = HttpRequest.newBuilder()
+                                    .header("referer", "https://pixiv.net")
+                                    .uri(URI.create(url)).method("HEAD", HttpRequest.BodyPublishers.noBody())
+                                    .build();
+                            HttpResponse response = null;
+                            try {
+                                response = httpClient.send(request, HttpResponse.BodyHandlers.discarding());
+                            } catch (IOException | InterruptedException ex) {
+                                ex.printStackTrace();
+                                log.error(url);
+                            }
+                            if (response.statusCode() == 404) {
+                                log.info("检测到404画作：" + e.getId());
+                                //入库
+                                illustrationBizMapper.markNotFoudIllust(e.getId());
+                            }*/
+                                }
+
+                            })
+            ).get();
+/*            illustrationList.stream().parallel().map(e -> objectMapper.convertValue(e, new TypeReference<Illustration>() {
             })).filter(e -> e.getSanityLevel() <= 6 && e.getTotalBookmarks() >= 100 && e.getXRestrict() == 0
             ).forEach(e -> {
                 //http请求检测图片url是否404
@@ -293,7 +343,7 @@ public class IllustrationBizService {
                     exception.printStackTrace();
                 }
 
-            });
+            });*/
             notFoundCheckIndex = Integer.valueOf(illustrationList.get(illustrationList.size() - 1).getId());
             stringRedisTemplate.opsForValue().set(RedisKeyConstant.NOT_FOUND_ILLUST_CHECK_INDEX, String.valueOf(notFoundCheckIndex));
 
