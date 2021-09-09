@@ -259,7 +259,7 @@ public class BusinessService {
         return artists.stream().map(e -> {
             List<Illustration> illustrations = null;
             try {
-                illustrations = artistBizService.queryIllustrationsByArtistId(e.getId(), "illust", 0, 3);
+                illustrations = artistBizService.queryIllustrationsByArtistId(e.getId(), "illust", 0, 30).stream().limit(3).collect(Collectors.toList());
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
             }

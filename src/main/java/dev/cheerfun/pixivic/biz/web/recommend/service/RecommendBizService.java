@@ -69,7 +69,7 @@ public class RecommendBizService {
             artistList = artistList.stream().map(artist -> {
                 List<Illustration> illustrationList = null;
                 try {
-                    illustrationList = artistBizService.queryIllustrationsByArtistId(artist.getId(), "illust", 0, 3);
+                    illustrationList = artistBizService.queryIllustrationsByArtistId(artist.getId(), "illust", 0, 30).stream().limit(3).collect(Collectors.toList());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

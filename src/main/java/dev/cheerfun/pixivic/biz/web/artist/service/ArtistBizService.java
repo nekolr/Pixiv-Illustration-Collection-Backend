@@ -237,7 +237,7 @@ public class ArtistBizService {
         {
             List<Illustration> illustrations = null;
             try {
-                illustrations = queryIllustrationsByArtistId(artistSearchDTO.getId(), "illust", 0, 3);
+                illustrations = queryIllustrationsByArtistId(artistSearchDTO.getId(), "illust", 0, 30).stream().limit(3).collect(Collectors.toList());
                 return new ArtistWithRecentlyIllusts(queryArtistDetail(artistSearchDTO.getId(), finalUserId), illustrations);
             } catch (InterruptedException interruptedException) {
                 interruptedException.printStackTrace();
