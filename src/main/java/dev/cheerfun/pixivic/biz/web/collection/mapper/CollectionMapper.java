@@ -82,8 +82,8 @@ public interface CollectionMapper {
     @Update("update collections set illust_count=illust_count+#{sum} where collection_id=#{collectionId}")
     void incrCollectionIllustCount(Integer collectionId, int sum);
 
-    @Insert("insert into collection_illust_relation  (collection_id, illust_id,order_num) values (#{collectionId}, #{illustrationId},(select illust_count from collections where collection_id=#{collectionId}))")
-    Integer addIllustrationToCollection(Integer collectionId, Integer illustrationId);
+    @Insert("insert into collection_illust_relation  (collection_id, illust_id,order_num) values (#{collectionId}, #{illustrationId},#{orderNum})")
+    Integer addIllustrationToCollection(Integer collectionId, Integer illustrationId, Integer orderNum);
 
     @Select("   SELECT IFNULL(( " +
             "                    SELECT 1 " +
@@ -115,7 +115,7 @@ public interface CollectionMapper {
             "= #{isPublic}",
             "</if>",
             "</if>",
-            "and user_id=#{userId} order by #{orderBy} #{orderByMode} limit #{currIndex},#{pageSize}",
+            "and user_id=#{userId} order by ${orderBy} ${orderByMode} limit #{currIndex},#{pageSize}",
             "</script>"
     })
     List<Integer> queryUserCollection(Integer userId, Integer currIndex, Integer pageSize, Integer isSelf, Integer isPublic, String orderBy, String orderByMode);
@@ -140,7 +140,7 @@ public interface CollectionMapper {
     })
     Collection queryCollectionById(Integer collectionId);
 
-    @Select("select illust_id from collection_illust_relation where collection_id =#{collectionId} limit #{currIndex},#{pageSize}")
+    @Select("select illust_id from collection_illust_relation where collection_id =#{collectionId} order by order_num desc limit #{currIndex},#{pageSize}")
     List<Integer> queryCollectionIllustIdList(Integer collectionId, Integer currIndex, Integer pageSize);
 
     @Select("select collection_id from collections where use_flag=1 and  is_public=1 order by create_time limit #{currIndex},#{pageSize} ")

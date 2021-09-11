@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.core.env.Environment;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -41,15 +42,17 @@ public class RecommendSyncService {
     private final RecommendMapper recommendMapper;
     private final RecommendInitMapper recommendInitMapper;
     private final ExecutorService recommendExecutorService;
+    private final Environment env;
 
     @Value("${harness.url}")
     private String harnessUrl;
 
     @PostConstruct
     public void init() throws IOException {
-
         log.info("开始初始化推荐服务");
-        initTask();
+        if ("prod".equals(env.getProperty("spring.profiles.active"))) {
+            initTask();
+        }
         log.info("初始化推荐服务成功");
     }
 
@@ -57,6 +60,7 @@ public class RecommendSyncService {
         recommendExecutorService.submit(() -> {
             while (true) {
                 try {
+
                     syncBookmarkToHarness();
                     syncFollowToHarness();
                     //十分钟同步一次

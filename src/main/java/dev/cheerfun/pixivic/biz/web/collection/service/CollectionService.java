@@ -137,11 +137,12 @@ public class CollectionService {
         //校验collectionId是否属于用户
         checkCollectionAuth(collectionId, userId);
         Collection collection = queryCollectionByIdFromDb(collectionId);
+        Integer index = collection.getIllustCount();
         //插入
         int sum = 0;
         for (Integer illustrationId : illustrationIds) {
             try {
-                collectionMapper.addIllustrationToCollection(collectionId, illustrationId);
+                collectionMapper.addIllustrationToCollection(collectionId, illustrationId, ++index);
                 sum++;
             } catch (DuplicateKeyException e) {
                 log.info("画作：" + illustrationId + "在画集：" + collectionId + "中已经存在");

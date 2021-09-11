@@ -24,6 +24,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -122,10 +123,12 @@ public class CollectionController {
     //查询用户画集
     @GetMapping("/users/{userId}/collections")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
-    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(30) Integer pageSize, @RequestParam(required = false) Integer isPublic, @RequestParam(value = "orderBy", defaultValue = "create_time") String orderBy, @RequestParam(value = "orderByMode", defaultValue = "desc") String orderByMode) {
+    public ResponseEntity<Result<List<Collection>>> queryUserCollection(@PathVariable Integer userId, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") @Max(30) Integer pageSize, @RequestParam(required = false) Integer isPublic, @RequestParam(value = "orderBy", defaultValue = "create_time") String orderBy, @RequestParam(value = "orderByMode", defaultValue = "desc") @Pattern(regexp = "desc|acs", message = "参数非法") String orderByMode) {
         Integer isSelf = collectionService.checkUserAuth(isPublic, userId);
         if ("updateTime".equals(orderBy)) {
             orderBy = "update_time";
+        } else {
+            orderBy = "create_time";
         }
         return ResponseEntity.ok().body(new Result<>("获取用户画集成功", collectionService.queryCollectionSummary(userId, isPublic), collectionService.queryUserCollection(userId, isSelf, isPublic, page, pageSize, orderBy, orderByMode)));
     }
