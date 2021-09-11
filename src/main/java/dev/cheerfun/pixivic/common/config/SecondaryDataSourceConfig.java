@@ -31,10 +31,10 @@ public class SecondaryDataSourceConfig {
     }
 
     @Bean(name = "SecondarySessionFactory")
-    public SqlSessionFactory SecondarySessionFactory(@Qualifier("SecondaryDataSource") DataSource dataSource, MybatisProperties mybatisProperties) throws Exception {
+    public SqlSessionFactory SecondarySessionFactory(@Qualifier("SecondaryDataSource") DataSource dataSource/*, MybatisProperties mybatisProperties*/) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
-        bean.setConfiguration(mybatisProperties.getConfiguration());
+        //bean.setConfiguration(mybatisProperties.getConfiguration());
         return bean.getObject();
     }
 
