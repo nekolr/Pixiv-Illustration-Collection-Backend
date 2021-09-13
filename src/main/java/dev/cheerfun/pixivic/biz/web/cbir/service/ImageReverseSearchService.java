@@ -66,7 +66,8 @@ public class ImageReverseSearchService {
         return result.getData();
     }
 
-    @Scheduled(cron = "0 30 0 * * ?")
+    //@Scheduled(cron = "0 30 0 * * ?")
+    @Scheduled(cron = "0 0 2 * * MON,WED,FRI")
     //TODO 和推荐同步（此时机器空闲）
     public void DailySyncTask() {
         syncToCBIRServer(null);
@@ -76,7 +77,7 @@ public class ImageReverseSearchService {
     public Boolean syncToCBIRServer(String date) {
         String toDate = null;
         if (date == null) {
-            date = LocalDate.now().plusDays(-1).toString();
+            date = LocalDate.now().plusDays(-3).toString();
             toDate = LocalDate.now().toString();
         } else {
             toDate = LocalDate.parse(date, DateTimeFormatter.ofPattern("yyyy-MM-dd")).plusDays(+1).toString();
