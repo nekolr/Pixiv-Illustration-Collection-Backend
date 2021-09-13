@@ -67,6 +67,7 @@ public class RecommendBizService {
                             artistBizService.dealArtist(artist);
                             return new ArtistWithIsFollowedInfo(artist, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + e.getValue(), String.valueOf(userId)));
                         }
+                        stringRedisTemplate.opsForZSet().remove(RedisKeyConstant.USER_RECOMMEND_ARTIST + userId, e.getValue());
                         return null;
                     }
             ).filter(Objects::nonNull).collect(Collectors.toList());
