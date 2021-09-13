@@ -77,7 +77,7 @@ public class NewIllustBookmarkRecommendService {
                     urRecList = recommendSyncService.queryRecommendIllustForNewUser();
                     typedTuples = urRecList.stream().map(u -> new DefaultTypedTuple<>(String.valueOf(u.getItem()), (double) u.getScore())).collect(Collectors.toSet());
                 } else {
-                    recommendSyncService.queryRecommendIllustByUser(e, size);
+                    urRecList = recommendSyncService.queryRecommendIllustByUser(e, size);
                     //重置分数
                     typedTuples = urRecList.stream()
                             //过滤已经收藏的

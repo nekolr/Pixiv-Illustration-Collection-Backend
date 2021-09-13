@@ -67,6 +67,7 @@ public class ImageReverseSearchService {
     }
 
     @Scheduled(cron = "0 30 0 * * ?")
+    //TODO 和推荐同步（此时机器空闲）
     public void DailySyncTask() {
         syncToCBIRServer(null);
     }

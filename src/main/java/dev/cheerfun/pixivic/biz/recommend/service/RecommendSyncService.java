@@ -60,7 +60,6 @@ public class RecommendSyncService {
         recommendExecutorService.submit(() -> {
             while (true) {
                 try {
-
                     syncBookmarkToHarness();
                     syncFollowToHarness();
                     //十分钟同步一次

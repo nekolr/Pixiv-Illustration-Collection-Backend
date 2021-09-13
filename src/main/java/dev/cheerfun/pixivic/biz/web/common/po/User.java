@@ -120,4 +120,7 @@ public class User implements Authable {
         return phone == null ? 0 : 1;
     }
 
+    public Integer getStar() {
+        return star == null ? 0 : star;
+    }
 }

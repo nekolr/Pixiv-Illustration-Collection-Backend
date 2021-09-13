@@ -36,15 +36,7 @@ public class TestController {
 
     @GetMapping("/recInit")
     public ResponseEntity<Result<List<String>>> getCheckEmail() throws TasteException {
-   /*     LocalDate now = LocalDate.now();
-        String today = now.plusDays(2).toString();
-        String threeDaysAgo = now.plusDays(-3).toString();
-        String sixDaysAgo = now.plusDays(-6).toString();
-        String twelveDaysAgo = now.plusDays(-12).toString();
-        String monthAgo = now.plusDays(-30).toString();
-        List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
-        newIllustBookmarkRecommendService.dealPerUser(u3, 2000);
-        newArtistRecommendService.recommend();*/
+        newIllustBookmarkRecommendService.recommend();
         return ResponseEntity.ok().body(new Result<>("生成推荐成功"));
     }
 }
