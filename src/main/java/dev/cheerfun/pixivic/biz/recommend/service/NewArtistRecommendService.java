@@ -2,7 +2,9 @@ package dev.cheerfun.pixivic.biz.recommend.service;
 
 import dev.cheerfun.pixivic.biz.recommend.domain.URRec;
 import dev.cheerfun.pixivic.biz.recommend.mapper.RecommendMapper;
+import dev.cheerfun.pixivic.biz.web.artist.service.ArtistBizService;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
+import dev.cheerfun.pixivic.common.po.ArtistSummary;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.mahout.cf.taste.common.TasteException;
@@ -32,6 +34,7 @@ public class NewArtistRecommendService {
     private final RecommendSyncService recommendSyncService;
     private final StringRedisTemplate stringRedisTemplate;
     private final RecommendMapper recommendMapper;
+    private final ArtistBizService artistBizService;
     private LocalDateTime localDateTimeIndex = LocalDateTime.now();
 
     public void recommend() throws TasteException {
@@ -73,6 +76,10 @@ public class NewArtistRecommendService {
                     typedTuples = urRecList.stream()
                             //过滤已经收藏的
                             .filter(r -> Boolean.FALSE.equals(stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + r.getItem(), String.valueOf(e))))
+                            .filter(r -> {
+                                ArtistSummary artistSummary = artistBizService.querySummaryByArtistId(Integer.valueOf(r.getItem()));
+                                return artistSummary != null && artistSummary.getIllustSum() != null && artistSummary.getIllustSum() != 0;
+                            })
                             .map(recommendedItem -> {
                                         Double score = stringRedisTemplate.opsForZSet().score(RedisKeyConstant.USER_RECOMMEND_ARTIST + e, String.valueOf(recommendedItem.getItem()));
                                         if (score == null) {
