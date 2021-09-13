@@ -16,6 +16,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Random;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -62,10 +63,13 @@ public class RecommendBizService {
         if (artistIdList != null && artistIdList.size() > 0) {
             List<Artist> artistList = artistIdList.stream().map(e -> {
                         Artist artist = artistBizService.queryArtistById(Integer.parseInt(e.getValue()));
-                        artistBizService.dealArtist(artist);
-                        return new ArtistWithIsFollowedInfo(artist, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + e.getValue(), String.valueOf(userId)));
+                        if (artist != null) {
+                            artistBizService.dealArtist(artist);
+                            return new ArtistWithIsFollowedInfo(artist, stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_FOLLOW_REDIS_PRE + e.getValue(), String.valueOf(userId)));
+                        }
+                        return null;
                     }
-            ).collect(Collectors.toList());
+            ).filter(Objects::nonNull).collect(Collectors.toList());
             artistList = artistList.stream().map(artist -> {
                 List<Illustration> illustrationList = null;
                 try {
