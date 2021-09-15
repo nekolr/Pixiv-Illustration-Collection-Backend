@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.analysis.tag.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.review.util.ReviewFilter;
 import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
@@ -8,6 +9,7 @@ import dev.cheerfun.pixivic.biz.analysis.tag.dto.PixivTrendingTagResponse;
 import dev.cheerfun.pixivic.biz.analysis.tag.mapper.TrendingTagsMapper;
 import dev.cheerfun.pixivic.biz.analysis.tag.po.TrendingTags;
 import dev.cheerfun.pixivic.biz.analysis.tag.secmapper.TagMapper;
+import dev.cheerfun.pixivic.biz.analysis.track.domain.Track;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.secmapper.IllustrationMapper;
 import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
@@ -61,7 +63,8 @@ public class TrendingTagsService {
 
     @Cacheable("trending_tags")
     public List<TrendingTags> queryByDate(String date) throws JsonProcessingException {
-        return objectMapper.readValue(trendingTagsMapper.queryByDate(date), List.class);
+        return objectMapper.readValue(trendingTagsMapper.queryByDate(date), new TypeReference<List<TrendingTags>>() {
+        });
         // return trendingTagsMapper.queryByDate(date);
     }
 
