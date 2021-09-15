@@ -35,7 +35,7 @@ import java.util.stream.Collectors;
  * @date 2020/6/28 2:20 下午
  * @description SiteMapService
  */
-@Service
+//@Service
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SiteMapService {

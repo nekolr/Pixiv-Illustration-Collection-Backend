@@ -22,7 +22,7 @@ import java.util.Optional;
  * @date 2020/6/28 2:20 下午
  * @description SCPUtil
  */
-@Component
+//@Component
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SshUtil {
