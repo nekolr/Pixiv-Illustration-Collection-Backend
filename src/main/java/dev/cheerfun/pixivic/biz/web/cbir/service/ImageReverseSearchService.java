@@ -22,6 +22,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,7 +52,10 @@ public class ImageReverseSearchService {
         String body = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
         Result<List<Integer>> result = objectMapper.readValue(body, new TypeReference<Result<List<Integer>>>() {
         });
-        return illustrationBizService.queryIllustrationByIdList(result.getData());
+        if (result.getData() != null) {
+            return illustrationBizService.queryIllustrationByIdList(result.getData());
+        }
+        return new ArrayList<>();
     }
 
     @Cacheable("generateTag")
