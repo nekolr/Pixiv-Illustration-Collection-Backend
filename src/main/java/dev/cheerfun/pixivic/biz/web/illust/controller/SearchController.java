@@ -82,7 +82,7 @@ public class SearchController {
     @PermissionRequired
     public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
         if ((Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP) {
-            throw new AuthLevelException(HttpStatus.FORBIDDEN, "需要会员权限");
+            throw new AuthLevelException(HttpStatus.BAD_REQUEST, "需要会员权限");
         }
         return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(sensitiveFilter.filter(searchService.getKeyword(request)))));
     }
