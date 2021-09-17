@@ -3,6 +3,7 @@ package dev.cheerfun.pixivic.biz.web.illust.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import dev.cheerfun.pixivic.basic.auth.annotation.PermissionRequired;
 import dev.cheerfun.pixivic.basic.auth.constant.PermissionLevel;
+import dev.cheerfun.pixivic.basic.auth.exception.AuthLevelException;
 import dev.cheerfun.pixivic.basic.ratelimit.annotation.RateLimit;
 import dev.cheerfun.pixivic.basic.sensitive.annotation.SensitiveCheck;
 import dev.cheerfun.pixivic.basic.sensitive.util.SensitiveFilter;
@@ -15,11 +16,13 @@ import dev.cheerfun.pixivic.biz.web.illust.domain.response.PixivSearchCandidates
 import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.biz.web.illust.service.SearchService;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
+import dev.cheerfun.pixivic.common.context.AppContext;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Result;
 import dev.cheerfun.pixivic.common.util.translate.service.TranslationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -78,7 +81,9 @@ public class SearchController {
     @GetMapping("/keywords/**/translations")
     @PermissionRequired
     public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
-
+        if ((Integer) AppContext.get().get(AuthConstant.PERMISSION_LEVEL) < PermissionLevel.VIP) {
+            throw new AuthLevelException(HttpStatus.FORBIDDEN, "需要会员权限");
+        }
         return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(sensitiveFilter.filter(searchService.getKeyword(request)))));
     }
 
