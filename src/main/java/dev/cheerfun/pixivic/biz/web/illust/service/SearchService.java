@@ -181,7 +181,7 @@ public class SearchService {
     }
 
     public SearchSuggestion getKeywordTranslation(String keyword) {
-        return new SearchSuggestion(translationUtil.translateToChineseByAzure(keyword), keyword);
+        return new SearchSuggestion(translationUtil.translateToJapaneseByYouDao(keyword), keyword);
     }
 
     @Cacheable(value = "bangumiSearch")

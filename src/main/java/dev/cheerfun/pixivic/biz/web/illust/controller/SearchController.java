@@ -78,6 +78,7 @@ public class SearchController {
     @GetMapping("/keywords/**/translations")
     @PermissionRequired
     public ResponseEntity<Result<SearchSuggestion>> getKeywordTranslation(HttpServletRequest request, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
+
         return ResponseEntity.ok().body(new Result<>("搜索词翻译获取成功", searchService.getKeywordTranslation(sensitiveFilter.filter(searchService.getKeyword(request)))));
     }
 

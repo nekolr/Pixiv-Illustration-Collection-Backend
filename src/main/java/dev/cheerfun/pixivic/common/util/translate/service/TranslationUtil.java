@@ -11,9 +11,11 @@ import dev.cheerfun.pixivic.common.util.translate.dto.YoudaoTranslatedResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -35,10 +37,10 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TranslationUtil {
-
-    public static final String appid = "20200810000539396";
-    public static final String securityKey = "moKfaw4ozBRPNMGTtQzR";
-
+    @Value("${youdao.appid}")
+    private String youdaoAppId;
+    @Value("${youdao.secret}")
+    private String youdaoSecret;
     private final HttpClient httpClient;
     private final ObjectMapper objectMapper;
     private final AzureApiKeyManager azureApiKeyManager;
@@ -52,9 +54,9 @@ public class TranslationUtil {
         params.put("signType", "v3");
         String curtime = String.valueOf(System.currentTimeMillis() / 1000);
         params.put("curtime", curtime);
-        String signStr = "6f8d12eb52dab6e2" + YouDaoTranslatedUtil.truncate(keyword) + salt + curtime + "FCTSvDZueYlrnOYVTgdzHJFR3d9b5lZc";
+        String signStr = youdaoAppId + YouDaoTranslatedUtil.truncate(keyword) + salt + curtime + youdaoSecret;
         String sign = YouDaoTranslatedUtil.getDigest(signStr);
-        params.put("appKey", "6f8d12eb52dab6e2");
+        params.put("appKey", youdaoAppId);
         params.put("q", URLEncoder.encode(keyword, StandardCharsets.UTF_8));
         params.put("salt", salt);
         params.put("sign", sign);
@@ -119,7 +121,7 @@ public class TranslationUtil {
         return "";
     }
 
-    @Cacheable(value = "translateToCNByBaidu")
+/*    @Cacheable(value = "translateToCNByBaidu")
     public String translateToChineseByBaidu(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create("http://api.fanyi.baidu.com/api/trans/vip/translate?" + RequestUtil.getPostEntity(buildParams(keyword, "auto", "zh"))))
@@ -132,7 +134,7 @@ public class TranslationUtil {
             log.error("调用翻译api失败");
         }
         return "";
-    }
+    }*/
 
     @Cacheable(value = "translateToCNByAzure")
     public String translateToChineseByAzureForAdmin(String keyword) {
@@ -175,7 +177,7 @@ public class TranslationUtil {
         }
         return "";
     }
-
+/*
     private Map<String, String> buildParams(String query, String from, String to) {
         Map<String, String> params = new HashMap<String, String>();
         params.put("q", query);
@@ -189,5 +191,5 @@ public class TranslationUtil {
         String src = appid + query + salt + securityKey; // 加密前的原文
         params.put("sign", MD5.md5(src));
         return params;
-    }
+    }*/
 }
