@@ -463,7 +463,7 @@ public class CommonService {
                 log.info(registerResponse.body());
                 log.info("用户论坛用户名重复，进行重新注册");
                 register = HttpRequest.newBuilder()
-                        .uri(URI.create("https://discuss.sharemoe.net/register")).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"" + user.getUsername().substring(0, 2) + userId + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}"))
+                        .uri(URI.create("https://discuss.sharemoe.net/register")).header("Content-Type", "application/json").POST(HttpRequest.BodyPublishers.ofString("{\"username\":\"" + "uid_" + userId + "\",\"email\":\"" + user.getEmail() + "\",\"token\":\"" + token + "\"}"))
                         .headers("Cookie", flarumSession)
                         .build();
                 registerResponse = httpClient.send(register, HttpResponse.BodyHandlers.ofString());
