@@ -11,4 +11,7 @@ public interface TrendingTagsMapper {
 
     @Select("select trending_tags from trending_tags where date=#{date}")
     String queryByDate(String date);
+
+    @Update("update trending_tags set date=#{date} where date=#{old} ")
+    void replace(String date, String old);
 }

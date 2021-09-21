@@ -127,6 +127,8 @@ public class TrendingTagsService {
             Collections.shuffle(tagList);
             //持久化
             trendingTagsMapper.insert(yesterday.plusDays(2).toString(), tagList);
+        } catch (Exception e) {
+            trendingTagsMapper.replace(yesterday.plusDays(2).toString(), yesterday.plusDays(1).toString());
         } finally {
             //删除日志
             Files.delete(Paths.get(logPath, yesterday + LOG_POS));
