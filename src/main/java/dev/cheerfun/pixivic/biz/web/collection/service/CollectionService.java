@@ -396,7 +396,7 @@ public class CollectionService {
 
     public Collection getCollection(Integer collectionId) {
         Collection collection = queryCollectionById(collectionId);
-        if (collection.getIsPublic() == 0) {
+        if (collection != null && collection.getIsPublic() == 0) {
             Map<String, Object> context = AppContext.get();
             if (context != null && context.get(AuthConstant.USER_ID) != null && (int) context.get(AuthConstant.USER_ID) == collection.getUserId()) {
                 return collection;
