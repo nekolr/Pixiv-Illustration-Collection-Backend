@@ -73,7 +73,7 @@ public class ImageReverseSearchService {
     //@Scheduled(cron = "0 30 0 * * ?")
     @Scheduled(cron = "0 0 2 * * MON,WED,FRI")
     //TODO 和推荐同步（此时机器空闲）
-    public void DailySyncTask() {
+    public void dailySyncTask() {
         syncToCBIRServer(null);
     }
 
@@ -109,6 +109,7 @@ public class ImageReverseSearchService {
                 log.error(response.statusCode() + "\n" + response.body());
             }
         } catch (Exception e) {
+            log.error("同步 " + date + " 画作到以图搜图服务器失败");
             e.printStackTrace();
             cbirSyncMapper.updateSyncLog(date, 0);
         }
