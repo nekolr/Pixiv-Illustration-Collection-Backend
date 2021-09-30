@@ -45,10 +45,10 @@ public class CacheConfig {
         redisConfiguration.setPassword(cacheRedisProperty.getPassword());
         RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(new JedisConnectionFactory(redisConfiguration));
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
-                .serializeKeysWith(RedisSerializationContext
+           /*     .serializeKeysWith(RedisSerializationContext
                         .SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext
-                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
+                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))*/
                 .entryTtl(Duration.ofHours(2));
         return new RedisCacheManager(redisCacheWriter, cacheConfiguration);
     }
