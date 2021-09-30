@@ -36,32 +36,26 @@ import java.time.Duration;
 public class CacheConfig {
     private final CacheRedisProperty cacheRedisProperty;
 
-    @Bean(name = "cacheRedisConnectionFactory")
-    public RedisConnectionFactory userRedisConnectionFactory() {
+
+    @Bean(name = "userCacheManager")
+    @Primary
+    public CacheManager cacheManager() {
         RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
         redisConfiguration.setHostName(cacheRedisProperty.getHost());
         redisConfiguration.setPort(cacheRedisProperty.getPort());
         redisConfiguration.setDatabase(cacheRedisProperty.getDatabase());
         redisConfiguration.setPassword(cacheRedisProperty.getPassword());
-        return new JedisConnectionFactory(redisConfiguration);
-    }
-
-    @Bean(name = "userCacheManager")
-    @Primary
-    public CacheManager cacheManager(@Qualifier("cacheRedisConnectionFactory") RedisConnectionFactory cf) {
-        RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(cf);
-
+        RedisCacheWriter redisCacheWriter = RedisCacheWriter.nonLockingRedisCacheWriter(new JedisConnectionFactory(redisConfiguration));
         RedisCacheConfiguration cacheConfiguration = RedisCacheConfiguration.defaultCacheConfig()
                 .serializeKeysWith(RedisSerializationContext
                         .SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext
                         .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
                 .entryTtl(Duration.ofHours(2));
-
         return new RedisCacheManager(redisCacheWriter, cacheConfiguration);
     }
 
-    @Bean(name = "cacheRedisTemplate")
+    /*@Bean(name = "cacheRedisTemplate")
     public RedisTemplate cacheRedisTemplate(@Qualifier("cacheRedisConnectionFactory") RedisConnectionFactory cf) {
         StringRedisTemplate stringRedisTemplate = new StringRedisTemplate(cf);
         stringRedisTemplate.setDefaultSerializer(new GenericJackson2JsonRedisSerializer());
@@ -69,6 +63,6 @@ public class CacheConfig {
         stringRedisTemplate.setHashKeySerializer(new GenericJackson2JsonRedisSerializer());
         stringRedisTemplate.setValueSerializer(new GenericJackson2JsonRedisSerializer());
         return stringRedisTemplate;
-    }
+    }*/
 
 }
