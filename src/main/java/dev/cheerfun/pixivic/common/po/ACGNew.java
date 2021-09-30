@@ -1,7 +1,9 @@
 package dev.cheerfun.pixivic.common.po;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer;
 import dev.cheerfun.pixivic.common.util.json.LocalDateSerializer;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +28,7 @@ public class ACGNew {
     private String refererUrl;
     private String content;
     @JsonSerialize(using = LocalDateSerializer.class)
+    @JsonDeserialize(using = LocalDateDeserializer.class)
     private LocalDate createDate;
     private String referer;
 
