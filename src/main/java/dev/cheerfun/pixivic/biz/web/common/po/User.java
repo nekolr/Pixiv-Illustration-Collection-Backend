@@ -66,6 +66,8 @@ public class User implements Authable {
     @JsonIgnore
     private String birthdayForVerify;
     private String ageForVerify;
+    private boolean isBindQQ;
+    private boolean isCheckPhone;
 
     public User(String username, String email, String password) {
         this.username = username;
@@ -123,6 +125,14 @@ public class User implements Authable {
 
     public int getIsCheckPhone() {
         return phone == null ? 0 : 1;
+    }
+
+    public void setIsCheckEmail(boolean isCheckEmail) {
+        this.isCheckEmail = isCheckEmail ? 1 : 0;
+    }
+
+    public void setIsCheckEmail(Integer isCheckEmail) {
+        this.isCheckEmail = isCheckEmail;
     }
 
 }
