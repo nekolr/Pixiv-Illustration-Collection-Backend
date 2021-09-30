@@ -34,6 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.stream.Collectors;
@@ -225,15 +226,15 @@ public class ArtistBizService {
         return artistBizMapper.querySummaryByArtistId(artistId);
     }
 
-    public CompletableFuture<List<Artist>> queryArtistByName(String artistName, Integer page, Integer pageSize) {
+    public List<Artist> queryArtistByName(String artistName, Integer page, Integer pageSize) throws ExecutionException, InterruptedException {
         Map<String, Object> context = AppContext.get();
         Integer userId = null;
         if (context != null && context.get(AuthConstant.USER_ID) != null) {
             userId = (int) context.get(AuthConstant.USER_ID);
         }
-        CompletableFuture<List<ArtistSearchDTO>> request = artistSearchUtil.search(artistName, page, pageSize);
+        List<ArtistSearchDTO> request = artistSearchUtil.search(artistName, page, pageSize);
         Integer finalUserId = userId;
-        return request.thenApply(e -> e.stream().parallel().filter(Objects::nonNull).map(artistSearchDTO ->
+        return request.stream().parallel().filter(Objects::nonNull).map(artistSearchDTO ->
         {
             List<Illustration> illustrations = null;
             try {
@@ -243,7 +244,7 @@ public class ArtistBizService {
                 interruptedException.printStackTrace();
             }
             return null;
-        }).filter(Objects::nonNull).collect(Collectors.toList()));
+        }).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     public Boolean pullArtistAllIllust(Integer artistId) {

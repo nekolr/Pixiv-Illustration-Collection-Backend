@@ -338,7 +338,7 @@ public class CommonService {
         Sentence sentence = sentenceService.queryRandomSentence();
         //根据台词来源作品获取画作
         Illustration illustration = null;
-        List<Illustration> illustrationList = searchService.searchByKeyword(sentence.getOriginateFromJP() != null ? sentence.getOriginateFromJP() : sentence.getOriginateFrom(), 30, 1, "original", null, null, null, null, null, 0, null, null, null, 5, null).get();
+        List<Illustration> illustrationList = searchService.searchByKeyword(sentence.getOriginateFromJP() != null ? sentence.getOriginateFromJP() : sentence.getOriginateFrom(), 30, 1, "original", null, null, null, null, null, 0, null, null, null, 5, null);
         if (illustrationList != null && illustrationList.size() > 0) {
             ThreadLocalRandom random = ThreadLocalRandom.current();
             illustration = illustrationList.get(random.nextInt(illustrationList.size()));

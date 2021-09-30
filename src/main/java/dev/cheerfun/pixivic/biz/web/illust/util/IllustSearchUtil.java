@@ -10,6 +10,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.HtmlUtils;
@@ -21,6 +22,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -173,7 +175,8 @@ public class IllustSearchUtil {
         return stringBuilder.toString();
     }
 
-    public CompletableFuture<List<Integer>> request(String body) {
+    @Cacheable(value = "searchResult")
+    public List<Integer> request(String body) throws ExecutionException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .uri(URI.create("http://" + elasticsearch + "/illusts/_search?_source=illust_id"))
@@ -198,7 +201,7 @@ public class IllustSearchUtil {
                     }
                     return null;
                 }
-        );
+        ).get();
     }
 
 }

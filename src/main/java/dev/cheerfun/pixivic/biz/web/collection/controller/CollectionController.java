@@ -27,6 +27,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author OysterQAQ
@@ -167,14 +168,14 @@ public class CollectionController {
 
     //标签自动补全
     @GetMapping("/collections/tags")
-    public CompletableFuture<ResponseEntity<Result<List<CollectionTag>>>> autocompleteCollectionTag(@RequestParam String keyword) {
-        return collectionService.autocompleteCollectionTag(keyword).thenApply(e -> ResponseEntity.ok().body(new Result<>("标签补全成功", e)));
+    public ResponseEntity<Result<List<CollectionTag>>> autocompleteCollectionTag(@RequestParam String keyword) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("标签补全成功", collectionService.autocompleteCollectionTag(keyword)));
     }
 
     //搜索画集
     @GetMapping("/collections")
-    public CompletableFuture<ResponseEntity<Result<List<Collection>>>> searchCollection(@RequestParam String keyword, @RequestParam(required = false) String startCreateDate, @RequestParam(required = false) String endCreateDate, @RequestParam(required = false) String startUpdateDate, @RequestParam(required = false) String endUpdateDate, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
-        return collectionService.searchCollection(keyword, startCreateDate, endCreateDate, startUpdateDate, endUpdateDate, page, pageSize).thenApply(e -> ResponseEntity.ok().body(new Result<>("获取搜索结果成功", e)));
+    public ResponseEntity<Result<List<Collection>>> searchCollection(@RequestParam String keyword, @RequestParam(required = false) String startCreateDate, @RequestParam(required = false) String endCreateDate, @RequestParam(required = false) String startUpdateDate, @RequestParam(required = false) String endUpdateDate, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "30") @Max(30) Integer pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("获取搜索结果成功", collectionService.searchCollection(keyword, startCreateDate, endCreateDate, startUpdateDate, endUpdateDate, page, pageSize)));
     }
 
 }

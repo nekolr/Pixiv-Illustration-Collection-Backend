@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Max;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author OysterQAQ
@@ -67,8 +68,8 @@ public class ArtistBizController {
     @GetMapping("/artists")
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithUserInfo
-    public CompletableFuture<ResponseEntity<Result<List<Artist>>>> queryArtistByName(@RequestParam String artistName, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
-        return artistBizService.queryArtistByName(artistName, page, pageSize).thenApply(e -> ResponseEntity.ok().body(new Result<>("获取画师搜索结果成功", e)));
+    public ResponseEntity<Result<List<Artist>>> queryArtistByName(@RequestParam String artistName, @RequestParam(defaultValue = "1") Integer page, @RequestParam(defaultValue = "10") Integer pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("获取画师搜索结果成功", artistBizService.queryArtistByName(artistName, page, pageSize)));
     }
 
     @GetMapping("/artists/illustsPull/{artistId}")

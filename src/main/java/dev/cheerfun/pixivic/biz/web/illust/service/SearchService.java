@@ -83,7 +83,7 @@ public class SearchService {
         log.info("初始化画作搜索服务成功");
     }
 
-    @Cacheable(value = "candidateWords")
+    //@Cacheable(value = "candidateWords")
     public CompletableFuture<PixivSearchCandidatesResponse> getCandidateWords(@SensitiveCheck String keyword) {
 /*        return requestUtil.getJson("http://proxy.pixivic.com:23334/v1/search/autocomplete?word=" + URLEncoder.encode(keyword, Charset.defaultCharset()))
                 .orTimeout(2, TimeUnit.SECONDS)
@@ -100,7 +100,7 @@ public class SearchService {
         throw new BusinessException(HttpStatus.BAD_REQUEST, "暂时不可用");
     }
 
-    @Cacheable(value = "searchSuggestions")
+    //@Cacheable(value = "searchSuggestions")
     public CompletableFuture<List<SearchSuggestion>> getSearchSuggestion(String keyword) {
       /*  return getSearchSuggestionFromBangumi(keyword)
                 .orTimeout(2, TimeUnit.SECONDS)
@@ -119,7 +119,7 @@ public class SearchService {
     }
 
     @Cacheable(value = "pixivSearchSuggestions")
-    public CompletableFuture<List<SearchSuggestion>> getPixivSearchSuggestion(@SensitiveCheck String keyword) {
+    public List<SearchSuggestion> getPixivSearchSuggestion(@SensitiveCheck String keyword) throws ExecutionException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("accept-language", "zh-CN,zh;q=0.9")
                 .uri(URI.create("http://proxy.pixivic.com:23334/ajax/search/artworks/" + URLEncoder.encode(keyword, StandardCharsets.UTF_8)))
@@ -145,7 +145,7 @@ public class SearchService {
                         }
                     // List<SearchSuggestion> searchSuggestions = null;
                     return null;
-                });
+                }).get();
         // throw new BusinessException(HttpStatus.INTERNAL_SERVER_ERROR, "暂时不可用");
     }
 
@@ -184,7 +184,7 @@ public class SearchService {
         return new SearchSuggestion(translationUtil.translateToJapaneseByYouDao(keyword), keyword);
     }
 
-    @Cacheable(value = "bangumiSearch")
+    //@Cacheable(value = "bangumiSearch")
     public CompletableFuture<BangumiSearchResponse> getSearchSuggestionFromBangumi(String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
@@ -202,7 +202,7 @@ public class SearchService {
         });
     }
 
-    @Cacheable(value = "searchSuggestions")
+    //@Cacheable(value = "searchSuggestions")
     public CompletableFuture<List<SearchSuggestion>> getSearchSuggestionFromMoeGirl(@SensitiveCheck String keyword) {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .GET()
@@ -219,7 +219,7 @@ public class SearchService {
     }
 
     public Illustration queryFirstSearchResult(String keyword) throws ExecutionException, InterruptedException {
-        List<Illustration> illustList = searchByKeyword(keyword, 1, 0, "original", "illust", null, null, null, null, 0, null, null, null, 5, null).get();
+        List<Illustration> illustList = searchByKeyword(keyword, 1, 0, "original", "illust", null, null, null, null, 0, null, null, null, 5, null);
         if (illustList != null && illustList.size() > 0) {
             //return illustrationBizService.queryIllustrationByIdFromDb(illustIdList.get(0));
             return illustList.get(0);
@@ -227,8 +227,7 @@ public class SearchService {
         return null;
     }
 
-    @Cacheable(value = "searchResult")
-    public CompletableFuture<List<Illustration>> searchByKeyword(
+    public List<Illustration> searchByKeyword(
             String keyword,
             int pageSize,
             int page,
@@ -243,24 +242,23 @@ public class SearchService {
             Integer minTotalBookmarks,
             Integer minTotalView,
             Integer maxSanityLevel,
-            Integer exceptId) {
+            Integer exceptId) throws ExecutionException, InterruptedException {
         String build = searchUtil.build(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, exceptId);
-        CompletableFuture<List<Illustration>> request = searchUtil.request(build).thenApply(illustrationBizService::queryIllustrationByIllustIdList);
+        List<Illustration> request = illustrationBizService.queryIllustrationByIllustIdList(searchUtil.request(build));
         return request;
     }
 
     @Cacheable(value = "saucenaoResponse")
-    public CompletableFuture<List<Illustration>> searchByImage(String imageUrl) {
+    public List<Illustration> searchByImage(String imageUrl) throws ExecutionException, InterruptedException {
         return imageSearchUtil.searchBySaucenao(imageUrl).thenApply(r -> {
             if (r != null && r.getPixivIdList() != null) {
                 return illustrationBizService.queryIllustrationByIdList(r.getPixivIdList().collect(Collectors.toList()));
             }
             throw new SearchException(HttpStatus.NOT_FOUND, "未找到画作");
-        });
+        }).get();
     }
 
-    @Cacheable(value = "related")
-    public CompletableFuture<List<Illustration>> queryIllustrationRelated(int illustId, int page, int pageSize) {
+    public List<Illustration> queryIllustrationRelated(int illustId, int page, int pageSize) throws ExecutionException, InterruptedException {
         Illustration illustration = illustrationBizService.queryIllustrationById(illustId);
         if (illustration != null && illustration.getTags().size() > 0) {
             String keywords = illustration.getTags().stream().filter(e -> !"".equals(e.getName())).limit(3).map(Tag::getName).reduce((x, y) -> x + "||" + y).get();

@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -327,8 +328,7 @@ public class CollectionService {
         return collectionMapper.queryPublicCollectionCount();
     }
 
-    @Cacheable("collection_tag_search")
-    public CompletableFuture<List<CollectionTag>> autocompleteCollectionTag(String keyword) {
+    public List<CollectionTag> autocompleteCollectionTag(String keyword) throws ExecutionException, InterruptedException {
         return collectionTagSearchUtil.search(keyword);
     }
 
@@ -407,9 +407,8 @@ public class CollectionService {
         return collection;
     }
 
-    @Cacheable("collectionSerchResult")
-    public CompletableFuture<List<Collection>> searchCollection(String keyword, String startCreateDate, String endCreateDate, String startUpdateDate, String endUpdateDate, Integer page, Integer pageSize) {
-        return collectionSearchUtil.searchCollection(collectionSearchUtil.build(keyword, startCreateDate, endCreateDate, startUpdateDate, endUpdateDate, page, pageSize)).thenApply(this::queryCollectionById);
+    public List<Collection> searchCollection(String keyword, String startCreateDate, String endCreateDate, String startUpdateDate, String endUpdateDate, Integer page, Integer pageSize) throws ExecutionException, InterruptedException {
+        return queryCollectionById(collectionSearchUtil.searchCollection(collectionSearchUtil.build(keyword, startCreateDate, endCreateDate, startUpdateDate, endUpdateDate, page, pageSize)));
     }
 
     public Integer checkUserAuth(Integer isPublic, Integer userId) {

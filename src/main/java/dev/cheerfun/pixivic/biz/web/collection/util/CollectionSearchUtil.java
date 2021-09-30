@@ -8,6 +8,7 @@ import dev.cheerfun.pixivic.biz.web.illust.domain.elasticsearch.Hits;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
@@ -17,6 +18,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -115,7 +117,8 @@ public class CollectionSearchUtil {
         return stringBuilder.toString();
     }
 
-    public CompletableFuture<List<Integer>> searchCollection(String body) {
+    @Cacheable("collectionSerchResult")
+    public List<Integer> searchCollection(String body) throws ExecutionException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .uri(URI.create("http://" + elasticsearch + "/collections/_search?_source=collection_id"))
@@ -138,6 +141,6 @@ public class CollectionSearchUtil {
                     }
                     return null;
                 }
-        );
+        ).get();
     }
 }

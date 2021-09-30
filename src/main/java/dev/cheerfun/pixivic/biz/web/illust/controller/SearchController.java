@@ -38,6 +38,7 @@ import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author OysterQAQ
@@ -74,8 +75,8 @@ public class SearchController {
 
     @GetMapping("/keywords/**/pixivSuggestions")
     @PermissionRequired
-    public CompletableFuture<ResponseEntity<Result<List<SearchSuggestion>>>> getPixivSearchSuggestion(HttpServletRequest request, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) {
-        return searchService.getPixivSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request))).thenApply(r -> ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", r)));
+    public ResponseEntity<Result<List<SearchSuggestion>>> getPixivSearchSuggestion(HttpServletRequest request, @RequestHeader(value = AuthConstant.AUTHORIZATION) String token) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("搜索建议(来自Pixiv)获取成功", searchService.getPixivSearchSuggestion(sensitiveFilter.filter(searchService.getKeyword(request)))));
     }
 
     @GetMapping("/keywords/**/translations")
@@ -92,7 +93,7 @@ public class SearchController {
     @WithAdvertisement
     @PermissionRequired
     @RateLimit
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByKeyword(
+    public ResponseEntity<Result<List<Illustration>>> searchByKeyword(
             @SensitiveCheck
             @RequestParam
             @NotBlank
@@ -124,19 +125,19 @@ public class SearchController {
             @RequestParam(required = false)
                     Integer minTotalView,
             @RequestParam(defaultValue = "5")
-                    Integer maxSanityLevel, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
+                    Integer maxSanityLevel, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws ExecutionException, InterruptedException {
         if ("autoTranslate".equals(searchType)) {
             //自动翻译
             String[] keywords = keyword.split("\\|\\|");
             keyword = Arrays.stream(keywords).map(translationUtil::translateToChineseByAzure).reduce((s1, s2) -> s1 + " " + s2).get();
         }
-        CompletableFuture<List<Illustration>> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null);
-        return searchResultCompletableFuture.thenApply(illustrations -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", illustrations)));
+        List<Illustration> searchResultCompletableFuture = searchService.searchByKeyword(keyword, pageSize, page, searchType, illustType, minWidth, minHeight, beginDate, endDate, xRestrict, popWeight, minTotalBookmarks, minTotalView, maxSanityLevel, null);
+        return ResponseEntity.ok().body(new Result<>("搜索结果获取成功", searchResultCompletableFuture));
     }
 
     @GetMapping("/similarityImages")
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> searchByImage(@RequestParam String imageUrl) {
-        return searchService.searchByImage(imageUrl).thenApply(saucenaoResponse -> ResponseEntity.ok().body(new Result<>("搜索结果获取成功", saucenaoResponse)));
+    public ResponseEntity<Result<List<Illustration>>> searchByImage(@RequestParam String imageUrl) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("搜索结果获取成功", searchService.searchByImage(imageUrl)));
 
     }
 

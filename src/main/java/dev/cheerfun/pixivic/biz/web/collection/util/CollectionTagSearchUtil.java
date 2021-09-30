@@ -20,6 +20,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +41,7 @@ public class CollectionTagSearchUtil {
     private String elasticsearch;
 
     @Cacheable("artistSearchResult")
-    public CompletableFuture<List<CollectionTag>> search(String tagName) {
+    public List<CollectionTag> search(String tagName) throws ExecutionException, InterruptedException {
         return request(build(tagName));
     }
 
@@ -51,7 +52,7 @@ public class CollectionTagSearchUtil {
         return stringBuilder;
     }
 
-    public CompletableFuture<List<CollectionTag>> request(String body) {
+    public List<CollectionTag> request(String body) throws ExecutionException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .uri(URI.create("http://" + elasticsearch + "/collection_tag/_search"))
@@ -75,6 +76,6 @@ public class CollectionTagSearchUtil {
                     }
                     return null;
                 }
-        );
+        ).get();
     }
 }

@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.Max;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author OysterQAQ
@@ -58,8 +59,8 @@ public class IllustrationBizController {
     @PermissionRequired(PermissionLevel.ANONYMOUS)
     @WithAdvertisement
     @RateLimit
-    public CompletableFuture<ResponseEntity<Result<List<Illustration>>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
-        return searchService.queryIllustrationRelated(illustId, page, pageSize).thenApply(r -> ResponseEntity.ok().body(new Result<>("获取关联画作成功", r)));
+    public ResponseEntity<Result<List<Illustration>>> queryIllustrationRelated(@PathVariable Integer illustId, @RequestParam(defaultValue = "1") @Max(333) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) throws ExecutionException, InterruptedException {
+        return ResponseEntity.ok().body(new Result<>("获取关联画作成功", searchService.queryIllustrationRelated(illustId, page, pageSize)));
     }
 
 

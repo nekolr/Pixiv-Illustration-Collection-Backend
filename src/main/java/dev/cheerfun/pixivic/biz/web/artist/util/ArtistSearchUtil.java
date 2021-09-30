@@ -20,6 +20,7 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 import java.util.stream.Collectors;
 
 /**
@@ -43,7 +44,7 @@ public class ArtistSearchUtil {
     private String elasticsearch;
 
     @Cacheable("artistSearchResult")
-    public CompletableFuture<List<ArtistSearchDTO>> search(String artistName, Integer page, Integer pageSize) {
+    public List<ArtistSearchDTO> search(String artistName, Integer page, Integer pageSize) throws ExecutionException, InterruptedException {
         String build = build(artistName, page, pageSize);
         return request(build);
     }
@@ -61,7 +62,7 @@ public class ArtistSearchUtil {
         return stringBuilder;
     }
 
-    public CompletableFuture<List<ArtistSearchDTO>> request(String body) {
+    public List<ArtistSearchDTO> request(String body) throws ExecutionException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .header("Content-Type", "application/json")
                 .uri(URI.create("http://" + elasticsearch + "/artist/_search"))
@@ -85,6 +86,6 @@ public class ArtistSearchUtil {
                     }
                     return null;
                 }
-        );
+        ).get();
     }
 }
