@@ -2,7 +2,9 @@ package dev.cheerfun.pixivic.biz.web.admin.po;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 import dev.cheerfun.pixivic.biz.web.admin.util.JpaConverterJson;
 import dev.cheerfun.pixivic.biz.web.collection.po.CollectionTag;
@@ -60,6 +62,7 @@ public class CollectionPO {
     @Column(name = "total_reward")
     private Integer totalReward;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
+    @JsonDeserialize(using = LocalDateTimeDeserializer.class)
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'")
     @Column(name = "create_time")
     private LocalDateTime createTime;
