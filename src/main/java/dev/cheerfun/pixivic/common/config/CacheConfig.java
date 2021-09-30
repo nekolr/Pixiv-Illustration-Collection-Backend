@@ -48,8 +48,8 @@ public class CacheConfig {
                 .serializeKeysWith(RedisSerializationContext
                         .SerializationPair.fromSerializer(new StringRedisSerializer()))
                 .serializeValuesWith(RedisSerializationContext
-                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()))
-                .entryTtl(Duration.ofHours(2));
+                        .SerializationPair.fromSerializer(new GenericJackson2JsonRedisSerializer()));
+        //.entryTtl(Duration.ofHours(2));
         return new RedisCacheManager(redisCacheWriter, cacheConfiguration);
     }
 
