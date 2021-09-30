@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.illust.domain.response;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
@@ -13,6 +14,6 @@ import java.util.List;
  */
 @Data
 public class PixivSearchCandidatesResponse {
-    @JsonSetter("search_auto_complete_keywords")
+    @JsonAlias({"search_auto_complete_keywords", "keywordList"})
     private List<String> keywordList;
 }

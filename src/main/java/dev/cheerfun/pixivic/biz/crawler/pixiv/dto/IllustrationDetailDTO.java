@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
@@ -11,6 +12,6 @@ import lombok.Data;
  */
 @Data
 public class IllustrationDetailDTO {
-    @JsonSetter("illust")
+    @JsonAlias({"illust", "illustrationDTO"})
     private IllustrationDTO illustrationDTO;
 }

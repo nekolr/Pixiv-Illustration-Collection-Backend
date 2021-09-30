@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.analysis.tag.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
@@ -13,6 +14,6 @@ import java.util.List;
  */
 @Data
 public class PixivTrendingTagResponse {
-    @JsonSetter("trend_tags")
+    @JsonAlias({"trend_tags", "trendTags"})
     private List<PixivTrendingTag> trendTags;
 }

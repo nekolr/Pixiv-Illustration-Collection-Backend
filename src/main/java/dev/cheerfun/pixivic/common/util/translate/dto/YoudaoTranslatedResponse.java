@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.common.util.translate.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
@@ -13,6 +14,6 @@ import java.util.List;
  */
 @Data
 public class YoudaoTranslatedResponse {
-    @JsonSetter("translation")
+    @JsonAlias({"translation", "result"})
     private List<String> result;
 }

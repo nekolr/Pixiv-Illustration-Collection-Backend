@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.analysis.tag.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import dev.cheerfun.pixivic.biz.crawler.pixiv.dto.IllustrationDTO;
 import lombok.Data;
@@ -13,7 +14,7 @@ import lombok.Data;
 @Data
 public class PixivTrendingTag {
     private String tag;
-    @JsonSetter("translated_name")
+    @JsonAlias({"translated_name", "translatedName"})
     private String translatedName;
     private IllustrationDTO illust;
 }

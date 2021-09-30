@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.common.po;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import dev.cheerfun.pixivic.common.util.json.LocalDateSerializer;
@@ -19,16 +20,16 @@ import java.time.format.DateTimeFormatter;
 public class Spotlight {
     private int id;
     private String title;
-    @JsonSetter("pure_title")
+    @JsonAlias({"pure_title", "pureTitle"})
     private String pureTitle;
     private String thumbnail;
-    @JsonSetter("article_url")
+    @JsonAlias({"article_url", "articleUrl"})
     private String articleUrl;
     @JsonSerialize(using = LocalDateSerializer.class)
-    @JsonSetter("publish_date")
+    @JsonAlias({"publish_date", "publishDate"})
     private LocalDate publishDate;
     private String category;
-    @JsonSetter("subcategory_label")
+    @JsonAlias({"subcategory_label", "subcategoryLabel"})
     private String subcategoryLabel;
 
     public void setPublishDate(String publishDate) {

@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.illust.domain.elasticsearch;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
@@ -11,6 +12,6 @@ import lombok.Data;
  */
 @Data
 public class Hit<T> {
-    @JsonSetter("_source")
+    @JsonAlias({"_source", "t"})
     private T t;
 }

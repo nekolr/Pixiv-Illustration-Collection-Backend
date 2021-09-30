@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.web.artist.dto;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
@@ -11,7 +12,7 @@ import lombok.Data;
  */
 @Data
 public class ArtistSearchDTO {
-    @JsonSetter("artist_id")
+    @JsonAlias({"artist_id", "id"})
     private Integer id;
     private String name;
 }

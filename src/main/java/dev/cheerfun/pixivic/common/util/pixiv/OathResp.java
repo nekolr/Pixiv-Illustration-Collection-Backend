@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.common.util.pixiv;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonSetter;
 import lombok.Data;
 
@@ -11,10 +12,10 @@ import lombok.Data;
  */
 @Data
 public class OathResp {
-    @JsonSetter("access_token")
+    @JsonAlias({"access_token", "accessToken"})
     private String accessToken;
-    @JsonSetter("device_token")
+    @JsonAlias({"device_token", "deviceToken"})
     private String deviceToken;
-    @JsonSetter("refresh_token")
+    @JsonAlias({"refresh_token", "refreshToken"})
     private String refreshToken;
 }
