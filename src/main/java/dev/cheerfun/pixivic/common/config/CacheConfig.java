@@ -34,12 +34,10 @@ import java.time.Duration;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 @EnableConfigurationProperties(CacheRedisProperty.class)
 public class CacheConfig {
-    private final CacheRedisProperty cacheRedisProperty;
-
 
     @Bean(name = "userCacheManager")
     @Primary
-    public CacheManager cacheManager() {
+    public CacheManager cacheManager(@Autowired CacheRedisProperty cacheRedisProperty) {
         RedisStandaloneConfiguration redisConfiguration = new RedisStandaloneConfiguration();
         redisConfiguration.setHostName(cacheRedisProperty.getHost());
         redisConfiguration.setPort(cacheRedisProperty.getPort());
