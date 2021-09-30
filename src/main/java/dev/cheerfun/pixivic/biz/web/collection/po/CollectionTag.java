@@ -17,7 +17,7 @@ import javax.validation.constraints.Size;
 @Data
 public class CollectionTag {
     @JsonSetter("tag_id")
-    @JsonAlias({"tagId", "tag_id"})
+    @JsonAlias({"tagId", "tag_id", "id"})
     private Integer id;
     @JsonSetter("tag_name")
     @JsonAlias({"tagName", "tag_name"})
