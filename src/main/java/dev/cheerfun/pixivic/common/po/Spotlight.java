@@ -35,10 +35,10 @@ public class Spotlight {
     @JsonAlias({"subcategory_label", "subcategoryLabel"})
     private String subcategoryLabel;
 
-    public void setPublishDate(String publishDate) {
+/*    public void setPublishDate(String publishDate) {
         LocalDateTime parse = LocalDateTime.parse(publishDate, DateTimeFormatter.ISO_INSTANT);
         this.publishDate = parse.toLocalDate();
-    }
+    }*/
 
     public void setPublishDate(LocalDate publishDate) {
         this.publishDate = publishDate;
