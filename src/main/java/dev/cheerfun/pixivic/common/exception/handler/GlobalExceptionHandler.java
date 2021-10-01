@@ -8,6 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
@@ -89,6 +90,12 @@ public class GlobalExceptionHandler {
         System.out.println("请求超时");
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("请求超时"));
     }
+
+    @ExceptionHandler(value = MissingRequestHeaderException.class)
+    public ResponseEntity<Result> handleMissingRequestHeaderException(MissingRequestHeaderException e, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("缺少请求头"));
+    }
+
     /*@ExceptionHandler(value = MessagingException.class)
     public ResponseEntity<Result> handleIllegalMessagingException(MessagingException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Result("登录信息异常"));
