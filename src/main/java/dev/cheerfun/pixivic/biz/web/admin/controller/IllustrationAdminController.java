@@ -20,6 +20,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
 import java.util.List;
 
 /**
@@ -47,7 +48,7 @@ public class IllustrationAdminController {
     }
 
     @GetMapping("/ranks")
-    public ResponseEntity<Result<List<Illustration>>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
+    public ResponseEntity<Result<List<Illustration>>> queryByDateAndMode(@RequestParam String date, @RequestParam String mode, @RequestParam(defaultValue = "1") @Min(1) @Max(30) int page, @RequestParam(defaultValue = "30") int pageSize, @RequestHeader(value = AuthConstant.AUTHORIZATION, required = false) String token) {
         List<Illustration> rank = rankService.queryByDateAndMode(date, mode, page, pageSize);
         return ResponseEntity.ok().body(new Result<>("获取排行成功", rank));
     }
