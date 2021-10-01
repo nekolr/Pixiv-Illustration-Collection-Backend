@@ -12,18 +12,6 @@ public interface CommentMapper {
     Integer pushComment(Comment comment);
 
     @Select("select comment_id from comments where app_type = #{appType} and app_id = #{appId}")
-    @Results({
-            @Result(property = "id", column = "comment_id"),
-            @Result(property = "appType", column = "app_type"),
-            @Result(property = "appId", column = "app_id"),
-            @Result(property = "parentId", column = "parent_id"),
-            @Result(property = "replyTo", column = "reply_to"),
-            @Result(property = "replyToName", column = "reply_to_name"),
-            @Result(property = "replyFrom", column = "reply_from"),
-            @Result(property = "replyFromName", column = "reply_from_name"),
-            @Result(property = "createDate", column = "create_Date", typeHandler = org.apache.ibatis.type.LocalDateTimeTypeHandler.class),
-            @Result(property = "likedCount", column = "liked_count")
-    })
     List<Integer> pullComment(String appType, Integer appId);
 
     @Update("replace into comment_summary (app_type, app_id, top_comment_count) select #{appType}, #{appId} ,count(*) from comments where app_type= #{appType} and app_id=#{appId} and parent_id=0")
