@@ -40,7 +40,8 @@ public class RankService {
         List<Integer> illustrationIdList = new ArrayList<>();
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
         if (rank != null) {
-            illustrationIdList = rank.getData().stream().map(e -> e.getId()).skip(pageSize * (page - 1))
+            illustrationIdList = objectMapper.convertValue(rank.getData(), new TypeReference<List<Illustration>>() {
+                    }).stream().map(Illustration::getId).skip(pageSize * (page - 1))
                     .limit(pageSize).collect(Collectors.toList());
         }
         return illustrationIdList;
