@@ -51,8 +51,12 @@ public class IllustHistoryService {
         return null;
     }
 
-    @Cacheable("illustHistoryFromMysql")
     public List<Illustration> pullFromMysql(int userId, int page, int pageSize) {
+        return illustrationBizService.queryIllustrationByIllustIdList(pullIdFromMysql(userId, page, pageSize));
+    }
+
+    @Cacheable("illustHistoryFromMysql")
+    public List<Integer> pullIdFromMysql(int userId, int page, int pageSize) {
         //取最小分数即时间戳
         Set<String> illustIdList = stringRedisTemplate.opsForZSet().rangeByScore(RedisKeyConstant.ILLUST_BROWSING_HISTORY_REDIS_PRE + userId, Integer.MIN_VALUE, Integer.MAX_VALUE, 0, 1);
         LocalDateTime localDateTime;
@@ -65,7 +69,7 @@ public class IllustHistoryService {
         } else {
             localDateTime = LocalDateTime.now();
         }
-        return illustrationBizService.queryIllustrationByIllustIdList(illustHistoryMapper.queryByUser(userId, localDateTime, (page - 1) * pageSize, pageSize));
+        return illustHistoryMapper.queryByUser(userId, localDateTime, (page - 1) * pageSize, pageSize);
     }
 
     //定时清理历史记录长度，临时表转移到正式表，清空临时表，正式表清除期限外数据

@@ -90,7 +90,7 @@ public class CommentService {
     }
 
     public List<Comment> pullComment(String appType, Integer appId) {
-        List<Comment> comments = queryCommentList(appType, appId);
+        List<Comment> comments = queryCommentList(appType, appId).stream().map(this::queryCommentById).collect(Collectors.toList());
         if (comments.size() == 0) {
             return comments;
         }
@@ -132,8 +132,9 @@ public class CommentService {
         result.sort(Comparator.comparingInt(e -> -e.getId()));
         return result;
     }
+
     @Cacheable(value = "comments", key = "#appType+#appId")
-    public List<Comment> queryCommentList(String appType, Integer appId) {
+    public List<Integer> queryCommentList(String appType, Integer appId) {
         return commentMapper.pullComment(appType, appId);
     }
 

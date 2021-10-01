@@ -43,8 +43,12 @@ public class ImageReverseSearchService {
     @Value("${cbir.server}")
     private String cbirServer;
 
-    @Cacheable("cbir")
     public List<Illustration> queryTopKSimilarImage(String imageUrl) throws IOException, InterruptedException {
+        return illustrationBizService.queryIllustrationByIdList(queryTopKIdSimilarImage(imageUrl));
+    }
+
+    @Cacheable("cbir")
+    public List<Integer> queryTopKIdSimilarImage(String imageUrl) throws IOException, InterruptedException {
         HttpRequest httpRequest = HttpRequest.newBuilder()
                 .uri(URI.create(cbirServer + "/similarImages?imageUrl=" + URLEncoder.encode(imageUrl)))
                 .GET()
@@ -53,7 +57,7 @@ public class ImageReverseSearchService {
         Result<List<Integer>> result = objectMapper.readValue(body, new TypeReference<Result<List<Integer>>>() {
         });
         if (result.getData() != null) {
-            return illustrationBizService.queryIllustrationByIdList(result.getData());
+            return result.getData();
         }
         return new ArrayList<>();
     }

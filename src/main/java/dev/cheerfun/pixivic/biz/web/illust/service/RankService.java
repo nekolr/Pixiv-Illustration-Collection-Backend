@@ -31,17 +31,19 @@ public class RankService {
     private final ObjectMapper objectMapper;
     private final IllustrationBizService illustrationBizService;
 
-    @Cacheable(value = "rank")
     public List<Illustration> queryByDateAndMode(String date, String mode, int page, int pageSize) {
-        List<Illustration> illustrationList = new ArrayList<>();
+        return illustrationBizService.queryIllustrationByIdList(queryIllustIdListByDateAndMode(date, mode, page, pageSize));
+    }
+
+    @Cacheable(value = "rank")
+    public List<Integer> queryIllustIdListByDateAndMode(String date, String mode, int page, int pageSize) {
+        List<Integer> illustrationIdList = new ArrayList<>();
         Rank rank = rankMapper.queryByDateAndMode(date, mode);
         if (rank != null) {
-            illustrationList = rank.getData().stream().skip(pageSize * (page - 1))
+            illustrationIdList = rank.getData().stream().map(e -> e.getId()).skip(pageSize * (page - 1))
                     .limit(pageSize).collect(Collectors.toList());
         }
-        illustrationList = objectMapper.convertValue(illustrationList, new TypeReference<List<Illustration>>() {
-        });
-        return illustrationBizService.queryIllustrationByIdList(illustrationList.stream().map(e -> e.getId()).collect(Collectors.toList()));
+        return illustrationIdList;
     }
 
     public List<Rank> queryByDate(String date) {

@@ -152,16 +152,20 @@ public class ArtistBizService {
         return businessMapper.queryUserListFollowedArtist(artistId, (page - 1) * pageSize, pageSize);
     }
 
-    @Cacheable(value = "artist_illusts")
     public List<Illustration> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize) throws InterruptedException {
         //如果是近日首次则进行拉取
-        List<Integer> illustrations = artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
+        List<Integer> illustrations = queryIllustrationIdListByArtistId(artistId, type, currIndex, pageSize);
         String key = artistId + ":" + type;
         //防止抓取不在库内的画师画作
         if (currIndex == 0 && pageSize == 30 && illustrations.size() > 0) {
             waitForPullArtistQueue.offer(key);
         }
         return illustrationBizService.queryIllustrationByIdList(illustrations);
+    }
+
+    @Cacheable(value = "artist_illusts")
+    public List<Integer> queryIllustrationIdListByArtistId(Integer artistId, String type, int currIndex, int pageSize) throws InterruptedException {
+        return artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
     }
 
     public void dealWaitForPullArtistQueue() {
