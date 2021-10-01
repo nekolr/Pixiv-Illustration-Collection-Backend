@@ -2,13 +2,13 @@ package dev.cheerfun.pixivic.biz.web.vip.util;
 
 import com.google.common.io.BaseEncoding;
 import dev.cheerfun.pixivic.biz.web.vip.po.ExchangeCode;
+import dev.cheerfun.pixivic.common.exception.BaseException;
 import dev.cheerfun.pixivic.common.util.encrypt.CRC8;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import javax.annotation.PostConstruct;
 import java.nio.ByteBuffer;
-import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static dev.cheerfun.pixivic.common.util.encrypt.ChaCha20.chacha20Decrypt;
@@ -68,22 +68,26 @@ public class ExchangeCodeUtil {
     }
 
     public ExchangeCode validateExchangeCode(String exchangeCode) {
-        byte[] decode = baseEncoding.decode(exchangeCode);
-        //首先校验 校验和
-        byte c = CRC8.calcCrc8(decode, 0, 9);
-        if (c == decode[9]) {
-            //解密
-            byte[] ciphertext = new byte[9];
-            System.arraycopy(decode, 0, ciphertext, 0, ciphertext.length);
-            byte[] payload = chacha20Decrypt(ciphertext, key, nonce, counter);
-            //得到编号
-            byte[] codeId = new byte[4];
-            codeId[0] = payload[0];
-            codeId[1] = payload[2];
-            codeId[2] = payload[4];
-            codeId[3] = payload[6];
-            ByteBuffer wrapped = ByteBuffer.wrap(codeId, 0, 4);
-            return new ExchangeCode(wrapped.getInt(), payload[8]);
+        try {
+            byte[] decode = baseEncoding.decode(exchangeCode);
+            //首先校验 校验和
+            byte c = CRC8.calcCrc8(decode, 0, 9);
+            if (c == decode[9]) {
+                //解密
+                byte[] ciphertext = new byte[9];
+                System.arraycopy(decode, 0, ciphertext, 0, ciphertext.length);
+                byte[] payload = chacha20Decrypt(ciphertext, key, nonce, counter);
+                //得到编号
+                byte[] codeId = new byte[4];
+                codeId[0] = payload[0];
+                codeId[1] = payload[2];
+                codeId[2] = payload[4];
+                codeId[3] = payload[6];
+                ByteBuffer wrapped = ByteBuffer.wrap(codeId, 0, 4);
+                return new ExchangeCode(wrapped.getInt(), payload[8]);
+            }
+        } catch (IllegalArgumentException illegalArgumentException) {
+            throw new BaseException(HttpStatus.BAD_REQUEST, "兑换码格式错误");
         }
         return null;
     }
