@@ -49,7 +49,6 @@ public class VIPProxyServerService {
             if ("prod".equals(env.getProperty("spring.profiles.active"))) {
                 loopCheck();
             }
-            loopCheck();
         } catch (Exception exception) {
             log.error("初始化高速服务器列表服务失败");
         }
@@ -76,7 +75,7 @@ public class VIPProxyServerService {
                     writeLock.unlock();
                 }
                 log.info("检查高级会员线路可用性完成");
-                Thread.sleep(1000 * 60 * 5);
+                Thread.sleep(1000 * 60 * 10);
             }
         });
     }
