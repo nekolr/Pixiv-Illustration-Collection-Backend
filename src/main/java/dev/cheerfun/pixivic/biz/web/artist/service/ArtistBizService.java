@@ -134,17 +134,21 @@ public class ArtistBizService {
         return artistIdList.stream().parallel().map(e -> queryArtistByIdFromDb(e)).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
-    @Cacheable(value = "artist")
-    @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
     public Artist queryArtistByIdFromDb(Integer artistId) {
         if (stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.BLOCK_ARTISTS_SET, String.valueOf(artistId))) {
             return null;
         }
-        Artist artist = artistBizMapper.queryArtistById(artistId);
+        Artist artist = queryArtistByIdFromDbWithCache(artistId);
         if (artist == null) {
             waitForPullArtistInfoQueue.offer(artistId);
         }
         return artist;
+    }
+
+    @Cacheable(value = "artist")
+    @Transactional(propagation = Propagation.NOT_SUPPORTED, transactionManager = "SecondaryTransactionManager")
+    public Artist queryArtistByIdFromDbWithCache(Integer artistId) {
+        return artistBizMapper.queryArtistById(artistId);
     }
 
     @Cacheable("artist_followed")
