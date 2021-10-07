@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dev.cheerfun.pixivic.basic.cbir.domain.FeatureTag;
 import dev.cheerfun.pixivic.basic.cbir.mapper.FeatureTagMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  * @description TagInfoCrawlerService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TagInfoCrawlerService {
     private final ObjectMapper objectMapper;
@@ -69,7 +71,7 @@ public class TagInfoCrawlerService {
         try {
             uri = URI.create("https://danbooru.donmai.us/wiki_pages/" + URLEncoder.encode(keyWord));
         } catch (Exception e) {
-            System.out.println("非法url：" + "https://danbooru.donmai.us/wiki_pages/" + keyWord);
+            log.info("非法url：" + "https://danbooru.donmai.us/wiki_pages/" + keyWord);
             return "";
         }
         HttpRequest request = HttpRequest.newBuilder()

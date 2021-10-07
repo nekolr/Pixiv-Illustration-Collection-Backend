@@ -1,5 +1,6 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.util;
 
+import lombok.extern.slf4j.Slf4j;
 import org.buildobjects.process.ProcBuilder;
 import org.buildobjects.process.TimeoutException;
 import org.springframework.beans.factory.annotation.Value;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Component;
  * @description RcloneUtil
  */
 @Component
+@Slf4j
 public class RcloneUtil {
     @Value("${rclone.path}")
     private String rclonePath;
@@ -36,7 +38,7 @@ public class RcloneUtil {
             builder.run();
             return true;
         } catch (TimeoutException ex) {
-            System.out.println(ex.getMessage());
+            log.info(ex.getMessage());
             return false;
         }
         // ProcBuilder.run(rclonePath, "copy", from, to);

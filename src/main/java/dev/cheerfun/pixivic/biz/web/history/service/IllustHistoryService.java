@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.biz.web.illust.service.IllustrationBizService;
 import dev.cheerfun.pixivic.common.constant.RedisKeyConstant;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
@@ -31,6 +32,7 @@ import java.util.stream.Collectors;
  * @description IllustLogService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustHistoryService {
     private final StringRedisTemplate stringRedisTemplate;
@@ -77,7 +79,7 @@ public class IllustHistoryService {
     @Transactional(rollbackFor = Exception.class)
     @CacheEvict("illustHistoryFromMysql")
     public void clear() {
-        System.out.println("开始清理历史记录");
+        log.info("开始清理历史记录");
         Iterator<RedisClusterNode> iterator = stringRedisTemplate.getConnectionFactory().getClusterConnection().clusterGetNodes().iterator();
         while (iterator.hasNext()) {
             RedisClusterNode clusterNode = iterator.next();

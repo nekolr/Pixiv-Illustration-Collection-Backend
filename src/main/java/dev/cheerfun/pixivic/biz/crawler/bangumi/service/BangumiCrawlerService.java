@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.AnimateCharacter;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.domain.Seiyuu;
 import dev.cheerfun.pixivic.biz.crawler.bangumi.secmapper.AnimateMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
  * @description BangumiCrawlerService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class BangumiCrawlerService {
     private final HttpClient httpClient;
@@ -50,7 +52,7 @@ public class BangumiCrawlerService {
             index = Integer.parseInt(animate);
         }
         for (int i = index; i < 15864; i++) {
-            System.out.println("开始爬取第" + i + "个");
+            log.info("开始爬取第" + i + "个");
             List<Animate> animates = new ArrayList<>(1);
             animates.add(pullAnimateInfo(Integer.valueOf(strings.get(i))));
             animateMapper.insertAnimateList(animates);
@@ -73,7 +75,7 @@ public class BangumiCrawlerService {
         int currentIndex = 0;
         //开始查找id并添加到文件
         for (; currentIndex < pageNum; currentIndex++) {
-            System.out.println("开始爬取第" + currentIndex + "页");
+            log.info("开始爬取第" + currentIndex + "页");
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("https://bangumi.tv/anime/browser/?sort=date&page=" + currentIndex)).GET().build();
             String body = httpClient.send(request, HttpResponse.BodyHandlers.ofString()).body();
@@ -196,7 +198,6 @@ public class BangumiCrawlerService {
             }
         });
         animateMapper.insertTags(set);
-        System.out.println("233");
     }
 
 }

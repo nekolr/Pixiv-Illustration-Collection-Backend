@@ -24,7 +24,6 @@ public class MainCrawlerService {
     public void dailyPersistentTask() throws InterruptedException {
         int hour = LocalTime.now().getHour();
         LocalDate date = LocalDate.now().plusDays(-(hour + 1) * 2);
-        System.out.println(date);
         List<Integer> artistIds = illustrationService.pullAllRankInfo(date);
         artistService.pullArtistsInfo(artistIds);
     }

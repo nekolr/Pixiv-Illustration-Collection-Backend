@@ -15,6 +15,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.illust.Tag;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
@@ -46,6 +47,7 @@ import static java.util.stream.Collectors.groupingBy;
  * @description SearchRecommendService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class TrendingTagsService {
     private final static String LOG_POS = ".log";
@@ -119,7 +121,7 @@ public class TrendingTagsService {
                                 return new TrendingTags(e.getName(), e.getTranslatedName(), illustration);
                             }
                         } catch (ExecutionException | InterruptedException ex) {
-                            System.out.println("标签获取错误" + ex.getMessage());
+                            log.info("标签获取错误" + ex.getMessage());
                         }
                         return null;
                     }).filter(Objects::nonNull).collect(Collectors.toList()));

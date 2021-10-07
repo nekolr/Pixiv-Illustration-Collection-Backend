@@ -4,6 +4,7 @@ import dev.cheerfun.pixivic.common.po.PixivUser;
 import dev.cheerfun.pixivic.common.constant.AuthConstant;
 import dev.cheerfun.pixivic.common.util.json.JsonBodyHandler;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +23,7 @@ import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
 @Component
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 final public class RequestUtil {
     //@Resource(name = "httpClientWithProxy")
@@ -118,7 +120,7 @@ final public class RequestUtil {
         try {
             return httpClient.send(getRank, JsonBodyHandler.jsonBodyHandler(target)).body();
         } catch (IOException | InterruptedException e) {
-            System.out.println("网络错误" + e.getMessage());
+            log.info("网络错误" + e.getMessage());
         }
         return null;
     }

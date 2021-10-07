@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.basic.review.secmapper.IllustReviewMapper;
 import dev.cheerfun.pixivic.basic.review.util.ReviewFilter;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.stream.Collectors;
  * @description IllustReviewService
  */
 //@Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustReviewService {
     private final ReviewFilter reviewFilter;
@@ -30,7 +32,7 @@ public class IllustReviewService {
 
     //@PostConstruct
     public void init() {
-        System.out.println("开始扫描画作");
+        log.info("开始扫描画作");
         // 遍历画作数据库 每次取10000个画作 offset取之前的最后一个画作的id
         String illustReview = stringRedisTemplate.opsForValue().get("illustReview");
         Integer illustId = null;
@@ -42,7 +44,7 @@ public class IllustReviewService {
         boolean flag = true;
 
         while (flag) {
-            System.out.println(illustId);
+            log.info(illustId);
             stringRedisTemplate.opsForValue().set("illustReview", String.valueOf(illustId));
             List<Illustration> illustrations = illustReviewMapper.queryIllustrationByIllustId(illustId);
             if (illustrations.size() == 0) {

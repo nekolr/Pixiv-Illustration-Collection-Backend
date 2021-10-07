@@ -9,6 +9,7 @@ import dev.cheerfun.pixivic.biz.web.illust.po.Rank;
 import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
@@ -32,6 +33,7 @@ import java.util.stream.IntStream;
  * @description RankDailyService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class IllustRankService {
     private final static String[] MODES = {"day", "week", "month", "day_female", "day_male", "day_manga", "week_manga", "month_manga", "week_rookie_manga"};
@@ -56,7 +58,7 @@ public class IllustRankService {
                 illustrationService.saveToDb(rank.getData());
             }
         }
-        System.out.println(date + "排行爬取完毕");
+        log.info(date + "排行爬取完毕");
     }
 
     private Rank getIllustrations(String mode, String date) {
@@ -66,7 +68,7 @@ public class IllustRankService {
                 illustrations.addAll(getIllustrationsJson(mode, date, i));
             } catch (ExecutionException | InterruptedException e) {
                 e.printStackTrace();
-                System.out.println("重试");
+                log.info("重试");
                 try {
                     illustrations.addAll(getIllustrationsJson(mode, date, i));
                 } catch (ExecutionException | InterruptedException ex) {
@@ -114,10 +116,10 @@ public class IllustRankService {
         //遍历
         int length = split.length;
         for (int i = 1360; i < length; i++) {
-            System.out.println(split[i]);
+            log.info(split[i]);
             Illustration illustration = illustrationService.pullIllustrationInfo(Integer.parseInt(split[i]));
             if (illustration != null) {
-                System.out.println(split[i] + "存在");
+                log.info(split[i] + "存在");
                 List<Illustration> illustrations = new ArrayList<>();
                 illustrations.add(illustration);
                 illustrationMapper.batchInsert(illustrations);

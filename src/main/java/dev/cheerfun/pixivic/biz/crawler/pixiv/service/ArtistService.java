@@ -97,7 +97,7 @@ public class ArtistService {
             boolean flag = true;
             //持久化到本地
             while (flag) {
-                System.out.println("开始抓取第" + i + "个画师(id:" + s + ")的第" + offset + "作品");
+                log.info("开始抓取第" + i + "个画师(id:" + s + ")的第" + offset + "作品");
                 IllustsDTO illustrationDetailDTO = (IllustsDTO) requestUtil.getJsonSync("https://app-api.pixiv.net/v1/user/illusts?user_id=" + s + "&offset=" + offset, IllustsDTO.class);
                 Files.write(Paths.get("/home/artist/" + s + "-" + offset + ".json"), objectMapper.writeValueAsString(illustrationDetailDTO).getBytes());
                 if (illustrationDetailDTO.getNextUrl() == null) {
@@ -159,7 +159,7 @@ public class ArtistService {
             artistList.forEach(System.out::println);
             artistMapper.insert(artistList);
             updateArtistSummary(artistIds);
-            System.out.println("画师信息入库完毕");
+            log.info("画师信息入库完毕");
         }
         return artistList;
     }

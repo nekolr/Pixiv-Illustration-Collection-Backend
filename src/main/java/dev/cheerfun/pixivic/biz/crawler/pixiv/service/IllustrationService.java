@@ -208,7 +208,7 @@ public class IllustrationService {
         //System.out.println("画作入库完毕");
         insertArtistIllustRelation(illustrations);
         //System.out.println("画师画作关系入库完毕");
-        System.out.println("画作入库完毕");
+        log.info("画作入库完毕");
         //illustrationMapper.flush();
     }
 
@@ -245,18 +245,18 @@ public class IllustrationService {
         if (tags.size() > 0) {
             illustrationMapper.insertTag(tags);
             //Lists.partition(tags,50).forEach(illustrationMapper::insertTag);
-            System.out.println("标签入库完毕");
+            log.info("标签入库完毕");
             //获取标签id
             tags.forEach(tag -> tag.setId(illustrationMapper.getTagId(tag.getName(), tag.getTranslatedName())));
-            System.out.println("标签id取回完毕");
+            log.info("标签id取回完毕");
             illustrationMapper.insertTagIllustRelation(illustrations);
-            System.out.println("标签与画作的联系入库完毕");
+            log.info("标签与画作的联系入库完毕");
         } else {
-            System.out.println("标签为null");
+            log.info("标签为null");
         }
         //Lists.partition(illustrations, 50).forEach(illustrationMapper::insert);
         illustrationMapper.batchInsert(illustrations);
-        System.out.println("画作入库完毕");
+        log.info("画作入库完毕");
         illustrationMapper.flush();
     }
 

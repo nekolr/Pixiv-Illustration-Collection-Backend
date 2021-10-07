@@ -7,6 +7,7 @@ import dev.cheerfun.pixivic.biz.crawler.news.dto.DMZJNewDTO;
 import dev.cheerfun.pixivic.biz.crawler.news.secmapper.NewMapper;
 import dev.cheerfun.pixivic.common.po.ACGNew;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -34,6 +35,7 @@ import java.util.stream.Collectors;
  * @description NewService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class NewService {
     private final HttpClient httpClient;
@@ -146,7 +148,7 @@ public class NewService {
                             n.setContent(d.getElementById(name).html());
                         }
                     } catch (IOException | InterruptedException e) {
-                        System.out.println("acg咨询抓取错误" + e.getMessage());
+                        log.info("acg咨询抓取错误" + e.getMessage());
                     }
                 });
                 newMapper.insert(acgNewList);

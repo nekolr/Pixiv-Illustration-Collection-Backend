@@ -6,6 +6,7 @@ import dev.cheerfun.pixivic.common.po.Illustration;
 import dev.cheerfun.pixivic.common.po.Spotlight;
 import dev.cheerfun.pixivic.common.util.pixiv.RequestUtil;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,6 +27,7 @@ import java.util.stream.Collectors;
  * @description SpotlightService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class SpotlightService {
     private final RequestUtil requestUtil;
@@ -84,11 +86,11 @@ public class SpotlightService {
                     }
                 }
             } catch (IOException | InterruptedException e) {
-                System.out.println("抓取spot错误" + e.getMessage());
+                log.info("抓取spot错误" + e.getMessage());
             }
         });
         saveToDb(spotlights);
-        System.out.println("spotlight处理完毕");
+        log.info("spotlight处理完毕");
     }
 
     private void saveToDb(List<Spotlight> spotlights) {

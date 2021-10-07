@@ -1,6 +1,7 @@
 package dev.cheerfun.pixivic.biz.crawler.pixiv.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import javax.annotation.PostConstruct;
  * @description DailyTaskService
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class DailyTaskService {
     private final SpotlightService spotlightService;
@@ -32,7 +34,7 @@ public class DailyTaskService {
 
     @Scheduled(cron = "0 0 2,3,4,5,6,7,8,9 * * ?")
     public void mainCrawler() throws InterruptedException {
-        System.out.println("开始执行主要爬虫任务");
+        log.info("开始执行主要爬虫任务");
         mainCrawlerService.dailyPersistentTask();
     }
 }

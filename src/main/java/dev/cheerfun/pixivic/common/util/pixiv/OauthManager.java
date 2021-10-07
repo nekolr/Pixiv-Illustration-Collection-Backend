@@ -75,7 +75,7 @@ public class OauthManager {
 
     public void refreshAccessToken() {
         long start = System.currentTimeMillis();
-        System.out.println("开始刷新帐号池" + start);
+        log.info("开始刷新帐号池" + start);
         for (int i = 0; i < pixivUserSize; i++) {
             if (!refresh(pixivUserList.get(i))) {
                 refreshErrorSet.add(i);
@@ -84,7 +84,7 @@ public class OauthManager {
             }
         }
         refreshErrorSet.removeIf(e -> refresh(pixivUserList.get(e)));
-        System.out.println("帐号池刷新完毕,耗时" + (System.currentTimeMillis() - start) / 1000 + "秒");
+        log.info("帐号池刷新完毕,耗时" + (System.currentTimeMillis() - start) / 1000 + "秒");
     }
 
     private boolean refresh(PixivUser pixivUser) {
@@ -99,12 +99,12 @@ public class OauthManager {
                         .build();
                 OathRespBody body;
                 String body1 = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString()).body();
-                System.out.println(body1);
+                log.info(body1);
                 //body = (OathRespBody) httpClient.send(httpRequest, JsonBodyHandler.jsonBodyHandler(OathRespBody.class)).body();
                 body = objectMapper.readValue(body1, new TypeReference<OathRespBody>() {
                 });
                 if (pixivUser.refresh(body)) {
-                    System.out.println(pixivUser.getUsername() + "账号刷新成功");
+                    log.info(pixivUser.getUsername() + "账号刷新成功");
                     saveRefreshTokenToDb(pixivUser);
                     return true;
                 }

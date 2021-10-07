@@ -184,7 +184,7 @@ public class ArtistBizService {
                     Boolean yesterdayCheck = stringRedisTemplate.opsForSet().isMember(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday, key);
                     if (!(todayCheck || yesterdayCheck)) {
                         String[] split = key.split(":");
-                        System.out.println("开始从Pixiv获取画师(id:" + split[0] + ")首页画作");
+                        log.info("开始从Pixiv获取画师(id:" + split[0] + ")首页画作");
                         stringRedisTemplate.opsForSet().add(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + today, key);
                         artistService.pullArtistLatestIllust(Integer.valueOf(split[0]), split[1]);
                         log.info("获取画师(id:" + split[0] + ")首页画作完毕");
