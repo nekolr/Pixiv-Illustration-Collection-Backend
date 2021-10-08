@@ -202,7 +202,7 @@ public class CollectionService {
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateIllustrationOrder(Integer collectionId, UpdateIllustrationOrderDTO updateIllustrationOrderDTO, Integer userId) {
         long start = System.currentTimeMillis();
-        log.info(start);
+        //log.info(String.valueOf(start));
         //校验collectionId是否属于用户
         checkCollectionAuth(collectionId, userId);
         //输入三个illust对象，分别是要插入位置的上下两个 以及 插入对象

@@ -44,7 +44,7 @@ public class IllustReviewService {
         boolean flag = true;
 
         while (flag) {
-            log.info(illustId);
+            //log.info(String.valueOf(illustId));
             stringRedisTemplate.opsForValue().set("illustReview", String.valueOf(illustId));
             List<Illustration> illustrations = illustReviewMapper.queryIllustrationByIllustId(illustId);
             if (illustrations.size() == 0) {

@@ -52,8 +52,10 @@ public class NewIllustBookmarkRecommendService {
 
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
         dealPerUser(u1, 3000, false);
+        System.gc();
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
         dealPerUser(u2, 2000, false);
+        System.gc();
         List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
         dealPerUser(u3, 1000, false);
         System.gc();

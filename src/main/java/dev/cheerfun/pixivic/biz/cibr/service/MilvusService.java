@@ -46,7 +46,7 @@ public class MilvusService {
             System.out.format("Index Info: %s\n", getIndexInfoResponse.getIndex().get().toString());
         }
         ListPartitionsResponse listPartitionsResponse = client.listPartitions(collectionName);
-        log.info(listPartitionsResponse.getPartitionList());
+        log.info(String.valueOf(listPartitionsResponse.getPartitionList()));
 
     }
 

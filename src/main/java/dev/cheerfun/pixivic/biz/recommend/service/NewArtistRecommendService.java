@@ -54,8 +54,10 @@ public class NewArtistRecommendService {
 
         List<Integer> u1 = recommendMapper.queryUserIdByDateRange(threeDaysAgo, today);
         dealPerUser(u1, 400, false);
+        System.gc();
         List<Integer> u2 = recommendMapper.queryUserIdByDateRange(sixDaysAgo, threeDaysAgo);
         dealPerUser(u2, 300, false);
+        System.gc();
         List<Integer> u3 = recommendMapper.queryUserIdByDateRange(twelveDaysAgo, sixDaysAgo);
         dealPerUser(u3, 100, false);
         System.gc();
