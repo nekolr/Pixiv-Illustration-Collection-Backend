@@ -106,6 +106,7 @@ public class MessageUtil {
                 try {
                     message = waitForSendQueue.take();
                     sendMessage(message);
+                    log.info("发送给" + message.getPhone() + "短信发送成功");
                 } catch (Exception e) {
                     log.error("发送给" + message.getPhone() + "短信发送失败");
                     e.printStackTrace();
