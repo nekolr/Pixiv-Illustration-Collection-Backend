@@ -28,13 +28,13 @@ public class PrimaryDataSourceConfig {
     @Bean(name = "dataSource")
     @ConfigurationProperties(prefix = "spring.datasource.primary")
     @Primary
-    public DataSource PrimaryDataSource() {
+    public DataSource primaryDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean(name = "sessionFactory")
     @Primary
-    public SqlSessionFactory PrimarySessionFactory(@Qualifier("dataSource") DataSource dataSource/*, MybatisProperties mybatisProperties*/) throws Exception {
+    public SqlSessionFactory primarySessionFactory(@Qualifier("dataSource") DataSource dataSource/*, MybatisProperties mybatisProperties*/) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         //bean.setConfiguration(mybatisProperties.getConfiguration());
@@ -43,13 +43,13 @@ public class PrimaryDataSourceConfig {
 
     @Bean(name = "transactionManager")
     @Primary
-    public DataSourceTransactionManager PrimaryTransactionManager(@Qualifier("dataSource") DataSource dataSource) {
+    public DataSourceTransactionManager primaryTransactionManager(@Qualifier("dataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean(name = "sessionTemplate")
     @Primary
-    public SqlSessionTemplate PrimarySessionTemplate(@Qualifier("sessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+    public SqlSessionTemplate primarySessionTemplate(@Qualifier("sessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 

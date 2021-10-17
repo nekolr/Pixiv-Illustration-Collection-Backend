@@ -10,13 +10,17 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.context.request.async.AsyncRequestTimeoutException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 
 import javax.mail.SendFailedException;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.ConstraintViolationException;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.TimeoutException;
 import java.util.stream.Collectors;
@@ -94,6 +98,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(value = MissingRequestHeaderException.class)
     public ResponseEntity<Result> handleMissingRequestHeaderException(MissingRequestHeaderException e, HttpServletRequest request) {
         return ResponseEntity.status(HttpStatus.REQUEST_TIMEOUT).body(new Result("缺少请求头"));
+    }
+
+    @ExceptionHandler(value = NoHandlerFoundException.class)
+    public ResponseEntity<Result> handleNoHandlerFound(NoHandlerFoundException noHandlerFoundException) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Result("空路由"));
     }
 
     /*@ExceptionHandler(value = MessagingException.class)

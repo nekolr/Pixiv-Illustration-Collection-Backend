@@ -26,12 +26,12 @@ import javax.sql.DataSource;
 public class SecondaryDataSourceConfig {
     @Bean(name = "SecondaryDataSource")
     @ConfigurationProperties(prefix = "spring.datasource.secondary")
-    public DataSource SecondaryDataSource() {
+    public DataSource secondaryDataSource() {
         return DataSourceBuilder.create().build();
     }
 
     @Bean(name = "SecondarySessionFactory")
-    public SqlSessionFactory SecondarySessionFactory(@Qualifier("SecondaryDataSource") DataSource dataSource/*, MybatisProperties mybatisProperties*/) throws Exception {
+    public SqlSessionFactory secondarySessionFactory(@Qualifier("SecondaryDataSource") DataSource dataSource/*, MybatisProperties mybatisProperties*/) throws Exception {
         SqlSessionFactoryBean bean = new SqlSessionFactoryBean();
         bean.setDataSource(dataSource);
         //bean.setConfiguration(mybatisProperties.getConfiguration());
@@ -39,12 +39,12 @@ public class SecondaryDataSourceConfig {
     }
 
     @Bean(name = "SecondaryTransactionManager")
-    public DataSourceTransactionManager SecondaryTransactionManager(@Qualifier("SecondaryDataSource") DataSource dataSource) {
+    public DataSourceTransactionManager secondaryTransactionManager(@Qualifier("SecondaryDataSource") DataSource dataSource) {
         return new DataSourceTransactionManager(dataSource);
     }
 
     @Bean(name = "SecondarySessionTemplate")
-    public SqlSessionTemplate SecondarySessionTemplate(@Qualifier("SecondarySessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
+    public SqlSessionTemplate secondarySessionTemplate(@Qualifier("SecondarySessionFactory") SqlSessionFactory sqlSessionFactory) throws Exception {
         return new SqlSessionTemplate(sqlSessionFactory);
     }
 }
