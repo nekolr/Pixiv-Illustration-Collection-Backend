@@ -30,7 +30,7 @@ public class Application {
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Referer");
         //System.setProperty("jdk.httpclient.keepalive.timeout", "1000");
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Connection");
-        System.setProperty("jdk.httpclient.redirects.retrylimit", "1");
+        System.setProperty("jdk.httpclient.redirects.retrylimit", "10");
         System.setProperty("jdk.httpclient.disableRetryConnect", "true");
         System.setProperty("jdk.httpclient.enableAllMethodRetry", "true");
         System.setProperty("jdk.httpclient.allowRestrictedHeaders", "Content-Length");
