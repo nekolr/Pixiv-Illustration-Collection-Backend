@@ -24,6 +24,9 @@ public interface ArtistBizMapper {
     @Select("select illust_id from illusts where artist_id = #{artistId} and type = #{type} order by create_date desc  limit #{currIndex} , #{pageSize}")
     List<Integer> queryIllustrationsByArtistId(Integer artistId, String type, int currIndex, int pageSize);
 
+    @Select("select illust_id from illusts where artist_id = #{artistId} and type = #{type} order by create_date desc ")
+    List<Integer> queryAllIllustrationIdByArtistId(Integer artistId, String type);
+
     @Select("select illust_sum,manga_sum from artist_summary where artist_id=#{artistId}")
     @Results({
             @Result(property = "illustSum", column = "illust_sum"),

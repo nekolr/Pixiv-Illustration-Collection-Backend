@@ -209,7 +209,12 @@ public class IllustrationService {
         insertArtistIllustRelation(illustrations);
         //System.out.println("画师画作关系入库完毕");
         log.info("画作入库完毕");
+        illustrations.forEach(e -> clearArtistIllustCache(e.getArtistId(), e.getType()));
         //illustrationMapper.flush();
+    }
+
+    public void clearArtistIllustCache(Integer artistId, String type) {
+        cacheManager.getCache("artist_illusts").evict(artistId + type);
     }
 
     public void dealWaitForSaveToDbIllustList() {

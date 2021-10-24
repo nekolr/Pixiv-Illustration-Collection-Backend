@@ -167,9 +167,16 @@ public class ArtistBizService {
         return illustrationBizService.queryIllustrationByIdList(illustrations);
     }
 
-    @Cacheable(value = "artist_illusts")
+    //@Cacheable(value = "artist_illusts")
     public List<Integer> queryIllustrationIdListByArtistId(Integer artistId, String type, int currIndex, int pageSize) throws InterruptedException {
-        return artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
+        return queryAllIllustrationIdListByArtistId(artistId, type).stream().skip(currIndex)
+                .limit(pageSize).collect(Collectors.toList());
+        //return artistBizMapper.queryIllustrationsByArtistId(artistId, type, currIndex, pageSize);
+    }
+
+    @Cacheable(value = "artist_illusts", key = "#artistId+#type")
+    public List<Integer> queryAllIllustrationIdListByArtistId(Integer artistId, String type) {
+        return artistBizMapper.queryAllIllustrationIdByArtistId(artistId, type);
     }
 
     public void dealWaitForPullArtistQueue() {
