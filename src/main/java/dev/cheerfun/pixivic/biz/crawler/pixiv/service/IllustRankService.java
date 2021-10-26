@@ -42,7 +42,7 @@ public class IllustRankService {
     private final IllustrationService illustrationService;
     private final RequestUtil requestUtil;
 
-    @CacheEvict(value = "rank", allEntries = true)
+    //@CacheEvict(value = "rank", allEntries = true)
     public void pullAllRank() {
         int hour = LocalTime.now().getHour();
         LocalDate date = LocalDate.now().plusDays(-(hour - 12));

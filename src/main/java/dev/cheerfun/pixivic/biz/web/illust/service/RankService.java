@@ -44,14 +44,14 @@ public class RankService {
                 .limit(pageSize).collect(Collectors.toList()));
     }
 
-    @Scheduled(cron = "0 10 12,13,14,15,16,17,18,19,20 * * ?")
+    @Scheduled(cron = "0 */1 13-20 * * ?")
     public void check() {
         //检查排行是否已经爬取
         log.info("开始检查当日排行爬取情况");
         String rankDate = LocalDate.now().plusDays(-1).toString();
         cleanRankCache(rankDate);
         final List<Integer> illustIdListByDateAndMode = queryIllustIdListByDateAndMode(rankDate, "day");
-        if (illustIdListByDateAndMode == null || illustIdListByDateAndMode.size() == 1) {
+        if (illustIdListByDateAndMode == null || illustIdListByDateAndMode.size() == 0) {
             log.info("当日排行为空，开始重新爬取");
             illustRankService.pullAllRank(rankDate);
             cleanRankCache(rankDate);

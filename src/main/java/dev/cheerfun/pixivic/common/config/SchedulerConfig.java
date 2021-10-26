@@ -15,7 +15,7 @@ import org.springframework.scheduling.config.ScheduledTaskRegistrar;
  */
 @Configuration
 @EnableScheduling
-@Profile({"prod"})
+@Profile({"prod", "mac"})
 public class SchedulerConfig implements SchedulingConfigurer {
     /**
      * The pool size.
