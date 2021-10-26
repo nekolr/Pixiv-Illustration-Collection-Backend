@@ -44,7 +44,7 @@ public class RankService {
                 .limit(pageSize).collect(Collectors.toList()));
     }
 
-    @Scheduled(cron = "0 10 12,13,14 * * ?")
+    @Scheduled(cron = "0 10 12,13,14,15,16,17,18,19,20 * * ?")
     public void check() {
         //检查排行是否已经爬取
         log.info("开始检查当日排行爬取情况");
