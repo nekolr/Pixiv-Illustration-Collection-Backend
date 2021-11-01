@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -38,6 +39,7 @@ public class RankService {
     private final IllustrationBizService illustrationBizService;
     private final CacheManager cacheManager;
     private final IllustRankService illustRankService;
+    private final static String[] MODES = {"day", "week", "month", "female", "male"};
 
     public List<Illustration> queryByDateAndMode(String date, String mode, int page, int pageSize) {
         return illustrationBizService.queryIllustrationByIdList(queryIllustIdListByDateAndMode(date, mode).stream().skip(pageSize * (page - 1))
@@ -50,8 +52,10 @@ public class RankService {
         log.info("开始检查当日排行爬取情况");
         String rankDate = LocalDate.now().plusDays(-1).toString();
         cleanRankCache(rankDate);
-        final List<Integer> illustIdListByDateAndMode = queryIllustIdListByDateAndMode(rankDate, "day");
-        if (illustIdListByDateAndMode == null || illustIdListByDateAndMode.size() == 0) {
+        Boolean flag = Arrays.stream(MODES).map(e -> {
+            return queryIllustIdListByDateAndMode(rankDate, e);
+        }).anyMatch(e -> e == null || e.size() == 0);
+        if (flag) {
             log.info("当日排行为空，开始重新爬取");
            /* while (illustIdListByDateAndMode == null || illustIdListByDateAndMode.size() == 0){
 
@@ -75,11 +79,14 @@ public class RankService {
     }
 
     public void cleanRankCache(String date) {
-        cacheManager.getCache("rank").evict(date + "day");
+        Arrays.stream(MODES).forEach(e -> {
+            cacheManager.getCache("rank").evict(date + e);
+        });
+        /*cacheManager.getCache("rank").evict(date + "day");
         cacheManager.getCache("rank").evict(date + "week");
         cacheManager.getCache("rank").evict(date + "month");
         cacheManager.getCache("rank").evict(date + "male");
-        cacheManager.getCache("rank").evict(date + "female");
+        cacheManager.getCache("rank").evict(date + "female");*/
     }
 
     public List<Rank> queryByDate(String date) {
