@@ -87,9 +87,12 @@ public class ArtistBizService {
 
     @Scheduled(cron = "0 2 0 * * ?")
     public void clearArtistLatestIllustsMap() {
+        log.info("开始清理画师爬取索引");
+        stringRedisTemplate.delete(stringRedisTemplate.keys(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + "*"));
         stringRedisTemplate.delete(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + yesterday);
         yesterday = today;
         today = LocalDate.now().toString();
+        log.info("清理画师爬取索引完毕");
     }
 
     public Artist queryArtistDetail(Integer artistId) throws InterruptedException {
