@@ -85,7 +85,7 @@ public class ArtistBizService {
 
     }
 
-    @Scheduled(cron = "0 2 0 * * ?")
+    @Scheduled(cron = "0 0 2 * * ?")
     public void clearArtistLatestIllustsMap() {
         log.info("开始清理画师爬取索引");
         stringRedisTemplate.delete(stringRedisTemplate.keys(RedisKeyConstant.ARTIST_LATEST_ILLUSTS_PULL_FLAG + "*"));
