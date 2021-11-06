@@ -63,7 +63,11 @@ public class TrendingTagsService {
 
     @Cacheable("trending_tags")
     public List<TrendingTags> queryByDate(String date) throws JsonProcessingException {
-        return objectMapper.readValue(trendingTagsMapper.queryByDate(date), List.class);
+        final String trendingTag = trendingTagsMapper.queryByDate(date);
+        if (trendingTag == null) {
+            return new ArrayList<>();
+        }
+        return objectMapper.readValue(trendingTag, List.class);
         // return trendingTagsMapper.queryByDate(date);
     }
 
